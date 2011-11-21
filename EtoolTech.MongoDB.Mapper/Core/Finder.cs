@@ -11,9 +11,10 @@ using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper.Core
 {
+    //TODO: Pendiente implementar pedir solo un subset de campos
     public class Finder : IFinder
     {
-        #region Find Methods
+        #region FindAsList Methods
 
         public T FindById<T>(Guid id)
         {
@@ -97,7 +98,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
             QueryComplete query = Query.And(queryList.ToArray());
 
-            MongoCursor<T> result = Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
+            MongoCursor<T> result = Helper.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
             if (result.Count() == 0)
                 return Guid.Empty;
 
@@ -108,27 +109,23 @@ namespace EtoolTech.MongoDB.Mapper.Core
             return (Guid) oId;
         }
 
-        public List<T> FindAnd<T>(List<IFindOptions> findOptions)
+  
+
+
+        public List<T> FindAsList<T>(QueryComplete query)
         {
-            QueryComplete queryAnd =
-                Query.And(
-                    findOptions.Select(
-                        FindOption => GetQuery(FindOption.FindCondition, FindOption.Value, FindOption.FieldName)).
-                        ToArray());
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(queryAnd).ToList();
+            return Helper.GetCollection(typeof(T).Name).FindAs<T>(query).ToList();
         }
 
-        public List<T> FindOr<T>(List<IFindOptions> findOptions)
+        public MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
         {
-            QueryComplete queryOr =
-                Query.Or(
-                    findOptions.Select(
-                        FindOption => GetQuery(FindOption.FindCondition, FindOption.Value, FindOption.FieldName)).
-                        ToArray());
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(queryOr).ToList();
+            if (query == null)
+                return Helper.GetCollection(typeof (T).Name).FindAllAs<T>();
+            
+            return Helper.GetCollection(typeof(T).Name).FindAs<T>(query);
         }
 
-        public List<T> Find<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
+        public List<T> FindAsList<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
         {
             QueryComplete query = null;
             query = GetQuery(findCondition, value, field);
@@ -136,13 +133,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
         }
 
 
-        public List<T> Find<T>(IFindOptions findOptions)
-        {
-            return Find<T>(findOptions.FieldName, findOptions.Value, findOptions.FindCondition = FindCondition.Equal);
-        }
-
         //TODO: Pendiente de probar
-        public List<T> Find<T>(Expression<Func<T, object>> exp)
+        public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
             var ep = new ExpressionParser();
             QueryComplete query = ep.ParseExpression(exp);
@@ -226,7 +218,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
             else if (type == typeof (bool))
                 query = Query.EQ(fieldName, (bool) value);
             else if (type == typeof (double))
-                query = Query.EQ(fieldName, (double) value);
+                query = Query.EQ(fieldName, (double) value);            
 
             return query;
         }

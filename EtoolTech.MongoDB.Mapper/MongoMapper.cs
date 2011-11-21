@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using EtoolTech.MongoDB.Mapper.enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Driver.Linq;
 
 namespace EtoolTech.MongoDB.Mapper
 {
     [Serializable]
-    public class MongoMapper
+    public abstract class MongoMapper
     {
         #region Eventos
 
@@ -63,11 +67,21 @@ namespace EtoolTech.MongoDB.Mapper
         [NonSerialized]
         [XmlIgnore]
         public Guid MongoMapper_Id;
-        
-        public MongoMapper()
+
+        //TODO: Pendiente temas de transacciones
+        //public bool Commited;
+        //public CommitOperation CommitOp;
+        //public string TransactionID;
+
+        protected MongoMapper()
         {
             _classType = GetType();
             Helper.RebuildClass(_classType, RepairCollection);          
+        }
+
+        public static IQueryable<T> QueryContext<T>()
+        {
+            return Helper.GetCollection<T>(typeof(T).Name).AsQueryable<T>();            
         }
       
         public List<T> GetRelation<T>(string relation)
@@ -188,34 +202,33 @@ namespace EtoolTech.MongoDB.Mapper
 
         #endregion
 
-        #region Find Methods
+        #region FindAsList Methods
 
         public static T FindByKey<T>(params object[] values)
         {
             return Finder.FindByKey<T>(values);
-        }
+        } 
+
  
-
-        public static List<T> FindAnd<T>(List<IFindOptions> findOptions)
+        public static List<T> FindAsList<T>(QueryComplete query)
         {
-            return Finder.FindAnd<T>(findOptions);
+            return Finder.FindAsList<T>(query);
         }
 
-        public static List<T> FindOr<T>(List<IFindOptions> findOptions)
+        public static MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
         {
-            return Finder.FindOr<T>(findOptions);
+            return Finder.FindAsCursor<T>(query);
+        }
+
+        public static List<T> FindAsList<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
+        {
+            return Finder.FindAsList<T>(field, value, findCondition);
         }
 
 
-        public static List<T> Find<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
-        {
-            return Finder.Find<T>(field, value, findCondition);
-        }
-
-
-        public static List<T> Find<T>(Expression<Func<T, object>> exp)
+        public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {            
-            return Finder.Find<T>(exp);
+            return Finder.FindAsList<T>(exp);
         }
 
 

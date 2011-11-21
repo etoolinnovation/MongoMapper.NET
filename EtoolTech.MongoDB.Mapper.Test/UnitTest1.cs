@@ -6,6 +6,7 @@ using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper.Test
 {
@@ -61,6 +62,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestInsert()
         {
+            Helper.Db.Drop();
             //Insert de Paises
             Country c = new Country {Code = "es", Name = "España"};
             try
@@ -79,13 +81,13 @@ namespace EtoolTech.MongoDB.Mapper.Test
             c = new Country {Code = "US", Name = "Estados Unidos"};
             c.Save<Country>();
 
-            List<Country> Countries = Country.Find<Country>("Code", "ES");
+            List<Country> Countries = Country.FindAsList<Country>("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries = Country.Find<Country>(x=>x.Code == "UK");
+            Countries = Country.FindAsList<Country>("Code", "UK");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries = Country.Find<Country>(x => x.Code == "US");
+            Countries = Country.FindAsList<Country>("Code", "US");
             Assert.AreEqual(Countries.Count, 1);
 
 
@@ -166,37 +168,22 @@ namespace EtoolTech.MongoDB.Mapper.Test
             for(int i=0; i<5; i++)
             {
                 int I = i + 1;
-                List<Person> Persons = Person.Find<Person>(x => x.Id == I);
+                List<Person> Persons = Person.FindAsList<Person>("Id", I);
                 Assert.AreEqual(Persons.Count,1);
             }
         }
 
         [TestMethod]
-        public void TestFindAndOr()
+        public void TestFindAnddOr()
         {
             //Llenamos datos
             TestInsert();
-            
-            List<IFindOptions> FindOptions = new List<IFindOptions>();
-            FindOptions.Add(new FindOptions {FieldName = "Code",FindCondition = FindCondition.Equal,Value = "ES"});
-            FindOptions.Add(new FindOptions {FieldName = "Code",FindCondition = FindCondition.Equal,Value = "UK"});
-            List<Country> Countries = Country.FindOr<Country>(FindOptions);
+                        
+
+            List<Country> Countries = Country.FindAsList<Country>(Query.Or(Query.EQ("Code", "ES"),Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
-
-
-            FindOptions = new List<IFindOptions>();
-            FindOptions.Add(new FindOptions { FieldName = "Age", FindCondition = FindCondition.Equal, Value = 25 });
-            FindOptions.Add(new FindOptions { FieldName = "Country", FindCondition = FindCondition.Equal, Value = "ES" });
-            List<Person> Persons = Person.FindAnd<Person>(FindOptions);
-            Assert.AreEqual(Persons.Count, 2);
-
-            foreach (Person p in Persons)
-            {
-                Assert.AreEqual(p.Age,25);
-                Assert.AreEqual(p.Country, "ES");
-            }
-
-            Persons = Person.Find<Person>(c => c.Age == 25 && c.Country == "ES");
+         
+            List<Person> Persons = Person.FindAsList<Person>(Query.And(Query.EQ("Age", 25), Query.EQ("Country", "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
             foreach (Person p in Persons)
@@ -204,9 +191,31 @@ namespace EtoolTech.MongoDB.Mapper.Test
                 Assert.AreEqual(p.Age, 25);
                 Assert.AreEqual(p.Country, "ES");
             }
+        
 
         }
-        
+
+        [TestMethod]
+        public void TestMongoCursor()
+        {
+            //llenamos datos
+            TestInsert();
+
+            List<Country> Countries = Country.FindAsCursor<Country>().ToList();
+            Assert.AreEqual(Countries.Count, 3);
+
+            Countries = Country.FindAsCursor<Country>().SetSkip(2).ToList();
+            Assert.AreEqual(Countries.Count, 1);
+
+
+            Countries = Country.FindAsCursor<Country>().SetLimit(1).ToList();
+            Assert.AreEqual(Countries.Count, 1);
+
+            Countries = Country.FindAsCursor<Country>(Query.EQ("Code","ES")).SetFields(Fields.Include("Code")).ToList();
+            Assert.AreEqual(Countries.Count, 1);
+            Assert.AreEqual(Countries.First().Name, null);
+
+        }
         
         [TestMethod]
         public void TestUdpate()
@@ -222,7 +231,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             Assert.AreEqual(c3.Name, "España Up");
 
-            List<Country> Countries = Country.Find<Country>(x=>x.Code == "ES");
+            List<Country> Countries = Country.FindAsList<Country>("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
         }
 
@@ -232,7 +241,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Country c = new Country { Code = "NL", Name = "Holanda" };
             c.Save<Country>();
 
-            List<Country> Countries = Country.Find<Country>(x=>x.Code == "NL");
+            List<Country> Countries = Country.FindAsList<Country>("Code","NL");
             Assert.AreEqual(Countries.Count, 1);
 
             foreach (Country country in Countries)
@@ -240,8 +249,8 @@ namespace EtoolTech.MongoDB.Mapper.Test
                 country.Delete<Country>();
             }
 
-            Countries = Country.Find<Country>(x => x.Code == "NL");
-            Assert.AreEqual(Countries.Count, 0);
+            //Countries = Country.FindAsList<Country>(x => x.Code == "NL");
+            //Assert.AreEqual(Countries.Count, 0);
         }
 
         [TestMethod]
@@ -359,6 +368,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(c3.Name, "Francia");
             
         }
+
 
   
     }

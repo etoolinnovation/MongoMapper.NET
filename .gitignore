@@ -3,6 +3,7 @@ Dependencies
 # Visual Studio artifacts
 bin
 obj
+TestResults
 *.user
 *.suo
 *.vsp

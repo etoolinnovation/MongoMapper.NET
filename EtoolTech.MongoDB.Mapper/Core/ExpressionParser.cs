@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper.Core
 {
     public class ExpressionParser
-    {
-        private readonly List<FindOptions> _bufferOptions = new List<FindOptions>();
+    {        
         private readonly IFinder _finder = new Finder();
 
         public QueryComplete ParseExpression<T>(Expression<Func<T, object>> exp)
         {
+
+            throw new NotImplementedException();
             Parse(exp);
 
-            //TODO temporal Solo AND;
-            return Query.And(_bufferOptions.Select(
-                bufferOption =>
-                _finder.GetQuery(bufferOption.FindCondition, bufferOption.Value, bufferOption.FieldName)).ToArray());
+            ////TODO temporal Solo AND;
+            //return Query.And(_bufferOptions.Select(
+            //    bufferOption =>
+            //    _finder.GetQuery(bufferOption.FindCondition, bufferOption.Value, bufferOption.FieldName)).ToArray());
         }
 
         private void Parse<T>(Expression<Func<T, object>> exp)
@@ -199,8 +199,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
             object pOp = globalop;
 
-            _bufferOptions.Add(new FindOptions
-                                  {FieldName = fieldName, FindCondition = mongoMapperCondition, Value = value});
+         
         }
     }
 }

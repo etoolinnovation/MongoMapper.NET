@@ -63,6 +63,15 @@ namespace EtoolTech.MongoDB.Mapper.Core
             return collection;
         }
 
+        //TODO: Pendiente de refactor, meter en un buffer o usarlo siempre tipado.
+        public static MongoCollection<T> GetCollection<T>(string name)
+        {
+            name = GetCollectioName(name);
+
+            MongoCollection<T> collection = Db.GetCollection<T>(name);
+            return collection;
+        }
+
         public static string GetCollectioName(string name)
         {
             if (!name.EndsWith("_Collection"))
