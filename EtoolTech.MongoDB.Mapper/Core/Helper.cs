@@ -33,15 +33,31 @@ namespace EtoolTech.MongoDB.Mapper.Core
         private static MongoDatabase _dataBase;
 
         private static readonly string DataBaseName = ConfigurationManager.AppSettings["DatabaseName"];
-        private static readonly string ConnectionString = ConfigurationManager.AppSettings["ConectionString"];
+        private static readonly string Host = ConfigurationManager.AppSettings["Host"];
+        private static readonly int Port = int.Parse(ConfigurationManager.AppSettings["Port"]);
+        private static readonly int PoolSize = int.Parse(ConfigurationManager.AppSettings["PoolSize"]);
+        private static readonly string UserName = ConfigurationManager.AppSettings["UserName"];
+        private static readonly string PassWord = ConfigurationManager.AppSettings["PassWord"];
+
 
         public static MongoDatabase Db
         {
             get
             {
+
                 if (_server == null)
-                    _server =
-                        MongoServer.Create(Context.Config == null ? ConnectionString : Context.Config.ConnectionString);
+                {
+                    MongoServerSettings ServerSettings = new MongoServerSettings();
+                    string userName = Context.Config == null ? UserName : Context.Config.UserName;
+
+                    if (!String.IsNullOrEmpty(userName))
+                        ServerSettings.DefaultCredentials = new MongoCredentials(userName, Context.Config == null ? PassWord : Context.Config.PassWord);
+
+                    ServerSettings.Server = new MongoServerAddress(Context.Config == null ? Host : Context.Config.Host, Context.Config == null ? Port : Context.Config.Port);
+                    ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
+
+                    _server = MongoServer.Create(ServerSettings);
+                }
 
                 if (_server.State != MongoServerState.Connected && _server.State != MongoServerState.Connecting)
                     _server.Connect();

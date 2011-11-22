@@ -3,6 +3,10 @@
     public interface IConfig
     {
         string Database { get; }
-        string ConnectionString { get; }
+        string Host { get; }
+        int Port { get; }
+        string UserName { get; }
+        string PassWord { get; }
+        int PoolSize { get; }
     }
 }

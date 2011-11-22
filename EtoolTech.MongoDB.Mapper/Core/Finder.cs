@@ -98,7 +98,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
             QueryComplete query = Query.And(queryList.ToArray());
 
-            MongoCursor<T> result = Helper.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
+            MongoCursor<T> result =
+                Helper.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
             if (result.Count() == 0)
                 return Guid.Empty;
 
@@ -109,36 +110,44 @@ namespace EtoolTech.MongoDB.Mapper.Core
             return (Guid) oId;
         }
 
-  
 
-
-        public List<T> FindAsList<T>(QueryComplete query)
+        public List<T> FindAsList<T>(QueryComplete query = null)
         {
-            return Helper.GetCollection(typeof(T).Name).FindAs<T>(query).ToList();
+            return FindAsCursor<T>(query).ToList();
         }
 
         public MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
         {
             if (query == null)
                 return Helper.GetCollection(typeof (T).Name).FindAllAs<T>();
-            
-            return Helper.GetCollection(typeof(T).Name).FindAs<T>(query);
+
+            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
         }
 
         public List<T> FindAsList<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
         {
-            QueryComplete query = null;
-            query = GetQuery(findCondition, value, field);
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query).ToList();
+            return FindAsCursor<T>(field, value, findCondition).ToList();
         }
 
+        public MongoCursor<T> FindAsCursor<T>(string field, object value,
+                                              FindCondition findCondition = FindCondition.Equal)
+        {
+            QueryComplete query = null;
+            query = GetQuery(findCondition, value, field);
+            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
+        }
+
+        public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
+        {
+            return FindAsCursor<T>(exp).ToList();
+        }
 
         //TODO: Pendiente de probar
-        public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
+        public MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
         {
             var ep = new ExpressionParser();
             QueryComplete query = ep.ParseExpression(exp);
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query).ToList();
+            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
         }
 
         #endregion
@@ -218,7 +227,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
             else if (type == typeof (bool))
                 query = Query.EQ(fieldName, (bool) value);
             else if (type == typeof (double))
-                query = Query.EQ(fieldName, (double) value);            
+                query = Query.EQ(fieldName, (double) value);
 
             return query;
         }
@@ -332,9 +341,14 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         #region IFinder Members
 
-        public List<T> All<T>()
+        public List<T> AllAsList<T>()
         {
-            return Helper.GetCollection(typeof (T).Name).FindAllAs<T>().ToList();
+            return AllAsCursor<T>().ToList();
+        }
+
+        public MongoCursor<T> AllAsCursor<T>()
+        {
+            return Helper.GetCollection(typeof(T).Name).FindAllAs<T>();
         }
 
         #endregion

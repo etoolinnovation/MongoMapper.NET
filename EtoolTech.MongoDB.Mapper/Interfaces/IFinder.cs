@@ -20,8 +20,12 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
         List<T> FindAsList<T>(QueryComplete query);
         List<T> FindAsList<T>(string field, object value, FindCondition findCondition = FindCondition.Equal);        
         List<T> FindAsList<T>(Expression<Func<T, object>> exp);
+        List<T> AllAsList<T>();
 
         MongoCursor<T> FindAsCursor<T>(QueryComplete query);
+        MongoCursor<T> FindAsCursor<T>(string field, object value, FindCondition findCondition = FindCondition.Equal);
+        MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp);
+        MongoCursor<T> AllAsCursor<T>();
 
         QueryComplete GetQuery(FindCondition findCondition, object value, string field);
         QueryComplete GetEqQuery(Type type, string fieldName, object value);
@@ -31,6 +35,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
         QueryComplete GetLteQuery(Type type, string fieldName, object value);
         QueryComplete GetNeQuery(Type type, string fieldName, object value);
         QueryComplete GetRegEx(string fieldName, string expresion);
-        List<T> All<T>();
+
+        
     }
 }
