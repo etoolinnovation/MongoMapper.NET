@@ -13,6 +13,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestEvents()
         {
+            
             Country c = new Country { Code = "FR", Name = "España" };
             c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };
             c.OnBeforeModify += (s, e) => { ((Country)s).Name = "Francia"; };

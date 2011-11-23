@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -32,12 +33,14 @@ namespace EtoolTech.MongoDB.Mapper.Core
         private static MongoServer _server;
         private static MongoDatabase _dataBase;
 
-        private static readonly string DataBaseName = ConfigurationManager.AppSettings["DatabaseName"];
-        private static readonly string Host = ConfigurationManager.AppSettings["Host"];
-        private static readonly int Port = int.Parse(ConfigurationManager.AppSettings["Port"]);
-        private static readonly int PoolSize = int.Parse(ConfigurationManager.AppSettings["PoolSize"]);
-        private static readonly string UserName = ConfigurationManager.AppSettings["UserName"];
-        private static readonly string PassWord = ConfigurationManager.AppSettings["PassWord"];
+        private static readonly MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
+
+        private static readonly string DataBaseName = config.Database.Name;
+        private static readonly string Host = config.Server.Host;
+        private static readonly int Port = config.Server.Port;
+        private static readonly int PoolSize = config.Server.PoolSize;
+        private static readonly string UserName = config.Database.User;
+        private static readonly string PassWord = config.Database.Password;
 
 
         public static MongoDatabase Db
