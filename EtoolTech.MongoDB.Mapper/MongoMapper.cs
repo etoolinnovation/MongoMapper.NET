@@ -124,10 +124,16 @@ namespace EtoolTech.MongoDB.Mapper
             return _originalObject[fieldName];
         }
 
-        public static List<T> All<T>()
+        public static List<T> AllAsList<T>()
         {
-            return Finder.All<T>();
+            return Finder.AllAsList<T>();
         }
+
+        public static MongoCursor<T> AllAsCursor<T>()
+        {
+            return Finder.AllAsCursor<T>();
+        }
+
 
         #region Write Methods
 
@@ -225,10 +231,20 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.FindAsList<T>(field, value, findCondition);
         }
 
+        public static MongoCursor<T> FindAsCursor<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
+        {
+            return Finder.FindAsCursor<T>(field, value, findCondition);
+        }
+
 
         public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {            
             return Finder.FindAsList<T>(exp);
+        }
+
+        public static MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
+        {
+            return Finder.FindAsCursor<T>(exp);
         }
 
 

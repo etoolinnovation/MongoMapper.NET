@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -32,16 +33,34 @@ namespace EtoolTech.MongoDB.Mapper.Core
         private static MongoServer _server;
         private static MongoDatabase _dataBase;
 
-        private static readonly string DataBaseName = ConfigurationManager.AppSettings["DatabaseName"];
-        private static readonly string ConnectionString = ConfigurationManager.AppSettings["ConectionString"];
+        private static readonly MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
+
+        private static readonly string DataBaseName = config.Database.Name;
+        private static readonly string Host = config.Server.Host;
+        private static readonly int Port = config.Server.Port;
+        private static readonly int PoolSize = config.Server.PoolSize;
+        private static readonly string UserName = config.Database.User;
+        private static readonly string PassWord = config.Database.Password;
+
 
         public static MongoDatabase Db
         {
             get
             {
+
                 if (_server == null)
-                    _server =
-                        MongoServer.Create(Context.Config == null ? ConnectionString : Context.Config.ConnectionString);
+                {
+                    MongoServerSettings ServerSettings = new MongoServerSettings();
+                    string userName = Context.Config == null ? UserName : Context.Config.UserName;
+
+                    if (!String.IsNullOrEmpty(userName))
+                        ServerSettings.DefaultCredentials = new MongoCredentials(userName, Context.Config == null ? PassWord : Context.Config.PassWord);
+
+                    ServerSettings.Server = new MongoServerAddress(Context.Config == null ? Host : Context.Config.Host, Context.Config == null ? Port : Context.Config.Port);
+                    ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
+
+                    _server = MongoServer.Create(ServerSettings);
+                }
 
                 if (_server.State != MongoServerState.Connected && _server.State != MongoServerState.Connecting)
                     _server.Connect();
