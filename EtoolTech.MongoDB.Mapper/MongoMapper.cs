@@ -8,6 +8,7 @@ using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using EtoolTech.MongoDB.Mapper.enums;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -124,6 +125,16 @@ namespace EtoolTech.MongoDB.Mapper
             return _originalObject[fieldName];
         }
 
+        public T GetOriginalObject<T>()
+        {
+            if (MongoMapper_Id == Guid.Empty) return default(T);
+            
+            if (_originalObject == null)
+                _originalObject = Finder.FindBsonDocumentById<T>(MongoMapper_Id);
+
+            return BsonSerializer.Deserialize<T>(_originalObject);
+        }
+
         public static List<T> AllAsList<T>()
         {
             return Finder.AllAsList<T>();
@@ -167,7 +178,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoMapper_Id = id;
 
-            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this);
+            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(true));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
         }
@@ -178,7 +189,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
-            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this);
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(true));
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
