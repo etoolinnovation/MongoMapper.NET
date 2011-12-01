@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace EtoolTech.MongoDB.Mapper.Test.Classes
 {
-    [MongoKey(KeyFields = "Id")]
+    [MongoKey(KeyFields = "")]
     [MongoIndex(IndexFields = "ID,Country")]
     [MongoIndex(IndexFields =  "Name")]
     public class Person : MongoMapper

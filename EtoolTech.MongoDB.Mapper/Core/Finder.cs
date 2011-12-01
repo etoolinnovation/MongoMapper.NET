@@ -47,21 +47,22 @@ namespace EtoolTech.MongoDB.Mapper.Core
             {
                 if (keyValue.Value is int)
                     queryList.Add(GetEqQuery(typeof (int), keyValue.Key, keyValue.Value));
-
-                if (keyValue.Value is string)
+                else if (keyValue.Value is string)
                     queryList.Add(GetEqQuery(typeof (string), keyValue.Key, keyValue.Value));
-
-                if (keyValue.Value is DateTime)
+                else if (keyValue.Value is DateTime)
                     queryList.Add(GetEqQuery(typeof (DateTime), keyValue.Key, keyValue.Value));
-
-                if (keyValue.Value is long)
+                else if (keyValue.Value is long)
                     queryList.Add(GetEqQuery(typeof (long), keyValue.Key, keyValue.Value));
-
-                if (keyValue.Value is bool)
+                else if (keyValue.Value is bool)
                     queryList.Add(GetEqQuery(typeof (bool), keyValue.Key, keyValue.Value));
-
-                if (keyValue.Value is double)
+                else if (keyValue.Value is double)
                     queryList.Add(GetEqQuery(typeof (double), keyValue.Key, keyValue.Value));
+                else if (keyValue.Value is Guid)
+                    queryList.Add(GetEqQuery(typeof (Guid), keyValue.Key, keyValue.Value));
+                else
+                {
+                    throw new TypeNotSupportedException(keyValue.Value.GetType().Name);
+                }
             }
 
             QueryComplete query = Query.And(queryList.ToArray());
@@ -80,20 +81,27 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 if (keyValue.Value is int)
                     queryList.Add(GetEqQuery(typeof (int), keyValue.Key, keyValue.Value));
 
-                if (keyValue.Value is string)
+                else if (keyValue.Value is string)
                     queryList.Add(GetEqQuery(typeof (string), keyValue.Key, keyValue.Value));
 
-                if (keyValue.Value is DateTime)
+                else if (keyValue.Value is DateTime)
                     queryList.Add(GetEqQuery(typeof (DateTime), keyValue.Key, keyValue.Value));
 
-                if (keyValue.Value is long)
+                else if (keyValue.Value is long)
                     queryList.Add(GetEqQuery(typeof (long), keyValue.Key, keyValue.Value));
 
-                if (keyValue.Value is bool)
+                else if (keyValue.Value is bool)
                     queryList.Add(GetEqQuery(typeof (bool), keyValue.Key, keyValue.Value));
 
-                if (keyValue.Value is double)
+                else if (keyValue.Value is double)
                     queryList.Add(GetEqQuery(typeof (double), keyValue.Key, keyValue.Value));
+
+                else if (keyValue.Value is Guid)
+                    queryList.Add(GetEqQuery(typeof (Guid), keyValue.Key, keyValue.Value));
+                else
+                {
+                    throw new TypeNotSupportedException(keyValue.Value.GetType().Name);
+                }
             }
 
             QueryComplete query = Query.And(queryList.ToArray());
@@ -123,19 +131,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
             return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
         }
-
-        public List<T> FindAsList<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
-        {
-            return FindAsCursor<T>(field, value, findCondition).ToList();
-        }
-
-        public MongoCursor<T> FindAsCursor<T>(string field, object value,
-                                              FindCondition findCondition = FindCondition.Equal)
-        {
-            QueryComplete query = null;
-            query = GetQuery(findCondition, value, field);
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
-        }
+         
 
         public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
@@ -154,11 +150,13 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         #region GetQuerys
 
-        public QueryComplete GetQuery(FindCondition findCondition, object value, string field)
+   
+
+        public QueryComplete GetEqQuery(Type type, string fieldName, object value)
         {
             QueryComplete query = null;
 
-            if (value is string && findCondition == FindCondition.Equal)
+            if (value is string)
             {
                 bool IsLike = false;
                 string txtValue = value.ToString();
@@ -180,41 +178,10 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
                 if (IsLike)
                 {
-                    query = GetRegEx(field, value.ToString());
+                    query = GetRegEx(fieldName, value.ToString());
                     return query;
                 }
             }
-
-            switch (findCondition)
-            {
-                case FindCondition.Equal:
-                    query = GetEqQuery(value.GetType(), field, value);
-                    break;
-                case FindCondition.Greater:
-                    query = GetGtQuery(value.GetType(), field, value);
-                    break;
-                case FindCondition.GreaterOrEqual:
-                    query = GetGteQuery(value.GetType(), field, value);
-                    break;
-                case FindCondition.Lees:
-                    query = GetLtQuery(value.GetType(), field, value);
-                    break;
-                case FindCondition.LessOrEqueal:
-                    query = GetLteQuery(value.GetType(), field, value);
-                    break;
-                case FindCondition.NotEquals:
-                    query = GetNeQuery(value.GetType(), field, value);
-                    break;
-                case FindCondition.RegEx:
-                    query = GetRegEx(field, value.ToString());
-                    break;
-            }
-            return query;
-        }
-
-        public QueryComplete GetEqQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
 
             if (type == typeof (DateTime))
                 query = Query.EQ(fieldName, (DateTime) value);
@@ -228,6 +195,9 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 query = Query.EQ(fieldName, (bool) value);
             else if (type == typeof (double))
                 query = Query.EQ(fieldName, (double) value);
+            else if (type == typeof (Guid))
+                query = Query.EQ(fieldName, (Guid) value);
+
 
             return query;
         }
@@ -348,7 +318,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public MongoCursor<T> AllAsCursor<T>()
         {
-            return Helper.GetCollection(typeof(T).Name).FindAllAs<T>();
+            return Helper.GetCollection(typeof (T).Name).FindAllAs<T>();
         }
 
         #endregion

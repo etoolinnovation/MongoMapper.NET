@@ -101,7 +101,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
         public static void ValidateType(Type t)
         {
             if (!SupportedTypesLits.Contains(t))
-                throw new TypeNotSupportedException();
+                throw new TypeNotSupportedException(t.Name);
         }
 
         public static IEnumerable<string> GetPrimaryKey(Type t)
@@ -111,7 +111,12 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 var keyAtt = (MongoKey) t.GetCustomAttributes(typeof (MongoKey), false).FirstOrDefault();
                 if (keyAtt != null)
                 {
+                    if (String.IsNullOrEmpty(keyAtt.KeyFields)) keyAtt.KeyFields = "MongoMapper_Id";
                     BufferPrimaryKey.Add(t.Name, keyAtt.KeyFields.Split(',').ToList());
+                }
+                else
+                {
+                    BufferPrimaryKey.Add(t.Name, new List<string>() {"MongoMapper_Id"});
                 }
             }
 

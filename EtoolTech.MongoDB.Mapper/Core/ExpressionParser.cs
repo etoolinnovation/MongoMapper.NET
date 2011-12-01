@@ -15,13 +15,15 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
 
             throw new NotImplementedException();
-            Parse(exp);
+            //Parse(exp);
 
             ////TODO temporal Solo AND;
             //return Query.And(_bufferOptions.Select(
             //    bufferOption =>
             //    _finder.GetQuery(bufferOption.FindCondition, bufferOption.Value, bufferOption.FieldName)).ToArray());
         }
+
+        /*
 
         private void Parse<T>(Expression<Func<T, object>> exp)
         {
@@ -201,5 +203,6 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
          
         }
+         */
     }
 }

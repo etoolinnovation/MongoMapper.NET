@@ -64,10 +64,9 @@ namespace EtoolTech.MongoDB.Mapper
         private BsonDocument _originalObject;
         [BsonIgnore] internal bool RepairCollection;
 
-        [BsonId] 
-        [NonSerialized]
+        [BsonId]
         [XmlIgnore]
-        public Guid MongoMapper_Id;
+        public Guid MongoMapper_Id { get; set; }
 
         //TODO: Pendiente temas de transacciones
         //public bool Commited;
@@ -224,8 +223,8 @@ namespace EtoolTech.MongoDB.Mapper
         public static T FindByKey<T>(params object[] values)
         {
             return Finder.FindByKey<T>(values);
-        } 
-
+        }
+     
  
         public static List<T> FindAsList<T>(QueryComplete query)
         {
@@ -235,16 +234,6 @@ namespace EtoolTech.MongoDB.Mapper
         public static MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
         {
             return Finder.FindAsCursor<T>(query);
-        }
-
-        public static List<T> FindAsList<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
-        {
-            return Finder.FindAsList<T>(field, value, findCondition);
-        }
-
-        public static MongoCursor<T> FindAsCursor<T>(string field, object value, FindCondition findCondition = FindCondition.Equal)
-        {
-            return Finder.FindAsCursor<T>(field, value, findCondition);
         }
 
 

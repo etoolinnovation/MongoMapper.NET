@@ -67,7 +67,6 @@
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\Events.cs" />
     <Compile Include="Core\ExpressionParser.cs" />
-    <Compile Include="Core\FindCondition.cs" />
     <Compile Include="Configuration\MongoMapperConfiguration.cs" />
     <Compile Include="Core\PropertyValidator.cs" />
     <Compile Include="enums\CommitOperation.cs" />

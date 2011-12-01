@@ -11,6 +11,100 @@ namespace EtoolTech.MongoDB.Mapper.Test
     [TestClass]
     public class FindTest
     {
+
+        [TestMethod]
+        public void TestFindByPk()
+        {
+            //Llenamos datos
+            //Insert de personas
+            Person p = new Person
+            {
+                Id = 1,
+                Name = "Pepito Perez",
+                Age = 35,
+                BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+                Married = true,
+                Country = "ES",
+                BankBalance = decimal.Parse("3500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+            p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+
+            p.Save<Person>();
+
+            p = new Person
+            {
+                Id = 2,
+                Name = "Juanito Sanchez",
+                Age = 25,
+                BirthDate = DateTime.Now.AddDays(52).AddYears(-38),
+                Married = true,
+                Country = "ES",
+                BankBalance = decimal.Parse("1500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
+
+            p.Save<Person>();
+
+            p = new Person
+            {
+                Id = 3,
+                Name = "Andres Perez",
+                Age = 25,
+                BirthDate = DateTime.Now.AddDays(25).AddYears(-25),
+                Married = false,
+                Country = "ES",
+                BankBalance = decimal.Parse("500,00")
+            };
+
+
+            p.Save<Person>();
+
+
+            p = new Person
+            {
+                Id = 4,
+                Name = "Marta Serrano",
+                Age = 28,
+                BirthDate = DateTime.Now.AddDays(28).AddYears(-28),
+                Married = false,
+                Country = "ES",
+                BankBalance = decimal.Parse("9500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
+            p.Save<Person>();
+
+            p = new Person
+            {
+                Id = 5,
+                Name = "Jonh Smith",
+                Age = 21,
+                BirthDate = DateTime.Now.AddDays(21).AddYears(-21),
+                Married = false,
+                Country = "US",
+                BankBalance = decimal.Parse("100,00")
+            };
+
+            p.Save<Person>();
+
+
+            List<Person> plist = Person.AllAsList<Person>();
+
+            Person p2 = Person.FindByKey<Person>(plist[0].MongoMapper_Id);
+            p2.Name = "FindBYKey Name";
+            p2.Save<Person>();
+
+            plist = Person.FindAsList<Person>("_id", p2.MongoMapper_Id);
+
+            Assert.AreEqual(plist.Count,1);
+            Assert.AreEqual(plist[0].Name, "FindBYKey Name");
+
+        }
+
+
         [TestMethod]
         public void TestFindAnddOr()
         {
