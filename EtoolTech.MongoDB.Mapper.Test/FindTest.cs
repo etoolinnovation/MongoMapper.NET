@@ -16,6 +16,10 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestFindByPk()
         {
             //Llenamos datos
+
+            Country c = new Country { Code = "ES", Name = "España" };
+            c.Save<Country>();
+
             //Insert de personas
             Person p = new Person
             {
@@ -84,7 +88,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
                 Age = 21,
                 BirthDate = DateTime.Now.AddDays(21).AddYears(-21),
                 Married = false,
-                Country = "US",
+                Country = "ES",
                 BankBalance = decimal.Parse("100,00")
             };
 
