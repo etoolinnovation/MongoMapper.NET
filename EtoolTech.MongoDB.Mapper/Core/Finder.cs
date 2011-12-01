@@ -34,7 +34,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
             var keyValues = new Dictionary<string, object>();
             for (int i = 0; i < fields.Count; i++)
             {
-                keyValues.Add(fields[i], values[i]);
+                string field = fields[i].ToUpper() == "MongoMapper_id".ToUpper() ? "_id" : fields[i];
+                keyValues.Add(field, values[i]);
             }
 
             return FindObjectByKey<T>(keyValues);
@@ -44,7 +45,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             var queryList = new List<QueryComplete>();
             foreach (var keyValue in keyValues)
-            {
+            {               
                 if (keyValue.Value is int)
                     queryList.Add(GetEqQuery(typeof (int), keyValue.Key, keyValue.Value));
                 else if (keyValue.Value is string)

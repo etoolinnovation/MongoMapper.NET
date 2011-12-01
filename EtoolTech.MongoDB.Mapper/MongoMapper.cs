@@ -236,6 +236,17 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.FindAsCursor<T>(query);
         }
 
+        public static List<T> FindAsList<T>(string fieldName, object value)
+        {
+            return Finder.FindAsList<T>(Finder.GetEqQuery(value.GetType(),fieldName,value));
+        }
+
+        public static MongoCursor<T> FindAsCursor<T>(string fieldName, object value)
+        {
+            return Finder.FindAsCursor<T>(Finder.GetEqQuery(value.GetType(), fieldName, value));
+        }
+
+
 
         public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {            
