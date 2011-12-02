@@ -33,6 +33,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
         private static MongoDatabase _dataBase;
+        private static MongoServer _server;
 
         internal static readonly MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
 
@@ -42,29 +43,36 @@ namespace EtoolTech.MongoDB.Mapper.Core
         private static readonly int PoolSize = config.Server.PoolSize;
         private static readonly string UserName = config.Database.User;
         private static readonly string PassWord = config.Database.Password;
+        private static readonly int WaitQueueTimeout = config.Server.WaitQueueTimeout;
 
 
         public static MongoDatabase Db
         {
             get
             {
-                MongoServerSettings ServerSettings = new MongoServerSettings();
-                string userName = Context.Config == null ? UserName : Context.Config.UserName;
+                if (_server == null)
+                {
+                    MongoServerSettings ServerSettings = new MongoServerSettings();
+                    string userName = Context.Config == null ? UserName : Context.Config.UserName;
 
-                if (!String.IsNullOrEmpty(userName))
-                    ServerSettings.DefaultCredentials = new MongoCredentials(userName,
-                                                                             Context.Config == null
-                                                                                 ? PassWord
-                                                                                 : Context.Config.PassWord);
+                    if (!String.IsNullOrEmpty(userName))
+                        ServerSettings.DefaultCredentials = new MongoCredentials(userName,
+                                                                                 Context.Config == null
+                                                                                     ? PassWord
+                                                                                     : Context.Config.PassWord);
 
-                ServerSettings.Server = new MongoServerAddress(Context.Config == null ? Host : Context.Config.Host,
-                                                               Context.Config == null ? Port : Context.Config.Port);
-                ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
+                    ServerSettings.Server = new MongoServerAddress(Context.Config == null ? Host : Context.Config.Host,
+                                                                   Context.Config == null ? Port : Context.Config.Port);
+                    ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
+                    ServerSettings.ConnectionMode = ConnectionMode.Direct;
+                    ServerSettings.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout);
 
-                MongoServer server = MongoServer.Create(ServerSettings);
+
+                    _server = MongoServer.Create(ServerSettings);
+                }
 
                 return _dataBase ??
-                       (_dataBase = server.GetDatabase(Context.Config == null ? DataBaseName : Context.Config.Database));
+                       (_dataBase = _server.GetDatabase(Context.Config == null ? DataBaseName : Context.Config.Database));
             }
         }
 

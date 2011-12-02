@@ -52,6 +52,12 @@ public class Server : ConfigurationElement
     {
         get { return int.Parse(this["PoolSize"].ToString()); }
     }
+
+    [ConfigurationProperty("WaitQueueTimeout", IsKey = false, IsRequired = true)]
+    public int WaitQueueTimeout
+    {
+        get { return int.Parse(this["WaitQueueTimeout"].ToString()); }
+    }
 }
 
 public class Database : ConfigurationElement
