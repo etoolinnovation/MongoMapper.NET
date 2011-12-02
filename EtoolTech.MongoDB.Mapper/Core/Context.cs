@@ -37,7 +37,6 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             _rulesManager = rules;
         }
-
-        public static bool ContextGenerated { get; set; }
+        
     }
 }

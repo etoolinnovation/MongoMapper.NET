@@ -23,6 +23,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         {
             get { return (Database)this["Database"] ?? new Database(); }
         }
+
+        [ConfigurationProperty("Context")]
+        public Context Context
+        {
+            get { return (Context)this["Context"] ?? new Context(); }
+        }
     }
 }
 
@@ -45,6 +51,12 @@ public class Server : ConfigurationElement
     public int PoolSize
     {
         get { return int.Parse(this["PoolSize"].ToString()); }
+    }
+
+    [ConfigurationProperty("WaitQueueTimeout", IsKey = false, IsRequired = true)]
+    public int WaitQueueTimeout
+    {
+        get { return int.Parse(this["WaitQueueTimeout"].ToString()); }
     }
 }
 
@@ -70,3 +82,15 @@ public class Database : ConfigurationElement
     }
 
 }
+
+public class Context : ConfigurationElement
+{
+
+    [ConfigurationProperty("Generated", IsKey = false, IsRequired = true)]
+    public bool Generated
+    {
+        get { return bool.Parse(this["Generated"].ToString()); }
+    }
+
+}
+

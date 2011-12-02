@@ -68,7 +68,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
             QueryComplete query = Query.And(queryList.ToArray());
 
-            MongoCursor<T> result = Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
+            MongoCursor<T> result = Helper.GetCollection(typeof (T).Name).FindAs<T>(query);            
             if (result.Count() == 0)
                 throw new FindByKeyNotFoundException();
             return result.First();
