@@ -22,6 +22,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(config.Database.Password, "");
             Assert.AreEqual(config.Database.Name, "TestDotNET");
             Assert.AreEqual(config.Server.PoolSize, 5);
+            Assert.AreEqual(config.Context.Generated,true);
 
             
         }

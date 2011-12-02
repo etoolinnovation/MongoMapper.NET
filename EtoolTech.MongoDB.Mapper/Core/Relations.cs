@@ -20,61 +20,75 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public List<string> GetUpRelations(Type t)
         {
-            if (!BufferUpRelations.ContainsKey(t.Name))
+            lock (this)
             {
-                var upRelations = new List<string>();
-                List<PropertyInfo> publicFieldInfos = t.GetProperties().Where(c => c.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault() != null).ToList();
-                foreach (PropertyInfo fieldInfo in publicFieldInfos)
+                if (!BufferUpRelations.ContainsKey(t.Name))
                 {
-                    var upRelationAtt =
-                        (MongoUpRelation)
-                        fieldInfo.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault();
-
-                    if (upRelationAtt != null)
+                    var upRelations = new List<string>();
+                    List<PropertyInfo> publicFieldInfos =
+                        t.GetProperties().Where(
+                            c => c.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault() != null).ToList
+                            ();
+                    foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
-                        upRelations.Add(String.Format("{0}|{1}|{2}|{3}|{4}", 
-                                        fieldInfo.Name, upRelationAtt.ObjectName, upRelationAtt.FieldName, 
-                                        upRelationAtt.ParentFieldName, upRelationAtt.ParentPropertyName));
+                        var upRelationAtt =
+                            (MongoUpRelation)
+                            fieldInfo.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault();
 
-                        if (!Context.ContextGenerated)
-                            Helper.GetCollection(t.Name).EnsureIndex(fieldInfo.Name);
+                        if (upRelationAtt != null)
+                        {
+                            upRelations.Add(String.Format("{0}|{1}|{2}|{3}|{4}",
+                                                          fieldInfo.Name, upRelationAtt.ObjectName,
+                                                          upRelationAtt.FieldName,
+                                                          upRelationAtt.ParentFieldName,
+                                                          upRelationAtt.ParentPropertyName));
+
+                            if (!Helper.config.Context.Generated)
+                                Helper.GetCollection(t.Name).EnsureIndex(fieldInfo.Name);
+                        }
                     }
+                    BufferUpRelations.Add(t.Name, upRelations);
                 }
-                BufferUpRelations.Add(t.Name, upRelations);
-            }
 
-            return BufferUpRelations[t.Name];
+                return BufferUpRelations[t.Name];
+            }
         }
 
         public List<string> GetDownRelations(Type t)
         {
-            if (!BufferDownRelations.ContainsKey(t.Name))
+            lock (this)
             {
-                var downRelations = new List<string>();
-                List<PropertyInfo> publicFieldInfos = t.GetProperties().Where(c => c.GetCustomAttributes(typeof(MongoDownRelation), false).FirstOrDefault() != null).ToList();
-                foreach (PropertyInfo fieldInfo in publicFieldInfos)
+                if (!BufferDownRelations.ContainsKey(t.Name))
                 {
-                    object[] downRelationAtt =
-                        fieldInfo.GetCustomAttributes(typeof (MongoDownRelation), false);
-
-                    foreach (object downRelation in downRelationAtt)
+                    var downRelations = new List<string>();
+                    List<PropertyInfo> publicFieldInfos =
+                        t.GetProperties().Where(
+                            c => c.GetCustomAttributes(typeof (MongoDownRelation), false).FirstOrDefault() != null).
+                            ToList();
+                    foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
-                        if (downRelation != null)
+                        object[] downRelationAtt =
+                            fieldInfo.GetCustomAttributes(typeof (MongoDownRelation), false);
+
+                        foreach (object downRelation in downRelationAtt)
                         {
-                            var relation = (MongoDownRelation) downRelation;
-                            downRelations.Add(String.Format("{0}|{1}|{2}", 
-                                              fieldInfo.Name, relation.ObjectName, relation.FieldName));
-                            if (!Context.ContextGenerated)
-                                Helper.GetCollection(relation.ObjectName).EnsureIndex(relation.FieldName);
+                            if (downRelation != null)
+                            {
+                                var relation = (MongoDownRelation) downRelation;
+                                downRelations.Add(String.Format("{0}|{1}|{2}",
+                                                                fieldInfo.Name, relation.ObjectName, relation.FieldName));
+                                if (!Helper.config.Context.Generated)
+                                    Helper.GetCollection(relation.ObjectName).EnsureIndex(relation.FieldName);
+                            }
                         }
                     }
+
+                    BufferDownRelations.Add(t.Name, downRelations);
                 }
 
-                BufferDownRelations.Add(t.Name, downRelations);
+
+                return BufferDownRelations[t.Name];
             }
-
-
-            return BufferDownRelations[t.Name];
         }
 
         public List<T> GetRelation<T>(object sender, string Relation, Type ClassType, IFinder IFinder)

@@ -24,16 +24,17 @@ namespace EtoolTech.MongoDB.Mapper.Core
                                                                     };
 
 
-        private static readonly Dictionary<string, MongoCollection> Collections = new Dictionary<string, MongoCollection>();
+        private static readonly Dictionary<string, MongoCollection> Collections =
+            new Dictionary<string, MongoCollection>();
 
-        private static readonly Dictionary<string, List<string>> BufferPrimaryKey = new Dictionary<string, List<string>>();
+        private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
+            new Dictionary<string, List<string>>();
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
-        
-        private static MongoServer _server;
+
         private static MongoDatabase _dataBase;
 
-        private static readonly MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
+        internal static readonly MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
 
         private static readonly string DataBaseName = config.Database.Name;
         private static readonly string Host = config.Server.Host;
@@ -47,26 +48,23 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             get
             {
+                MongoServerSettings ServerSettings = new MongoServerSettings();
+                string userName = Context.Config == null ? UserName : Context.Config.UserName;
 
-                if (_server == null)
-                {
-                    MongoServerSettings ServerSettings = new MongoServerSettings();
-                    string userName = Context.Config == null ? UserName : Context.Config.UserName;
+                if (!String.IsNullOrEmpty(userName))
+                    ServerSettings.DefaultCredentials = new MongoCredentials(userName,
+                                                                             Context.Config == null
+                                                                                 ? PassWord
+                                                                                 : Context.Config.PassWord);
 
-                    if (!String.IsNullOrEmpty(userName))
-                        ServerSettings.DefaultCredentials = new MongoCredentials(userName, Context.Config == null ? PassWord : Context.Config.PassWord);
+                ServerSettings.Server = new MongoServerAddress(Context.Config == null ? Host : Context.Config.Host,
+                                                               Context.Config == null ? Port : Context.Config.Port);
+                ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
 
-                    ServerSettings.Server = new MongoServerAddress(Context.Config == null ? Host : Context.Config.Host, Context.Config == null ? Port : Context.Config.Port);
-                    ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
-
-                    _server = MongoServer.Create(ServerSettings);
-                }
-
-                if (_server.State != MongoServerState.Connected && _server.State != MongoServerState.Connecting)
-                    _server.Connect();
+                MongoServer server = MongoServer.Create(ServerSettings);
 
                 return _dataBase ??
-                       (_dataBase = _server.GetDatabase(Context.Config == null ? DataBaseName : Context.Config.Database));
+                       (_dataBase = server.GetDatabase(Context.Config == null ? DataBaseName : Context.Config.Database));
             }
         }
 
@@ -74,12 +72,15 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             name = GetCollectioName(name);
 
-            if (Collections.ContainsKey(name))
-                return Collections[name];
+            lock (typeof (Helper))
+            {
+                if (Collections.ContainsKey(name))
+                    return Collections[name];
 
-            MongoCollection collection = Db.GetCollection(name);
-            Collections.Add(name, collection);
-            return collection;
+                MongoCollection collection = Db.GetCollection(name);
+                Collections.Add(name, collection);
+                return collection;
+            }
         }
 
         //TODO: Pendiente de refactor, meter en un buffer o usarlo siempre tipado.
@@ -106,17 +107,20 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public static IEnumerable<string> GetPrimaryKey(Type t)
         {
-            if (!BufferPrimaryKey.ContainsKey(t.Name))
+            lock (typeof (Helper))
             {
-                var keyAtt = (MongoKey) t.GetCustomAttributes(typeof (MongoKey), false).FirstOrDefault();
-                if (keyAtt != null)
+                if (!BufferPrimaryKey.ContainsKey(t.Name))
                 {
-                    if (String.IsNullOrEmpty(keyAtt.KeyFields)) keyAtt.KeyFields = "MongoMapper_Id";
-                    BufferPrimaryKey.Add(t.Name, keyAtt.KeyFields.Split(',').ToList());
-                }
-                else
-                {
-                    BufferPrimaryKey.Add(t.Name, new List<string>() {"MongoMapper_Id"});
+                    var keyAtt = (MongoKey) t.GetCustomAttributes(typeof (MongoKey), false).FirstOrDefault();
+                    if (keyAtt != null)
+                    {
+                        if (String.IsNullOrEmpty(keyAtt.KeyFields)) keyAtt.KeyFields = "MongoMapper_Id";
+                        BufferPrimaryKey.Add(t.Name, keyAtt.KeyFields.Split(',').ToList());
+                    }
+                    else
+                    {
+                        BufferPrimaryKey.Add(t.Name, new List<string>() {"MongoMapper_Id"});
+                    }
                 }
             }
 
@@ -125,53 +129,56 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         private static IEnumerable<string> GetIndexes(Type t)
         {
-            
-             if (!BufferIndexes.ContainsKey(t.Name))
-             {
-                 BufferIndexes.Add(t.Name,new List<string>());
-                 var indexAtt = t.GetCustomAttributes(typeof (MongoIndex), false);
-               
-                foreach (var index in indexAtt)
+            lock (typeof (Helper))
+            {
+                if (!BufferIndexes.ContainsKey(t.Name))
                 {
-                    if (index != null)
-                        BufferIndexes[t.Name].Add( ((MongoIndex) index).IndexFields);
-                }
-                 
-             }
+                    BufferIndexes.Add(t.Name, new List<string>());
+                    var indexAtt = t.GetCustomAttributes(typeof (MongoIndex), false);
 
-            return BufferIndexes[t.Name];
+                    foreach (var index in indexAtt)
+                    {
+                        if (index != null)
+                            BufferIndexes[t.Name].Add(((MongoIndex) index).IndexFields);
+                    }
+                }
+
+                return BufferIndexes[t.Name];
+            }
         }
 
         internal static void RebuildClass(Type classType, bool repairCollection)
         {
-            if (repairCollection && !Db.CollectionExists(GetCollectioName(classType.Name)) && !Context.ContextGenerated)
-                Db.CreateCollection(GetCollectioName(classType.Name),null);
+            if (repairCollection && !Helper.config.Context.Generated &&
+                !Db.CollectionExists(GetCollectioName(classType.Name)))
+                Db.CreateCollection(GetCollectioName(classType.Name), null);
 
             RegisterCustomDiscriminatorTypes(classType);
 
-            if (!Context.ContextGenerated || repairCollection)
+            if (!Helper.config.Context.Generated || repairCollection)
             {
                 foreach (string index in GetIndexes(classType))
                 {
                     GetCollection(GetCollectioName(classType.Name)).EnsureIndex(index.Split(','));
                 }
-                GetCollection(GetCollectioName(classType.Name)).EnsureIndex(IndexKeys.Ascending(GetPrimaryKey(classType).ToArray()));
+                GetCollection(GetCollectioName(classType.Name)).EnsureIndex(
+                    IndexKeys.Ascending(GetPrimaryKey(classType).ToArray()));
             }
         }
 
         private static void RegisterCustomDiscriminatorTypes(Type classType)
         {
-            var RegTypes = classType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType),false);
+            var RegTypes = classType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType), false);
 
             foreach (var RegType in RegTypes)
             {
                 if (RegType != null)
                 {
                     MongoCustomDiscriminatorType MongoCustomDiscriminatorType = (MongoCustomDiscriminatorType) RegType;
-                    BsonDefaultSerializer.RegisterDiscriminator(MongoCustomDiscriminatorType.Type, MongoCustomDiscriminatorType.Type.Name);
+                    BsonDefaultSerializer.RegisterDiscriminator(MongoCustomDiscriminatorType.Type,
+                                                                MongoCustomDiscriminatorType.Type.Name);
                 }
             }
         }
-
     }
 }

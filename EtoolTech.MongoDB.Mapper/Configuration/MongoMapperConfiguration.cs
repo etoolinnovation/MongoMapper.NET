@@ -23,6 +23,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         {
             get { return (Database)this["Database"] ?? new Database(); }
         }
+
+        [ConfigurationProperty("Context")]
+        public Context Context
+        {
+            get { return (Context)this["Context"] ?? new Context(); }
+        }
     }
 }
 
@@ -70,3 +76,15 @@ public class Database : ConfigurationElement
     }
 
 }
+
+public class Context : ConfigurationElement
+{
+
+    [ConfigurationProperty("Generated", IsKey = false, IsRequired = true)]
+    public bool Generated
+    {
+        get { return bool.Parse(this["Generated"].ToString()); }
+    }
+
+}
+
