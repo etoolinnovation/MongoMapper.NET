@@ -177,7 +177,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoMapper_Id = id;
 
-            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(true));
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(Helper.SafeMode));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
         }
@@ -188,8 +188,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
-            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(true));
-
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(Helper.SafeMode));            
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
 
@@ -213,7 +212,7 @@ namespace EtoolTech.MongoDB.Mapper
                 MongoMapper_Id = Finder.FindGuidByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
-            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).FindAndRemove(query, null);
+            FindAndModifyResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).FindAndRemove(query, null);            
         }
 
         #endregion
