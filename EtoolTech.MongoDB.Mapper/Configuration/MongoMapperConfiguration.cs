@@ -92,5 +92,12 @@ public class Context : ConfigurationElement
         get { return bool.Parse(this["Generated"].ToString()); }
     }
 
+    [ConfigurationProperty("SafeMode", IsKey = false, IsRequired = true)]
+    public bool SafeMode
+    {
+        get { return bool.Parse(this["SafeMode"].ToString()); }
+    }
+
+
 }
 
