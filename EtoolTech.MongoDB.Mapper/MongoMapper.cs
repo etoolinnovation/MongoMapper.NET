@@ -8,6 +8,7 @@ using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using EtoolTech.MongoDB.Mapper.enums;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
@@ -17,7 +18,7 @@ using MongoDB.Driver.Linq;
 namespace EtoolTech.MongoDB.Mapper
 {
     [Serializable]
-    public abstract class MongoMapper
+    public abstract class MongoMapper: IBsonSerializable
     {
         #region Eventos
 
@@ -73,6 +74,7 @@ namespace EtoolTech.MongoDB.Mapper
         //public CommitOperation CommitOp;
         //public string TransactionID;
 
+      
         protected MongoMapper()
         {
             _classType = GetType();
@@ -260,6 +262,32 @@ namespace EtoolTech.MongoDB.Mapper
 
         #endregion
 
-    
+
+
+        #region IBsonSerializable Members
+
+        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
+        {
+            object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
+            //TODO: this._originalObject = ;
+            return o;
+        }
+
+        public bool GetDocumentId(out object id, out Type idNominalType, out IIdGenerator idGenerator)
+        {
+            return BsonClassMapSerializer.Instance.GetDocumentId(this, out id, out idNominalType, out idGenerator);
+        }
+
+        public void Serialize(BsonWriter bsonWriter, Type nominalType, IBsonSerializationOptions options)
+        {
+            BsonClassMapSerializer.Instance.Serialize(bsonWriter, nominalType, this, options);
+        }
+
+        public void SetDocumentId(object id)
+        {
+            BsonClassMapSerializer.Instance.SetDocumentId(this, id);
+        }
+
+        #endregion
     }
 }

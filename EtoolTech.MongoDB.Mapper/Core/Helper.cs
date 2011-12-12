@@ -67,6 +67,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
                         Context.Config == null ? Host : Context.Config.Host,
                         Context.Config == null ? Port : Context.Config.Port);
                     ServerSettings.MaxConnectionPoolSize = Context.Config == null ? PoolSize : Context.Config.PoolSize;
+                    //TODO: Connection Mode a la config
                     ServerSettings.ConnectionMode = ConnectionMode.Direct;
                     ServerSettings.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout);
 

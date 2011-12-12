@@ -91,6 +91,13 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Countries = Country.FindAsList<Country>("Code", "US");
             Assert.AreEqual(Countries.Count, 1);
 
+            Countries = Country.AllAsList<Country>();
+
+            foreach (Country c2 in Countries)
+            {
+                Country c3 = c2.GetOriginalObject<Country>();
+            }
+
 
             //Insert de personas
             Person p = new Person
