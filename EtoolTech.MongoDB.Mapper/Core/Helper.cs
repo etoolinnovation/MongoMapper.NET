@@ -48,6 +48,10 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         internal static readonly bool SafeMode = Config.Context.SafeMode;
 
+        internal static readonly bool ExceptionOnDuplicateKey = Config.Context.ExceptionOnDuplicateKey;
+
+        internal static readonly bool EnableOriginalObject = Config.Context.EnableOriginalObject;
+
         public static MongoDatabase Db
         {
             get

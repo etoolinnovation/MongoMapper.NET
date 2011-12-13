@@ -98,6 +98,17 @@ public class Context : ConfigurationElement
         get { return bool.Parse(this["SafeMode"].ToString()); }
     }
 
+    [ConfigurationProperty("ExceptionOnDuplicateKey", IsKey = false, IsRequired = true)]
+    public bool ExceptionOnDuplicateKey
+    {
+        get { return bool.Parse(this["ExceptionOnDuplicateKey"].ToString()); }
+    }
+
+    [ConfigurationProperty("EnableOriginalObject", IsKey = false, IsRequired = true)]
+    public bool EnableOriginalObject
+    {
+        get { return bool.Parse(this["EnableOriginalObject"].ToString()); }
+    }
 
 }
 

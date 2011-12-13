@@ -64,14 +64,16 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestInsert()
         {
             Helper.Db.Drop();
+
             //Insert de Paises
             Country c = new Country {Code = "es", Name = "España"};
             try
             {
                 c.Save<Country>();
             }
-            catch (ValidatePropertyException ex)
+            catch (Exception ex)
             {
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException)); 
                 Assert.AreEqual(ex.Message, "Error Validating Property Code: es must be ES");
                 c.Code = "ES";
                 c.Save<Country>();
@@ -79,6 +81,19 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             c = new Country {Code = "UK", Name = "Reino Unido"};
             c.Save<Country>();
+
+            c = new Country { Code = "UK", Name = "Reino Unido" };
+            try
+            {
+                c.Save<Country>();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.GetBaseException().GetType(),typeof(DuplicateKeyException));                
+            }
+            
+
+
             c = new Country {Code = "US", Name = "Estados Unidos"};
             c.Save<Country>();
 
@@ -92,13 +107,8 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(Countries.Count, 1);
 
             Countries = Country.AllAsList<Country>();
-
-            //foreach (Country c2 in Countries)
-            //{
-            //    Country c3 = c2.GetOriginalObject<Country>();
-            //}
-
-
+            Assert.AreEqual(Countries.Count, 3);
+        
             //Insert de personas
             Person p = new Person
             {

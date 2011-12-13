@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Core;
+using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using EtoolTech.MongoDB.Mapper.enums;
 using MongoDB.Bson;
@@ -123,12 +124,16 @@ namespace EtoolTech.MongoDB.Mapper
 
         public object GetOriginalValue<T>(string fieldName)
         {
+            if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+
             if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(_jsonOriginalObject)) return null;
             return (this.GetOriginalDocument()[fieldName]);            
         }
 
         public T GetOriginalObject<T>()
         {
+            if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+
             if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(_jsonOriginalObject)) return default(T);          
             return BsonSerializer.Deserialize<T>(GetOriginalDocument());                        
         }
@@ -163,6 +168,9 @@ namespace EtoolTech.MongoDB.Mapper
                 }
                 else
                 {
+                    //Si llega aqui ya existe un registro con esa key y no es el que tenemos cargado
+                    if (Helper.ExceptionOnDuplicateKey) throw new DuplicateKeyException();
+
                     UpdateDocument(id);
                 }
 
@@ -196,6 +204,7 @@ namespace EtoolTech.MongoDB.Mapper
             EnsureUpRelations();
 
             SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(Helper.SafeMode));            
+
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
 
@@ -281,7 +290,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
             //Guardamos el obj original en json para romper la referencia
-            ((MongoMapper)o)._jsonOriginalObject = o.ToJson();            
+            if (Helper.EnableOriginalObject) ((MongoMapper)o)._jsonOriginalObject = o.ToJson();            
             return o;
         }
 

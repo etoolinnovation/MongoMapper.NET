@@ -70,6 +70,7 @@
     <Compile Include="Configuration\MongoMapperConfiguration.cs" />
     <Compile Include="Core\PropertyValidator.cs" />
     <Compile Include="enums\CommitOperation.cs" />
+    <Compile Include="Exceptions\DuplicateKeyException.cs" />
     <Compile Include="Exceptions\ValidatePropertyException.cs" />
     <Compile Include="Interfaces\ICalcField.cs" />
     <Compile Include="Exceptions\ValidateDownRelationException.cs" />
