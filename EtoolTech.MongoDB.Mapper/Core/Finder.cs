@@ -76,6 +76,10 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public Guid FindGuidByKey<T>(Dictionary<string, object> keyValues)
         {
+            //Si la key es la interna y vieb
+            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is Guid && (Guid)keyValues.First().Value == Guid.Empty)
+                return Guid.Empty;
+
             var queryList = new List<QueryComplete>();
             foreach (var keyValue in keyValues)
             {

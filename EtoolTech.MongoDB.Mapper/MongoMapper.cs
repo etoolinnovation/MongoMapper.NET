@@ -5,9 +5,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Core;
+using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using EtoolTech.MongoDB.Mapper.enums;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
@@ -17,7 +19,7 @@ using MongoDB.Driver.Linq;
 namespace EtoolTech.MongoDB.Mapper
 {
     [Serializable]
-    public abstract class MongoMapper
+    public abstract class MongoMapper: IBsonSerializable
     {
         #region Eventos
 
@@ -58,10 +60,12 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly IFinder Finder = new Finder();
         private static readonly IRelations Relations = new Relations();
         private static readonly IEvents Events = new Events();
-        private readonly Dictionary<string,object> RelationBuffer = new Dictionary<string, object>();
+        private readonly Dictionary<string,object> _relationBuffer = new Dictionary<string, object>();
 
         private readonly Type _classType;        
-        private BsonDocument _originalObject;
+        private string _jsonOriginalObject;
+        private BsonDocument _bsonOriginalObject;
+
         [BsonIgnore] internal bool RepairCollection;
 
         [BsonId]
@@ -73,6 +77,7 @@ namespace EtoolTech.MongoDB.Mapper
         //public CommitOperation CommitOp;
         //public string TransactionID;
 
+      
         protected MongoMapper()
         {
             _classType = GetType();
@@ -86,11 +91,11 @@ namespace EtoolTech.MongoDB.Mapper
       
         public List<T> GetRelation<T>(string relation)
         {
-            if (!RelationBuffer.ContainsKey(relation))
+            if (!this._relationBuffer.ContainsKey(relation))
             {
-                RelationBuffer.Add(relation,Relations.GetRelation<T>(this, relation, _classType, Finder));
+                this._relationBuffer.Add(relation,Relations.GetRelation<T>(this, relation, _classType, Finder));
             }
-            return (List<T>)RelationBuffer[relation];
+            return (List<T>)this._relationBuffer[relation];
         }
 
 
@@ -115,36 +120,39 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
+        #region Objeto Original para comprobar cambios
+
         public object GetOriginalValue<T>(string fieldName)
         {
-            if (MongoMapper_Id == Guid.Empty) return null;
+            if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
 
-            if (_originalObject == null)
-                _originalObject = Finder.FindBsonDocumentById<T>(MongoMapper_Id);
-            return _originalObject[fieldName];
+            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(_jsonOriginalObject)) return null;
+            return (this.GetOriginalDocument()[fieldName]);            
         }
 
         public T GetOriginalObject<T>()
         {
-            if (MongoMapper_Id == Guid.Empty) return default(T);
+            if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+
+            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(_jsonOriginalObject)) return default(T);          
+            return BsonSerializer.Deserialize<T>(GetOriginalDocument());                        
+        }
+
+        private BsonDocument GetOriginalDocument()
+        {
+            if (_bsonOriginalObject != null) return _bsonOriginalObject;
             
-            if (_originalObject == null)
-                _originalObject = Finder.FindBsonDocumentById<T>(MongoMapper_Id);
-
-            return BsonSerializer.Deserialize<T>(_originalObject);
+            var buffer = new JsonBuffer(_jsonOriginalObject);
+            var settings = new JsonReaderSettings();            
+            using (BsonReader reader = new JsonReader(buffer, settings))
+            {
+                _bsonOriginalObject = BsonDocument.ReadFrom(reader);
+                return _bsonOriginalObject;
+            }
         }
 
-        public static List<T> AllAsList<T>()
-        {
-            return Finder.AllAsList<T>();
-        }
-
-        public static MongoCursor<T> AllAsCursor<T>()
-        {
-            return Finder.AllAsCursor<T>();
-        }
-
-
+        #endregion
+     
         #region Write Methods
 
         public void Save<T>()
@@ -160,8 +168,15 @@ namespace EtoolTech.MongoDB.Mapper
                 }
                 else
                 {
+                    //Si llega aqui ya existe un registro con esa key y no es el que tenemos cargado
+                    if (Helper.ExceptionOnDuplicateKey) throw new DuplicateKeyException();
+
                     UpdateDocument(id);
                 }
+
+                //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
+                //TODO: No estoy muy convencido de esto revisar ...                
+                if (String.IsNullOrEmpty(_jsonOriginalObject)) _jsonOriginalObject = this.ToJson();
             }
             else
             {
@@ -177,7 +192,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoMapper_Id = id;
 
-            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(true));
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(Helper.SafeMode));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
         }
@@ -188,7 +203,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
-            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(true));
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(Helper.SafeMode));            
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
@@ -213,12 +228,12 @@ namespace EtoolTech.MongoDB.Mapper
                 MongoMapper_Id = Finder.FindGuidByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
-            Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).FindAndRemove(query, null);
+            FindAndModifyResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).FindAndRemove(query, null);            
         }
 
         #endregion
 
-        #region FindAsList Methods
+        #region FindAsList/Cursor Methods
 
         public static T FindByKey<T>(params object[] values)
         {
@@ -246,8 +261,6 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.FindAsCursor<T>(Finder.GetEqQuery(value.GetType(), fieldName, value));
         }
 
-
-
         public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {            
             return Finder.FindAsList<T>(exp);
@@ -258,9 +271,44 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.FindAsCursor<T>(exp);
         }
 
+        public static List<T> AllAsList<T>()
+        {
+            return Finder.AllAsList<T>();
+        }
+
+        public static MongoCursor<T> AllAsCursor<T>()
+        {
+            return Finder.AllAsCursor<T>();
+        }
+
 
         #endregion
 
-    
+        #region IBsonSerializable Members
+
+        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
+        {
+            object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
+            //Guardamos el obj original en json para romper la referencia
+            if (Helper.EnableOriginalObject) ((MongoMapper)o)._jsonOriginalObject = o.ToJson();            
+            return o;
+        }
+
+        public bool GetDocumentId(out object id, out Type idNominalType, out IIdGenerator idGenerator)
+        {
+            return BsonClassMapSerializer.Instance.GetDocumentId(this, out id, out idNominalType, out idGenerator);
+        }
+
+        public void Serialize(BsonWriter bsonWriter, Type nominalType, IBsonSerializationOptions options)
+        {
+            BsonClassMapSerializer.Instance.Serialize(bsonWriter, nominalType, this, options);
+        }
+
+        public void SetDocumentId(object id)
+        {
+            BsonClassMapSerializer.Instance.SetDocumentId(this, id);
+        }
+
+        #endregion
     }
 }

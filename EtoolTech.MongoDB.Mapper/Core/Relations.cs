@@ -20,6 +20,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public List<string> GetUpRelations(Type t)
         {
+            if (BufferUpRelations.ContainsKey(t.Name)) return BufferUpRelations[t.Name];
+            
             lock (this)
             {
                 if (!BufferUpRelations.ContainsKey(t.Name))
@@ -43,7 +45,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
                                                           upRelationAtt.ParentFieldName,
                                                           upRelationAtt.ParentPropertyName));
 
-                            if (!Helper.config.Context.Generated)
+                            if (!Helper.Config.Context.Generated)
                                 Helper.GetCollection(t.Name).EnsureIndex(fieldInfo.Name);
                         }
                     }
@@ -56,6 +58,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public List<string> GetDownRelations(Type t)
         {
+            if (BufferDownRelations.ContainsKey(t.Name)) return BufferDownRelations[t.Name];
+            
             lock (this)
             {
                 if (!BufferDownRelations.ContainsKey(t.Name))
@@ -77,7 +81,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
                                 var relation = (MongoDownRelation) downRelation;
                                 downRelations.Add(String.Format("{0}|{1}|{2}",
                                                                 fieldInfo.Name, relation.ObjectName, relation.FieldName));
-                                if (!Helper.config.Context.Generated)
+                                if (!Helper.Config.Context.Generated)
                                     Helper.GetCollection(relation.ObjectName).EnsureIndex(relation.FieldName);
                             }
                         }

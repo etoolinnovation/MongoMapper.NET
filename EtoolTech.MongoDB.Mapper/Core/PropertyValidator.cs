@@ -17,19 +17,31 @@ namespace EtoolTech.MongoDB.Mapper.Core
             if (ProcessedTypes.Contains(t.Name))
                 return;
 
-            ProcessedTypes.Add(t.Name);
-
-            List<MethodInfo> publicMethodInfos = t.GetMethods().Where(c => c.GetCustomAttributes(typeof(MongoPropertyValidator), false).FirstOrDefault() != null).ToList();
-            foreach (MethodInfo methodInfo in publicMethodInfos)
+            lock (typeof(PropertyValidator))
             {
-                var propValidatorAtt = (MongoPropertyValidator)methodInfo.GetCustomAttributes(typeof(MongoPropertyValidator), false).FirstOrDefault();
-                if (propValidatorAtt != null)
+                if (!ProcessedTypes.Contains(t.Name))
                 {
-                    string ClassName = t.Name;
-                    string FieldName = propValidatorAtt.PropertyName;
-                    string key = String.Format("{0}|{1}", ClassName, FieldName);
-                    if (!BufferPropertyValidatorMethods.ContainsKey(key))
-                        BufferPropertyValidatorMethods.Add(key, methodInfo);
+                    ProcessedTypes.Add(t.Name);
+
+                    List<MethodInfo> publicMethodInfos =
+                        t.GetMethods().Where(
+                            c => c.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault() != null)
+                            .
+                            ToList();
+                    foreach (MethodInfo methodInfo in publicMethodInfos)
+                    {
+                        var propValidatorAtt =
+                            (MongoPropertyValidator)
+                            methodInfo.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault();
+                        if (propValidatorAtt != null)
+                        {
+                            string ClassName = t.Name;
+                            string FieldName = propValidatorAtt.PropertyName;
+                            string key = String.Format("{0}|{1}", ClassName, FieldName);
+                            if (!BufferPropertyValidatorMethods.ContainsKey(key))
+                                BufferPropertyValidatorMethods.Add(key, methodInfo);
+                        }
+                    }
                 }
             }
         }

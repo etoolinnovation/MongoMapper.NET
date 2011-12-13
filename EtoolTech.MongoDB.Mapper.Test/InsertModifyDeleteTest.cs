@@ -64,14 +64,16 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestInsert()
         {
             Helper.Db.Drop();
+
             //Insert de Paises
             Country c = new Country {Code = "es", Name = "España"};
             try
             {
                 c.Save<Country>();
             }
-            catch (ValidatePropertyException ex)
+            catch (Exception ex)
             {
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException)); 
                 Assert.AreEqual(ex.Message, "Error Validating Property Code: es must be ES");
                 c.Code = "ES";
                 c.Save<Country>();
@@ -79,6 +81,19 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             c = new Country {Code = "UK", Name = "Reino Unido"};
             c.Save<Country>();
+
+            c = new Country { Code = "UK", Name = "Reino Unido" };
+            try
+            {
+                c.Save<Country>();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.GetBaseException().GetType(),typeof(DuplicateKeyException));                
+            }
+            
+
+
             c = new Country {Code = "US", Name = "Estados Unidos"};
             c.Save<Country>();
 
@@ -91,7 +106,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Countries = Country.FindAsList<Country>("Code", "US");
             Assert.AreEqual(Countries.Count, 1);
 
-
+            Countries = Country.AllAsList<Country>();
+            Assert.AreEqual(Countries.Count, 3);
+        
             //Insert de personas
             Person p = new Person
             {
@@ -212,42 +229,6 @@ namespace EtoolTech.MongoDB.Mapper.Test
             //Countries = Country.FindAsList<Country>(x => x.Code == "NL");
             //Assert.AreEqual(Countries.Count, 0);
         }
-
-     
-        [TestMethod]
-        public void TestOriginalValue()
-        {
-
-            Country c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
-
-            Person p = new Person
-            {
-                Id = 1,
-                Name = "Pepito Perez",
-                Age = 35,
-                BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
-                Married = true,
-                Country = "ES",
-                BankBalance = decimal.Parse("3500,00")
-            };
-
-            p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
-            p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
-            p.Save<Person>();
-            
-            p.Name = "Juan Sin Miedo";
-
-            object OriginalName = p.GetOriginalValue<Person>("Name");
-
-            Assert.AreEqual(OriginalName.ToString(), "Pepito Perez");
        
-
-        }
-
-      
-
-
-  
     }
 }
