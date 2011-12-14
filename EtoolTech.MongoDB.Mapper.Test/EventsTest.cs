@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Test.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,6 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestEvents()
         {
+            Helper.Db.Drop();
             
             Country c = new Country { Code = "FR", Name = "España" };
             c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };

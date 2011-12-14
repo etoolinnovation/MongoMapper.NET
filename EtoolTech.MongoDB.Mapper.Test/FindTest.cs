@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Test.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver.Builders;
@@ -16,6 +17,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestFindByPk()
         {
             //Llenamos datos
+            Helper.Db.Drop();
 
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();

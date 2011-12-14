@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Test.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,6 +15,8 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestRelations()
         {
+            Helper.Db.Drop();
+
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
             c = new Country { Code = "UK", Name = "Reino Unido" };

@@ -62,15 +62,28 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly IEvents Events = new Events();
         private readonly Dictionary<string,object> _relationBuffer = new Dictionary<string, object>();
 
-        private readonly Type _classType;        
+        private readonly Type _classType; 
+       
         private string _jsonOriginalObject;
         private BsonDocument _bsonOriginalObject;
+        private object _tOriginalObjet;
 
         [BsonIgnore] internal bool RepairCollection;
 
         [BsonId]
         [XmlIgnore]
         public Guid MongoMapper_Id { get; set; }
+
+        private string JsonOriginalObject
+        {
+            get { return _jsonOriginalObject; }
+            set
+            {
+                _jsonOriginalObject = value;
+                _bsonOriginalObject = null;
+                _tOriginalObjet = null;
+            }
+        }
 
         //TODO: Pendiente temas de transacciones
         //public bool Commited;
@@ -126,7 +139,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
 
-            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(_jsonOriginalObject)) return null;
+            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(JsonOriginalObject)) return null;
             return (this.GetOriginalDocument()[fieldName]);            
         }
 
@@ -134,15 +147,23 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
 
-            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(_jsonOriginalObject)) return default(T);          
-            return BsonSerializer.Deserialize<T>(GetOriginalDocument());                        
+            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(JsonOriginalObject)) return default(T);
+            return GetOriginalT<T>();
+        }
+
+        private T GetOriginalT<T>()
+        {
+            if (_tOriginalObjet != null) return (T) _tOriginalObjet;
+
+            _tOriginalObjet = BsonSerializer.Deserialize<T>(GetOriginalDocument());
+            return (T) _tOriginalObjet;
         }
 
         private BsonDocument GetOriginalDocument()
         {
             if (_bsonOriginalObject != null) return _bsonOriginalObject;
             
-            var buffer = new JsonBuffer(_jsonOriginalObject);
+            var buffer = new JsonBuffer(JsonOriginalObject);
             var settings = new JsonReaderSettings();            
             using (BsonReader reader = new JsonReader(buffer, settings))
             {
@@ -176,7 +197,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
                 //TODO: No estoy muy convencido de esto revisar ...                
-                if (String.IsNullOrEmpty(_jsonOriginalObject)) _jsonOriginalObject = this.ToJson();
+                if (String.IsNullOrEmpty(JsonOriginalObject)) JsonOriginalObject = this.ToJson();
             }
             else
             {
@@ -290,7 +311,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
             //Guardamos el obj original en json para romper la referencia
-            if (Helper.EnableOriginalObject) ((MongoMapper)o)._jsonOriginalObject = o.ToJson();            
+            if (Helper.EnableOriginalObject) ((MongoMapper)o).JsonOriginalObject = o.ToJson();            
             return o;
         }
 

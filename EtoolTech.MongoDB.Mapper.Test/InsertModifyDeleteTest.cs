@@ -196,7 +196,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
         
         [TestMethod]
         public void TestUdpate()
-        {            
+        {
+            Helper.Db.Drop();
+            
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
 
