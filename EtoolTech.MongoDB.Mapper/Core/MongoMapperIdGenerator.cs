@@ -17,22 +17,20 @@ namespace EtoolTech.MongoDB.Mapper.Core
             }
             else
             {
-                var result = FindAndModifyResult(document);
+                string documentName = document.GetType().Name;
+                MongoCollection colection = Helper.Db.GetCollection("Counters");
+
+                var result = FindAndModifyResult(colection, documentName);
 
                 if (result.ModifiedDocument == null)
                 {
                     lock (this)
                     {
-                        result = FindAndModifyResult(document);
+                        result = FindAndModifyResult(colection, documentName);
 
                         if (result.ModifiedDocument == null)
                         {
-                            BsonDocument counter = new BsonDocument
-                                                       {
-                                                           {"document", document.GetType().Name},
-                                                           {"last", (long) 1}
-                                                       };
-                            Helper.Db.GetCollection("Counters").Insert(counter);
+                            InsertCounter(colection, documentName);
                             return (long) 1;
                         }
                     }
@@ -42,12 +40,15 @@ namespace EtoolTech.MongoDB.Mapper.Core
             }
         }
 
-        private static FindAndModifyResult FindAndModifyResult(object document)
+        private static void InsertCounter(MongoCollection colection, string documentName)
         {
-            var result =
-                Helper.Db.GetCollection("Counters").FindAndModify(Query.EQ("document", document.GetType().Name),
-                                                                  null,
-                                                                  Update.Inc("last", 1), true);
+            BsonDocument counter = new BsonDocument { { "document", documentName }, { "last", (long) 1 } };
+            colection.Insert(counter);
+        }
+
+        private static FindAndModifyResult FindAndModifyResult(MongoCollection colection, string documentName)
+        {
+            var result = colection.FindAndModify(Query.EQ("document", documentName), null, Update.Inc("last", 1), true);
             return result;
         }
       
