@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EtoolTech.MongoDB.Mapper.Test
 {
+    using EtoolTech.MongoDB.Mapper.Core;
     using EtoolTech.MongoDB.Mapper.Test.Classes;
 
     [TestClass]
@@ -30,6 +31,8 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestOriginalValue()
         {
 
+            Helper.Db.Drop();
+            
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
 
