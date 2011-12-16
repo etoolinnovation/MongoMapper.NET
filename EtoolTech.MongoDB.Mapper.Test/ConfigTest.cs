@@ -22,6 +22,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(config.Context.ExceptionOnDuplicateKey,true);
             Assert.AreEqual(config.Context.SafeMode, true);
             Assert.AreEqual(config.Context.EnableOriginalObject, true);
+            Assert.AreEqual(config.Context.UserIncrementalId, true);
 
 
             

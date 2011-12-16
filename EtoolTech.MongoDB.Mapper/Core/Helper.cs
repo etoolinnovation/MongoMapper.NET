@@ -52,6 +52,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         internal static readonly bool EnableOriginalObject = Config.Context.EnableOriginalObject;
 
+        internal static readonly bool UserIncrementalId = Config.Context.UserIncrementalId;
+
         public static MongoDatabase Db
         {
             get

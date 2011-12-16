@@ -16,13 +16,13 @@ namespace EtoolTech.MongoDB.Mapper.Core
     {
         #region FindAsList Methods
 
-        public T FindById<T>(int id)
+        public T FindById<T>(long id)
         {
             QueryComplete query = Query.EQ("_id", id);
             return Helper.GetCollection(typeof (T).Name).FindOneAs<T>(query);
         }
 
-        public BsonDocument FindBsonDocumentById<T>(int id)
+        public BsonDocument FindBsonDocumentById<T>(long id)
         {
             QueryComplete query = Query.EQ("_id", id);
             return Helper.GetCollection(typeof (T).Name).FindOneAs<T>(query).ToBsonDocument();
@@ -74,11 +74,11 @@ namespace EtoolTech.MongoDB.Mapper.Core
             return result.First();
         }
 
-        public int FindIdByKey<T>(Dictionary<string, object> keyValues)
+        public long FindIdByKey<T>(Dictionary<string, object> keyValues)
         {
             //Si la key es la interna y vieb
-            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is int && (int)keyValues.First().Value == default(int))
-                return default(int);
+            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is long && (long)keyValues.First().Value == default(long))
+                return default(long);
 
             var queryList = new List<QueryComplete>();
             foreach (var keyValue in keyValues)
@@ -114,13 +114,13 @@ namespace EtoolTech.MongoDB.Mapper.Core
             MongoCursor<T> result =
                 Helper.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
             if (result.Count() == 0)
-                return default(int);
+                return default(long);
 
             object oId;
             Type oType;
             IIdGenerator iGen;
             result.First().ToBsonDocument().GetDocumentId(out oId, out oType, out iGen);
-            return (int) oId;
+            return (long) oId;
         }
 
 

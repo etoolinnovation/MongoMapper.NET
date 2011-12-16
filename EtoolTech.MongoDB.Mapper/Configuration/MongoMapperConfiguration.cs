@@ -110,5 +110,10 @@ public class Context : ConfigurationElement
         get { return bool.Parse(this["EnableOriginalObject"].ToString()); }
     }
 
+    [ConfigurationProperty("UserIncrementalId", IsKey = false, IsRequired = true)]
+    public bool UserIncrementalId
+    {
+        get { return bool.Parse(this["UserIncrementalId"].ToString()); }
+    }
 }
 
