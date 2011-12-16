@@ -70,9 +70,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         [BsonIgnore] internal bool RepairCollection;
 
-        [BsonId]
+        [BsonId(IdGenerator = typeof(IntIdGenerator))]
         [XmlIgnore]
-        public Guid MongoMapper_Id { get; set; }
+        public int MongoMapper_Id { get; set; }
 
         private string JsonOriginalObject
         {
@@ -139,7 +139,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
 
-            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(JsonOriginalObject)) return null;
+            if (MongoMapper_Id == default(int) || String.IsNullOrEmpty(JsonOriginalObject)) return null;
             return (this.GetOriginalDocument()[fieldName]);            
         }
 
@@ -147,7 +147,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
 
-            if (MongoMapper_Id == Guid.Empty || String.IsNullOrEmpty(JsonOriginalObject)) return default(T);
+            if (MongoMapper_Id == default(int) || String.IsNullOrEmpty(JsonOriginalObject)) return default(T);
             return GetOriginalT<T>();
         }
 
@@ -180,10 +180,10 @@ namespace EtoolTech.MongoDB.Mapper
         {
             PropertyValidator.Validate(this, _classType);
 
-            if (MongoMapper_Id == Guid.Empty)
+            if (MongoMapper_Id == default(int))
             {
-                Guid id = Finder.FindGuidByKey<T>(GetKeyValues());
-                if (id == Guid.Empty)
+                int id = Finder.FindIdByKey<T>(GetKeyValues());
+                if (id == default(int))
                 {
                     InsertDocument();
                 }
@@ -205,7 +205,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        private void UpdateDocument(Guid id)
+        private void UpdateDocument(int id)
         {
             Events.BeforeUpdateDocument(this, OnBeforeModify, _classType);
 
@@ -244,9 +244,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         private void DeleteDocument<T>()
         {
-            if (MongoMapper_Id == Guid.Empty)
+            if (MongoMapper_Id == default(int))
             {
-                MongoMapper_Id = Finder.FindGuidByKey<T>(GetKeyValues());
+                MongoMapper_Id = Finder.FindIdByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
             FindAndModifyResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).FindAndRemove(query, null);            

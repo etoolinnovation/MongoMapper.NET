@@ -1,9 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using EtoolTech.MongoDB.Mapper.Configuration;
-using EtoolTech.MongoDB.Mapper.Core;
+﻿using EtoolTech.MongoDB.Mapper.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EtoolTech.MongoDB.Mapper.Test
@@ -24,6 +19,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(config.Server.PoolSize, 5);
             Assert.AreEqual(config.Context.Generated,true);
             Assert.AreEqual(config.Server.WaitQueueTimeout, 1);
+            Assert.AreEqual(config.Context.ExceptionOnDuplicateKey,true);
+            Assert.AreEqual(config.Context.SafeMode, true);
+            Assert.AreEqual(config.Context.EnableOriginalObject, true);
 
 
             

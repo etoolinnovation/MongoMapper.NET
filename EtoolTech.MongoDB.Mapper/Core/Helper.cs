@@ -218,7 +218,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 {
                     MongoCustomDiscriminatorType MongoCustomDiscriminatorType = (MongoCustomDiscriminatorType)RegType;
                     BsonDefaultSerializer.RegisterDiscriminator(
-                        MongoCustomDiscriminatorType.Type, MongoCustomDiscriminatorType.Type.Name);
+                        MongoCustomDiscriminatorType.Type, MongoCustomDiscriminatorType.Type.Name);                    
                 }
             }
         }

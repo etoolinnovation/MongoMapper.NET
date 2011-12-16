@@ -10,11 +10,11 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
     public interface IFinder
     {
-        T FindById<T>(Guid id);
-        BsonDocument FindBsonDocumentById<T>(Guid id);
+        T FindById<T>(int id);
+        BsonDocument FindBsonDocumentById<T>(int id);
 
         T FindByKey<T>(params object[] values);
-        Guid FindGuidByKey<T>(Dictionary<string, object> keyValues);
+        int FindIdByKey<T>(Dictionary<string, object> keyValues);
         T FindObjectByKey<T>(Dictionary<string, object> keyValues);
              
         List<T> FindAsList<T>(QueryComplete query);      
