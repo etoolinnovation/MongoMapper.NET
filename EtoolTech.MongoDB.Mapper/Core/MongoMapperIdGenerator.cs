@@ -13,7 +13,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
             if (!Helper.UserIncrementalId)
             {
                 ObjectId id = (ObjectId)ObjectIdGenerator.Instance.GenerateId(container, document);
-                return GetHashCode(id);
+                return id.GetHashCode();
             }
             else
             {
@@ -50,21 +50,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
                                                                   Update.Inc("last", 1), true);
             return result;
         }
-
-
-        /// <summary>
-        /// Gets the hash code.
-        /// </summary>
-        /// <returns>The hash code.</returns>
-        private long GetHashCode(ObjectId id)
-        {
-            int hash = 17;
-            hash = 37 * hash + id.Timestamp.GetHashCode();
-            hash = 37 * hash + id.Machine.GetHashCode();
-            hash = 37 * hash + id.Pid.GetHashCode();
-            hash = 37 * hash + id.Increment.GetHashCode();
-            return hash;
-        }
+      
 
         public bool IsEmpty(object id)
         {

@@ -7,7 +7,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.Classes
     public class Child
     {
         [BsonId]
-        public Guid _id { get; set; }
+        public long _id { get; set; }
         public int ID { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
