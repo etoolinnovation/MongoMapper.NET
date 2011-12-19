@@ -69,6 +69,7 @@
     <Compile Include="ConfigTest.cs" />
     <Compile Include="EventsTest.cs" />
     <Compile Include="FindTest.cs" />
+    <Compile Include="IncrementalIdTest.cs" />
     <Compile Include="OriginalObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InsertModifyDeleteTest.cs" />

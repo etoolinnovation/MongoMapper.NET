@@ -74,7 +74,6 @@ namespace EtoolTech.MongoDB.Mapper.Test
             catch (Exception ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException)); 
-                Assert.AreEqual(ex.Message, "Error Validating Property Code: es must be ES");
                 c.Code = "ES";
                 c.Save<Country>();
             }
@@ -216,7 +215,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
         [TestMethod]
         public void TestDelete()
-        {            
+        {
+            Helper.Db.Drop();
+            
             Country c = new Country { Code = "NL", Name = "Holanda" };
             c.Save<Country>();
 
@@ -228,8 +229,8 @@ namespace EtoolTech.MongoDB.Mapper.Test
                 country.Delete<Country>();
             }
 
-            //Countries = Country.FindAsList<Country>(x => x.Code == "NL");
-            //Assert.AreEqual(Countries.Count, 0);
+            Countries = Country.FindAsList<Country>("Code", "NL");
+            Assert.AreEqual(Countries.Count, 0);
         }
        
     }
