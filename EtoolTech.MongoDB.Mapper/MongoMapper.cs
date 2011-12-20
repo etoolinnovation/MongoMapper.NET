@@ -147,7 +147,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
 
-            if (MongoMapper_Id == default(long) || String.IsNullOrEmpty(JsonOriginalObject)) return default(T);
+            if (MongoMapper_Id == default(long) || String.IsNullOrEmpty(JsonOriginalObject)) return (Activator.CreateInstance<T>());
             return GetOriginalT<T>();
         }
 
