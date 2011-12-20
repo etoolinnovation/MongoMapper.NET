@@ -213,7 +213,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoMapper_Id = id;
 
-            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(Helper.SafeMode));
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(Helper.SafeMode, Helper.FSync));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
         }
@@ -224,7 +224,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
-            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(Helper.SafeMode));            
+            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(Helper.SafeMode, Helper.FSync));            
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }

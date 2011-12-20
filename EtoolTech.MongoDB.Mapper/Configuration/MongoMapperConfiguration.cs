@@ -98,6 +98,12 @@ public class Context : ConfigurationElement
         get { return bool.Parse(this["SafeMode"].ToString()); }
     }
 
+    [ConfigurationProperty("FSync", IsKey = false, IsRequired = true)]
+    public bool FSync
+    {
+        get { return bool.Parse(this["FSync"].ToString()); }
+    }
+
     [ConfigurationProperty("ExceptionOnDuplicateKey", IsKey = false, IsRequired = true)]
     public bool ExceptionOnDuplicateKey
     {
