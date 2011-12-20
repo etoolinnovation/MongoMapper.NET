@@ -17,20 +17,12 @@ namespace EtoolTech.MongoDB.Mapper.Test
         {
             Helper.Db.Drop();
 
-            Country c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
-            Assert.AreEqual(c.MongoMapper_Id,1);
-
-
-            c = new Country { Code = "US", Name = "EE UU" };
-            c.Save<Country>();
-            Assert.AreEqual(c.MongoMapper_Id, 2);
-
-
-            c = new Country { Code = "UK", Name = "UK" };
-            c.Save<Country>();
-            Assert.AreEqual(c.MongoMapper_Id, 3);
-
+            for (int i = 0; i < 100; i++)
+            {
+                Country c = new Country { Code = "ES_"+i.ToString(), Name = "España" };
+                c.Save<Country>();
+                Assert.AreEqual(c.MongoMapper_Id, i+1);                
+            }
 
             
         }
