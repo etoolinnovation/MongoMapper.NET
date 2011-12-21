@@ -17,8 +17,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Helper.Db.Drop();
             
             Country c = new Country { Code = "FR", Name = "España" };
-            c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };
-            c.OnBeforeModify += (s, e) => { ((Country)s).Name = "Francia"; };
+            c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };            
             c.Save<Country>();
 
             Country c3 = Country.FindByKey<Country>("FR");
