@@ -26,6 +26,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
+        private static readonly List<string> CustomDiscriminatorTypes = new List<string>(); 
+
         private static MongoDatabase _dataBase;
 
         private static MongoServer _server;
@@ -199,7 +201,11 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 Db.CreateCollection(GetCollectioName(classType.Name), null);
             }
 
-            RegisterCustomDiscriminatorTypes(classType);
+            if (!CustomDiscriminatorTypes.Contains(classType.Name))
+            {
+                RegisterCustomDiscriminatorTypes(classType);
+                CustomDiscriminatorTypes.Add(classType.Name);
+            }
 
             if (!Helper.Config.Context.Generated || repairCollection)
             {
