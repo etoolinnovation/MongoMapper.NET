@@ -7,11 +7,13 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 
 You can find examples in the Test Project
 
+### Change Log
+
+* Coming Soon
+
 ### Questions and Bug Reports
 
 * Coming Soon
  
-### Change Log
 
-* Coming Soon
 
