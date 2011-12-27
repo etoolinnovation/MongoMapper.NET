@@ -304,7 +304,7 @@ namespace EtoolTech.MongoDB.Mapper
 
 
         #endregion
-
+     
         #region IBsonSerializable Members
 
         public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)

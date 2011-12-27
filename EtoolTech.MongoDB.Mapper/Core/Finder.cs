@@ -156,7 +156,6 @@ namespace EtoolTech.MongoDB.Mapper.Core
         #region GetQuerys
 
    
-
         public QueryComplete GetEqQuery(Type type, string fieldName, object value)
         {
             QueryComplete query = null;
@@ -310,6 +309,13 @@ namespace EtoolTech.MongoDB.Mapper.Core
         public QueryComplete GetRegEx(string fieldName, string expresion)
         {
             return Query.Matches(fieldName, expresion);
+        }
+
+        public QueryComplete GetEqQuery<T>(Expression<Func<T, object>> fieldName, object value)
+        {
+            string FieldName = ReflectionUtility.GetPropertyName(fieldName);
+            Type type = value.GetType();
+            return GetEqQuery(type, FieldName, value);            
         }
 
         #endregion
