@@ -1,26 +1,37 @@
-﻿using EtoolTech.MongoDB.Mapper.Interfaces;
-
-namespace EtoolTech.MongoDB.Mapper.Core
+﻿namespace EtoolTech.MongoDB.Mapper
 {
-    public class Context
+    using EtoolTech.MongoDB.Mapper.Interfaces;
+
+    public class CustomContext
     {
         private static IConfig _config;
+
         private static ICache _cacheManager;
+
         private static IRules _rulesManager;
 
         public static IConfig Config
         {
-            get { return _config; }
+            get
+            {
+                return _config;
+            }
         }
 
         public static ICache CacheManager
         {
-            get { return _cacheManager; }
+            get
+            {
+                return _cacheManager;
+            }
         }
 
         public static IRules Rules
         {
-            get { return _rulesManager; }
+            get
+            {
+                return _rulesManager;
+            }
         }
 
         public static void SetDatabaseConfigInterface(IConfig config)
@@ -37,6 +48,5 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             _rulesManager = rules;
         }
-        
     }
 }
