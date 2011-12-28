@@ -68,6 +68,7 @@
     <Compile Include="Classes\Person.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="EventsTest.cs" />
+    <Compile Include="ExtensionTest.cs" />
     <Compile Include="FindTest.cs" />
     <Compile Include="IncrementalIdTest.cs" />
     <Compile Include="OriginalObjectTest.cs" />

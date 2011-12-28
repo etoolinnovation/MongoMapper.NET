@@ -64,6 +64,7 @@
     <Compile Include="Attributes\MongoIndex.cs" />
     <Compile Include="Attributes\MongoPropertyValidator.cs" />
     <Compile Include="Attributes\MongoUpRelation.cs" />
+    <Compile Include="Core\ExtensionMethods.cs" />
     <Compile Include="Core\MongoQuery.cs" />
     <Compile Include="Core\ReflectionUtility.cs" />
     <Compile Include="Core\Context.cs" />
