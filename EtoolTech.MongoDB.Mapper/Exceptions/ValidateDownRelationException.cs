@@ -6,11 +6,10 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
     public class ValidateDownRelationException : Exception
     {
         private readonly string _relation;
+
         public ValidateDownRelationException()
         {
-            
         }
-
 
         public ValidateDownRelationException(string Relation)
         {

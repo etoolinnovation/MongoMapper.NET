@@ -6,10 +6,11 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
     public class MongoUpRelation : Attribute
     {
         public string ObjectName;
+
         public string FieldName;
 
         public string ParentFieldName;
+
         public string ParentPropertyName;
-  
     }
 }

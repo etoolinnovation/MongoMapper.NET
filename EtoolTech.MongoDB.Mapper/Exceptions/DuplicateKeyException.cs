@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EtoolTech.MongoDB.Mapper.Exceptions
 {
-    public class DuplicateKeyException: Exception
+    public class DuplicateKeyException : Exception
     {
     }
 }

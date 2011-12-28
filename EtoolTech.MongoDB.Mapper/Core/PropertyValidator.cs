@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using EtoolTech.MongoDB.Mapper.Attributes;
-using EtoolTech.MongoDB.Mapper.Exceptions;
-
-namespace EtoolTech.MongoDB.Mapper.Core
+﻿namespace EtoolTech.MongoDB.Mapper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
+    using EtoolTech.MongoDB.Mapper.Attributes;
+    using EtoolTech.MongoDB.Mapper.Exceptions;
+
     public class PropertyValidator
     {
-        private static readonly Dictionary<string, MethodInfo> BufferPropertyValidatorMethods = new Dictionary<string, MethodInfo>();
+        private static readonly Dictionary<string, MethodInfo> BufferPropertyValidatorMethods =
+            new Dictionary<string, MethodInfo>();
+
         private static readonly List<string> ProcessedTypes = new List<string>();
 
         private static void GetPropertyValidators(Type t)
         {
             if (ProcessedTypes.Contains(t.Name))
+            {
                 return;
+            }
 
             lock (typeof(PropertyValidator))
             {
@@ -25,21 +30,22 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
                     List<MethodInfo> publicMethodInfos =
                         t.GetMethods().Where(
-                            c => c.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault() != null)
-                            .
+                            c => c.GetCustomAttributes(typeof(MongoPropertyValidator), false).FirstOrDefault() != null).
                             ToList();
                     foreach (MethodInfo methodInfo in publicMethodInfos)
                     {
                         var propValidatorAtt =
                             (MongoPropertyValidator)
-                            methodInfo.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault();
+                            methodInfo.GetCustomAttributes(typeof(MongoPropertyValidator), false).FirstOrDefault();
                         if (propValidatorAtt != null)
                         {
                             string ClassName = t.Name;
                             string FieldName = propValidatorAtt.PropertyName;
                             string key = String.Format("{0}|{1}", ClassName, FieldName);
                             if (!BufferPropertyValidatorMethods.ContainsKey(key))
+                            {
                                 BufferPropertyValidatorMethods.Add(key, methodInfo);
+                            }
                         }
                     }
                 }
@@ -54,11 +60,10 @@ namespace EtoolTech.MongoDB.Mapper.Core
             }
             catch (Exception ex)
             {
-                throw new ValidatePropertyException(PropertyName,
-                    ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                throw new ValidatePropertyException(
+                    PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
         }
-
 
         public static void Validate(object sender, Type t)
         {
@@ -69,6 +74,5 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 ExecutePropertyValidator(sender, t, v.Value, v.Key.Split('|')[1]);
             }
         }
-
     }
 }

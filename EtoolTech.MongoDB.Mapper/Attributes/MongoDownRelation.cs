@@ -8,11 +8,15 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
         private string _relation;
 
         public string ObjectName;
+
         public string FieldName;
 
         public string Relation
         {
-            get { return _relation; }
+            get
+            {
+                return _relation;
+            }
             set
             {
                 _relation = value;

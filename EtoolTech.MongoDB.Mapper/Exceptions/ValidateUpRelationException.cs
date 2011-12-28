@@ -9,9 +9,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public ValidateUpRelationException()
         {
-            
         }
-
 
         public ValidateUpRelationException(string Relation)
         {

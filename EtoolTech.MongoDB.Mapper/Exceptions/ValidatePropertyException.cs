@@ -7,12 +7,10 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
     {
         private string _message, _propertyName;
 
-
         public ValidatePropertyException(string PropertyName, string Message)
         {
             _message = Message;
             _propertyName = PropertyName;
-                 
         }
 
         public override string Message

@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using EtoolTech.MongoDB.Mapper.Interfaces;
-using MongoDB.Driver.Builders;
-
-namespace EtoolTech.MongoDB.Mapper.Core
+﻿namespace EtoolTech.MongoDB.Mapper
 {
+    using System;
+    using System.Linq.Expressions;
+
+    using EtoolTech.MongoDB.Mapper.Interfaces;
+
+    using global::MongoDB.Driver.Builders;
+
     public class ExpressionParser
-    {        
+    {
         private readonly IFinder _finder = new Finder();
 
         public QueryComplete ParseExpression<T>(Expression<Func<T, object>> exp)
         {
-
             throw new NotImplementedException();
             //Parse(exp);
 

@@ -2,7 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using EtoolTech.MongoDB.Mapper.Core;
+
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using EtoolTech.MongoDB.Mapper.Test.Classes;
