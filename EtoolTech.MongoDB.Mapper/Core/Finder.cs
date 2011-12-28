@@ -45,25 +45,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             var queryList = new List<QueryComplete>();
             foreach (var keyValue in keyValues)
-            {               
-                if (keyValue.Value is int)
-                    queryList.Add(GetEqQuery(typeof (int), keyValue.Key, keyValue.Value));
-                else if (keyValue.Value is string)
-                    queryList.Add(GetEqQuery(typeof (string), keyValue.Key, keyValue.Value));
-                else if (keyValue.Value is DateTime)
-                    queryList.Add(GetEqQuery(typeof (DateTime), keyValue.Key, keyValue.Value));
-                else if (keyValue.Value is long)
-                    queryList.Add(GetEqQuery(typeof (long), keyValue.Key, keyValue.Value));
-                else if (keyValue.Value is bool)
-                    queryList.Add(GetEqQuery(typeof (bool), keyValue.Key, keyValue.Value));
-                else if (keyValue.Value is double)
-                    queryList.Add(GetEqQuery(typeof (double), keyValue.Key, keyValue.Value));
-                else if (keyValue.Value is Guid)
-                    queryList.Add(GetEqQuery(typeof (Guid), keyValue.Key, keyValue.Value));
-                else
-                {
-                    throw new TypeNotSupportedException(keyValue.Value.GetType().Name);
-                }
+            {                               
+                queryList.Add(MongoQuery.Eq(keyValue.Key, keyValue.Value));
             }
 
             QueryComplete query = Query.And(queryList.ToArray());
@@ -82,31 +65,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
             var queryList = new List<QueryComplete>();
             foreach (var keyValue in keyValues)
-            {
-                if (keyValue.Value is int)
-                    queryList.Add(GetEqQuery(typeof (int), keyValue.Key, keyValue.Value));
-
-                else if (keyValue.Value is string)
-                    queryList.Add(GetEqQuery(typeof (string), keyValue.Key, keyValue.Value));
-
-                else if (keyValue.Value is DateTime)
-                    queryList.Add(GetEqQuery(typeof (DateTime), keyValue.Key, keyValue.Value));
-
-                else if (keyValue.Value is long)
-                    queryList.Add(GetEqQuery(typeof (long), keyValue.Key, keyValue.Value));
-
-                else if (keyValue.Value is bool)
-                    queryList.Add(GetEqQuery(typeof (bool), keyValue.Key, keyValue.Value));
-
-                else if (keyValue.Value is double)
-                    queryList.Add(GetEqQuery(typeof (double), keyValue.Key, keyValue.Value));
-
-                else if (keyValue.Value is Guid)
-                    queryList.Add(GetEqQuery(typeof (Guid), keyValue.Key, keyValue.Value));
-                else
-                {
-                    throw new TypeNotSupportedException(keyValue.Value.GetType().Name);
-                }
+            {             
+                queryList.Add(MongoQuery.Eq(keyValue.Key, keyValue.Value));             
             }
 
             QueryComplete query = Query.And(queryList.ToArray());
@@ -153,166 +113,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         #endregion
 
-        #region GetQuerys
 
-   
-
-        public QueryComplete GetEqQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
-
-            if (value is string)
-            {
-                bool IsLike = false;
-                string txtValue = value.ToString();
-                if (txtValue.StartsWith("%") && txtValue.EndsWith("%"))
-                {
-                    value = String.Format("/{0}/", txtValue);
-                    IsLike = true;
-                }
-                else if (txtValue.StartsWith("%"))
-                {
-                    value = String.Format("/{0}^/", txtValue);
-                    IsLike = true;
-                }
-                else if (txtValue.EndsWith("%"))
-                {
-                    value = String.Format("/^{0}/", txtValue);
-                    IsLike = true;
-                }
-
-                if (IsLike)
-                {
-                    query = GetRegEx(fieldName, value.ToString());
-                    return query;
-                }
-            }
-
-            if (type == typeof (DateTime))
-                query = Query.EQ(fieldName, (DateTime) value);
-            else if (type == typeof (int))
-                query = Query.EQ(fieldName, (int) value);
-            else if (type == typeof (string))
-                query = Query.EQ(fieldName, (string) value);
-            else if (type == typeof (long))
-                query = Query.EQ(fieldName, (long) value);
-            else if (type == typeof (bool))
-                query = Query.EQ(fieldName, (bool) value);
-            else if (type == typeof (double))
-                query = Query.EQ(fieldName, (double) value);
-            else if (type == typeof (Guid))
-                query = Query.EQ(fieldName, (Guid) value);
-
-
-            return query;
-        }
-
-        public QueryComplete GetGtQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
-
-            if (type == typeof (DateTime))
-                query = Query.GT(fieldName, (DateTime) value);
-            else if (type == typeof (int))
-                query = Query.GT(fieldName, (int) value);
-            else if (type == typeof (string))
-                query = Query.GT(fieldName, (string) value);
-            else if (type == typeof (long))
-                query = Query.GT(fieldName, (long) value);
-            else if (type == typeof (bool))
-                query = Query.GT(fieldName, (bool) value);
-            else if (type == typeof (double))
-                query = Query.GT(fieldName, (double) value);
-
-            return query;
-        }
-
-        public QueryComplete GetGteQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
-
-            if (type == typeof (DateTime))
-                query = Query.GTE(fieldName, (DateTime) value);
-            else if (type == typeof (int))
-                query = Query.GTE(fieldName, (int) value);
-            else if (type == typeof (string))
-                query = Query.GTE(fieldName, (string) value);
-            else if (type == typeof (long))
-                query = Query.GTE(fieldName, (long) value);
-            else if (type == typeof (bool))
-                query = Query.GTE(fieldName, (bool) value);
-            else if (type == typeof (double))
-                query = Query.GTE(fieldName, (double) value);
-
-            return query;
-        }
-
-        public QueryComplete GetLtQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
-
-            if (type == typeof (DateTime))
-                query = Query.LT(fieldName, (DateTime) value);
-            else if (type == typeof (int))
-                query = Query.LT(fieldName, (int) value);
-            else if (type == typeof (string))
-                query = Query.LT(fieldName, (string) value);
-            else if (type == typeof (long))
-                query = Query.LT(fieldName, (long) value);
-            else if (type == typeof (bool))
-                query = Query.LT(fieldName, (bool) value);
-            else if (type == typeof (double))
-                query = Query.LT(fieldName, (double) value);
-
-            return query;
-        }
-
-        public QueryComplete GetLteQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
-
-            if (type == typeof (DateTime))
-                query = Query.LTE(fieldName, (DateTime) value);
-            else if (type == typeof (int))
-                query = Query.LTE(fieldName, (int) value);
-            else if (type == typeof (string))
-                query = Query.LTE(fieldName, (string) value);
-            else if (type == typeof (long))
-                query = Query.LTE(fieldName, (long) value);
-            else if (type == typeof (bool))
-                query = Query.LTE(fieldName, (bool) value);
-            else if (type == typeof (double))
-                query = Query.LTE(fieldName, (double) value);
-
-            return query;
-        }
-
-        public QueryComplete GetNeQuery(Type type, string fieldName, object value)
-        {
-            QueryComplete query = null;
-
-            if (type == typeof (DateTime))
-                query = Query.NE(fieldName, (DateTime) value);
-            else if (type == typeof (int))
-                query = Query.NE(fieldName, (int) value);
-            else if (type == typeof (string))
-                query = Query.NE(fieldName, (string) value);
-            else if (type == typeof (long))
-                query = Query.NE(fieldName, (long) value);
-            else if (type == typeof (bool))
-                query = Query.NE(fieldName, (bool) value);
-            else if (type == typeof (double))
-                query = Query.NE(fieldName, (double) value);
-
-            return query;
-        }
-
-        public QueryComplete GetRegEx(string fieldName, string expresion)
-        {
-            return Query.Matches(fieldName, expresion);
-        }
-
-        #endregion
 
         #region IFinder Members
 

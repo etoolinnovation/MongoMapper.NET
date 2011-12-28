@@ -119,7 +119,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
             string fkFieldName = values[2];
             PropertyInfo propertyInfo = ClassType.GetProperty(fieldName);
             object value = propertyInfo.GetValue(sender, null);
-            QueryComplete query = IFinder.GetEqQuery(propertyInfo.PropertyType, fkFieldName, value);
+            QueryComplete query = MongoQuery.Eq(fkFieldName, value);
             return Helper.GetCollection(String.Format("{0}_Collection", fkClassName)).FindAs<T>(query).ToList();
         }
 
@@ -141,12 +141,12 @@ namespace EtoolTech.MongoDB.Mapper.Core
                 {
                     PropertyInfo ParentPropertyInfo = ClassType.GetProperty(fkParentPropertyName);
                     object Parentvalue = ParentPropertyInfo.GetValue(sender, null);
-                    ParentQuery = IFinder.GetEqQuery(ParentPropertyInfo.PropertyType, fkParentfieldName, Parentvalue);
+                    ParentQuery = MongoQuery.Eq(fkParentfieldName, Parentvalue);
                 }
 
                 PropertyInfo PropertyInfo = ClassType.GetProperty(fieldName);
                 object value = PropertyInfo.GetValue(sender, null);
-                var query = IFinder.GetEqQuery(PropertyInfo.PropertyType, fkFieldName, value);
+                var query = MongoQuery.Eq(fkFieldName, value);
 
                 if (ParentQuery != null)
                 {
@@ -175,7 +175,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
                 PropertyInfo PropertyInfo = ClassType.GetProperty(fieldName);
                 object value = PropertyInfo.GetValue(sender, null);
-                var query = IFinder.GetEqQuery(PropertyInfo.PropertyType, fkFieldName, value);
+                var query = MongoQuery.Eq(fkFieldName, value);
 
 
                 MongoCollection fkCol = Helper.GetCollection(String.Format("{0}_Collection", fkClassName));
