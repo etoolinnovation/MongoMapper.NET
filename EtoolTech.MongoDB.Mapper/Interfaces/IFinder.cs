@@ -23,20 +23,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         MongoCursor<T> FindAsCursor<T>(QueryComplete query);        
         MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp);
-        MongoCursor<T> AllAsCursor<T>();
-        
-        QueryComplete GetEqQuery(Type type, string fieldName, object value);
-        QueryComplete GetEqQuery<T>(Expression<Func<T, object>> fieldName, object value);
-
-        QueryComplete GetGtQuery(Type type, string fieldName, object value);
-        QueryComplete GetGteQuery(Type type, string fieldName, object value);
-        QueryComplete GetLtQuery(Type type, string fieldName, object value);
-        QueryComplete GetLteQuery(Type type, string fieldName, object value);
-        QueryComplete GetNeQuery(Type type, string fieldName, object value);
-        QueryComplete GetRegEx(string fieldName, string expresion);
-
-
-
+        MongoCursor<T> AllAsCursor<T>();              
         
     }
 }
