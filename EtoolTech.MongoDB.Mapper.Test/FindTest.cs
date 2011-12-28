@@ -118,10 +118,10 @@ namespace EtoolTech.MongoDB.Mapper.Test
             (new InsertModifyDeleteTest()).TestInsert();
 
 
-            List<Country> Countries = Country.FindAsList<Country>(Query.Or(MongoQuery.EQ((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
+            List<Country> Countries = Country.FindAsList<Country>(Query.Or(MongoQuery.Eq((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
-            List<Person> Persons = Person.FindAsList<Person>(Query.And(MongoQuery.EQ(((Person p) => p.Age ) , 25), Query.EQ("Country", "ES")));
+            List<Person> Persons = Person.FindAsList<Person>(Query.And(MongoQuery.Eq(((Person p) => p.Age ) , 25), Query.EQ("Country", "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
             foreach (Person p in Persons)

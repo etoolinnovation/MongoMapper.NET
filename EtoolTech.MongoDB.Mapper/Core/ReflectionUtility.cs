@@ -11,11 +11,12 @@ namespace EtoolTech.MongoDB.Mapper.Core
       
     }
     
+
+
     
     public static class ReflectionUtility
     {
-
-        //TODO: probado con string, int, falta probar resto de tipos
+        
         public static string GetPropertyName<T>(Expression<Func<T, object>> exp)
         {
             var memberExpression = exp.Body as UnaryExpression;
@@ -26,10 +27,8 @@ namespace EtoolTech.MongoDB.Mapper.Core
             }
             else
             {
-                    var memberexpresion2 = exp.Body as MemberExpression;
-                    if (memberexpresion2 != null) return memberexpresion2.Member.Name;
-
-                
+                var memberexpresion2 = exp.Body as MemberExpression;
+                if (memberexpresion2 != null) return memberexpresion2.Member.Name;                
             }
 
             return string.Empty;
