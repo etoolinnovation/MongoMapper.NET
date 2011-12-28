@@ -4,10 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
-using EtoolTech.MongoDB.Mapper.Core;
+
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
-using EtoolTech.MongoDB.Mapper.enums;
+
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -18,8 +18,10 @@ using MongoDB.Driver.Linq;
 
 namespace EtoolTech.MongoDB.Mapper
 {
+    using EtoolTech.MongoDB.Mapper.Configuration;
+
     [Serializable]
-    public abstract class MongoMapper: IBsonSerializable
+    public abstract class MongoMapper : IBsonSerializable, IMongoMapperOriginable, IMongoMapperRelationable, IMongoMapperWriteable, IMongoMapperIdeable
     {
         #region Eventos
 
@@ -58,28 +60,37 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         private static readonly IFinder Finder = new Finder();
+
         private static readonly IRelations Relations = new Relations();
+
         private static readonly IEvents Events = new Events();
-        private readonly Dictionary<string,object> _relationBuffer = new Dictionary<string, object>();
+
+        private readonly Dictionary<string, object> _relationBuffer = new Dictionary<string, object>();
 
         private readonly Type _classType;
 
-        private byte[] _BytesOriginalObject;
+        private byte[] _bytesOriginalObject;
+
         private BsonDocument _bsonOriginalObject;
+
         private object _tOriginalObjet;
 
-        [BsonIgnore] internal bool RepairCollection;
+        [BsonIgnore]
+        internal bool RepairCollection;
 
         [BsonId(IdGenerator = typeof(MongoMapperIdGenerator))]
         [XmlIgnore]
         public long MongoMapper_Id { get; set; }
 
-        private byte[] BytesOriginalObject
+        public byte[] BytesOriginalObject
         {
-            get { return _BytesOriginalObject; }
+            get
+            {
+                return this._bytesOriginalObject;
+            }
             set
             {
-                _BytesOriginalObject = value;
+                this._bytesOriginalObject = value;
                 _bsonOriginalObject = null;
                 _tOriginalObjet = null;
             }
@@ -90,34 +101,32 @@ namespace EtoolTech.MongoDB.Mapper
         //public CommitOperation CommitOp;
         //public string TransactionID;
 
-      
         protected MongoMapper()
         {
             _classType = GetType();
-            Helper.RebuildClass(_classType, RepairCollection);          
+            Helper.RebuildClass(_classType, RepairCollection);
         }
 
         public static IQueryable<T> QueryContext<T>()
         {
-            return Helper.GetCollection<T>(typeof(T).Name).AsQueryable<T>();            
+            return CollectionsManager.GetCollection<T>(typeof(T).Name).AsQueryable<T>();
         }
-      
+
         public List<T> GetRelation<T>(string relation)
         {
             if (!this._relationBuffer.ContainsKey(relation))
             {
-                this._relationBuffer.Add(relation,Relations.GetRelation<T>(this, relation, _classType, Finder));
+                this._relationBuffer.Add(relation, Relations.GetRelation<T>(this, relation, _classType, Finder));
             }
             return (List<T>)this._relationBuffer[relation];
         }
 
-
-        private void EnsureUpRelations()
+        public void EnsureUpRelations()
         {
             Relations.EnsureUpRelations(this, _classType, Finder);
         }
 
-        private void EnsureDownRelations()
+        public void EnsureDownRelations()
         {
             Relations.EnsureDownRelations(this, _classType, Finder);
         }
@@ -137,38 +146,56 @@ namespace EtoolTech.MongoDB.Mapper
 
         public object GetOriginalValue<T>(string fieldName)
         {
-            if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+            if (!ConfigManager.EnableOriginalObject)
+            {
+                throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+            }
 
-            if (MongoMapper_Id == default(long) || (BytesOriginalObject == null || BytesOriginalObject.Length == 0)) return null;
-            return (this.GetOriginalDocument()[fieldName]);            
+            if (MongoMapper_Id == default(long) || (BytesOriginalObject == null || BytesOriginalObject.Length == 0))
+            {
+                return null;
+            }
+            return (this.GetOriginalDocument()[fieldName]);
         }
 
         public T GetOriginalObject<T>()
         {
-            if (!Helper.EnableOriginalObject) throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+            if (!ConfigManager.EnableOriginalObject)
+            {
+                throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+            }
 
-            if (MongoMapper_Id == default(long) || (BytesOriginalObject == null || BytesOriginalObject.Length == 0)) return (Activator.CreateInstance<T>());
+            if (MongoMapper_Id == default(long) || (BytesOriginalObject == null || BytesOriginalObject.Length == 0))
+            {
+                return (Activator.CreateInstance<T>());
+            }
             return GetOriginalT<T>();
         }
 
-        private T GetOriginalT<T>()
+        public T GetOriginalT<T>()
         {
-            if (_tOriginalObjet != null) return (T) _tOriginalObjet;
+            if (_tOriginalObjet != null)
+            {
+                return (T)_tOriginalObjet;
+            }
 
             _tOriginalObjet = BsonSerializer.Deserialize<T>(GetOriginalDocument());
-            return (T) _tOriginalObjet;
+            return (T)_tOriginalObjet;
         }
 
-        private BsonDocument GetOriginalDocument()
+        public BsonDocument GetOriginalDocument()
         {
-            if (_bsonOriginalObject != null) return _bsonOriginalObject;
-            
-           _bsonOriginalObject = BsonDocument.ReadFrom(BytesOriginalObject);
-           return _bsonOriginalObject;
+            if (_bsonOriginalObject != null)
+            {
+                return _bsonOriginalObject;
+            }
+
+            _bsonOriginalObject = BsonDocument.ReadFrom(BytesOriginalObject);
+            return _bsonOriginalObject;
         }
 
         #endregion
-     
+
         #region Write Methods
 
         public void Save<T>()
@@ -185,14 +212,20 @@ namespace EtoolTech.MongoDB.Mapper
                 else
                 {
                     //Si llega aqui ya existe un registro con esa key y no es el que tenemos cargado
-                    if (Helper.ExceptionOnDuplicateKey) throw new DuplicateKeyException();
+                    if (ConfigManager.ExceptionOnDuplicateKey)
+                    {
+                        throw new DuplicateKeyException();
+                    }
 
                     UpdateDocument(id);
                 }
 
                 //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
                 //TODO: No estoy muy convencido de esto revisar ...                
-                if ((BytesOriginalObject == null || BytesOriginalObject.Length == 0)) BytesOriginalObject = this.ToBson();
+                if ((BytesOriginalObject == null || BytesOriginalObject.Length == 0))
+                {
+                    BytesOriginalObject = this.ToBson();
+                }
             }
             else
             {
@@ -200,7 +233,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        private void UpdateDocument(long id)
+        public void UpdateDocument(long id)
         {
             Events.BeforeUpdateDocument(this, OnBeforeModify, _classType);
 
@@ -208,22 +241,25 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoMapper_Id = id;
 
-            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Save(this, SafeMode.Create(Helper.SafeMode, Helper.FSync));
+            SafeModeResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Save(
+                    this, SafeMode.Create(ConfigManager.SafeMode, ConfigManager.FSync));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
         }
 
-        private void InsertDocument()
+        public void InsertDocument()
         {
             Events.BeforeInsertDocument(this, OnBeforeInsert, _classType);
 
             EnsureUpRelations();
 
-            SafeModeResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).Insert(this, SafeMode.Create(Helper.SafeMode, Helper.FSync));            
+            SafeModeResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(
+                    this, SafeMode.Create(ConfigManager.SafeMode, ConfigManager.FSync));
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
-
 
         public void Delete<T>()
         {
@@ -236,15 +272,16 @@ namespace EtoolTech.MongoDB.Mapper
             Events.AfterDeleteDocument(this, OnAfterDelete, OnAfterComplete, _classType);
         }
 
-
-        private void DeleteDocument<T>()
+        public void DeleteDocument<T>()
         {
             if (MongoMapper_Id == default(long))
             {
                 MongoMapper_Id = Finder.FindIdByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
-            FindAndModifyResult result = Helper.GetCollection(Helper.GetCollectioName(_classType.Name)).FindAndRemove(query, null);            
+            FindAndModifyResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndRemove(
+                    query, null);
         }
 
         #endregion
@@ -255,8 +292,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return Finder.FindByKey<T>(values);
         }
-     
- 
+
         public static List<T> FindAsList<T>(QueryComplete query)
         {
             return Finder.FindAsList<T>(query);
@@ -269,7 +305,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static List<T> FindAsList<T>(string fieldName, object value)
         {
-            return Finder.FindAsList<T>(MongoQuery.Eq(fieldName,value));
+            return Finder.FindAsList<T>(MongoQuery.Eq(fieldName, value));
         }
 
         public static MongoCursor<T> FindAsCursor<T>(string fieldName, object value)
@@ -278,7 +314,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
-        {            
+        {
             return Finder.FindAsList<T>(exp);
         }
 
@@ -297,16 +333,18 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.AllAsCursor<T>();
         }
 
-
         #endregion
-     
+
         #region IBsonSerializable Members
 
         public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
         {
             object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
             //Guardamos el obj original en byte[] para romper la referencia
-            if (Helper.EnableOriginalObject) ((MongoMapper)o).BytesOriginalObject = o.ToBson();            
+            if (ConfigManager.EnableOriginalObject)
+            {
+                ((IMongoMapperOriginable)o).BytesOriginalObject = o.ToBson();
+            }
             return o;
         }
 
