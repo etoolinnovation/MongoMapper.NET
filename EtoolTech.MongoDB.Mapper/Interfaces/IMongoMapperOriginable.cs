@@ -2,12 +2,13 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
     using global::MongoDB.Bson;
 
-    public interface IMongoMapperOriginable
+    public interface IMongoMapperBytesOriginalObject
     {
-        byte[] BytesOriginalObject { get; set; }
+        string StringOriginalObject { get; set; }
+    }
 
-        object GetOriginalValue<T>(string fieldName);
-
+    public interface IMongoMapperOriginable : IMongoMapperBytesOriginalObject
+    {
         T GetOriginalObject<T>();
 
         T GetOriginalT<T>();

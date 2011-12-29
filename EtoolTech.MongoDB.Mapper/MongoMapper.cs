@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
-
+using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 
@@ -15,6 +16,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
+
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -69,7 +71,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private readonly Type _classType;
 
-        private byte[] _bytesOriginalObject;
+        private string _stringOriginalObject;
 
         private BsonDocument _bsonOriginalObject;
 
@@ -81,16 +83,17 @@ namespace EtoolTech.MongoDB.Mapper
         [BsonId(IdGenerator = typeof(MongoMapperIdGenerator))]
         [XmlIgnore]
         public long MongoMapper_Id { get; set; }
-
-        public byte[] BytesOriginalObject
+        
+        [BsonIgnore]
+        public string StringOriginalObject
         {
             get
             {
-                return this._bytesOriginalObject;
+                return this._stringOriginalObject;
             }
             set
             {
-                this._bytesOriginalObject = value;
+                this._stringOriginalObject = value;
                 _bsonOriginalObject = null;
                 _tOriginalObjet = null;
             }
@@ -103,6 +106,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         protected MongoMapper()
         {
+            //TODO: llevarlo a Config
+            BsonDefaults.MaxDocumentSize = 8 * 1024 * 1024; // 8MiB;
+            
             _classType = GetType();
             Helper.RebuildClass(_classType, RepairCollection);
         }
@@ -144,28 +150,16 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Objeto Original para comprobar cambios
 
-        public object GetOriginalValue<T>(string fieldName)
-        {
-            if (!ConfigManager.EnableOriginalObject)
-            {
-                throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
-            }
 
-            if (MongoMapper_Id == default(long) || (BytesOriginalObject == null || BytesOriginalObject.Length == 0))
-            {
-                return null;
-            }
-            return (this.GetOriginalDocument()[fieldName]);
-        }
 
         public T GetOriginalObject<T>()
         {
             if (!ConfigManager.EnableOriginalObject)
-            {
+            {                
                 throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
             }
 
-            if (MongoMapper_Id == default(long) || (BytesOriginalObject == null || BytesOriginalObject.Length == 0))
+            if (MongoMapper_Id == default(long) || string.IsNullOrEmpty(StringOriginalObject))
             {
                 return (Activator.CreateInstance<T>());
             }
@@ -178,9 +172,10 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 return (T)_tOriginalObjet;
             }
-
-            _tOriginalObjet = BsonSerializer.Deserialize<T>(GetOriginalDocument());
-            return (T)_tOriginalObjet;
+          
+            _tOriginalObjet = Serializer.Deserialize<T>(StringOriginalObject);
+            return (T) _tOriginalObjet;
+         
         }
 
         public BsonDocument GetOriginalDocument()
@@ -190,7 +185,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return _bsonOriginalObject;
             }
 
-            _bsonOriginalObject = BsonDocument.ReadFrom(BytesOriginalObject);
+            _bsonOriginalObject = BsonDocument.ReadFrom(StringOriginalObject);
             return _bsonOriginalObject;
         }
 
@@ -222,9 +217,9 @@ namespace EtoolTech.MongoDB.Mapper
 
                 //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
                 //TODO: No estoy muy convencido de esto revisar ...                
-                if ((BytesOriginalObject == null || BytesOriginalObject.Length == 0))
+                if (string.IsNullOrEmpty(StringOriginalObject))
                 {
-                    BytesOriginalObject = this.ToBson();
+                    StringOriginalObject = Serializer.Serialize(this);
                 }
             }
             else
@@ -338,12 +333,12 @@ namespace EtoolTech.MongoDB.Mapper
         #region IBsonSerializable Members
 
         public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
-        {
+        {            
             object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
-            //Guardamos el obj original en byte[] para romper la referencia
+            //Guardamos el obj original en JSV para romper la referencia
             if (ConfigManager.EnableOriginalObject)
             {
-                ((IMongoMapperOriginable)o).BytesOriginalObject = o.ToBson();
+                ((IMongoMapperBytesOriginalObject)o).StringOriginalObject = Serializer.Serialize(o); 
             }
             return o;
         }

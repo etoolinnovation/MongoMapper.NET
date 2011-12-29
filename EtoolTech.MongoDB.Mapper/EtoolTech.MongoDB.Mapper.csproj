@@ -48,6 +48,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\MongoDB.Driver.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\Dependencies\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -75,6 +78,7 @@
     <Compile Include="Configuration\MongoMapperConfiguration.cs" />
     <Compile Include="Core\MongoMapperIdGenerator.cs" />
     <Compile Include="Core\PropertyValidator.cs" />
+    <Compile Include="Core\Serializer.cs" />
     <Compile Include="Enums\CommitOperation.cs" />
     <Compile Include="Exceptions\DuplicateKeyException.cs" />
     <Compile Include="Exceptions\ValidatePropertyException.cs" />
