@@ -32,6 +32,11 @@
                                                             ? Config.Server.WaitQueueTimeout
                                                             : CustomContext.Config.WaitQueueTimeout;
 
+
+        internal static readonly int MaxDocumentSize = CustomContext.Config == null
+                                                           ? Config.Context.MaxDocumentSize
+                                                           : CustomContext.Config.MaxDocumentSize;
+
         internal static readonly bool SafeMode = CustomContext.Config == null
                                                      ? Config.Context.SafeMode
                                                      : CustomContext.Config.SafeMode;

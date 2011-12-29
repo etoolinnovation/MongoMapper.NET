@@ -11,7 +11,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         {
             MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
 
-            Assert.AreEqual(config.Server.Host,"127.0.0.1");
+            Assert.AreEqual(config.Server.Host,"192.168.1.214");
             Assert.AreEqual(config.Server.Port, 27017);
             Assert.AreEqual(config.Database.User, "");
             Assert.AreEqual(config.Database.Password, "");
@@ -24,6 +24,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(config.Context.EnableOriginalObject, true);
             Assert.AreEqual(config.Context.UserIncrementalId, true);
             Assert.AreEqual(config.Context.FSync, false);
+            Assert.AreEqual(config.Context.MaxDocumentSize,8);
 
         }
     }

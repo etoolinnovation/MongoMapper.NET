@@ -101,10 +101,7 @@ namespace EtoolTech.MongoDB.Mapper
         //public string TransactionID;
 
         protected MongoMapper()
-        {
-            //TODO: llevarlo a Config
-            BsonDefaults.MaxDocumentSize = 8 * 1024 * 1024; // 8MiB;
-            
+        {                       
             _classType = GetType();
             Helper.RebuildClass(_classType, RepairCollection);
         }

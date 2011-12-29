@@ -25,5 +25,7 @@
         bool EnableOriginalObject { get; }
 
         bool UserIncrementalId { get; }
+
+        int MaxDocumentSize { get; }
     }
 }

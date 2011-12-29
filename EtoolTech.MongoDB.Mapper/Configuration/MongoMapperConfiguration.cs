@@ -78,6 +78,7 @@ public class Server : ConfigurationElement
             return int.Parse(this["WaitQueueTimeout"].ToString());
         }
     }
+  
 }
 
 public class Database : ConfigurationElement
@@ -118,6 +119,15 @@ public class Context : ConfigurationElement
         get
         {
             return bool.Parse(this["Generated"].ToString());
+        }
+    }
+
+    [ConfigurationProperty("MaxDocumentSize", IsKey = false, IsRequired = true)]
+    public int MaxDocumentSize
+    {
+        get
+        {
+            return int.Parse(this["MaxDocumentSize"].ToString());
         }
     }
 

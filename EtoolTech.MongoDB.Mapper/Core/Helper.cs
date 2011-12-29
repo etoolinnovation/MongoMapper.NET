@@ -1,3 +1,5 @@
+using MongoDB.Bson;
+
 namespace EtoolTech.MongoDB.Mapper
 {
     using System;
@@ -34,6 +36,10 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (_server == null)
                 {
+
+                    //TODO: Revisar donde ponerlo, posibilidad de definirlo por coleccion??
+                    BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize * 1024 * 1024; 
+                    
                     MongoServerSettings ServerSettings = new MongoServerSettings();
                     string userName = ConfigManager.UserName;
 
