@@ -7,6 +7,10 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 
 You can find examples in the Test Project
 
+### Dependencies
+
+* ServiceStack.Text https://github.com/ServiceStack/ServiceStack.Text
+
 ### Change Log
 
 * Coming Soon
