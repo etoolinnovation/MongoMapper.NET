@@ -9,7 +9,8 @@ You can find examples in the Test Project
 
 ### Dependencies
 
-* ServiceStack.Text https://github.com/ServiceStack/ServiceStack.Text
+* ServiceStack.Text: https://github.com/ServiceStack/ServiceStack.Text
+* MongoDB Driver for C#: http://github.com/mongodb/mongo-csharp-driver
 
 ### Change Log
 
