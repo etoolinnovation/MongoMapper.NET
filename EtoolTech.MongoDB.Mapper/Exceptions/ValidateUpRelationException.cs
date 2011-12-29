@@ -9,9 +9,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public ValidateUpRelationException()
         {
-            
         }
-
 
         public ValidateUpRelationException(string Relation)
         {
@@ -20,10 +18,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public override string Message
         {
-            get
-            {
-                return "Error Validatin Relation " + _relation;
-            }
+            get { return "Error Validatin Relation " + _relation; }
         }
     }
 }

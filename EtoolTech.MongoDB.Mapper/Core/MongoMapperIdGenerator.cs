@@ -1,27 +1,29 @@
 ﻿using System;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
-namespace EtoolTech.MongoDB.Mapper.Core
+namespace EtoolTech.MongoDB.Mapper
 {
     public class MongoMapperIdGenerator : IIdGenerator
     {
-        private Object lockObject = new Object();
+        private readonly Object lockObject = new Object();
 
         public static MongoMapperIdGenerator Instance
         {
             get { return new MongoMapperIdGenerator(); }
         }
 
+        #region IIdGenerator Members
+
         public object GenerateId(object container, object document)
         {
-            if (!Helper.UserIncrementalId)
+            if (!ConfigManager.UserIncrementalId)
             {
-                ObjectId id = (ObjectId)ObjectIdGenerator.Instance.GenerateId(container, document);
+                var id = (ObjectId) ObjectIdGenerator.Instance.GenerateId(container, document);
                 return id.GetHashCode();
             }
             else
@@ -30,30 +32,27 @@ namespace EtoolTech.MongoDB.Mapper.Core
             }
         }
 
+        public bool IsEmpty(object id)
+        {
+            return (long) id == default(long);
+        }
+
+        #endregion
+
         public long GenerateIncrementalId(string objName)
         {
             lock (lockObject)
             {
-                var result = FindAndModifyResult(objName);           
+                FindAndModifyResult result = FindAndModifyResult(objName);
                 return result.ModifiedDocument["last"].AsInt64;
             }
         }
 
         private FindAndModifyResult FindAndModifyResult(string objName)
         {
-            var result =
-                Helper.Db.GetCollection("Counters").FindAndModify(Query.EQ("document", objName),
-                                                                  null,
-                                                                  Update.Inc("last", (long) 1), true, true);
+            FindAndModifyResult result = Helper.Db.GetCollection("Counters").FindAndModify(
+                Query.EQ("document", objName), null, Update.Inc("last", (long) 1), true, true);
             return result;
         }
-
-
-        public bool IsEmpty(object id)
-        {
-            return (long)id == default(long);
-        }
-
-   
     }
 }

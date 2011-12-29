@@ -5,10 +5,9 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class MongoDownRelation : Attribute
     {
-        private string _relation;
-
-        public string ObjectName;
         public string FieldName;
+        public string ObjectName;
+        private string _relation;
 
         public string Relation
         {

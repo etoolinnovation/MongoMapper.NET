@@ -3,8 +3,12 @@ using EtoolTech.MongoDB.Mapper.Interfaces;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-    public class Transaction: MongoMapper, ITransaction
+    public class Transaction : MongoMapper, ITransaction
     {
-        public List<string> Collections { get; set; } 
+        #region ITransaction Members
+
+        public List<string> Collections { get; set; }
+
+        #endregion
     }
 }

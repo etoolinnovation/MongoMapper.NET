@@ -9,9 +9,8 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
-namespace EtoolTech.MongoDB.Mapper.Core
+namespace EtoolTech.MongoDB.Mapper
 {
-    //TODO: Pendiente implementar pedir solo un subset de campos
     public class Finder : IFinder
     {
         #region FindAsList Methods
@@ -19,13 +18,13 @@ namespace EtoolTech.MongoDB.Mapper.Core
         public T FindById<T>(long id)
         {
             QueryComplete query = Query.EQ("_id", id);
-            return Helper.GetCollection(typeof (T).Name).FindOneAs<T>(query);
+            return CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
         }
 
         public BsonDocument FindBsonDocumentById<T>(long id)
         {
             QueryComplete query = Query.EQ("_id", id);
-            return Helper.GetCollection(typeof (T).Name).FindOneAs<T>(query).ToBsonDocument();
+            return CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query).ToBsonDocument();
         }
 
         public T FindByKey<T>(params object[] values)
@@ -45,36 +44,36 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             var queryList = new List<QueryComplete>();
             foreach (var keyValue in keyValues)
-            {                               
+            {
                 queryList.Add(MongoQuery.Eq(keyValue.Key, keyValue.Value));
             }
 
             QueryComplete query = Query.And(queryList.ToArray());
 
-            MongoCursor<T> result = Helper.GetCollection(typeof (T).Name).FindAs<T>(query);            
-            if (result.Count() == 0)
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+            if (!result.Any())
+            {
                 throw new FindByKeyNotFoundException();
+            }
             return result.First();
         }
 
         public long FindIdByKey<T>(Dictionary<string, object> keyValues)
         {
             //Si la key es la interna y vieb
-            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is long && (long)keyValues.First().Value == default(long))
+            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is long
+                && (long) keyValues.First().Value == default(long))
+            {
                 return default(long);
-
-            var queryList = new List<QueryComplete>();
-            foreach (var keyValue in keyValues)
-            {             
-                queryList.Add(MongoQuery.Eq(keyValue.Key, keyValue.Value));             
             }
 
-            QueryComplete query = Query.And(queryList.ToArray());
+            QueryComplete query = Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
-            MongoCursor<T> result =
-                Helper.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
-            if (result.Count() == 0)
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
+            if (!result.Any())
+            {
                 return default(long);
+            }
 
             object oId;
             Type oType;
@@ -82,7 +81,6 @@ namespace EtoolTech.MongoDB.Mapper.Core
             result.First().ToBsonDocument().GetDocumentId(out oId, out oType, out iGen);
             return (long) oId;
         }
-
 
         public List<T> FindAsList<T>(QueryComplete query = null)
         {
@@ -92,15 +90,16 @@ namespace EtoolTech.MongoDB.Mapper.Core
         public MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
         {
             if (query == null)
-                return Helper.GetCollection(typeof (T).Name).FindAllAs<T>();
+            {
+                return CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
+            }
 
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
+            return CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
         }
-         
 
         public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
-            return FindAsCursor<T>(exp).ToList();
+            return FindAsCursor(exp).ToList();
         }
 
         //TODO: Pendiente de probar
@@ -108,12 +107,10 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             var ep = new ExpressionParser();
             QueryComplete query = ep.ParseExpression(exp);
-            return Helper.GetCollection(typeof (T).Name).FindAs<T>(query);
+            return CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
         }
 
         #endregion
-
-
 
         #region IFinder Members
 
@@ -124,7 +121,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
 
         public MongoCursor<T> AllAsCursor<T>()
         {
-            return Helper.GetCollection(typeof (T).Name).FindAllAs<T>();
+            return CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
         }
 
         #endregion

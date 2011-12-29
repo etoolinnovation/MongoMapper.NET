@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EtoolTech.MongoDB.Mapper.Test
 {
-    using EtoolTech.MongoDB.Mapper.Core;
     using EtoolTech.MongoDB.Mapper.Test.Classes;
 
     [TestClass]
@@ -20,11 +19,8 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Name = "hola 25";
             p.Save<Person>();
 
-            string Name = p.GetOriginalValue<Person>("Name").ToString();
-            Assert.AreEqual(Name,"Pepito Perez");
-
             Person p2 = p.GetOriginalObject<Person>();
-            Assert.AreEqual(Name, p2.Name);
+            Assert.AreEqual("Pepito Perez", p2.Name);
         }
 
         [TestMethod]
@@ -53,7 +49,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
        
             p.Name = "Juan Sin Miedo";
 
-            object OriginalName = p.GetOriginalValue<Person>("Name");
+            object OriginalName = p.GetOriginalObject<Person>().Name;
 
             Assert.AreEqual(OriginalName.ToString(), "Pepito Perez");
 

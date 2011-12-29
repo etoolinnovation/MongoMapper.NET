@@ -24,6 +24,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(config.Context.EnableOriginalObject, true);
             Assert.AreEqual(config.Context.UserIncrementalId, true);
             Assert.AreEqual(config.Context.FSync, false);
+            Assert.AreEqual(config.Context.MaxDocumentSize,8);
 
         }
     }

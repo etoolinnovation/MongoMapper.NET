@@ -5,19 +5,23 @@ using System.Reflection;
 using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 
-namespace EtoolTech.MongoDB.Mapper.Core
+namespace EtoolTech.MongoDB.Mapper
 {
     public class PropertyValidator
     {
-        private static readonly Dictionary<string, MethodInfo> BufferPropertyValidatorMethods = new Dictionary<string, MethodInfo>();
+        private static readonly Dictionary<string, MethodInfo> BufferPropertyValidatorMethods =
+            new Dictionary<string, MethodInfo>();
+
         private static readonly List<string> ProcessedTypes = new List<string>();
 
         private static void GetPropertyValidators(Type t)
         {
             if (ProcessedTypes.Contains(t.Name))
+            {
                 return;
+            }
 
-            lock (typeof(PropertyValidator))
+            lock (typeof (PropertyValidator))
             {
                 if (!ProcessedTypes.Contains(t.Name))
                 {
@@ -39,7 +43,9 @@ namespace EtoolTech.MongoDB.Mapper.Core
                             string FieldName = propValidatorAtt.PropertyName;
                             string key = String.Format("{0}|{1}", ClassName, FieldName);
                             if (!BufferPropertyValidatorMethods.ContainsKey(key))
+                            {
                                 BufferPropertyValidatorMethods.Add(key, methodInfo);
+                            }
                         }
                     }
                 }
@@ -50,25 +56,25 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             try
             {
-                m.Invoke(sender, new object[] { t.GetProperty(PropertyName).GetValue(sender, null) });
+                m.Invoke(sender, new[] {t.GetProperty(PropertyName).GetValue(sender, null)});
             }
             catch (Exception ex)
             {
-                throw new ValidatePropertyException(PropertyName,
-                    ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                throw new ValidatePropertyException(
+                    PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
         }
-
 
         public static void Validate(object sender, Type t)
         {
             GetPropertyValidators(t);
-            var validatorList = from b in BufferPropertyValidatorMethods where b.Key.StartsWith(t.Name + "|") select b;
+            IEnumerable<KeyValuePair<string, MethodInfo>> validatorList = from b in BufferPropertyValidatorMethods
+                                                                          where b.Key.StartsWith(t.Name + "|")
+                                                                          select b;
             foreach (var v in validatorList)
             {
                 ExecutePropertyValidator(sender, t, v.Value, v.Key.Split('|')[1]);
             }
         }
-
     }
 }

@@ -5,7 +5,8 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
     [Serializable]
     public class TypeNotSupportedException : Exception
     {
-        private string typeName;
+        private readonly string typeName;
+
         public TypeNotSupportedException(string TypeName)
         {
             typeName = TypeName;

@@ -6,12 +6,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         private const string ConfigSectionName = "MongoMapperConfig";
 
-        public static MongoMapperConfiguration GetConfig()
-        {
-            return (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName) ??
-                   new MongoMapperConfiguration();
-        }
-
         [ConfigurationProperty("Server")]
         public Server Server
         {
@@ -21,13 +15,19 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         [ConfigurationProperty("Database")]
         public Database Database
         {
-            get { return (Database)this["Database"] ?? new Database(); }
+            get { return (Database) this["Database"] ?? new Database(); }
         }
 
         [ConfigurationProperty("Context")]
         public Context Context
         {
-            get { return (Context)this["Context"] ?? new Context(); }
+            get { return (Context) this["Context"] ?? new Context(); }
+        }
+
+        public static MongoMapperConfiguration GetConfig()
+        {
+            return (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName)
+                   ?? new MongoMapperConfiguration();
         }
     }
 }
@@ -43,9 +43,8 @@ public class Server : ConfigurationElement
     [ConfigurationProperty("Port", IsKey = false, IsRequired = true)]
     public int Port
     {
-        get { return  int.Parse(this["Port"].ToString()); }
+        get { return int.Parse(this["Port"].ToString()); }
     }
-  
 
     [ConfigurationProperty("PoolSize", IsKey = false, IsRequired = true)]
     public int PoolSize
@@ -62,7 +61,6 @@ public class Server : ConfigurationElement
 
 public class Database : ConfigurationElement
 {
-   
     [ConfigurationProperty("Name", IsKey = false, IsRequired = true)]
     public string Name
     {
@@ -80,16 +78,20 @@ public class Database : ConfigurationElement
     {
         get { return this["Password"] as string; }
     }
-
 }
 
 public class Context : ConfigurationElement
 {
-
     [ConfigurationProperty("Generated", IsKey = false, IsRequired = true)]
     public bool Generated
     {
         get { return bool.Parse(this["Generated"].ToString()); }
+    }
+
+    [ConfigurationProperty("MaxDocumentSize", IsKey = false, IsRequired = true)]
+    public int MaxDocumentSize
+    {
+        get { return int.Parse(this["MaxDocumentSize"].ToString()); }
     }
 
     [ConfigurationProperty("SafeMode", IsKey = false, IsRequired = true)]
@@ -122,4 +124,3 @@ public class Context : ConfigurationElement
         get { return bool.Parse(this["UserIncrementalId"].ToString()); }
     }
 }
-

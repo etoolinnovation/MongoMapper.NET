@@ -1,11 +1,13 @@
 ﻿using EtoolTech.MongoDB.Mapper.Interfaces;
 
-namespace EtoolTech.MongoDB.Mapper.Core
+namespace EtoolTech.MongoDB.Mapper
 {
-    public class Context
+    public class CustomContext
     {
         private static IConfig _config;
+
         private static ICache _cacheManager;
+
         private static IRules _rulesManager;
 
         public static IConfig Config
@@ -37,6 +39,5 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             _rulesManager = rules;
         }
-        
     }
 }

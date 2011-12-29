@@ -8,6 +8,7 @@ TestResults
 *.suo
 *.vsp
 *.csproj.VisualState.xml
+*.docstates
 
 # MonoDevelop artifacts
 *.pidb

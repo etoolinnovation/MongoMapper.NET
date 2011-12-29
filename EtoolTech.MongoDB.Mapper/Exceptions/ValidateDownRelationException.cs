@@ -6,11 +6,10 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
     public class ValidateDownRelationException : Exception
     {
         private readonly string _relation;
+
         public ValidateDownRelationException()
         {
-            
         }
-
 
         public ValidateDownRelationException(string Relation)
         {
@@ -19,10 +18,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public override string Message
         {
-            get
-            {
-                return "Error Validatin Relation " + _relation;
-            }
+            get { return "Error Validatin Relation " + _relation; }
         }
     }
 }
