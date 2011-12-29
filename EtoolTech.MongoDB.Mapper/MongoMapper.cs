@@ -71,10 +71,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private readonly Type _classType;
 
-        private string _stringOriginalObject;
-
-        private BsonDocument _bsonOriginalObject;
-
+        private string _stringOriginalObject;        
         private object _tOriginalObjet;
 
         [BsonIgnore]
@@ -93,8 +90,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
             set
             {
-                this._stringOriginalObject = value;
-                _bsonOriginalObject = null;
+                this._stringOriginalObject = value;                
                 _tOriginalObjet = null;
             }
         }
@@ -177,18 +173,7 @@ namespace EtoolTech.MongoDB.Mapper
             return (T) _tOriginalObjet;
          
         }
-
-        public BsonDocument GetOriginalDocument()
-        {
-            if (_bsonOriginalObject != null)
-            {
-                return _bsonOriginalObject;
-            }
-
-            _bsonOriginalObject = BsonDocument.ReadFrom(StringOriginalObject);
-            return _bsonOriginalObject;
-        }
-
+     
         #endregion
 
         #region Write Methods
@@ -338,7 +323,7 @@ namespace EtoolTech.MongoDB.Mapper
             //Guardamos el obj original en JSV para romper la referencia
             if (ConfigManager.EnableOriginalObject)
             {
-                ((IMongoMapperBytesOriginalObject)o).StringOriginalObject = Serializer.Serialize(o); 
+                ((IMongoMapperStringOriginalObject)o).StringOriginalObject = Serializer.Serialize(o); 
             }
             return o;
         }

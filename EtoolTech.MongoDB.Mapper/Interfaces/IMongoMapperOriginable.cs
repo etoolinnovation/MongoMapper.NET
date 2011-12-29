@@ -1,18 +1,14 @@
 namespace EtoolTech.MongoDB.Mapper.Interfaces
-{
-    using global::MongoDB.Bson;
-
-    public interface IMongoMapperBytesOriginalObject
+{    
+    public interface IMongoMapperStringOriginalObject
     {
         string StringOriginalObject { get; set; }
     }
 
-    public interface IMongoMapperOriginable : IMongoMapperBytesOriginalObject
+    public interface IMongoMapperOriginable : IMongoMapperStringOriginalObject
     {
         T GetOriginalObject<T>();
 
-        T GetOriginalT<T>();
-
-        BsonDocument GetOriginalDocument();
+        T GetOriginalT<T>();        
     }
 }
