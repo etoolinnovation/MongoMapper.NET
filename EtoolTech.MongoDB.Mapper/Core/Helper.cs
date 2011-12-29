@@ -1,23 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-
-    using global::MongoDB.Bson.Serialization;
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class Helper
     {
         private static readonly List<Type> SupportedTypesLits = new List<Type>
-            { typeof(string), typeof(decimal), typeof(int), typeof(long), typeof(DateTime), typeof(bool) };
+                                                                    {
+                                                                        typeof (string),
+                                                                        typeof (decimal),
+                                                                        typeof (int),
+                                                                        typeof (long),
+                                                                        typeof (DateTime),
+                                                                        typeof (bool)
+                                                                    };
 
         private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
             new Dictionary<string, List<string>>();
@@ -36,11 +40,10 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (_server == null)
                 {
-
                     //TODO: Revisar donde ponerlo, posibilidad de definirlo por coleccion??
-                    BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize * 1024 * 1024; 
-                    
-                    MongoServerSettings ServerSettings = new MongoServerSettings();
+                    BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize*1024*1024;
+
+                    var ServerSettings = new MongoServerSettings();
                     string userName = ConfigManager.UserName;
 
                     if (!String.IsNullOrEmpty(userName))
@@ -76,11 +79,11 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferPrimaryKey[t.Name];
             }
 
-            lock (typeof(Helper))
+            lock (typeof (Helper))
             {
                 if (!BufferPrimaryKey.ContainsKey(t.Name))
                 {
-                    var keyAtt = (MongoKey)t.GetCustomAttributes(typeof(MongoKey), false).FirstOrDefault();
+                    var keyAtt = (MongoKey) t.GetCustomAttributes(typeof (MongoKey), false).FirstOrDefault();
                     if (keyAtt != null)
                     {
                         if (String.IsNullOrEmpty(keyAtt.KeyFields))
@@ -91,7 +94,7 @@ namespace EtoolTech.MongoDB.Mapper
                     }
                     else
                     {
-                        BufferPrimaryKey.Add(t.Name, new List<string>() { "MongoMapper_Id" });
+                        BufferPrimaryKey.Add(t.Name, new List<string> {"MongoMapper_Id"});
                     }
                 }
 
@@ -106,18 +109,18 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferIndexes[t.Name];
             }
 
-            lock (typeof(Helper))
+            lock (typeof (Helper))
             {
                 if (!BufferIndexes.ContainsKey(t.Name))
                 {
                     BufferIndexes.Add(t.Name, new List<string>());
-                    var indexAtt = t.GetCustomAttributes(typeof(MongoIndex), false);
+                    object[] indexAtt = t.GetCustomAttributes(typeof (MongoIndex), false);
 
-                    foreach (var index in indexAtt)
+                    foreach (object index in indexAtt)
                     {
                         if (index != null)
                         {
-                            BufferIndexes[t.Name].Add(((MongoIndex)index).IndexFields);
+                            BufferIndexes[t.Name].Add(((MongoIndex) index).IndexFields);
                         }
                     }
                 }
@@ -154,13 +157,13 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static void RegisterCustomDiscriminatorTypes(Type classType)
         {
-            var RegTypes = classType.GetCustomAttributes(typeof(MongoCustomDiscriminatorType), false);
+            object[] RegTypes = classType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType), false);
 
-            foreach (var RegType in RegTypes)
+            foreach (object RegType in RegTypes)
             {
                 if (RegType != null)
                 {
-                    MongoCustomDiscriminatorType MongoCustomDiscriminatorType = (MongoCustomDiscriminatorType)RegType;
+                    var MongoCustomDiscriminatorType = (MongoCustomDiscriminatorType) RegType;
                     BsonDefaultSerializer.RegisterDiscriminator(
                         MongoCustomDiscriminatorType.Type, MongoCustomDiscriminatorType.Type.Name);
                 }

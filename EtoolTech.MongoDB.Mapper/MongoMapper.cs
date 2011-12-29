@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
-
-using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
@@ -17,13 +15,11 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 
-
 namespace EtoolTech.MongoDB.Mapper
 {
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
     [Serializable]
-    public abstract class MongoMapper : IBsonSerializable, IMongoMapperOriginable, IMongoMapperRelationable, IMongoMapperWriteable, IMongoMapperIdeable
+    public abstract class MongoMapper : IBsonSerializable, IMongoMapperOriginable, IMongoMapperRelationable,
+                                        IMongoMapperWriteable, IMongoMapperIdeable
     {
         #region Eventos
 
@@ -67,57 +63,86 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly IEvents Events = new Events();
 
-        private readonly Dictionary<string, object> _relationBuffer = new Dictionary<string, object>();
-
         private readonly Type _classType;
+        private readonly Dictionary<string, object> _relationBuffer = new Dictionary<string, object>();
+        [BsonIgnore] internal bool RepairCollection;
 
-        private string _stringOriginalObject;        
+        private string _stringOriginalObject;
         private object _tOriginalObjet;
 
-        [BsonIgnore]
-        internal bool RepairCollection;
+        protected MongoMapper()
+        {
+            _classType = GetType();
+            Helper.RebuildClass(_classType, RepairCollection);
+        }
 
-        [BsonId(IdGenerator = typeof(MongoMapperIdGenerator))]
+        #region IBsonSerializable Members
+
+        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
+        {
+            object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
+            //Guardamos el obj original en JSV para romper la referencia
+            if (ConfigManager.EnableOriginalObject)
+            {
+                ((IMongoMapperStringOriginalObject) o).StringOriginalObject = Serializer.Serialize(o);
+            }
+            return o;
+        }
+
+        public bool GetDocumentId(out object id, out Type idNominalType, out IIdGenerator idGenerator)
+        {
+            return BsonClassMapSerializer.Instance.GetDocumentId(this, out id, out idNominalType, out idGenerator);
+        }
+
+        public void Serialize(BsonWriter bsonWriter, Type nominalType, IBsonSerializationOptions options)
+        {
+            BsonClassMapSerializer.Instance.Serialize(bsonWriter, nominalType, this, options);
+        }
+
+        public void SetDocumentId(object id)
+        {
+            BsonClassMapSerializer.Instance.SetDocumentId(this, id);
+        }
+
+        #endregion
+
+        #region IMongoMapperIdeable Members
+
+        [BsonId(IdGenerator = typeof (MongoMapperIdGenerator))]
         [XmlIgnore]
         public long MongoMapper_Id { get; set; }
-        
+
+        #endregion
+
+        #region IMongoMapperOriginable Members
+
         [BsonIgnore]
         public string StringOriginalObject
         {
-            get
-            {
-                return this._stringOriginalObject;
-            }
+            get { return _stringOriginalObject; }
             set
             {
-                this._stringOriginalObject = value;                
+                _stringOriginalObject = value;
                 _tOriginalObjet = null;
             }
         }
+
+        #endregion
 
         //TODO: Pendiente temas de transacciones
         //public bool Commited;
         //public CommitOperation CommitOp;
         //public string TransactionID;
 
-        protected MongoMapper()
-        {                       
-            _classType = GetType();
-            Helper.RebuildClass(_classType, RepairCollection);
-        }
-
-        public static IQueryable<T> QueryContext<T>()
-        {
-            return CollectionsManager.GetCollection<T>(typeof(T).Name).AsQueryable<T>();
-        }
+        #region IMongoMapperRelationable Members
 
         public List<T> GetRelation<T>(string relation)
         {
-            if (!this._relationBuffer.ContainsKey(relation))
+            if (!_relationBuffer.ContainsKey(relation))
             {
-                this._relationBuffer.Add(relation, Relations.GetRelation<T>(this, relation, _classType, Finder));
+                _relationBuffer.Add(relation, Relations.GetRelation<T>(this, relation, _classType, Finder));
             }
-            return (List<T>)this._relationBuffer[relation];
+            return (List<T>) _relationBuffer[relation];
         }
 
         public void EnsureUpRelations()
@@ -128,6 +153,13 @@ namespace EtoolTech.MongoDB.Mapper
         public void EnsureDownRelations()
         {
             Relations.EnsureDownRelations(this, _classType, Finder);
+        }
+
+        #endregion
+
+        public static IQueryable<T> QueryContext<T>()
+        {
+            return CollectionsManager.GetCollection<T>(typeof (T).Name).AsQueryable<T>();
         }
 
         private Dictionary<string, object> GetKeyValues()
@@ -143,12 +175,10 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Objeto Original para comprobar cambios
 
-
-
         public T GetOriginalObject<T>()
         {
             if (!ConfigManager.EnableOriginalObject)
-            {                
+            {
                 throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
             }
 
@@ -163,14 +193,13 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (_tOriginalObjet != null)
             {
-                return (T)_tOriginalObjet;
+                return (T) _tOriginalObjet;
             }
-          
+
             _tOriginalObjet = Serializer.Deserialize<T>(StringOriginalObject);
             return (T) _tOriginalObjet;
-         
         }
-     
+
         #endregion
 
         #region Write Methods
@@ -292,12 +321,12 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
-            return Finder.FindAsList<T>(exp);
+            return Finder.FindAsList(exp);
         }
 
         public static MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
         {
-            return Finder.FindAsCursor<T>(exp);
+            return Finder.FindAsCursor(exp);
         }
 
         public static List<T> AllAsList<T>()
@@ -308,36 +337,6 @@ namespace EtoolTech.MongoDB.Mapper
         public static MongoCursor<T> AllAsCursor<T>()
         {
             return Finder.AllAsCursor<T>();
-        }
-
-        #endregion
-
-        #region IBsonSerializable Members
-
-        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
-        {            
-            object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
-            //Guardamos el obj original en JSV para romper la referencia
-            if (ConfigManager.EnableOriginalObject)
-            {
-                ((IMongoMapperStringOriginalObject)o).StringOriginalObject = Serializer.Serialize(o); 
-            }
-            return o;
-        }
-
-        public bool GetDocumentId(out object id, out Type idNominalType, out IIdGenerator idGenerator)
-        {
-            return BsonClassMapSerializer.Instance.GetDocumentId(this, out id, out idNominalType, out idGenerator);
-        }
-
-        public void Serialize(BsonWriter bsonWriter, Type nominalType, IBsonSerializationOptions options)
-        {
-            BsonClassMapSerializer.Instance.Serialize(bsonWriter, nominalType, this, options);
-        }
-
-        public void SetDocumentId(object id)
-        {
-            BsonClassMapSerializer.Instance.SetDocumentId(this, id);
         }
 
         #endregion

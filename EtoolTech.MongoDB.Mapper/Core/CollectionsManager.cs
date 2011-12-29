@@ -1,10 +1,9 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Collections.Generic;
+using MongoDB.Driver;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-
-    using global::MongoDB.Driver;
-
     public class CollectionsManager
     {
         private static readonly Dictionary<string, MongoCollection> Collections =
@@ -19,7 +18,7 @@
                 return Collections[name];
             }
 
-            lock (typeof(Helper))
+            lock (typeof (Helper))
             {
                 if (!Collections.ContainsKey(name))
                 {

@@ -1,18 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class Relations : IRelations
     {
         private static readonly Dictionary<string, List<string>> BufferUpRelations =
@@ -37,13 +35,14 @@ namespace EtoolTech.MongoDB.Mapper
                     var upRelations = new List<string>();
                     List<PropertyInfo> publicFieldInfos =
                         t.GetProperties().Where(
-                            c => c.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault() != null).ToList(
-                                );
+                            c => c.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault() != null).ToList
+                            (
+                            );
                     foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
                         var upRelationAtt =
                             (MongoUpRelation)
-                            fieldInfo.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault();
+                            fieldInfo.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault();
 
                         if (upRelationAtt != null)
                         {
@@ -83,17 +82,17 @@ namespace EtoolTech.MongoDB.Mapper
                     var downRelations = new List<string>();
                     List<PropertyInfo> publicFieldInfos =
                         t.GetProperties().Where(
-                            c => c.GetCustomAttributes(typeof(MongoDownRelation), false).FirstOrDefault() != null).
+                            c => c.GetCustomAttributes(typeof (MongoDownRelation), false).FirstOrDefault() != null).
                             ToList();
                     foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
-                        object[] downRelationAtt = fieldInfo.GetCustomAttributes(typeof(MongoDownRelation), false);
+                        object[] downRelationAtt = fieldInfo.GetCustomAttributes(typeof (MongoDownRelation), false);
 
                         foreach (object downRelation in downRelationAtt)
                         {
                             if (downRelation != null)
                             {
-                                var relation = (MongoDownRelation)downRelation;
+                                var relation = (MongoDownRelation) downRelation;
                                 downRelations.Add(
                                     String.Format(
                                         "{0}|{1}|{2}", fieldInfo.Name, relation.ObjectName, relation.FieldName));
@@ -121,11 +120,11 @@ namespace EtoolTech.MongoDB.Mapper
             string findString = String.Format("{0}|{1}", values[0], values[1]);
 
             string relationString =
-                this.GetUpRelations(ClassType).FirstOrDefault(upRelation => upRelation.Contains(findString));
+                GetUpRelations(ClassType).FirstOrDefault(upRelation => upRelation.Contains(findString));
             if (String.IsNullOrEmpty(relationString))
             {
                 relationString =
-                    this.GetDownRelations(ClassType).FirstOrDefault(downRelation => downRelation.EndsWith(findString));
+                    GetDownRelations(ClassType).FirstOrDefault(downRelation => downRelation.EndsWith(findString));
             }
 
             if (String.IsNullOrEmpty(relationString))
@@ -148,7 +147,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             //upRelations.Add(fieldInfo.Name + "|" + upRelationAtt.ObjectName + "|" + upRelationAtt.FieldName + 
             //"|" + upRelationAtt.ParentFieldName + "|" + upRelationAtt.ParentPropertyName);
-            foreach (string UpRelation in this.GetUpRelations(ClassType))
+            foreach (string UpRelation in GetUpRelations(ClassType))
             {
                 string[] values = UpRelation.Split('|');
                 string fieldName = values[0];
@@ -167,7 +166,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 PropertyInfo PropertyInfo = ClassType.GetProperty(fieldName);
                 object value = PropertyInfo.GetValue(sender, null);
-                var query = MongoQuery.Eq(fkFieldName, value);
+                QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
                 if (ParentQuery != null)
                 {
@@ -184,7 +183,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void EnsureDownRelations(object sender, Type ClassType, IFinder IFinder)
         {
-            foreach (string Relation in this.GetDownRelations(ClassType))
+            foreach (string Relation in GetDownRelations(ClassType))
             {
                 string[] values = Relation.Split('|');
                 string fieldName = values[0];
@@ -193,7 +192,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 PropertyInfo PropertyInfo = ClassType.GetProperty(fieldName);
                 object value = PropertyInfo.GetValue(sender, null);
-                var query = MongoQuery.Eq(fkFieldName, value);
+                QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
                 MongoCollection fkCol = CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName));
                 if (fkCol.Count(query) != 0)
@@ -210,14 +209,15 @@ namespace EtoolTech.MongoDB.Mapper
         {
             List<PropertyInfo> publicFieldInfos =
                 t.GetProperties().Where(
-                    c => c.GetCustomAttributes(typeof(MongoChildCollection), false).FirstOrDefault() != null).ToList();
+                    c => c.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
             foreach (PropertyInfo fieldInfo in publicFieldInfos)
             {
-                var mongoChildAtt = fieldInfo.GetCustomAttributes(typeof(MongoChildCollection), false).FirstOrDefault();
+                object mongoChildAtt =
+                    fieldInfo.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault();
                 if (mongoChildAtt != null)
                 {
-                    Type ChildType = ((MongoChildCollection)mongoChildAtt).ChildType;
-                    List<string> Relations = this.GetUpRelations(ChildType);
+                    Type ChildType = ((MongoChildCollection) mongoChildAtt).ChildType;
+                    List<string> Relations = GetUpRelations(ChildType);
                     int r = Relations.Count;
                 }
             }

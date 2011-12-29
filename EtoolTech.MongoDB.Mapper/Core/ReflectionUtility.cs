@@ -1,8 +1,8 @@
-﻿namespace EtoolTech.MongoDB.Mapper
-{
-    using System;
-    using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
+namespace EtoolTech.MongoDB.Mapper
+{
     public static class ReflectionUtility
     {
         public static string GetPropertyName<T>(Expression<Func<T, object>> exp)

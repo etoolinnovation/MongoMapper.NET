@@ -1,9 +1,8 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
     public class Events : IEvents
     {
         #region IEvents Members

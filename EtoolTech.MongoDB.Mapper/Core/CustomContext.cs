@@ -1,7 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper
-{
-    using EtoolTech.MongoDB.Mapper.Interfaces;
+﻿using EtoolTech.MongoDB.Mapper.Interfaces;
 
+namespace EtoolTech.MongoDB.Mapper
+{
     public class CustomContext
     {
         private static IConfig _config;
@@ -12,26 +12,17 @@
 
         public static IConfig Config
         {
-            get
-            {
-                return _config;
-            }
+            get { return _config; }
         }
 
         public static ICache CacheManager
         {
-            get
-            {
-                return _cacheManager;
-            }
+            get { return _cacheManager; }
         }
 
         public static IRules Rules
         {
-            get
-            {
-                return _rulesManager;
-            }
+            get { return _rulesManager; }
         }
 
         public static void SetDatabaseConfigInterface(IConfig config)

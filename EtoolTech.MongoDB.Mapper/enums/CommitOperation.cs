@@ -1,4 +1,6 @@
-﻿namespace EtoolTech.MongoDB.Mapper.enums
+﻿using System;
+
+namespace EtoolTech.MongoDB.Mapper.enums
 {
     public enum CommitOperation
     {
@@ -11,14 +13,17 @@
 
     public class CommitOperationMetaData
     {
-        public static string[] Descriptions = new string[] { "Insert", "Update", "Delete" };
+        public static string[] Descriptions = new[] {"Insert", "Update", "Delete"};
 
-        public static CommitOperation[] Values = new CommitOperation[]
-            { CommitOperation.Insert, CommitOperation.Update, CommitOperation.Detele };
+        public static CommitOperation[] Values = new[]
+                                                     {
+                                                         CommitOperation.Insert, CommitOperation.Update,
+                                                         CommitOperation.Detele
+                                                     };
 
         public static string GetDescription(CommitOperation enumValue)
         {
-            return Descriptions[System.Array.IndexOf(CommitOperationMetaData.Values, enumValue)];
+            return Descriptions[Array.IndexOf(Values, enumValue)];
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Linq.Expressions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Driver.Builders;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Linq.Expressions;
-
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
-    using global::MongoDB.Driver.Builders;
-
     public class ExpressionParser
     {
         private readonly IFinder _finder = new Finder();
