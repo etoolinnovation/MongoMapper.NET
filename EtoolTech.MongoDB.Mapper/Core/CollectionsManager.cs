@@ -18,7 +18,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return Collections[name];
             }
 
-            lock (typeof (Helper))
+            lock (typeof (CollectionsManager))
             {
                 if (!Collections.ContainsKey(name))
                 {
