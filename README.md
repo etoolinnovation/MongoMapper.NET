@@ -13,7 +13,7 @@ You can find examples in the Test Project
 
 ### Change Log
 
-* Coming Soon
+* 30/12/2001: http://bit.ly/uy80RE
 
 ### Questions and Bug Reports
 
