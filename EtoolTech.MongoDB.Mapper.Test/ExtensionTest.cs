@@ -37,6 +37,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
             countries.MongoFind(Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
 
+            Country country = new Country();
+            country.FindByKey("ES");
+
             List<string> strings = new List<string>();
             try
             {
@@ -44,7 +47,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(NotImplementedException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(NotSupportedException));
             }
 
 
