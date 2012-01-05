@@ -13,6 +13,10 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class Finder : IFinder
     {
+        internal static IFinder Instance {get {return new Finder();}}
+
+        private Finder() {}
+
         #region FindAsList Methods
 
         public T FindById<T>(long id)

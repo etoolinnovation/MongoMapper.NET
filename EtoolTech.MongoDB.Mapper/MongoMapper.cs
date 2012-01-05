@@ -56,11 +56,8 @@ namespace EtoolTech.MongoDB.Mapper
         public event OnAfterCompleteEventHandler OnAfterComplete;
 
         #endregion
-
-        private static readonly IFinder Finder = new Finder();
-
+        
         private static readonly IRelations Relations = new Relations();
-
         private static readonly IEvents Events = new Events();
 
         private readonly Type _classType;
@@ -140,19 +137,19 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!_relationBuffer.ContainsKey(relation))
             {
-                _relationBuffer.Add(relation, Relations.GetRelation<T>(this, relation, _classType, Finder));
+                _relationBuffer.Add(relation, Relations.GetRelation<T>(this, relation, _classType, Finder.Instance));
             }
             return (List<T>) _relationBuffer[relation];
         }
 
         public void EnsureUpRelations()
         {
-            Relations.EnsureUpRelations(this, _classType, Finder);
+            Relations.EnsureUpRelations(this, _classType, Finder.Instance);
         }
 
         public void EnsureDownRelations()
         {
-            Relations.EnsureDownRelations(this, _classType, Finder);
+            Relations.EnsureDownRelations(this, _classType, Finder.Instance);
         }
 
         #endregion
@@ -210,7 +207,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (MongoMapper_Id == default(long))
             {
-                long id = Finder.FindIdByKey<T>(GetKeyValues());
+                long id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
                 if (id == default(long))
                 {
                     InsertDocument();
@@ -282,7 +279,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (MongoMapper_Id == default(long))
             {
-                MongoMapper_Id = Finder.FindIdByKey<T>(GetKeyValues());
+                MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
             FindAndModifyResult result =
@@ -296,47 +293,47 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static T FindByKey<T>(params object[] values)
         {
-            return Finder.FindByKey<T>(values);
+            return Finder.Instance.FindByKey<T>(values);
         }
 
         public static List<T> FindAsList<T>(QueryComplete query)
         {
-            return Finder.FindAsList<T>(query);
+            return Finder.Instance.FindAsList<T>(query);
         }
 
         public static MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
         {
-            return Finder.FindAsCursor<T>(query);
+            return Finder.Instance.FindAsCursor<T>(query);
         }
 
         public static List<T> FindAsList<T>(string fieldName, object value)
         {
-            return Finder.FindAsList<T>(MongoQuery.Eq(fieldName, value));
+            return Finder.Instance.FindAsList<T>(MongoQuery.Eq(fieldName, value));
         }
 
         public static MongoCursor<T> FindAsCursor<T>(string fieldName, object value)
         {
-            return Finder.FindAsCursor<T>(MongoQuery.Eq(fieldName, value));
+            return Finder.Instance.FindAsCursor<T>(MongoQuery.Eq(fieldName, value));
         }
 
         public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
-            return Finder.FindAsList(exp);
+            return Finder.Instance.FindAsList(exp);
         }
 
         public static MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
         {
-            return Finder.FindAsCursor(exp);
+            return Finder.Instance.FindAsCursor(exp);
         }
 
         public static List<T> AllAsList<T>()
         {
-            return Finder.AllAsList<T>();
+            return Finder.Instance.AllAsList<T>();
         }
 
         public static MongoCursor<T> AllAsCursor<T>()
         {
-            return Finder.AllAsCursor<T>();
+            return Finder.Instance.AllAsCursor<T>();
         }
 
         #endregion
