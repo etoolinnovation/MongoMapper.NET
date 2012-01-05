@@ -5,6 +5,8 @@ namespace EtoolTech.MongoDB.Mapper
 {
     using System.Reflection;
 
+    using EtoolTech.MongoDB.Mapper.Interfaces;
+
     public static class ReflectionUtility
     {
         public static string GetPropertyName<T>(Expression<Func<T, object>> exp)
@@ -32,6 +34,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static object GetPropertyValue(object obj, string propertyName)
         {
+            if ((propertyName == "MongoMapper_Id") && (obj is IMongoMapperIdeable))
+                return ((IMongoMapperIdeable)obj).MongoMapper_Id;
+
             Type t = obj.GetType();
             PropertyInfo property = t.GetProperty(propertyName);
             var objParm = Expression.Parameter(obj.GetType(), "o");
