@@ -32,6 +32,16 @@ namespace EtoolTech.MongoDB.Mapper
             return string.Empty;
         }
 
+        public static void CopyObject<T>(T source, T destination)
+        {
+            Type t = source.GetType();
+
+            foreach (var property in t.GetProperties())
+            {
+                property.SetValue(destination,property.GetValue(source,null),null);
+            }
+        }
+
         public static object GetPropertyValue(object obj, string propertyName)
         {
             if ((propertyName == "MongoMapper_Id") && (obj is IMongoMapperIdeable))

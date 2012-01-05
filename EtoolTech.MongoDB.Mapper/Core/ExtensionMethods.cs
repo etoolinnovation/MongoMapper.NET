@@ -10,16 +10,16 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public static class ExtensionMethods
     {
-        public static T FindByKey<T>(this T o, params object[] values)
+        public static void FindByKey<T>(this T o, params object[] values)
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
                 throw new NotSupportedException();
             }
-            return Finder.Instance.FindByKey<T>(values);
+            
+            object result = Finder.Instance.FindByKey<T>(values);
 
-            //object result = Finder.Instance.FindByKey<T>(values);
-            //Conversion<T,T>.From((T) result, ref o); 
+            ReflectionUtility.CopyObject(result,o);
         }
 
         public static void MongoFind<T>(this List<T> list, QueryComplete query = null)

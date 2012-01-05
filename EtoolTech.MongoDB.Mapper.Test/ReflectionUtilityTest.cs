@@ -63,7 +63,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
         }
 
-        public static void TestOldVsNewGetPropertyValue()
+        public static void TestObjectVsTypedNewGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
             test.String = "XXX";
