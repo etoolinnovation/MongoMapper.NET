@@ -161,13 +161,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private Dictionary<string, object> GetKeyValues()
         {
-            var result = new Dictionary<string, object>();
-            foreach (string keyField in Helper.GetPrimaryKey(_classType))
-            {
-                PropertyInfo propertyInfo = _classType.GetProperty(keyField);
-                result.Add(keyField, propertyInfo.GetValue(this, null));
-            }
-            return result;
+            return Helper.GetPrimaryKey(this._classType).ToDictionary(keyField => keyField, keyField => ReflectionUtility.GetPropertyValue(this, keyField));
         }
 
         #region Objeto Original para comprobar cambios

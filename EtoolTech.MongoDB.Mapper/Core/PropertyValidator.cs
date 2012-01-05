@@ -52,16 +52,16 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        private static void ExecutePropertyValidator(object sender, Type t, MethodInfo m, string PropertyName)
+        private static void ExecutePropertyValidator(object sender, Type t, MethodInfo m, string propertyName)
         {
             try
             {
-                m.Invoke(sender, new[] {t.GetProperty(PropertyName).GetValue(sender, null)});
+                m.Invoke(sender, new[] {ReflectionUtility.GetPropertyValue(sender, propertyName)});
             }
             catch (Exception ex)
             {
                 throw new ValidatePropertyException(
-                    PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                    propertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
         }
 

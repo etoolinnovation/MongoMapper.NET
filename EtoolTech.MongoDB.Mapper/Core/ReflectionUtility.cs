@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 
 namespace EtoolTech.MongoDB.Mapper
 {
+    using System.Reflection;
+
     public static class ReflectionUtility
     {
         public static string GetPropertyName<T>(Expression<Func<T, object>> exp)
@@ -27,5 +29,21 @@ namespace EtoolTech.MongoDB.Mapper
 
             return string.Empty;
         }
+
+        public static object GetPropertyValue(object obj, string propertyName)
+        {
+            Type t = obj.GetType();
+            PropertyInfo property = t.GetProperty(propertyName);
+            var objParm = Expression.Parameter(obj.GetType(), "o");
+            Type delegateType = typeof(Func<,>).MakeGenericType(property.DeclaringType, property.PropertyType);
+            var lambda = Expression.Lambda(delegateType, Expression.Property(objParm, property.Name), objParm);
+            return lambda.Compile().DynamicInvoke(obj);
+        }
+
+         public static T GetPropertyValue<T>(object obj, string propertyName)
+         {
+             return (T)GetPropertyValue(obj, propertyName);
+         }
+     
     }
 }
