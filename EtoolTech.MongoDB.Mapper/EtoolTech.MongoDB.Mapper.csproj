@@ -82,7 +82,6 @@
     <Compile Include="Enums\CommitOperation.cs" />
     <Compile Include="Exceptions\DuplicateKeyException.cs" />
     <Compile Include="Exceptions\ValidatePropertyException.cs" />
-    <Compile Include="Interfaces\ICalcField.cs" />
     <Compile Include="Exceptions\ValidateDownRelationException.cs" />
     <Compile Include="Exceptions\FindByKeyNotFoundException.cs" />
     <Compile Include="Exceptions\TypeNotSupportedException.cs" />

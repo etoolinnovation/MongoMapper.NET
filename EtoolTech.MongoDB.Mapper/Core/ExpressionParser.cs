@@ -7,7 +7,7 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class ExpressionParser
     {
-        private readonly IFinder _finder = new Finder();
+        
 
         public QueryComplete ParseExpression<T>(Expression<Func<T, object>> exp)
         {
@@ -17,7 +17,7 @@ namespace EtoolTech.MongoDB.Mapper
             ////TODO temporal Solo AND;
             //return Query.And(_bufferOptions.Select(
             //    bufferOption =>
-            //    _finder.GetQuery(bufferOption.FindCondition, bufferOption.Value, bufferOption.FieldName)).ToArray());
+            //    Finder.Instance.GetQuery(bufferOption.FindCondition, bufferOption.Value, bufferOption.FieldName)).ToArray());
         }
 
         /*
