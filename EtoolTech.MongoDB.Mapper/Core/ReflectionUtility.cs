@@ -39,16 +39,20 @@ namespace EtoolTech.MongoDB.Mapper
 
             Type t = obj.GetType();
             PropertyInfo property = t.GetProperty(propertyName);
-            var objParm = Expression.Parameter(obj.GetType(), "o");
-            Type delegateType = typeof(Func<,>).MakeGenericType(property.DeclaringType, property.PropertyType);
-            var lambda = Expression.Lambda(delegateType, Expression.Property(objParm, property.Name), objParm);
-            return lambda.Compile().DynamicInvoke(obj);
+            return property.GetValue(obj, null);
         }
 
          public static T GetPropertyValue<T>(object obj, string propertyName)
          {
              return (T)GetPropertyValue(obj, propertyName);
          }
+
+        public static object OlGetPropertyValue(object obj, string propertyName)
+        {
+            Type t = obj.GetType();
+            PropertyInfo property = t.GetProperty(propertyName);
+            return property.GetValue(obj, null);
+        }
      
     }
 }

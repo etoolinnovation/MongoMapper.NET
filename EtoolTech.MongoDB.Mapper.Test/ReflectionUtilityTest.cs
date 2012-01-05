@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EtoolTech.MongoDB.Mapper.Test
 {
+    using System.Diagnostics;
 
     public class TestReflectionUtility
     {
@@ -60,6 +61,34 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             test.Bool = true;
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
+        }
+
+        public static void TestOldVsNewGetPropertyValue()
+        {
+            TestReflectionUtility test = new TestReflectionUtility();
+            test.String = "XXX";
+
+            var timer = Stopwatch.StartNew();
+
+          
+            for (int i = 0; i < 1000000; i++)
+            {
+                object r2 = ReflectionUtility.GetPropertyValue(test, "String");
+            }
+
+            timer.Stop();
+            Console.WriteLine(string.Format("Elapsed para obj: {0}", timer.Elapsed));
+
+            timer = Stopwatch.StartNew();
+            for (int i = 0; i < 1000000; i++)
+            {
+                string r = ReflectionUtility.GetPropertyValue<string>(test, "String");
+            }
+
+            
+            timer.Stop();
+            Console.WriteLine(string.Format("Elapsed para T: {0}", timer.Elapsed));
+
         }
     }
 }
