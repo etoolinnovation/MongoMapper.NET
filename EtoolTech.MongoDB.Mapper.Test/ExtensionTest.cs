@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-
-using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Test.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver.Builders;
@@ -14,7 +10,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
     public class ExtensionTest
     {
         [TestMethod]
-        public void TestColectionFillExtensions()
+        public void TestExtensions()
         {
             Helper.Db.Drop();
 
@@ -38,7 +34,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
             Assert.AreEqual(countries.Count, 2);
 
             Country country = new Country();
-            country.FindByKey("ES");
+            //TODO: Pendiente de ver como no tener que igualarlo
+            country = country.FindByKey("ES");
+            Assert.AreEqual(country.Code,"ES");
 
             List<string> strings = new List<string>();
             try
@@ -50,7 +48,15 @@ namespace EtoolTech.MongoDB.Mapper.Test
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof(NotSupportedException));
             }
 
-
+            string s = "s";
+            try
+            {
+                s.FindByKey("");
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(NotSupportedException));
+            }
 
         }
     }

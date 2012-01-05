@@ -10,12 +10,16 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public static class ExtensionMethods
     {
-        private static readonly IFinder Finder = new Finder();
-
-        public static void FindByKey<T>(this T o, params object[] values)
+        public static T FindByKey<T>(this T o, params object[] values)
         {
-            object result = Finder.FindByKey<T>(values);
-            Conversion<T, T>.From((T) result, ref o);     
+            if (typeof(T).BaseType != typeof(MongoMapper))
+            {
+                throw new NotSupportedException();
+            }
+            return Finder.Instance.FindByKey<T>(values);
+
+            //object result = Finder.Instance.FindByKey<T>(values);
+            //Conversion<T,T>.From((T) result, ref o); 
         }
 
         public static void MongoFind<T>(this List<T> list, QueryComplete query = null)
@@ -25,7 +29,7 @@ namespace EtoolTech.MongoDB.Mapper
                 throw new NotSupportedException();
             }
             list.Clear();
-            list.AddRange(query == null ? Finder.AllAsList<T>() : Finder.FindAsList<T>(query));
+            list.AddRange(query == null ? Finder.Instance.AllAsList<T>() : Finder.Instance.FindAsList<T>(query));
         }
 
         public static void MongoFind<T>(this List<T> list, string fieldName, object value)
@@ -35,7 +39,7 @@ namespace EtoolTech.MongoDB.Mapper
                 throw new NotSupportedException();
             }
             list.Clear();
-            list.AddRange(Finder.FindAsList<T>(MongoQuery.Eq(fieldName, value)));
+            list.AddRange(Finder.Instance.FindAsList<T>(MongoQuery.Eq(fieldName, value)));
         }
 
         public static void MongoFind<T>(this List<T> list, Expression<Func<T, object>> exp)
@@ -45,7 +49,7 @@ namespace EtoolTech.MongoDB.Mapper
                 throw new NotSupportedException();
             }
             list.Clear();
-            list.AddRange(Finder.FindAsList(exp));
+            list.AddRange(Finder.Instance.FindAsList(exp));
         }
     }
 
@@ -60,7 +64,7 @@ namespace EtoolTech.MongoDB.Mapper
             Converter = CreateConverter(obj);
         }
 
-        public static Func<TInput, TOutput> CreateConverter(object o = null)
+        static Func<TInput, TOutput> CreateConverter(object o = null)
         {
             var input = Expression.Parameter(typeof(TInput), "input");
             
@@ -78,9 +82,7 @@ namespace EtoolTech.MongoDB.Mapper
                     (MemberBinding)Expression.Bind(destinationProperty,
                         Expression.Property(input, sourceProperty)));
 
-            MemberInitExpression body = null;
-            
-            body = Expression.MemberInit(Expression.New(typeof(TOutput)), memberBindings);                        
+            MemberInitExpression body = Expression.MemberInit(Expression.New(typeof(TOutput)), memberBindings);
             var lambda = Expression.Lambda<Func<TInput, TOutput>>(body, input);
             return lambda.Compile();            
         }
@@ -93,7 +95,7 @@ namespace EtoolTech.MongoDB.Mapper
         public static void From(TInput input, ref TOutput output)
         {
             obj = output;
-            object temp = Converter(input);
+            Converter(input);           
         }
     }
 
