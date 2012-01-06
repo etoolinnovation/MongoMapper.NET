@@ -56,13 +56,6 @@ namespace EtoolTech.MongoDB.Mapper
          {
              return (T)GetPropertyValue(obj, propertyName);
          }
-
-        public static object OlGetPropertyValue(object obj, string propertyName)
-        {
-            Type t = obj.GetType();
-            PropertyInfo property = t.GetProperty(propertyName);
-            return property.GetValue(obj, null);
-        }
-     
+      
     }
 }
