@@ -22,6 +22,18 @@ namespace EtoolTech.MongoDB.Mapper
             ReflectionUtility.CopyObject(result,o);
         }
 
+        public static void FindByMongoId<T>(this T o, long Id)
+        {
+            if (typeof(T) != typeof(MongoMapper) && typeof(T).BaseType != typeof(MongoMapper))
+            {
+                throw new NotSupportedException();
+            }
+
+            object result = Finder.Instance.FindById<T>(Id);
+
+            ReflectionUtility.CopyObject(result, o);
+        }
+
         public static void MongoFind<T>(this List<T> list, QueryComplete query = null)
         {
             if (typeof (T).BaseType != typeof (MongoMapper))

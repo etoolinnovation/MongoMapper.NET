@@ -50,7 +50,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         }
 
         [TestMethod]
-        public void TestFindByKeyExtension()
+        public void TestFindByKeyIdExtension()
         {
             Helper.Db.Drop();
             
@@ -83,11 +83,17 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             p = new Person();
             p.FindByKey(id);
-            
 
-            string s = "";
+            Assert.AreEqual(p.MongoMapper_Id, id);
+
+            p = new Person();
+            p.FindByMongoId(id);
+
+            Assert.AreEqual(p.MongoMapper_Id, id);
+                        
             try
             {
+                string s = "";
                 s.FindByKey(null);
             }
             catch (Exception ex)

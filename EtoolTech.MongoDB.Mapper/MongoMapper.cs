@@ -281,6 +281,26 @@ namespace EtoolTech.MongoDB.Mapper
                     query, null);
         }
 
+        public void ServerUpdate<T>(UpdateBuilder update)
+        {
+            if (MongoMapper_Id == default(long))
+            {
+                MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
+            }
+            QueryComplete query = Query.EQ("_id", MongoMapper_Id);
+
+            FindAndModifyResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
+                FindAndModify(query, null, update, true, true);
+
+            //TODO: ver de devolver el texto
+            if (result.ErrorMessage != null)
+                throw new ServerUpdateException();
+
+            ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)),this);
+            
+            
+        }
+
         #endregion
 
         #region FindAsList/Cursor Methods
