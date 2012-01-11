@@ -26,10 +26,8 @@ namespace EtoolTech.MongoDB.Mapper
                 var id = (ObjectId) ObjectIdGenerator.Instance.GenerateId(container, document);
                 return id.GetHashCode();
             }
-            else
-            {
-                return GenerateIncrementalId(document.GetType().Name);
-            }
+
+            return GenerateIncrementalId(document.GetType().Name);
         }
 
         public bool IsEmpty(object id)

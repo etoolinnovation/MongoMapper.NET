@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Core;
@@ -276,9 +275,14 @@ namespace EtoolTech.MongoDB.Mapper
                 MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
+
             FindAndModifyResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndRemove(
                     query, null);
+
+            //TODO: ver de devolver el texto
+            if (result.ErrorMessage != null)
+                throw new DeleteDocumentException();
         }
 
         public void ServerUpdate<T>(UpdateBuilder update)
@@ -296,9 +300,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (result.ErrorMessage != null)
                 throw new ServerUpdateException();
 
-            ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)),this);
-            
-            
+            ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)),this);                        
         }
 
         #endregion

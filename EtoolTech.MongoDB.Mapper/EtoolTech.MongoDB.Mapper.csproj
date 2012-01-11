@@ -80,6 +80,7 @@
     <Compile Include="Core\PropertyValidator.cs" />
     <Compile Include="Core\Serializer.cs" />
     <Compile Include="Enums\CommitOperation.cs" />
+    <Compile Include="Exceptions\DeleteDocumentException.cs" />
     <Compile Include="Exceptions\ServerUpdateException.cs" />
     <Compile Include="Exceptions\DuplicateKeyException.cs" />
     <Compile Include="Exceptions\ValidatePropertyException.cs" />
