@@ -21,13 +21,14 @@ namespace EtoolTech.MongoDB.Mapper
 
         public object GenerateId(object container, object document)
         {
-            if (!ConfigManager.UserIncrementalId)
+            string objName = document.GetType().Name;
+            if (!ConfigManager.UserIncrementalId(objName))
             {
                 var id = (ObjectId) ObjectIdGenerator.Instance.GenerateId(container, document);
-                return id.GetHashCode();
+                return (long) id.GetHashCode();
             }
 
-            return GenerateIncrementalId(document.GetType().Name);
+            return GenerateIncrementalId(objName);
         }
 
         public bool IsEmpty(object id)
@@ -48,7 +49,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private FindAndModifyResult FindAndModifyResult(string objName)
         {
-            FindAndModifyResult result = Helper.Db.GetCollection("Counters").FindAndModify(
+            FindAndModifyResult result = Helper.Db("Counters").GetCollection("Counters").FindAndModify(
                 Query.EQ("document", objName), null, Update.Inc("last", (long) 1), true, true);
             return result;
         }

@@ -63,7 +63,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestInsert()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             //Insert de Paises
             Country c = new Country {Code = "es", Name = "España"};
@@ -110,8 +110,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         
             //Insert de personas
             Person p = new Person
-            {
-                Id = 1,
+            {                
                 Name = "Pepito Perez",
                 Age = 35,
                 BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
@@ -126,8 +125,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Save<Person>();
 
             p = new Person
-            {
-                Id = 2,
+            {                
                 Name = "Juanito Sanchez",
                 Age = 25,
                 BirthDate = DateTime.Now.AddDays(52).AddYears(-38),
@@ -141,8 +139,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Save<Person>();
 
             p = new Person
-            {
-                Id = 3,
+            {                
                 Name = "Andres Perez",
                 Age = 25,
                 BirthDate = DateTime.Now.AddDays(25).AddYears(-25),
@@ -156,8 +153,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
 
             p = new Person
-            {
-                Id = 4,
+            {                
                 Name = "Marta Serrano",
                 Age = 28,
                 BirthDate = DateTime.Now.AddDays(28).AddYears(-28),
@@ -170,8 +166,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Save<Person>();
 
             p = new Person
-            {
-                Id = 5,
+            {                
                 Name = "Jonh Smith",
                 Age = 21,
                 BirthDate = DateTime.Now.AddDays(21).AddYears(-21),
@@ -182,12 +177,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             p.Save<Person>();
 
-            for(int i=0; i<5; i++)
-            {
-                int I = i + 1;
-                List<Person> Persons = Person.FindAsList<Person>("Id", I);
-                Assert.AreEqual(Persons.Count,1);
-            }
+            
         }
 
 
@@ -195,7 +185,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestUdpate()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
             
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
@@ -215,7 +205,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestDelete()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
             
             Country c = new Country { Code = "NL", Name = "Holanda" };
             c.Save<Country>();
@@ -235,7 +225,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestServerUdpate()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             //Insert de Paises
             Country c = new Country {Code = "ES", Name = "España"};
@@ -247,7 +237,6 @@ namespace EtoolTech.MongoDB.Mapper.Test
             //Insert de personas
             Person p = new Person
             {
-                Id = 1,
                 Name = "Pepito Perez",
                 Age = 35,
                 BirthDate = DateTime.Now.AddDays(57).AddYears(-35),

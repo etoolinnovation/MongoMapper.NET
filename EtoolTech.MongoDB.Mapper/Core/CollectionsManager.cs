@@ -10,7 +10,7 @@ namespace EtoolTech.MongoDB.Mapper
             new Dictionary<string, MongoCollection>();
 
         public static MongoCollection GetCollection(string name)
-        {
+        {            
             name = GetCollectioName(name);
 
             if (Collections.ContainsKey(name))
@@ -22,7 +22,7 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (!Collections.ContainsKey(name))
                 {
-                    MongoCollection collection = Helper.Db.GetCollection(name);
+                    MongoCollection collection = Helper.Db(name).GetCollection(name);
                     Collections.Add(name, collection);
                 }
                 return Collections[name];
@@ -31,10 +31,10 @@ namespace EtoolTech.MongoDB.Mapper
 
         //TODO: Pendiente de refactor, meter en un buffer o usarlo siempre tipado.
         public static MongoCollection<T> GetCollection<T>(string name)
-        {
+        {            
             name = GetCollectioName(name);
 
-            MongoCollection<T> collection = Helper.Db.GetCollection<T>(name);
+            MongoCollection<T> collection = Helper.Db(name).GetCollection<T>(name);
             return collection;
         }
 

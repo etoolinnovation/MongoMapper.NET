@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestCollectionExtensions()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -52,7 +52,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestFindByKeyIdExtension()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
             
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -64,8 +64,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             //Insert de personas
             Person p = new Person
-            {
-                Id = 1,
+            {                
                 Name = "Pepito Perez",
                 Age = 35,
                 BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
@@ -105,7 +104,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestPerfFindByKeyNormalVsExtensionMethod()
         {
             
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -136,7 +135,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
         public void TestPerfMongoFindNormalVsExtensionMethods()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };

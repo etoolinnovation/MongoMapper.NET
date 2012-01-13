@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestIncId()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             for (int i = 0; i < 100; i++)
             {

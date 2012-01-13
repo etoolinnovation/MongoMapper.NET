@@ -13,7 +13,7 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class Helper
     {
-        private static readonly List<Type> SupportedTypesLits = new List<Type>
+        private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
                                                                     {
                                                                         typeof (string),
                                                                         typeof (decimal),
@@ -28,40 +28,49 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
-        private static readonly List<string> CustomDiscriminatorTypes = new List<string>();
+        private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
-        private static MongoDatabase _dataBase;
+        private static readonly Dictionary<string, MongoDatabase> DatabaseByCollection = new Dictionary<string, MongoDatabase>(); 
 
-        private static MongoServer _server;
+        private static readonly Dictionary<string,MongoServer> ServerByCollection = new Dictionary<string, MongoServer>(); 
 
-        public static MongoDatabase Db
+        
+        public static MongoDatabase Db(string objName)
         {
-            get
+            MongoServer _server = null;
+
+            if (ServerByCollection.ContainsKey(objName)) _server = ServerByCollection[objName];
+
+            if (_server == null)
             {
-                if (_server == null)
+                //TODO: Revisar donde ponerlo, posibilidad de definirlo por coleccion??
+                BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(objName)*1024*1024;
+
+                var ServerSettings = new MongoServerSettings();
+                string userName = ConfigManager.UserName(objName);
+
+                if (!String.IsNullOrEmpty(userName))
                 {
-                    //TODO: Revisar donde ponerlo, posibilidad de definirlo por coleccion??
-                    BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize*1024*1024;
-
-                    var ServerSettings = new MongoServerSettings();
-                    string userName = ConfigManager.UserName;
-
-                    if (!String.IsNullOrEmpty(userName))
-                    {
-                        ServerSettings.DefaultCredentials = new MongoCredentials(userName, ConfigManager.PassWord);
-                    }
-
-                    ServerSettings.Server = new MongoServerAddress(ConfigManager.Host, ConfigManager.Port);
-                    ServerSettings.MaxConnectionPoolSize = ConfigManager.PoolSize;
-                    //TODO: Connection Mode a la config
-                    ServerSettings.ConnectionMode = ConnectionMode.Direct;
-                    ServerSettings.WaitQueueTimeout = TimeSpan.FromSeconds(ConfigManager.WaitQueueTimeout);
-
-                    _server = MongoServer.Create(ServerSettings);
+                    ServerSettings.DefaultCredentials = new MongoCredentials(userName, ConfigManager.PassWord(objName));
                 }
 
-                return _dataBase ?? (_dataBase = _server.GetDatabase(ConfigManager.DataBaseName));
+                ServerSettings.Server = new MongoServerAddress(ConfigManager.Host(objName), ConfigManager.Port(objName));
+                ServerSettings.MaxConnectionPoolSize = ConfigManager.PoolSize(objName);
+                //TODO: Connection Mode a la config
+                ServerSettings.ConnectionMode = ConnectionMode.Direct;
+                ServerSettings.WaitQueueTimeout = TimeSpan.FromSeconds(ConfigManager.WaitQueueTimeout(objName));
+
+                _server = MongoServer.Create(ServerSettings);
+
+                ServerByCollection.Add(objName, _server);
             }
+
+            MongoDatabase _dataBase = null;
+            if (DatabaseByCollection.ContainsKey(objName)) return DatabaseByCollection[objName];
+            _dataBase = _server.GetDatabase(ConfigManager.DataBaseName(objName));
+            DatabaseByCollection.Add(objName,_dataBase);
+            return _dataBase;
+
         }
 
         public static void ValidateType(Type t)
@@ -132,9 +141,9 @@ namespace EtoolTech.MongoDB.Mapper
         internal static void RebuildClass(Type classType, bool repairCollection)
         {
             if (repairCollection && !ConfigManager.Config.Context.Generated
-                && !Db.CollectionExists(CollectionsManager.GetCollectioName(classType.Name)))
+                && !Db(classType.Name).CollectionExists(CollectionsManager.GetCollectioName(classType.Name)))
             {
-                Db.CreateCollection(CollectionsManager.GetCollectioName(classType.Name), null);
+                Db(classType.Name).CreateCollection(CollectionsManager.GetCollectioName(classType.Name), null);
             }
 
             if (!CustomDiscriminatorTypes.Contains(classType.Name))
