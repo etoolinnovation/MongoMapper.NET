@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -10,7 +11,22 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class MongoMapperIdGenerator : IIdGenerator
     {
-        private readonly Object lockObject = new Object();
+        //private static readonly Dictionary<string, Object> lockObjectList = new Dictionary<string, Object>();
+        private readonly Object _lockObject = new Object();
+
+        //private Object GetLockObject(string objName)
+        //{
+        //    if (lockObjectList.ContainsKey(objName)) return lockObjectList[objName];
+
+        //    lock (_lockObject)
+        //    {
+        //        if (lockObjectList.ContainsKey(objName)) return lockObjectList[objName];
+
+        //        Object lockObject = new Object();
+        //        lockObjectList.Add(objName, lockObject);
+        //        return lockObject;
+        //    }
+        //}
 
         public static MongoMapperIdGenerator Instance
         {
@@ -40,7 +56,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public long GenerateIncrementalId(string objName)
         {
-            lock (lockObject)
+            //lock (GetLockObject(objName))
+            lock(_lockObject)
             {
                 FindAndModifyResult result = FindAndModifyResult(objName);
                 return result.ModifiedDocument["last"].AsInt64;

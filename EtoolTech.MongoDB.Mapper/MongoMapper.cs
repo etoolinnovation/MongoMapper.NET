@@ -242,6 +242,7 @@ namespace EtoolTech.MongoDB.Mapper
                     this, SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
+
         }
 
         public void InsertDocument()
@@ -250,9 +251,12 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
+
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(
-                    this, SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
+                    this,
+                    SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
+
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
