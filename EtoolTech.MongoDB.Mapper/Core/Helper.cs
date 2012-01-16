@@ -14,14 +14,14 @@ namespace EtoolTech.MongoDB.Mapper
     public class Helper
     {
         private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
-                                                                    {
-                                                                        typeof (string),
-                                                                        typeof (decimal),
-                                                                        typeof (int),
-                                                                        typeof (long),
-                                                                        typeof (DateTime),
-                                                                        typeof (bool)
-                                                                    };
+                                                                       {
+                                                                           typeof (string),
+                                                                           typeof (decimal),
+                                                                           typeof (int),
+                                                                           typeof (long),
+                                                                           typeof (DateTime),
+                                                                           typeof (bool)
+                                                                       };
 
         private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
             new Dictionary<string, List<string>>();
@@ -30,47 +30,35 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
-        private static readonly Dictionary<string, MongoDatabase> DatabaseByCollection = new Dictionary<string, MongoDatabase>(); 
+        private static readonly Object _lockObjectPk = new Object();
 
-        private static readonly Dictionary<string,MongoServer> ServerByCollection = new Dictionary<string, MongoServer>(); 
+        private static readonly Object _lockObjectIndex = new Object();
 
-        
+
         public static MongoDatabase Db(string objName)
         {
-            MongoServer _server = null;
+            //TODO: Revisar donde ponerlo?????
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(objName)*1024*1024;
 
-            if (ServerByCollection.ContainsKey(objName)) _server = ServerByCollection[objName];
+            string LoginString = "";
+            string userName = ConfigManager.UserName(objName);
 
-            if (_server == null)
+            if (!String.IsNullOrEmpty(userName))
             {
-                //TODO: Revisar donde ponerlo, posibilidad de definirlo por coleccion??
-                BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(objName)*1024*1024;
-
-                var ServerSettings = new MongoServerSettings();
-                string userName = ConfigManager.UserName(objName);
-
-                if (!String.IsNullOrEmpty(userName))
-                {
-                    ServerSettings.DefaultCredentials = new MongoCredentials(userName, ConfigManager.PassWord(objName));
-                }
-
-                ServerSettings.Server = new MongoServerAddress(ConfigManager.Host(objName), ConfigManager.Port(objName));
-                ServerSettings.MaxConnectionPoolSize = ConfigManager.PoolSize(objName);
-                //TODO: Connection Mode a la config
-                ServerSettings.ConnectionMode = ConnectionMode.Direct;
-                ServerSettings.WaitQueueTimeout = TimeSpan.FromSeconds(ConfigManager.WaitQueueTimeout(objName));
-
-                _server = MongoServer.Create(ServerSettings);
-
-                ServerByCollection.Add(objName, _server);
+                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
             }
 
-            MongoDatabase _dataBase = null;
-            if (DatabaseByCollection.ContainsKey(objName)) return DatabaseByCollection[objName];
-            _dataBase = _server.GetDatabase(ConfigManager.DataBaseName(objName));
-            DatabaseByCollection.Add(objName,_dataBase);
-            return _dataBase;
+            string DatabaseName = ConfigManager.DataBaseName(objName);
 
+            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?maxpoolsize={2};waitQueueTimeout={3}ms",
+                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
+                                                    ConfigManager.PoolSize(objName),
+                                                    ConfigManager.WaitQueueTimeout(objName)*1000, LoginString,DatabaseName);
+
+            MongoServer _server = MongoServer.Create(connectionString);
+
+            MongoDatabase _dataBase = _server.GetDatabase(DatabaseName);
+            return _dataBase;
         }
 
         public static void ValidateType(Type t)
@@ -88,7 +76,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferPrimaryKey[t.Name];
             }
 
-            lock (typeof (Helper))
+            lock (_lockObjectPk)
             {
                 if (!BufferPrimaryKey.ContainsKey(t.Name))
                 {
@@ -118,7 +106,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferIndexes[t.Name];
             }
 
-            lock (typeof (Helper))
+            lock (_lockObjectIndex)
             {
                 if (!BufferIndexes.ContainsKey(t.Name))
                 {
