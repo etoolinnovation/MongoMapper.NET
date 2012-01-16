@@ -13,7 +13,8 @@ You can find examples in the Test Project
 
 ### Change Log
 
-* 30/12/2001: http://bit.ly/uy80RE
+* 30/12/2011: http://bit.ly/uy80RE
+* 05/01/2012: http://bit.ly/yfcsn4
 
 ### Questions and Bug Reports
 

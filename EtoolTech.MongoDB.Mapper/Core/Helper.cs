@@ -13,55 +13,52 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class Helper
     {
-        private static readonly List<Type> SupportedTypesLits = new List<Type>
-                                                                    {
-                                                                        typeof (string),
-                                                                        typeof (decimal),
-                                                                        typeof (int),
-                                                                        typeof (long),
-                                                                        typeof (DateTime),
-                                                                        typeof (bool)
-                                                                    };
+        private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
+                                                                       {
+                                                                           typeof (string),
+                                                                           typeof (decimal),
+                                                                           typeof (int),
+                                                                           typeof (long),
+                                                                           typeof (DateTime),
+                                                                           typeof (bool)
+                                                                       };
 
         private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
             new Dictionary<string, List<string>>();
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
-        private static readonly List<string> CustomDiscriminatorTypes = new List<string>();
+        private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
-        private static MongoDatabase _dataBase;
+        private static readonly Object _lockObjectPk = new Object();
 
-        private static MongoServer _server;
+        private static readonly Object _lockObjectIndex = new Object();
 
-        public static MongoDatabase Db
+
+        public static MongoDatabase Db(string objName)
         {
-            get
+            //TODO: Revisar donde ponerlo?????
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(objName)*1024*1024;
+
+            string LoginString = "";
+            string userName = ConfigManager.UserName(objName);
+
+            if (!String.IsNullOrEmpty(userName))
             {
-                if (_server == null)
-                {
-                    //TODO: Revisar donde ponerlo, posibilidad de definirlo por coleccion??
-                    BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize*1024*1024;
-
-                    var ServerSettings = new MongoServerSettings();
-                    string userName = ConfigManager.UserName;
-
-                    if (!String.IsNullOrEmpty(userName))
-                    {
-                        ServerSettings.DefaultCredentials = new MongoCredentials(userName, ConfigManager.PassWord);
-                    }
-
-                    ServerSettings.Server = new MongoServerAddress(ConfigManager.Host, ConfigManager.Port);
-                    ServerSettings.MaxConnectionPoolSize = ConfigManager.PoolSize;
-                    //TODO: Connection Mode a la config
-                    ServerSettings.ConnectionMode = ConnectionMode.Direct;
-                    ServerSettings.WaitQueueTimeout = TimeSpan.FromSeconds(ConfigManager.WaitQueueTimeout);
-
-                    _server = MongoServer.Create(ServerSettings);
-                }
-
-                return _dataBase ?? (_dataBase = _server.GetDatabase(ConfigManager.DataBaseName));
+                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
             }
+
+            string DatabaseName = ConfigManager.DataBaseName(objName);
+
+            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?maxpoolsize={2};waitQueueTimeout={3}ms",
+                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
+                                                    ConfigManager.PoolSize(objName),
+                                                    ConfigManager.WaitQueueTimeout(objName)*1000, LoginString,DatabaseName);
+
+            MongoServer _server = MongoServer.Create(connectionString);
+
+            MongoDatabase _dataBase = _server.GetDatabase(DatabaseName);
+            return _dataBase;
         }
 
         public static void ValidateType(Type t)
@@ -79,7 +76,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferPrimaryKey[t.Name];
             }
 
-            lock (typeof (Helper))
+            lock (_lockObjectPk)
             {
                 if (!BufferPrimaryKey.ContainsKey(t.Name))
                 {
@@ -109,7 +106,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferIndexes[t.Name];
             }
 
-            lock (typeof (Helper))
+            lock (_lockObjectIndex)
             {
                 if (!BufferIndexes.ContainsKey(t.Name))
                 {
@@ -132,9 +129,9 @@ namespace EtoolTech.MongoDB.Mapper
         internal static void RebuildClass(Type classType, bool repairCollection)
         {
             if (repairCollection && !ConfigManager.Config.Context.Generated
-                && !Db.CollectionExists(CollectionsManager.GetCollectioName(classType.Name)))
+                && !Db(classType.Name).CollectionExists(CollectionsManager.GetCollectioName(classType.Name)))
             {
-                Db.CreateCollection(CollectionsManager.GetCollectioName(classType.Name), null);
+                Db(classType.Name).CreateCollection(CollectionsManager.GetCollectioName(classType.Name), null);
             }
 
             if (!CustomDiscriminatorTypes.Contains(classType.Name))

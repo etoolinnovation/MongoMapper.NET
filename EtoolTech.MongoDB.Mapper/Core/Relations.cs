@@ -13,7 +13,8 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class Relations : IRelations
     {
-        private readonly Object lockObject = new Object();
+        private readonly Object _lockObjectUp = new Object();
+        private readonly Object _lockObjectDown = new Object();
 
         private static readonly Dictionary<string, List<string>> BufferUpRelations =
             new Dictionary<string, List<string>>();
@@ -30,7 +31,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferUpRelations[t.Name];
             }
 
-            lock (lockObject)
+            lock (_lockObjectUp)
             {
                 if (!BufferUpRelations.ContainsKey(t.Name))
                 {
@@ -77,7 +78,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferDownRelations[t.Name];
             }
 
-            lock (lockObject)
+            lock (_lockObjectDown)
             {
                 if (!BufferDownRelations.ContainsKey(t.Name))
                 {
@@ -137,9 +138,8 @@ namespace EtoolTech.MongoDB.Mapper
             values = relationString.Split('|');
             string fieldName = values[0];
             string fkClassName = values[1];
-            string fkFieldName = values[2];
-            PropertyInfo propertyInfo = ClassType.GetProperty(fieldName);
-            object value = propertyInfo.GetValue(sender, null);
+            string fkFieldName = values[2];            
+            object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
             QueryComplete query = MongoQuery.Eq(fkFieldName, value);
             return
                 CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName)).FindAs<T>(query).ToList();
@@ -160,14 +160,12 @@ namespace EtoolTech.MongoDB.Mapper
 
                 QueryComplete ParentQuery = null;
                 if (!String.IsNullOrEmpty(fkParentfieldName) && !String.IsNullOrEmpty(fkParentPropertyName))
-                {
-                    PropertyInfo ParentPropertyInfo = ClassType.GetProperty(fkParentPropertyName);
-                    object Parentvalue = ParentPropertyInfo.GetValue(sender, null);
+                {                    
+                    object Parentvalue = ReflectionUtility.GetPropertyValue(sender, fkParentPropertyName);
                     ParentQuery = MongoQuery.Eq(fkParentfieldName, Parentvalue);
                 }
-
-                PropertyInfo PropertyInfo = ClassType.GetProperty(fieldName);
-                object value = PropertyInfo.GetValue(sender, null);
+                
+                object value = ReflectionUtility.GetPropertyValue(sender, fieldName); 
                 QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
                 if (ParentQuery != null)
@@ -191,9 +189,8 @@ namespace EtoolTech.MongoDB.Mapper
                 string fieldName = values[0];
                 string fkClassName = values[1];
                 string fkFieldName = values[2];
-
-                PropertyInfo PropertyInfo = ClassType.GetProperty(fieldName);
-                object value = PropertyInfo.GetValue(sender, null);
+                
+                object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
                 QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
                 MongoCollection fkCol = CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName));

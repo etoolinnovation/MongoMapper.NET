@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestEvents()
         {
-            Helper.Db.Drop();
+            Helper.DropAllDb();
             
             Country c = new Country { Code = "FR", Name = "España" };
             c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };            

@@ -14,6 +14,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly List<string> ProcessedTypes = new List<string>();
 
+        private static readonly Object _lockObject = new Object();
+
         private static void GetPropertyValidators(Type t)
         {
             if (ProcessedTypes.Contains(t.Name))
@@ -21,7 +23,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return;
             }
 
-            lock (typeof (PropertyValidator))
+            lock (_lockObject)
             {
                 if (!ProcessedTypes.Contains(t.Name))
                 {
@@ -52,16 +54,16 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        private static void ExecutePropertyValidator(object sender, Type t, MethodInfo m, string PropertyName)
+        private static void ExecutePropertyValidator(object sender, Type t, MethodInfo m, string propertyName)
         {
             try
             {
-                m.Invoke(sender, new[] {t.GetProperty(PropertyName).GetValue(sender, null)});
+                m.Invoke(sender, new[] {ReflectionUtility.GetPropertyValue(sender, propertyName)});
             }
             catch (Exception ex)
             {
                 throw new ValidatePropertyException(
-                    PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                    propertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
         }
 

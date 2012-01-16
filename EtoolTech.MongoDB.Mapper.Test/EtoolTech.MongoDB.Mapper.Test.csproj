@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Classes\Child.cs" />
     <Compile Include="Classes\Country.cs" />
+    <Compile Include="Classes\Helper.cs" />
     <Compile Include="Classes\Person.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="EventsTest.cs" />

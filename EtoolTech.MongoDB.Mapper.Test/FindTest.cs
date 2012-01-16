@@ -17,15 +17,14 @@ namespace EtoolTech.MongoDB.Mapper.Test
         public void TestFindByPk()
         {
             //Llenamos datos
-            Helper.Db.Drop();
+            Helper.DropAllDb();
 
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
 
             //Insert de personas
             Person p = new Person
-            {
-                Id = 1,
+            {                
                 Name = "Pepito Perez",
                 Age = 35,
                 BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
@@ -40,8 +39,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Save<Person>();
 
             p = new Person
-            {
-                Id = 2,
+            {                
                 Name = "Juanito Sanchez",
                 Age = 25,
                 BirthDate = DateTime.Now.AddDays(52).AddYears(-38),
@@ -55,8 +53,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Save<Person>();
 
             p = new Person
-            {
-                Id = 3,
+            {                
                 Name = "Andres Perez",
                 Age = 25,
                 BirthDate = DateTime.Now.AddDays(25).AddYears(-25),
@@ -70,8 +67,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
 
             p = new Person
-            {
-                Id = 4,
+            {                
                 Name = "Marta Serrano",
                 Age = 28,
                 BirthDate = DateTime.Now.AddDays(28).AddYears(-28),
@@ -84,8 +80,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             p.Save<Person>();
 
             p = new Person
-            {
-                Id = 5,
+            {                
                 Name = "Jonh Smith",
                 Age = 21,
                 BirthDate = DateTime.Now.AddDays(21).AddYears(-21),

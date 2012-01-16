@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Core;
@@ -79,7 +78,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
             //Guardamos el obj original en JSV para romper la referencia
-            if (ConfigManager.EnableOriginalObject)
+            if (ConfigManager.EnableOriginalObject(_classType.Name))
             {
                 ((IMongoMapperStringOriginalObject) o).StringOriginalObject = Serializer.Serialize(o);
             }
@@ -161,20 +160,14 @@ namespace EtoolTech.MongoDB.Mapper
 
         private Dictionary<string, object> GetKeyValues()
         {
-            var result = new Dictionary<string, object>();
-            foreach (string keyField in Helper.GetPrimaryKey(_classType))
-            {
-                PropertyInfo propertyInfo = _classType.GetProperty(keyField);
-                result.Add(keyField, propertyInfo.GetValue(this, null));
-            }
-            return result;
+            return Helper.GetPrimaryKey(this._classType).ToDictionary(keyField => keyField, keyField => ReflectionUtility.GetPropertyValue(this, keyField));
         }
 
         #region Objeto Original para comprobar cambios
 
         public T GetOriginalObject<T>()
         {
-            if (!ConfigManager.EnableOriginalObject)
+            if (!ConfigManager.EnableOriginalObject(_classType.Name))
             {
                 throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
             }
@@ -215,7 +208,7 @@ namespace EtoolTech.MongoDB.Mapper
                 else
                 {
                     //Si llega aqui ya existe un registro con esa key y no es el que tenemos cargado
-                    if (ConfigManager.ExceptionOnDuplicateKey)
+                    if (ConfigManager.ExceptionOnDuplicateKey(_classType.Name))
                     {
                         throw new DuplicateKeyException();
                     }
@@ -246,9 +239,10 @@ namespace EtoolTech.MongoDB.Mapper
 
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Save(
-                    this, SafeMode.Create(ConfigManager.SafeMode, ConfigManager.FSync));
+                    this, SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
+
         }
 
         public void InsertDocument()
@@ -257,9 +251,12 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
+
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(
-                    this, SafeMode.Create(ConfigManager.SafeMode, ConfigManager.FSync));
+                    this,
+                    SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
+
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
@@ -282,9 +279,32 @@ namespace EtoolTech.MongoDB.Mapper
                 MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
+
             FindAndModifyResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndRemove(
                     query, null);
+
+            //TODO: ver de devolver el texto
+            if (result.ErrorMessage != null)
+                throw new DeleteDocumentException();
+        }
+
+        public void ServerUpdate<T>(UpdateBuilder update, bool Refill = true)
+        {
+            if (MongoMapper_Id == default(long))
+            {
+                MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
+            }
+            QueryComplete query = Query.EQ("_id", MongoMapper_Id);
+
+            FindAndModifyResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
+                FindAndModify(query, null, update, Refill, true);
+
+            //TODO: ver de devolver el texto
+            if (result.ErrorMessage != null)
+                throw new ServerUpdateException();
+
+            if (Refill) ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)),this);                        
         }
 
         #endregion
