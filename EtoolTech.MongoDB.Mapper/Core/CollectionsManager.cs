@@ -9,6 +9,8 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Dictionary<string, MongoCollection> Collections =
             new Dictionary<string, MongoCollection>();
 
+        private static readonly Object _lockObject = new Object();
+
         public static MongoCollection GetCollection(string name)
         {            
             name = GetCollectioName(name);
@@ -18,7 +20,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return Collections[name];
             }
 
-            lock (typeof (CollectionsManager))
+            lock (_lockObject)
             {
                 if (!Collections.ContainsKey(name))
                 {

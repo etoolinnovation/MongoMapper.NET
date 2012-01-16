@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
@@ -7,8 +8,11 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         internal static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
+        private static readonly Dictionary<string, CollectionElement> configByObject = new Dictionary<string, CollectionElement>();
 
-        private static Dictionary<string, CollectionElement> configByObject = null;
+        private static readonly Object _lockObject = new Object();
+
+        private static bool SetupLoaded = false;
 
         private static string CleanObjName(string objName)
         {
@@ -21,19 +25,24 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         private static CollectionElement FindByObjName(string ObjName)
         {
-            if (configByObject == null)
+            if (!SetupLoaded)
             {
-                configByObject = new Dictionary<string, CollectionElement>();
-                foreach (CollectionElement collection in Config.CollectionConfig)
+                lock (_lockObject)
                 {
-                    configByObject.Add(collection.Name, collection);
+                    if (!SetupLoaded)
+                    {                        
+                        foreach (CollectionElement collection in Config.CollectionConfig)
+                        {
+                            configByObject.Add(collection.Name, collection);
+                        }
+                        SetupLoaded = true;
+                    }
                 }
             }
 
             ObjName = CleanObjName(ObjName);
 
-            if (configByObject.ContainsKey(ObjName)) return configByObject[ObjName];
-            return null;
+            return configByObject.ContainsKey(ObjName) ? configByObject[ObjName] : null;
         }
 
         internal static string DataBaseName(string objName)
