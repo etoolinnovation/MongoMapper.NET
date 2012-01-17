@@ -1,18 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
 {
-    public class ConfigManager
+    public class 
+        ConfigManager
     {
-        internal static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
+        public static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
         private static readonly Dictionary<string, CollectionElement> configByObject = new Dictionary<string, CollectionElement>();
 
         private static readonly Object _lockObject = new Object();
 
         private static bool SetupLoaded = false;
+
+        public static string GetConnectionString(string objName)
+        {
+            string LoginString = "";
+            string userName = ConfigManager.UserName(objName);
+
+            if (!String.IsNullOrEmpty(userName))
+            {
+                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
+            }
+
+            string DatabaseName = ConfigManager.DataBaseName(objName);
+
+            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?connect=direct;maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
+                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
+                                                    ConfigManager.PoolSize(objName),
+                                                    ConfigManager.WaitQueueTimeout(objName) * 1000, LoginString, DatabaseName,
+                                                    ConfigManager.SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
+                                                    ConfigManager.FSync(objName).ToString(CultureInfo.InvariantCulture).ToLower());
+            return connectionString;
+        }
 
         private static string CleanObjName(string objName)
         {
@@ -45,7 +68,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return configByObject.ContainsKey(ObjName) ? configByObject[ObjName] : null;
         }
 
-        internal static string DataBaseName(string objName)
+        public static string DataBaseName(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.Database;
 
@@ -57,7 +80,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         }
 
-        internal static string Host(string objName)
+        public static string Host(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.Host;
 
@@ -68,7 +91,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.Host;
         }
 
-        internal static int Port(string objName)
+        public static int Port(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.Port;
 
@@ -79,7 +102,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.Port;
         }
 
-        internal static int PoolSize(string objName)
+        public static int PoolSize(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.PoolSize;
 
@@ -90,7 +113,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.PoolSize;
         }
 
-        internal static string UserName(string objName)
+        public static string UserName(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.UserName;
 
@@ -101,7 +124,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Database.User;
         }
 
-        internal static string PassWord(string objName)
+        public static string PassWord(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.PassWord;
 
@@ -112,7 +135,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Database.Password;
         }
 
-        internal static int WaitQueueTimeout(string objName)
+        public static int WaitQueueTimeout(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.WaitQueueTimeout;
 
@@ -124,7 +147,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         }
 
 
-        internal static int MaxDocumentSize(string objName)
+        public static int MaxDocumentSize(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.MaxDocumentSize;
 
@@ -136,7 +159,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         }
 
-        internal static bool SafeMode(string objName)
+        public static bool SafeMode(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.SafeMode;
 
@@ -148,7 +171,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         }
 
-        internal static bool FSync(string objName)
+        public static bool FSync(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.FSync;
 
@@ -160,7 +183,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         }
 
-         internal static bool ExceptionOnDuplicateKey(string objName)
+         public static bool ExceptionOnDuplicateKey(string objName)
          {
              if (CustomContext.Config != null) return CustomContext.Config.ExceptionOnDuplicateKey;
 
@@ -172,7 +195,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
          }
 
-        internal static bool EnableOriginalObject(string objName)
+        public static bool EnableOriginalObject(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.EnableOriginalObject;
 
@@ -184,7 +207,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         }
 
-        internal static bool UserIncrementalId(string objName)
+        public static bool UserIncrementalId(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.UserIncrementalId;
 

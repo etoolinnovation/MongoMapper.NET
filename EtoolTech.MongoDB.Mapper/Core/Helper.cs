@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Configuration;
@@ -37,23 +38,10 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static MongoDatabase Db(string objName)
         {
-            //TODO: Revisar donde ponerlo?????
-            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(objName)*1024*1024;
-
-            string LoginString = "";
-            string userName = ConfigManager.UserName(objName);
-
-            if (!String.IsNullOrEmpty(userName))
-            {
-                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
-            }
 
             string DatabaseName = ConfigManager.DataBaseName(objName);
 
-            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?maxpoolsize={2};waitQueueTimeout={3}ms",
-                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
-                                                    ConfigManager.PoolSize(objName),
-                                                    ConfigManager.WaitQueueTimeout(objName)*1000, LoginString,DatabaseName);
+            string connectionString = ConfigManager.GetConnectionString(objName);
 
             MongoServer _server = MongoServer.Create(connectionString);
 

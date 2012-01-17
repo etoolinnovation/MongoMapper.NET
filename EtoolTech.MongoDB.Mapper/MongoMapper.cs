@@ -7,6 +7,7 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
@@ -197,6 +198,8 @@ namespace EtoolTech.MongoDB.Mapper
         public void Save<T>()
         {
             PropertyValidator.Validate(this, _classType);
+
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
 
             if (MongoMapper_Id == default(long))
             {
