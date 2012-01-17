@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Test.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
         [TestMethod]
         public void TestCollectionExtensions()
         {
-            Helper.DropAllDb();
+            Helper.Db.Drop();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -50,21 +50,22 @@ namespace EtoolTech.MongoDB.Mapper.Test
         }
 
         [TestMethod]
-        public void TestFindByKeyIdExtension()
+        public void TestFillByKeyExtension()
         {
-            Helper.DropAllDb();
+            Helper.Db.Drop();
             
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
          
             Country country = new Country();
-            country.FindByKey("ES");
+            country.FillByKey("ES");
             Assert.AreEqual(country.Code, "ES");
 
             //Insert de personas
             Person p = new Person
-            {                
+            {
+                Id = 1,
                 Name = "Pepito Perez",
                 Age = 35,
                 BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
@@ -81,19 +82,13 @@ namespace EtoolTech.MongoDB.Mapper.Test
             long id = p.MongoMapper_Id;            
 
             p = new Person();
-            p.FindByKey(id);
+            p.FillByKey(id);
+            
 
-            Assert.AreEqual(p.MongoMapper_Id, id);
-
-            p = new Person();
-            p.FindByMongoId(id);
-
-            Assert.AreEqual(p.MongoMapper_Id, id);
-                        
+            string s = "";
             try
             {
-                string s = "";
-                s.FindByKey(null);
+                s.FillByKey(null);
             }
             catch (Exception ex)
             {
@@ -101,10 +96,10 @@ namespace EtoolTech.MongoDB.Mapper.Test
             }
         }
 
-        public void TestPerfFindByKeyNormalVsExtensionMethod()
+        public void TestPerfFillByKeyNormalVsExtensionMethod()
         {
             
-            Helper.DropAllDb();
+            Helper.Db.Drop();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -115,7 +110,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
             for (int i = 0; i < 1000000; i++)
             {
                 Country country = new Country();
-                country.FindByKey("ES");
+                country.FillByKey("ES");
             }
             timer.Stop();
             Console.WriteLine(string.Format("Elapsed para ExtensionMethod: {0}", timer.Elapsed));
@@ -135,7 +130,7 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
         public void TestPerfMongoFindNormalVsExtensionMethods()
         {
-            Helper.DropAllDb();
+            Helper.Db.Drop();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
