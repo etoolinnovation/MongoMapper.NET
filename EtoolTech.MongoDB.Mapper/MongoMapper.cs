@@ -241,8 +241,7 @@ namespace EtoolTech.MongoDB.Mapper
             MongoMapper_Id = id;
 
             SafeModeResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Save(
-                    this, SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Save(this);
 
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
 
@@ -256,9 +255,7 @@ namespace EtoolTech.MongoDB.Mapper
 
 
             SafeModeResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(
-                    this,
-                    SafeMode.Create(ConfigManager.SafeMode(_classType.Name), ConfigManager.FSync(_classType.Name)));
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(this);
 
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
