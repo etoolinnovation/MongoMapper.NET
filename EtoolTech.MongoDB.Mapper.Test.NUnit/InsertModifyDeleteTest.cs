@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using EtoolTech.MongoDB.Mapper.Test.Classes;
+
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver.Builders;

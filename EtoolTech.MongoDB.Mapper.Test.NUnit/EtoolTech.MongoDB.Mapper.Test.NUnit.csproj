@@ -44,20 +44,19 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test\Classes\Child.cs">
-      <Link>Clases\Child.cs</Link>
-    </Compile>
-    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test\Classes\Country.cs">
-      <Link>Clases\Country.cs</Link>
-    </Compile>
-    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test\Classes\Helper.cs">
-      <Link>Clases\Helper.cs</Link>
-    </Compile>
-    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test\Classes\Person.cs">
-      <Link>Clases\Person.cs</Link>
-    </Compile>
     <Compile Include="InsertModifyDeleteTest.cs" />
     <Compile Include="ConfigTest.cs" />
+    <Compile Include="FindTest.cs" />
+    <Compile Include="EventsTest.cs" />
+    <Compile Include="ExtensionTest.cs" />
+    <Compile Include="IncrementalIdTest.cs" />
+    <Compile Include="OriginalObjectTest.cs" />
+    <Compile Include="ReflectionUtilityTest.cs" />
+    <Compile Include="RelationsTest.cs" />
+    <Compile Include="Classes\Child.cs" />
+    <Compile Include="Classes\Country.cs" />
+    <Compile Include="Classes\Helper.cs" />
+    <Compile Include="Classes\Person.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

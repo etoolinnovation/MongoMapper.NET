@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using EtoolTech.MongoDB.Mapper.Configuration;
 
-namespace EtoolTech.MongoDB.Mapper.Test
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     [TestFixture]
     public class ConfigTest
