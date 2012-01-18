@@ -10,7 +10,7 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public static class ExtensionMethods
     {
-        public static void FindByKey<T>(this T o, params object[] values)
+        public static void FillByKey<T>(this T o, params object[] values)
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
