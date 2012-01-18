@@ -177,7 +177,12 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             p.Save<Person>();
 
-            
+            List<Person> persons = new List<Person>();
+            persons.MongoFind();
+
+            Assert.AreEqual(persons.Count,5);
+
+
         }
 
 
