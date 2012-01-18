@@ -174,12 +174,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("UserIncrementalId", IsKey = false, IsRequired = true)]
-        public bool UserIncrementalId
+        [ConfigurationProperty("UseIncrementalId", IsKey = false, IsRequired = true)]
+        public bool UseIncrementalId
         {
             get
             {
-                return bool.Parse(this["UserIncrementalId"].ToString());
+                return bool.Parse(this["UseIncrementalId"].ToString());
             }
         }
     }

@@ -146,7 +146,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.WaitQueueTimeout;
         }
 
-
         public static int MaxDocumentSize(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.MaxDocumentSize;
@@ -213,9 +212,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             CollectionElement cfg = FindByObjName(objName);
 
-            if (cfg != null) return cfg.Context.UserIncrementalId;
+            if (cfg != null) return cfg.Context.UseIncrementalId;
 
-            return Config.Context.UserIncrementalId;
+            return Config.Context.UseIncrementalId;
 
         }
     }
