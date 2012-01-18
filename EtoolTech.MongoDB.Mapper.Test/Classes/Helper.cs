@@ -15,8 +15,9 @@ namespace EtoolTech.MongoDB.Mapper.Test
 
             foreach (CollectionElement collection in config.CollectionConfig)
             {
-                Mapper.Helper.Db(collection.Name).Drop();
+                if (collection.Name != "Fake") Mapper.Helper.Db(collection.Name).Drop();
             }
+					
         }
     }
 }

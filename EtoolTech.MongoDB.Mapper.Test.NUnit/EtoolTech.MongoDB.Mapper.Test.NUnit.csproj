@@ -66,9 +66,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EtoolTech.MongoDB.Mapper\EtoolTech.MongoDB.Mapper.csproj">
       <Project>{9189E04F-8BC5-4219-B706-F986444474A0}</Project>
       <Name>EtoolTech.MongoDB.Mapper</Name>
