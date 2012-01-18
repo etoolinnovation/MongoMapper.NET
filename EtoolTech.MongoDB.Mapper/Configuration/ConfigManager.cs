@@ -1,60 +1,221 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Configuration
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+namespace EtoolTech.MongoDB.Mapper.Configuration
 {
-    public class ConfigManager
+    public class 
+        ConfigManager
     {
-        internal static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
+        public static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
-        internal static readonly string DataBaseName = CustomContext.Config == null
-                                                           ? Config.Database.Name
-                                                           : CustomContext.Config.Database;
+        private static readonly Dictionary<string, CollectionElement> configByObject = new Dictionary<string, CollectionElement>();
 
-        internal static readonly string Host = CustomContext.Config == null
-                                                   ? Config.Server.Host
-                                                   : CustomContext.Config.Database;
+        private static readonly Object _lockObject = new Object();
 
-        internal static readonly int Port = CustomContext.Config == null
-                                                ? Config.Server.Port
-                                                : CustomContext.Config.Port;
+        private static bool SetupLoaded = false;
 
-        internal static readonly int PoolSize = CustomContext.Config == null
-                                                    ? Config.Server.PoolSize
-                                                    : CustomContext.Config.PoolSize;
+        public static string GetConnectionString(string objName)
+        {
+            string LoginString = "";
+            string userName = ConfigManager.UserName(objName);
 
-        internal static readonly string UserName = CustomContext.Config == null
-                                                       ? Config.Database.User
-                                                       : CustomContext.Config.UserName;
+            if (!String.IsNullOrEmpty(userName))
+            {
+                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
+            }
 
-        internal static readonly string PassWord = CustomContext.Config == null
-                                                       ? Config.Database.Password
-                                                       : CustomContext.Config.PassWord;
+            string DatabaseName = ConfigManager.DataBaseName(objName);
 
-        internal static readonly int WaitQueueTimeout = CustomContext.Config == null
-                                                            ? Config.Server.WaitQueueTimeout
-                                                            : CustomContext.Config.WaitQueueTimeout;
+            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?connect=direct;maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
+                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
+                                                    ConfigManager.PoolSize(objName),
+                                                    ConfigManager.WaitQueueTimeout(objName) * 1000, LoginString, DatabaseName,
+                                                    ConfigManager.SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
+                                                    ConfigManager.FSync(objName).ToString(CultureInfo.InvariantCulture).ToLower());
+            return connectionString;
+        }
 
+        private static string CleanObjName(string objName)
+        {
+            if (objName.EndsWith("_Collection"))
+            {
+                objName = objName.Replace("_Collection", "");
+            }
+            return objName;
+        }
 
-        internal static readonly int MaxDocumentSize = CustomContext.Config == null
-                                                           ? Config.Context.MaxDocumentSize
-                                                           : CustomContext.Config.MaxDocumentSize;
+        private static CollectionElement FindByObjName(string ObjName)
+        {
+            if (!SetupLoaded)
+            {
+                lock (_lockObject)
+                {
+                    if (!SetupLoaded)
+                    {                        
+                        foreach (CollectionElement collection in Config.CollectionConfig)
+                        {
+                            configByObject.Add(collection.Name, collection);
+                        }
+                        SetupLoaded = true;
+                    }
+                }
+            }
 
-        internal static readonly bool SafeMode = CustomContext.Config == null
-                                                     ? Config.Context.SafeMode
-                                                     : CustomContext.Config.SafeMode;
+            ObjName = CleanObjName(ObjName);
 
-        internal static readonly bool FSync = CustomContext.Config == null
-                                                  ? Config.Context.FSync
-                                                  : CustomContext.Config.FSync;
+            return configByObject.ContainsKey(ObjName) ? configByObject[ObjName] : null;
+        }
 
-        internal static readonly bool ExceptionOnDuplicateKey = CustomContext.Config == null
-                                                                    ? Config.Context.ExceptionOnDuplicateKey
-                                                                    : CustomContext.Config.ExceptionOnDuplicateKey;
+        public static string DataBaseName(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.Database;
 
-        internal static readonly bool EnableOriginalObject = CustomContext.Config == null
-                                                                 ? Config.Context.EnableOriginalObject
-                                                                 : CustomContext.Config.EnableOriginalObject;
+            CollectionElement cfg = FindByObjName(objName);
 
-        internal static readonly bool UserIncrementalId = CustomContext.Config == null
-                                                              ? Config.Context.UserIncrementalId
-                                                              : CustomContext.Config.UserIncrementalId;
+            if (cfg != null) return cfg.Database.Name;
+
+            return Config.Database.Name;
+
+        }
+
+        public static string Host(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.Host;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.Host;
+
+            return Config.Server.Host;
+        }
+
+        public static int Port(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.Port;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.Port;
+
+            return Config.Server.Port;
+        }
+
+        public static int PoolSize(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.PoolSize;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.PoolSize;
+
+            return Config.Server.PoolSize;
+        }
+
+        public static string UserName(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.UserName;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Database.User;
+
+            return Config.Database.User;
+        }
+
+        public static string PassWord(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.PassWord;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Database.Password;
+
+            return Config.Database.Password;
+        }
+
+        public static int WaitQueueTimeout(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.WaitQueueTimeout;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.WaitQueueTimeout;
+
+            return Config.Server.WaitQueueTimeout;
+        }
+
+        public static int MaxDocumentSize(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.MaxDocumentSize;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Context.MaxDocumentSize;
+
+            return Config.Context.MaxDocumentSize;
+
+        }
+
+        public static bool SafeMode(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.SafeMode;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Context.SafeMode;
+
+            return Config.Context.SafeMode;
+
+        }
+
+        public static bool FSync(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.FSync;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Context.FSync;
+
+            return Config.Context.FSync;
+
+        }
+
+         public static bool ExceptionOnDuplicateKey(string objName)
+         {
+             if (CustomContext.Config != null) return CustomContext.Config.ExceptionOnDuplicateKey;
+
+             CollectionElement cfg = FindByObjName(objName);
+
+             if (cfg != null) return cfg.Context.ExceptionOnDuplicateKey;
+
+             return Config.Context.ExceptionOnDuplicateKey;
+
+         }
+
+        public static bool EnableOriginalObject(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.EnableOriginalObject;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Context.EnableOriginalObject;
+
+            return Config.Context.EnableOriginalObject;
+
+        }
+
+        public static bool UserIncrementalId(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.UserIncrementalId;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Context.UseIncrementalId;
+
+            return Config.Context.UseIncrementalId;
+
+        }
     }
 }

@@ -9,8 +9,10 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Dictionary<string, MongoCollection> Collections =
             new Dictionary<string, MongoCollection>();
 
+        private static readonly Object _lockObject = new Object();
+
         public static MongoCollection GetCollection(string name)
-        {
+        {            
             name = GetCollectioName(name);
 
             if (Collections.ContainsKey(name))
@@ -18,11 +20,11 @@ namespace EtoolTech.MongoDB.Mapper
                 return Collections[name];
             }
 
-            lock (typeof (CollectionsManager))
+            lock (_lockObject)
             {
                 if (!Collections.ContainsKey(name))
                 {
-                    MongoCollection collection = Helper.Db.GetCollection(name);
+                    MongoCollection collection = Helper.Db(name).GetCollection(name);
                     Collections.Add(name, collection);
                 }
                 return Collections[name];
@@ -31,10 +33,10 @@ namespace EtoolTech.MongoDB.Mapper
 
         //TODO: Pendiente de refactor, meter en un buffer o usarlo siempre tipado.
         public static MongoCollection<T> GetCollection<T>(string name)
-        {
+        {            
             name = GetCollectioName(name);
 
-            MongoCollection<T> collection = Helper.Db.GetCollection<T>(name);
+            MongoCollection<T> collection = Helper.Db(name).GetCollection<T>(name);
             return collection;
         }
 

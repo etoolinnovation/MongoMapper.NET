@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -9,9 +10,9 @@ using MongoDB.Driver.Builders;
 namespace EtoolTech.MongoDB.Mapper
 {
     public class MongoMapperIdGenerator : IIdGenerator
-    {
-        private readonly Object lockObject = new Object();
-
+    {      
+        private readonly Object _lockObject = new Object();
+      
         public static MongoMapperIdGenerator Instance
         {
             get { return new MongoMapperIdGenerator(); }
@@ -21,15 +22,14 @@ namespace EtoolTech.MongoDB.Mapper
 
         public object GenerateId(object container, object document)
         {
-            if (!ConfigManager.UserIncrementalId)
+            string objName = document.GetType().Name;
+            if (!ConfigManager.UserIncrementalId(objName))
             {
                 var id = (ObjectId) ObjectIdGenerator.Instance.GenerateId(container, document);
-                return id.GetHashCode();
+                return (long) id.GetHashCode();
             }
-            else
-            {
-                return GenerateIncrementalId(document.GetType().Name);
-            }
+
+            return GenerateIncrementalId(objName);
         }
 
         public bool IsEmpty(object id)
@@ -40,8 +40,8 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         public long GenerateIncrementalId(string objName)
-        {
-            lock (lockObject)
+        {            
+            lock(_lockObject)
             {
                 FindAndModifyResult result = FindAndModifyResult(objName);
                 return result.ModifiedDocument["last"].AsInt64;
@@ -50,7 +50,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private FindAndModifyResult FindAndModifyResult(string objName)
         {
-            FindAndModifyResult result = Helper.Db.GetCollection("Counters").FindAndModify(
+            FindAndModifyResult result = Helper.Db("Counters").GetCollection("Counters").FindAndModify(
                 Query.EQ("document", objName), null, Update.Inc("last", (long) 1), true, true);
             return result;
         }

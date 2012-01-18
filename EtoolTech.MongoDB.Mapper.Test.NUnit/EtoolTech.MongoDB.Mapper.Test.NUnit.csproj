@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{52C9E717-6218-47A2-AEB5-0C179DB90AA5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>EtoolTech.MongoDB.Mapper.Test.NUnit</RootNamespace>
+    <AssemblyName>EtoolTech.MongoDB.Mapper.Test.NUnit</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\Dependencies\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\Dependencies\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\Dependencies\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="InsertModifyDeleteTest.cs" />
+    <Compile Include="ConfigTest.cs" />
+    <Compile Include="FindTest.cs" />
+    <Compile Include="EventsTest.cs" />
+    <Compile Include="ExtensionTest.cs" />
+    <Compile Include="IncrementalIdTest.cs" />
+    <Compile Include="OriginalObjectTest.cs" />
+    <Compile Include="ReflectionUtilityTest.cs" />
+    <Compile Include="RelationsTest.cs" />
+    <Compile Include="Classes\Child.cs" />
+    <Compile Include="Classes\Country.cs" />
+    <Compile Include="Classes\Helper.cs" />
+    <Compile Include="Classes\Person.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EtoolTech.MongoDB.Mapper\EtoolTech.MongoDB.Mapper.csproj">
+      <Project>{9189E04F-8BC5-4219-B706-F986444474A0}</Project>
+      <Name>EtoolTech.MongoDB.Mapper</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

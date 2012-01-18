@@ -13,7 +13,8 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class Relations : IRelations
     {
-        private readonly Object lockObject = new Object();
+        private readonly Object _lockObjectUp = new Object();
+        private readonly Object _lockObjectDown = new Object();
 
         private static readonly Dictionary<string, List<string>> BufferUpRelations =
             new Dictionary<string, List<string>>();
@@ -30,7 +31,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferUpRelations[t.Name];
             }
 
-            lock (lockObject)
+            lock (_lockObjectUp)
             {
                 if (!BufferUpRelations.ContainsKey(t.Name))
                 {
@@ -77,7 +78,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferDownRelations[t.Name];
             }
 
-            lock (lockObject)
+            lock (_lockObjectDown)
             {
                 if (!BufferDownRelations.ContainsKey(t.Name))
                 {

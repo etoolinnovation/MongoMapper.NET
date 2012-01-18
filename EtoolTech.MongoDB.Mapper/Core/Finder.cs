@@ -79,11 +79,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return default(long);
             }
 
-            object oId;
-            Type oType;
-            IIdGenerator iGen;
-            result.First().ToBsonDocument().GetDocumentId(out oId, out oType, out iGen);
-            return (long) oId;
+            return ((IMongoMapperIdeable) result.First()).MongoMapper_Id;
         }
 
         public List<T> FindAsList<T>(QueryComplete query = null)
