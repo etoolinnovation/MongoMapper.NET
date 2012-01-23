@@ -6,6 +6,8 @@ using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver.Builders;
 
+using System.Threading.Tasks;
+
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
@@ -136,6 +138,19 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
 
         }
+		
+		[Test()]
+		public void TestMultiInsert()
+		{
+			Helper.DropAllDb();
+			
+			Parallel.For (0, 1000, i => 
+			{				
+				Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}",i) };
+            	c.Save<Country>();
+			}
+			);
+		}
 
 		[Test]
         public void TestUdpate()

@@ -41,7 +41,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             TestGetPropertyValue();
         }
 
-        public static void TestGetPropertyValue()
+        [Test()]
+		public void TestGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
             test.String = "XXX";                        
@@ -62,8 +63,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             test.Bool = true;
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
         }
-
-        public static void TestObjectVsTypedNewGetPropertyValue()
+        
+		public static void TestObjectVsTypedNewGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
             test.String = "XXX";
