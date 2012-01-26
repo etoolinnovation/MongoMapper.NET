@@ -10,6 +10,30 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public static class ExtensionMethods
     {
+
+
+        public static void Save<T>(this T o)
+        {
+            if (typeof(T).BaseType != typeof(MongoMapper))
+            {
+                throw new NotSupportedException();
+            }            
+
+            ((IMongoMapperWriteable)o).Save<T>();
+
+        }
+
+        public static void Delete<T>(this T o)
+        {
+            if (typeof(T).BaseType != typeof(MongoMapper))
+            {
+                throw new NotSupportedException();
+            }
+
+            ((IMongoMapperWriteable)o).Delete<T>();
+
+        }
+
         public static void FillByKey<T>(this T o, params object[] values)
         {
             if (typeof(T).BaseType != typeof(MongoMapper))

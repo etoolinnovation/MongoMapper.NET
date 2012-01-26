@@ -95,6 +95,38 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             }
         }
 
+        [Test()]
+        public void TestSave()
+        {
+            Helper.DropAllDb();
+
+            //Insert de Paises
+            Country c = new Country { Code = "ES", Name = "España" };
+            c.Save();
+
+            Country country = new Country();
+            country.FillByKey("ES");
+            Assert.AreEqual(country.Code, "ES"); 
+        }
+
+
+        [Test()]
+        public void TestDelete()
+        {
+            Helper.DropAllDb();
+
+            //Insert de Paises
+            Country c = new Country { Code = "ES", Name = "España" };
+            c.Save();
+
+            c.FillByKey("ES");
+            c.Delete();
+
+            List<Country> country = new List<Country>();
+            country.MongoFind();
+            Assert.AreEqual(country.Count, 0);
+        }
+
         public void TestPerfFillByKeyNormalVsExtensionMethod()
         {
             
