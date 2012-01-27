@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using EtoolTech.MongoDB.Mapper.Exceptions;
 using NUnit.Framework;
 using MongoDB.Driver.Builders;
 
@@ -109,7 +109,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(country.Code, "ES"); 
         }
 
-
         [Test()]
         public void TestDelete()
         {
@@ -125,6 +124,133 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             List<Country> country = new List<Country>();
             country.MongoFind();
             Assert.AreEqual(country.Count, 0);
+        }
+
+
+        [Test()]
+        public void TestInsert()
+        {
+            Helper.DropAllDb();
+
+            //Insert de Paises
+            Country c = new Country { Code = "es", Name = "España" };
+            try
+            {
+                c.Save();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException));
+                c.Code = "ES";
+                c.Save();
+            }
+
+            c = new Country { Code = "UK", Name = "Reino Unido" };
+            c.Save();
+
+            c = new Country { Code = "UK", Name = "Reino Unido" };
+            try
+            {
+                c.Save();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(DuplicateKeyException));
+            }
+
+
+
+            c = new Country { Code = "US", Name = "Estados Unidos" };
+            c.Save();
+
+            List<Country> Countries = new List<Country>();
+            Countries.MongoFind("Code", "ES");
+            Assert.AreEqual(Countries.Count, 1);
+
+            Countries.MongoFind("Code", "UK");
+            Assert.AreEqual(Countries.Count, 1);
+
+            Countries.MongoFind("Code", "US");
+            Assert.AreEqual(Countries.Count, 1);
+
+            Countries.MongoFind();
+            Assert.AreEqual(Countries.Count, 3);
+
+            //Insert de personas
+            Person p = new Person
+            {
+                Name = "Pepito Perez",
+                Age = 35,
+                BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+                Married = true,
+                Country = "ES",
+                BankBalance = decimal.Parse("3500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+            p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+
+            p.Save();
+
+            p = new Person
+            {
+                Name = "Juanito Sanchez",
+                Age = 25,
+                BirthDate = DateTime.Now.AddDays(52).AddYears(-38),
+                Married = true,
+                Country = "ES",
+                BankBalance = decimal.Parse("1500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
+
+            p.Save();
+
+            p = new Person
+            {
+                Name = "Andres Perez",
+                Age = 25,
+                BirthDate = DateTime.Now.AddDays(25).AddYears(-25),
+                Married = false,
+                Country = "ES",
+                BankBalance = decimal.Parse("500,00")
+            };
+
+
+            p.Save();
+
+
+            p = new Person
+            {
+                Name = "Marta Serrano",
+                Age = 28,
+                BirthDate = DateTime.Now.AddDays(28).AddYears(-28),
+                Married = false,
+                Country = "ES",
+                BankBalance = decimal.Parse("9500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
+            p.Save();
+
+            p = new Person
+            {
+                Name = "Jonh Smith",
+                Age = 21,
+                BirthDate = DateTime.Now.AddDays(21).AddYears(-21),
+                Married = false,
+                Country = "US",
+                BankBalance = decimal.Parse("100,00")
+            };
+
+            p.Save();
+
+            List<Person> persons = new List<Person>();
+            persons.MongoFind();
+
+            Assert.AreEqual(persons.Count, 5);
+
+
         }
 
         public void TestPerfFillByKeyNormalVsExtensionMethod()

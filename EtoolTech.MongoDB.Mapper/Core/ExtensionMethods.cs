@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver.Builders;
 
@@ -10,7 +8,6 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public static class ExtensionMethods
     {
-
 
         public static void Save<T>(this T o)
         {
