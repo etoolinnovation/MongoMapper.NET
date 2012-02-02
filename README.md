@@ -9,7 +9,7 @@ You can find examples in the Test Project
 ### Dependencies
 
 * ServiceStack.Text: http://github.com/ServiceStack/ServiceStack.Text
-* MongoDB Driver for C#: http://github.com/mongodb/mongo-csharp-driver
+* MongoDB Driver for CSharp: http://github.com/mongodb/mongo-csharp-driver
 * NUnit: http://www.nunit.org, NUnit for Visual Studio: http://nunitforvs.codeplex.com
 
 ### Change Log
@@ -22,5 +22,3 @@ You can find examples in the Test Project
 
 * Coming Soon
  
-
-
