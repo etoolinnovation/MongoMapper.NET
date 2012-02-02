@@ -24,9 +24,8 @@ namespace EtoolTech.MongoDB.Mapper
         {
             string objName = document.GetType().Name;
             if (!ConfigManager.UserIncrementalId(objName))
-            {
-                var id = (ObjectId) ObjectIdGenerator.Instance.GenerateId(container, document);
-                return (long) id.GetHashCode();
+            {                
+                return GenerateId();
             }
 
             return GenerateIncrementalId(objName);
@@ -38,6 +37,26 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         #endregion
+		
+		public long GenerateId()
+		{
+			var baseDate = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var now = DateTime.UtcNow;
+            var days = (ushort)(now - baseDate).TotalDays;
+            var milliseconds = (int)now.TimeOfDay.TotalMilliseconds;  
+            var bytes = Guid.NewGuid().ToByteArray();
+			
+            Array.Copy(BitConverter.GetBytes(days), 0, bytes, 10, 2);
+            Array.Copy(BitConverter.GetBytes(milliseconds), 0, bytes, 12, 4);
+			
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes, 10, 2);
+                Array.Reverse(bytes, 12, 4);
+            }
+			
+			return BitConverter.ToInt64(bytes,0);
+		}
 
         public long GenerateIncrementalId(string objName)
         {            

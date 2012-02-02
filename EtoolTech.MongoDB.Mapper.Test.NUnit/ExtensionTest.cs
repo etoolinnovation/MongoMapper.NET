@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test()]
         public void TestCollectionExtensions()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -52,7 +52,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test()]
         public void TestFillByKeyExtension()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
             
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -98,7 +98,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test()]
         public void TestSave()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -112,7 +112,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test()]
         public void TestDelete()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -130,7 +130,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test()]
         public void TestInsert()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country { Code = "es", Name = "España" };
@@ -256,7 +256,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestPerfFillByKeyNormalVsExtensionMethod()
         {
             
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
@@ -287,7 +287,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         public void TestPerfMongoFindNormalVsExtensionMethods()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };

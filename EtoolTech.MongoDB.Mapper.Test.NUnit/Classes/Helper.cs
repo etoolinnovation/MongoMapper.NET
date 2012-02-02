@@ -8,14 +8,30 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     public class Helper
     {
-        public static void DropAllDb()
+        public static void DropAllCollections()
         {
             MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
-            Mapper.Helper.Db("XXX").Drop();
+            
+			foreach(string colName in Mapper.Helper.Db("XXX").GetCollectionNames())
+			{
+				if (!colName.ToUpper().Contains("SYSTEM"))
+				{
+					Mapper.Helper.Db("XXX").GetCollection(colName).Drop();
+				}
+			}
 
             foreach (CollectionElement collection in config.CollectionConfig)
             {
-                if (collection.Name != "Fake") Mapper.Helper.Db(collection.Name).Drop();
+                if (collection.Name != "Fake") 
+				{
+					foreach(string colName in Mapper.Helper.Db(collection.Name).GetCollectionNames())
+					{
+						if (!colName.ToUpper().Contains("SYSTEM"))
+						{
+							Mapper.Helper.Db(collection.Name).GetCollection(colName).Drop();
+						}
+					}
+				}
             }
 					
         }

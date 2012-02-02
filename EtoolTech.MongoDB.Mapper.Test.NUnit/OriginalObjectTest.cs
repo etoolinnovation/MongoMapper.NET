@@ -27,7 +27,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalValue()
         {
 
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
             
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
