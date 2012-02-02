@@ -17,7 +17,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 		[Test()]
 		public void TestInsert()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country {Code = "es", Name = "España"};
@@ -45,7 +45,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 Assert.AreEqual(ex.GetBaseException().GetType(),typeof(DuplicateKeyException));                
             }
             
-
 
             c = new Country {Code = "US", Name = "Estados Unidos"};
             c.Save<Country>();
@@ -138,11 +137,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
 
         }
+
 		
 		[Test()]
 		public void TestMultiInsert()
 		{
-			Helper.DropAllDb();
+			Helper.DropAllCollections();
 			
 			Parallel.For (0, 1000, i => 
 			{				
@@ -155,7 +155,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 		[Test]
         public void TestUdpate()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
             
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
@@ -175,7 +175,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test]
         public void TestDelete()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
             
             Country c = new Country { Code = "NL", Name = "Holanda" };
             c.Save<Country>();
@@ -195,7 +195,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test]
         public void TestServerUdpate()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             //Insert de Paises
             Country c = new Country {Code = "ES", Name = "España"};

@@ -17,7 +17,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestFindByPk()
         {
             //Llenamos datos
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();

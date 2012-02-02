@@ -4,6 +4,7 @@ Dependencies
 bin
 obj
 TestResults
+test-results
 *.user
 *.suo
 *.vsp

@@ -35,6 +35,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Object _lockObjectIndex = new Object();
 
+        private static readonly Object _lockObjectCustomDiscritminatorTypes = new Object();
+
 
         public static MongoDatabase Db(string objName)
         {
@@ -116,7 +118,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         internal static void RebuildClass(Type classType, bool repairCollection)
         {
-            if (repairCollection && !ConfigManager.Config.Context.Generated
+            if ((repairCollection || !ConfigManager.Config.Context.Generated)
                 && !Db(classType.Name).CollectionExists(CollectionsManager.GetCollectioName(classType.Name)))
             {
                 Db(classType.Name).CreateCollection(CollectionsManager.GetCollectioName(classType.Name), null);
@@ -124,8 +126,14 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (!CustomDiscriminatorTypes.Contains(classType.Name))
             {
-                RegisterCustomDiscriminatorTypes(classType);
-                CustomDiscriminatorTypes.Add(classType.Name);
+                lock (_lockObjectCustomDiscritminatorTypes)
+                {
+                    if (!CustomDiscriminatorTypes.Contains(classType.Name))
+                    {
+                        RegisterCustomDiscriminatorTypes(classType);
+                        CustomDiscriminatorTypes.Add(classType.Name);
+                    }
+                }
             }
 
             if (!ConfigManager.Config.Context.Generated || repairCollection)

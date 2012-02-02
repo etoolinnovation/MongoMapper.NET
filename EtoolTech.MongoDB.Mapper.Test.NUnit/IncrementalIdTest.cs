@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test()]
         public void TestIncId()
         {
-            Helper.DropAllDb();
+            Helper.DropAllCollections();
 
             for (int i = 0; i < 100; i++)
             {

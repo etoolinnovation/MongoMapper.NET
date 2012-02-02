@@ -35,36 +35,31 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(Name, "Decimal");
             Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Date);
             Assert.AreEqual(Name, "Date");
-            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Bool);
+            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Bool);		
             Assert.AreEqual(Name, "Bool");
-
-            TestGetPropertyValue();
-        }
+			
+		}
 
         [Test()]
-		public void TestGetPropertyValue()
+		public static void TestGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
-            test.String = "XXX";                        
-            Assert.AreEqual("XXX",ReflectionUtility.GetPropertyValue<string>(test, "String"));
-
-            test.Int = 999;
+            test.String = "XXX";      
+			test.Int = 999;
+			test.Long = 999;
+			test.Decimal = Decimal.Parse("999,5");
+			test.Date = new DateTime(1972,12,5);
+			test.Bool = true;
+			
+            Assert.AreEqual("XXX",ReflectionUtility.GetPropertyValue<string>(test, "String"));            
             Assert.AreEqual(999, ReflectionUtility.GetPropertyValue<int>(test, "Int"));
-
-            test.Long = 999;
             Assert.AreEqual(999, ReflectionUtility.GetPropertyValue<long>(test, "Long"));
-
-            test.Decimal = Decimal.Parse("999,5");
             Assert.AreEqual(Decimal.Parse("999,5"), ReflectionUtility.GetPropertyValue<decimal>(test, "Decimal"));
-
-            test.Date = new DateTime(1972,12,5);
             Assert.AreEqual(new DateTime(1972, 12, 5), ReflectionUtility.GetPropertyValue<DateTime>(test, "Date"));
-
-            test.Bool = true;
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
         }
-        
-		public static void TestObjectVsTypedNewGetPropertyValue()
+
+        public static void TestObjectVsTypedNewGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
             test.String = "XXX";
