@@ -41,7 +41,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 		}
 
         [Test()]
-		public static void TestGetPropertyValue()
+		public void TestGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
             test.String = "XXX";      

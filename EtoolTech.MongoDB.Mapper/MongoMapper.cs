@@ -7,6 +7,7 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using EtoolTech.MongoDB.Mapper.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -194,13 +195,26 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         #region Write Methods
+		
+		//TODO: Ver como implementar el Generador de Ids para Childs
+		private void GenerateChilsIds<T>(List<T> list)
+		{
+			foreach (var item in list.Cast<IMongoMapperChildIdeable>().Where(i => i._id == default(long)))
+            {                
+                item._id = MongoMapperIdGenerator.Instance.GenerateId();
+            }
+		}
 
         public void Save<T>()
         {
             PropertyValidator.Validate(this, _classType);
 
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
-
+						
+			//TODO: Ver como implementar el Generador de Ids para Childs
+			//List<System.Reflection.PropertyInfo> pList = 
+			//	this.GetType().GetProperties().Where(p=>p.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
+					
             if (MongoMapper_Id == default(long))
             {
                 long id = Finder.Instance.FindIdByKey<T>(GetKeyValues());

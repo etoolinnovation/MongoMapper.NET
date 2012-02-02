@@ -204,22 +204,22 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         //TODO: Obtener las posibles Relaciones de las clases contenidas, solo UP
-        public void GetChildsUpRelations(Type t)
-        {
-            List<PropertyInfo> publicFieldInfos =
-                t.GetProperties().Where(
-                    c => c.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
-            foreach (PropertyInfo fieldInfo in publicFieldInfos)
-            {
-                object mongoChildAtt =
-                    fieldInfo.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault();
-                if (mongoChildAtt != null)
-                {
-                    Type ChildType = ((MongoChildCollection) mongoChildAtt).ChildType;
-                    List<string> Relations = GetUpRelations(ChildType);
-                    int r = Relations.Count;
-                }
-            }
-        }
+        //public void GetChildsUpRelations(Type t)
+        //{
+        //    List<PropertyInfo> publicFieldInfos =
+        //        t.GetProperties().Where(
+        //            c => c.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
+        //    foreach (PropertyInfo fieldInfo in publicFieldInfos)
+        //    {
+        //        object mongoChildAtt =
+        //            fieldInfo.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault();
+        //        if (mongoChildAtt != null)
+        //        {
+        //            Type ChildType = ((MongoChildCollection) mongoChildAtt).ChildType;
+        //            List<string> Relations = GetUpRelations(ChildType);
+        //            int r = Relations.Count;
+        //        }
+        //    }
+        //}
     }
 }
