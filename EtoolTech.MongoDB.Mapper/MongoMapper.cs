@@ -212,8 +212,13 @@ namespace EtoolTech.MongoDB.Mapper
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
 						
 			//TODO: Ver como implementar el Generador de Ids para Childs
-			//List<System.Reflection.PropertyInfo> pList = 
-			//	this.GetType().GetProperties().Where(p=>p.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
+			List<System.Reflection.PropertyInfo> pList = 
+				this.GetType().GetProperties().Where(p=>p.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
+			
+			foreach(System.Reflection.PropertyInfo p in pList)
+			{
+				var data = ReflectionUtility.GetPropertyValue(this, p.Name);
+			}
 					
             if (MongoMapper_Id == default(long))
             {
