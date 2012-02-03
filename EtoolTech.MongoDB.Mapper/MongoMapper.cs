@@ -195,15 +195,7 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         #region Write Methods
-		
-		//TODO: Ver como implementar el Generador de Ids para Childs
-		private void GenerateChilsIds<T>(List<T> list)
-		{
-			foreach (var item in list.Cast<IMongoMapperChildIdeable>().Where(i => i._id == default(long)))
-            {                
-                item._id = MongoMapperIdGenerator.Instance.GenerateId();
-            }
-		}
+				
 
         public void Save<T>()
         {
@@ -211,14 +203,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
 						
-			//TODO: Ver como implementar el Generador de Ids para Childs
-			List<System.Reflection.PropertyInfo> pList = 
-				this.GetType().GetProperties().Where(p=>p.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
-			
-			foreach(System.Reflection.PropertyInfo p in pList)
-			{
-				var data = ReflectionUtility.GetPropertyValue(this, p.Name);
-			}
+			ChildsManager.Instance.ManageChilds(this);
 					
             if (MongoMapper_Id == default(long))
             {

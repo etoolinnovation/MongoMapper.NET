@@ -105,6 +105,7 @@
     <Compile Include="enums\CommitOperation.cs" />
     <Compile Include="MongoMapperChild.cs" />
     <Compile Include="Interfaces\IMongoMapperChildIdeable.cs" />
+    <Compile Include="Core\ChildsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

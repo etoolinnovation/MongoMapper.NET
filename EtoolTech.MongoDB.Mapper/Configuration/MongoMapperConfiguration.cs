@@ -182,6 +182,16 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return bool.Parse(this["UseIncrementalId"].ToString());
             }
         }
+		
+		
+        [ConfigurationProperty("UseChidlsIncrementalId", IsKey = false, IsRequired = true)]
+        public bool UseChidlsIncrementalId
+        {
+            get
+            {
+                return bool.Parse(this["UseChidlsIncrementalId"].ToString());
+            }
+        }
     }
 
     public class CollectionConfig : ConfigurationElementCollection
