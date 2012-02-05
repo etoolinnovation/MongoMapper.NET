@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -14,6 +16,7 @@ namespace EtoolTech.MongoDB.Mapper
     public class Relations : IRelations
     {
         private readonly Object _lockObjectUp = new Object();
+
         private readonly Object _lockObjectDown = new Object();
 
         private static readonly Dictionary<string, List<string>> BufferUpRelations =
@@ -21,6 +24,20 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Dictionary<string, List<string>> BufferDownRelations =
             new Dictionary<string, List<string>>();
+
+        private static IRelations _relations;
+
+        public static IRelations Instance
+        {
+            get
+            {
+                return _relations ?? (_relations = new Relations());
+            }
+        }
+
+        private Relations()
+        {
+        }
 
         #region IRelations Members
 
@@ -38,14 +55,13 @@ namespace EtoolTech.MongoDB.Mapper
                     var upRelations = new List<string>();
                     List<PropertyInfo> publicFieldInfos =
                         t.GetProperties().Where(
-                            c => c.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault() != null).ToList
-                            (
-                            );
+                            c => c.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault() != null).ToList(
+                                );
                     foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
                         var upRelationAtt =
                             (MongoUpRelation)
-                            fieldInfo.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault();
+                            fieldInfo.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault();
 
                         if (upRelationAtt != null)
                         {
@@ -85,17 +101,17 @@ namespace EtoolTech.MongoDB.Mapper
                     var downRelations = new List<string>();
                     List<PropertyInfo> publicFieldInfos =
                         t.GetProperties().Where(
-                            c => c.GetCustomAttributes(typeof (MongoDownRelation), false).FirstOrDefault() != null).
+                            c => c.GetCustomAttributes(typeof(MongoDownRelation), false).FirstOrDefault() != null).
                             ToList();
                     foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
-                        object[] downRelationAtt = fieldInfo.GetCustomAttributes(typeof (MongoDownRelation), false);
+                        object[] downRelationAtt = fieldInfo.GetCustomAttributes(typeof(MongoDownRelation), false);
 
                         foreach (object downRelation in downRelationAtt)
                         {
                             if (downRelation != null)
                             {
-                                var relation = (MongoDownRelation) downRelation;
+                                var relation = (MongoDownRelation)downRelation;
                                 downRelations.Add(
                                     String.Format(
                                         "{0}|{1}|{2}", fieldInfo.Name, relation.ObjectName, relation.FieldName));
@@ -138,7 +154,7 @@ namespace EtoolTech.MongoDB.Mapper
             values = relationString.Split('|');
             string fieldName = values[0];
             string fkClassName = values[1];
-            string fkFieldName = values[2];            
+            string fkFieldName = values[2];
             object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
             QueryComplete query = MongoQuery.Eq(fkFieldName, value);
             return
@@ -160,12 +176,12 @@ namespace EtoolTech.MongoDB.Mapper
 
                 QueryComplete ParentQuery = null;
                 if (!String.IsNullOrEmpty(fkParentfieldName) && !String.IsNullOrEmpty(fkParentPropertyName))
-                {                    
+                {
                     object Parentvalue = ReflectionUtility.GetPropertyValue(sender, fkParentPropertyName);
                     ParentQuery = MongoQuery.Eq(fkParentfieldName, Parentvalue);
                 }
-                
-                object value = ReflectionUtility.GetPropertyValue(sender, fieldName); 
+
+                object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
                 QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
                 if (ParentQuery != null)
@@ -189,7 +205,7 @@ namespace EtoolTech.MongoDB.Mapper
                 string fieldName = values[0];
                 string fkClassName = values[1];
                 string fkFieldName = values[2];
-                
+
                 object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
                 QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 

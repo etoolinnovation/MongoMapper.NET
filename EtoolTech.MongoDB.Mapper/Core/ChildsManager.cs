@@ -8,50 +8,68 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-	public class ChildsManager
-	{
-		private static ChildsManager _instance;
+    public class ChildsManager : IChildsManager
+    {
+		private static IChildsManager _instance;
+        private static readonly Dictionary<string,List<string>> FieldNamesBuffer = new Dictionary<string, List<string>>();
+        private readonly Object _lockObject = new Object();
 		
-		public static ChildsManager Instance 
+		public static IChildsManager Instance 
 		{
-			get 
+			get
 			{
-				if (_instance == null)
-					_instance = new ChildsManager();
-				return _instance;
+			    return _instance ?? (_instance = new ChildsManager());
 			}
 		}
 		
 		private ChildsManager () {}
 		
+        private IEnumerable<string> GeFieldNames(object sender)
+        {
+            string objName = sender.GetType().Name;
+
+            if (FieldNamesBuffer.ContainsKey(objName)) return FieldNamesBuffer[objName];
+
+            lock (_lockObject)
+            {
+
+                if (!FieldNamesBuffer.ContainsKey(objName))
+                {
+                    FieldNamesBuffer.Add(objName, new List<string>());
+
+                    List<PropertyInfo> pList =
+                        sender.GetType().GetProperties().Where(
+                            p => p.GetCustomAttributes(typeof(MongoChildCollection), false).FirstOrDefault() != null).
+                            ToList();
+
+                    foreach (PropertyInfo p in pList)
+                    {
+                        FieldNamesBuffer[objName].Add(p.Name);
+                    }
+
+                }
+
+                return FieldNamesBuffer[objName];
+            }
+        }
+
 		public void ManageChilds(object sender)
-		{
-											
-			List<System.Reflection.PropertyInfo> pList = 
-				sender.GetType().GetProperties().Where(p=>p.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).ToList();
-						
-			foreach(System.Reflection.PropertyInfo p in pList)
+		{														
+            foreach (string pName in this.GeFieldNames(sender))
 			{
-				var data = ReflectionUtility.GetPropertyValue(sender, p.Name);
+				var data = ReflectionUtility.GetPropertyValue(sender, pName);
 				var childList = (IEnumerable<object>) data;
 				GenerateChilsIds(sender.GetType().Name, childList);				
 			}
 		}
-				
-		private void GenerateChilsIds(string objName, IEnumerable<object> list)
+
+        public void GenerateChilsIds(string objName, IEnumerable<object> list)
 		{
 			foreach (object o in list)
-            {                
-                IMongoMapperChildIdeable item = (IMongoMapperChildIdeable) o;
-				if (ConfigManager.UseChildIncrementalId(objName))
-				{
-					item._id = MongoMapperIdGenerator.Instance.GenerateIncrementalId(o.GetType().Name);
-				}
-				else
-				{
-					item._id = MongoMapperIdGenerator.Instance.GenerateId();
-				}
-            }
+			{
+			    var item = (IMongoMapperChildIdeable) o;
+			    item._id = ConfigManager.UseChildIncrementalId(objName) ? MongoMapperIdGenerator.Instance.GenerateIncrementalId(o.GetType().Name) : MongoMapperIdGenerator.Instance.GenerateId();
+			}
 		}
 
 	}

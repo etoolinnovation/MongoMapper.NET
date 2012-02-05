@@ -57,9 +57,10 @@ namespace EtoolTech.MongoDB.Mapper
         public event OnAfterCompleteEventHandler OnAfterComplete;
 
         #endregion
-        
-        private static readonly IRelations Relations = new Relations();
-        private static readonly IEvents Events = new Events();
+
+        private static readonly IRelations Relations = Mapper.Relations.Instance;
+        private static readonly IEvents Events = Mapper.Events.Instance;
+        private static readonly IChildsManager ChildsManager = Mapper.ChildsManager.Instance;
 
         private readonly Type _classType;
         private readonly Dictionary<string, object> _relationBuffer = new Dictionary<string, object>();
@@ -203,7 +204,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
 						
-			ChildsManager.Instance.ManageChilds(this);
+			ChildsManager.ManageChilds(this);
 					
             if (MongoMapper_Id == default(long))
             {
