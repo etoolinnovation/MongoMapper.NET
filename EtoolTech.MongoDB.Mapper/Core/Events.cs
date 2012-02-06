@@ -5,6 +5,21 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class Events : IEvents
     {
+
+        private static IEvents _events;
+
+        public static IEvents Instance
+        {
+            get
+            {
+                return _events ?? (_events = new Events());
+            }
+        }
+
+        private Events()
+        { }
+        
+        
         #region IEvents Members
 
         public void AfterInsertDocument(

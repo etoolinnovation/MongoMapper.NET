@@ -35,30 +35,27 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
             p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
-
-            bool ValidateRelationExceptionThrow = false;
+            
             try
             {
                 p.Save<Person>();
             }
-            catch (ValidateUpRelationException)
+            catch (Exception ex)
             {
-                ValidateRelationExceptionThrow = true;
+				Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateUpRelationException));
                 p.Country = "ES";
                 p.Save<Person>();
             }
 
-            Assert.AreEqual(ValidateRelationExceptionThrow, true);
-            ValidateRelationExceptionThrow = false;
 
             c = Country.FindByKey<Country>("ES");
             try
             {
                 c.Delete<Country>();
             }
-            catch (ValidateDownRelationException)
+            catch (Exception ex)
             {
-                ValidateRelationExceptionThrow = true;
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateDownRelationException));				
                 List<Person> Persons = c.GetRelation<Person>("Person,Country");
                 foreach (Person p2 in Persons)
                 {
@@ -67,8 +64,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 }
                 c.Delete<Person>();
             }
-
-            Assert.AreEqual(ValidateRelationExceptionThrow, true);
+            
 
             c = Country.FindByKey<Country>("UK");
 

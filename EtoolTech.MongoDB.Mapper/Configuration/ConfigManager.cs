@@ -206,9 +206,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         }
 
-        public static bool UserIncrementalId(string objName)
+        public static bool UseIncrementalId(string objName)
         {
-            if (CustomContext.Config != null) return CustomContext.Config.UserIncrementalId;
+            if (CustomContext.Config != null) return CustomContext.Config.UseIncrementalId;
 
             CollectionElement cfg = FindByObjName(objName);
 
@@ -217,5 +217,16 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.UseIncrementalId;
 
         }
+		
+		public static bool UseChildIncrementalId(string objName)
+		{
+			if (CustomContext.Config != null) return CustomContext.Config.UseChildIncrementalId;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Context.UseChidlsIncrementalId;
+
+            return Config.Context.UseChidlsIncrementalId;
+		}
     }
 }

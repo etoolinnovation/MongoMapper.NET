@@ -41,7 +41,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 		}
 
         [Test()]
-		public static void TestGetPropertyValue()
+		public void TestGetPropertyValue()
         {
             TestReflectionUtility test = new TestReflectionUtility();
             test.String = "XXX";      
@@ -69,7 +69,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
           
             for (int i = 0; i < 1000000; i++)
             {
-                object r2 = ReflectionUtility.GetPropertyValue(test, "String");
+                ReflectionUtility.GetPropertyValue(test, "String");
             }
 
             timer.Stop();
@@ -78,7 +78,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             timer = Stopwatch.StartNew();
             for (int i = 0; i < 1000000; i++)
             {
-                string r = ReflectionUtility.GetPropertyValue<string>(test, "String");
+                ReflectionUtility.GetPropertyValue<string>(test, "String");
             }
 
             

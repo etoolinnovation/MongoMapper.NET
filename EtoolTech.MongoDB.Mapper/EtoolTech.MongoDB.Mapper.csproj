@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -19,7 +19,6 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,16 +47,13 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="MongoDB.Bson, Version=1.4.4349.31168, Culture=neutral, PublicKeyToken=f686731cfb9cc103">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MongoDB.Bson">
       <HintPath>..\Dependencies\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.4.4349.31169, Culture=neutral, PublicKeyToken=f686731cfb9cc103">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MongoDB.Driver">
       <HintPath>..\Dependencies\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=3.1.7.1816, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ServiceStack.Text">
       <HintPath>..\Dependencies\ServiceStack.Text.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -71,6 +67,7 @@
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
+    <Compile Include="Interfaces\IChildsManager.cs" />
     <Compile Include="Core\MongoQuery.cs" />
     <Compile Include="Core\ReflectionUtility.cs" />
     <Compile Include="Core\CustomContext.cs" />
@@ -107,6 +104,9 @@
     <Compile Include="Core\Relations.cs" />
     <Compile Include="Transaction\Transaction.cs" />
     <Compile Include="enums\CommitOperation.cs" />
+    <Compile Include="MongoMapperChild.cs" />
+    <Compile Include="Interfaces\IMongoMapperChildIdeable.cs" />
+    <Compile Include="Core\ChildsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

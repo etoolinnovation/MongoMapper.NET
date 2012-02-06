@@ -23,7 +23,7 @@ namespace EtoolTech.MongoDB.Mapper
         public object GenerateId(object container, object document)
         {
             string objName = document.GetType().Name;
-            if (!ConfigManager.UserIncrementalId(objName))
+            if (!ConfigManager.UseIncrementalId(objName))
             {                
                 return GenerateId();
             }

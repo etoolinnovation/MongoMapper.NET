@@ -30,6 +30,7 @@ namespace EtoolTech.MongoDB.Mapper
             ((IMongoMapperWriteable)o).Delete<T>();
 
         }
+			
 
         public static void FillByKey<T>(this T o, params object[] values)
         {

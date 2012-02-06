@@ -7,6 +7,7 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using EtoolTech.MongoDB.Mapper.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -56,9 +57,10 @@ namespace EtoolTech.MongoDB.Mapper
         public event OnAfterCompleteEventHandler OnAfterComplete;
 
         #endregion
-        
-        private static readonly IRelations Relations = new Relations();
-        private static readonly IEvents Events = new Events();
+
+        private static readonly IRelations Relations = Mapper.Relations.Instance;
+        private static readonly IEvents Events = Mapper.Events.Instance;
+        private static readonly IChildsManager ChildsManager = Mapper.ChildsManager.Instance;
 
         private readonly Type _classType;
         private readonly Dictionary<string, object> _relationBuffer = new Dictionary<string, object>();
@@ -194,13 +196,16 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         #region Write Methods
+				
 
         public void Save<T>()
         {
             PropertyValidator.Validate(this, _classType);
 
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
-
+						
+			ChildsManager.ManageChilds(this);
+					
             if (MongoMapper_Id == default(long))
             {
                 long id = Finder.Instance.FindIdByKey<T>(GetKeyValues());
