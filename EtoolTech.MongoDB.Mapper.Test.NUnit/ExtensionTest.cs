@@ -252,8 +252,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
 
         }
-
-        public void TestPerfFillByKeyNormalVsExtensionMethod()
+ 	
+		
+		public void TestPerfFillByKeyNormalVsExtensionMethod()
         {
             
             Helper.DropAllCollections();
@@ -277,7 +278,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             for (int i = 0; i < 1000000; i++)
             {
-                Country country = Country.FindByKey<Country>("ES");                
+                Country.FindByKey<Country>("ES");                
             }
 
             timer.Stop();
@@ -313,7 +314,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             for (int i = 0; i < 1000000; i++)
             {
-                List<Country> countries = Country.FindAsList<Country>(Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+                Country.FindAsList<Country>(Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
             }
 
             timer.Stop();
