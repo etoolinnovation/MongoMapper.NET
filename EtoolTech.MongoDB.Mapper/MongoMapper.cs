@@ -248,6 +248,12 @@ namespace EtoolTech.MongoDB.Mapper
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Save(this);
 
+            if (ConfigManager.SafeMode(_classType.Name))
+            {
+                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                    throw new Exception(result.ErrorMessage);
+            }
+
             Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
 
         }
@@ -261,6 +267,13 @@ namespace EtoolTech.MongoDB.Mapper
 
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(this);
+
+
+            if (ConfigManager.SafeMode(_classType.Name))
+            {
+                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                    throw new Exception(result.ErrorMessage);
+            }
 
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
@@ -289,12 +302,16 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndRemove(
                     query, null);
 
-            //TODO: ver de devolver el texto
-            if (result.ErrorMessage != null)
-                throw new DeleteDocumentException();
+            //TODO: ver de devolver DeleteDocumentException
+            if (ConfigManager.SafeMode(_classType.Name))
+            {
+                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                    throw new Exception(result.ErrorMessage);
+            }
+
         }
 
-        public void ServerUpdate<T>(UpdateBuilder update, bool Refill = true)
+        public void ServerUpdate<T>(UpdateBuilder update, bool refill = true)
         {
             if (MongoMapper_Id == default(long))
             {
@@ -303,13 +320,17 @@ namespace EtoolTech.MongoDB.Mapper
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
 
             FindAndModifyResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
-                FindAndModify(query, null, update, Refill, true);
+                FindAndModify(query, null, update, refill, true);
 
-            //TODO: ver de devolver el texto
-            if (result.ErrorMessage != null)
-                throw new ServerUpdateException();
+            //TODO: ver de devolver ServerUpdateException
+            if (ConfigManager.SafeMode(_classType.Name))
+            {
+                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                    throw new Exception(result.ErrorMessage);
+            }
+                 
 
-            if (Refill) ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)),this);                        
+            if (refill) ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)),this);                        
         }
 
         #endregion
