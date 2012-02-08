@@ -20,7 +20,7 @@ namespace EtoolTech.MongoDB.Mapper
 {
     [Serializable]
     public abstract class MongoMapper : IBsonSerializable, IMongoMapperOriginable, IMongoMapperRelationable,
-                                        IMongoMapperWriteable, IMongoMapperIdeable
+                                        IMongoMapperWriteable, IMongoMapperIdeable, IMongoMapperIdIncrementable
     {
         #region Eventos
 
@@ -381,6 +381,15 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return Finder.Instance.AllAsCursor<T>();
         }
+
+        #endregion
+
+        #region Implementation of IMongoMapperIdIncrementable
+
+        [BsonIgnore]
+        public bool IncrementalId { get; internal set; }
+        [BsonIgnore]
+        public bool IncrementalChildId { get; internal set; }
 
         #endregion
     }

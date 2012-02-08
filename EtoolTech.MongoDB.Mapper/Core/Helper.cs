@@ -30,7 +30,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
-        private static readonly Dictionary<string,MongoMapperIdIncrementable> BufferIdIncrementables = new Dictionary<string, MongoMapperIdIncrementable>();
+        internal static readonly Dictionary<string,MongoMapperIdIncrementable> BufferIdIncrementables = new Dictionary<string, MongoMapperIdIncrementable>();
 
         private static readonly Object LockObjectPk = new Object();
 
@@ -135,6 +135,26 @@ namespace EtoolTech.MongoDB.Mapper
                     {
                         RegisterCustomDiscriminatorTypes(classType);
                         CustomDiscriminatorTypes.Add(classType.Name);
+                    }
+                }
+            }
+
+            if (!BufferIdIncrementables.ContainsKey(classType.Name))
+            {
+                lock(LockObjectCustomDiscritminatorTypes)
+                {
+                    if (!BufferIdIncrementables.ContainsKey(classType.Name))
+                    {
+                        var m =
+                            classType.GetCustomAttributes(typeof (MongoMapperIdIncrementable), false).FirstOrDefault();
+                        if (m == null)
+                        {
+                            BufferIdIncrementables.Add(classType.Name, null);
+                        }
+                        else
+                        {
+                            BufferIdIncrementables.Add(classType.Name, (MongoMapperIdIncrementable)m);
+                        }
                     }
                 }
             }

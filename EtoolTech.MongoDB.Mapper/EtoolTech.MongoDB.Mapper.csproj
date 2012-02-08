@@ -64,6 +64,7 @@
     <Compile Include="Attributes\MongoChildCollection.cs" />
     <Compile Include="Attributes\MongoDownRelation.cs" />
     <Compile Include="Attributes\MongoIndex.cs" />
+    <Compile Include="Attributes\MongoMapperIdIncrementable.cs" />
     <Compile Include="Attributes\MongoPropertyValidator.cs" />
     <Compile Include="Attributes\MongoUpRelation.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Attributes\MongoKey.cs" />
     <Compile Include="Interfaces\IEvents.cs" />
     <Compile Include="Interfaces\IMongoMapperIdeable.cs" />
+    <Compile Include="Interfaces\IMongoMapperIdIncrementable.cs" />
     <Compile Include="Interfaces\IMongoMapperOriginable.cs" />
     <Compile Include="Interfaces\IMongoMapperRelationable.cs" />
     <Compile Include="Interfaces\IMongoMapperWriteable.cs" />
