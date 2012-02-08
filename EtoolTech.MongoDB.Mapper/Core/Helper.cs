@@ -24,31 +24,34 @@ namespace EtoolTech.MongoDB.Mapper
                                                                            typeof (bool)
                                                                        };
 
-        private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
-            new Dictionary<string, List<string>>();
+        private static readonly Dictionary<string, List<string>> BufferPrimaryKey = new Dictionary<string, List<string>>();
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
-        private static readonly Object _lockObjectPk = new Object();
+        private static readonly Dictionary<string,MongoMapperIdIncrementable> BufferIdIncrementables = new Dictionary<string, MongoMapperIdIncrementable>();
 
-        private static readonly Object _lockObjectIndex = new Object();
+        private static readonly Object LockObjectPk = new Object();
 
-        private static readonly Object _lockObjectCustomDiscritminatorTypes = new Object();
+        private static readonly Object LockObjectIndex = new Object();
+
+        private static readonly Object LockObjectCustomDiscritminatorTypes = new Object();
+
+        private static readonly Object LockObjectIdIncrementables = new Object();
 
 
         public static MongoDatabase Db(string objName)
         {
 
-            string DatabaseName = ConfigManager.DataBaseName(objName);
+            string databaseName = ConfigManager.DataBaseName(objName);
 
             string connectionString = ConfigManager.GetConnectionString(objName);
 
-            MongoServer _server = MongoServer.Create(connectionString);
+            MongoServer server = MongoServer.Create(connectionString);
 
-            MongoDatabase _dataBase = _server.GetDatabase(DatabaseName);
-            return _dataBase;
+            MongoDatabase dataBase = server.GetDatabase(databaseName);
+            return dataBase;
         }
 
         public static void ValidateType(Type t)
@@ -66,7 +69,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferPrimaryKey[t.Name];
             }
 
-            lock (_lockObjectPk)
+            lock (LockObjectPk)
             {
                 if (!BufferPrimaryKey.ContainsKey(t.Name))
                 {
@@ -96,7 +99,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return BufferIndexes[t.Name];
             }
 
-            lock (_lockObjectIndex)
+            lock (LockObjectIndex)
             {
                 if (!BufferIndexes.ContainsKey(t.Name))
                 {
@@ -126,7 +129,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (!CustomDiscriminatorTypes.Contains(classType.Name))
             {
-                lock (_lockObjectCustomDiscritminatorTypes)
+                lock (LockObjectCustomDiscritminatorTypes)
                 {
                     if (!CustomDiscriminatorTypes.Contains(classType.Name))
                     {
@@ -150,15 +153,15 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static void RegisterCustomDiscriminatorTypes(Type classType)
         {
-            object[] RegTypes = classType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType), false);
+            object[] regTypes = classType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType), false);
 
-            foreach (object RegType in RegTypes)
+            foreach (object regType in regTypes)
             {
-                if (RegType != null)
+                if (regType != null)
                 {
-                    var MongoCustomDiscriminatorType = (MongoCustomDiscriminatorType) RegType;
+                    var mongoCustomDiscriminatorType = (MongoCustomDiscriminatorType) regType;
                     BsonDefaultSerializer.RegisterDiscriminator(
-                        MongoCustomDiscriminatorType.Type, MongoCustomDiscriminatorType.Type.Name);
+                        mongoCustomDiscriminatorType.Type, mongoCustomDiscriminatorType.Type.Name);
                 }
             }
         }
