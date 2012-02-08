@@ -93,7 +93,6 @@
     <Compile Include="Attributes\MongoKey.cs" />
     <Compile Include="Interfaces\IEvents.cs" />
     <Compile Include="Interfaces\IMongoMapperIdeable.cs" />
-    <Compile Include="Interfaces\IMongoMapperIdIncrementable.cs" />
     <Compile Include="Interfaces\IMongoMapperOriginable.cs" />
     <Compile Include="Interfaces\IMongoMapperRelationable.cs" />
     <Compile Include="Interfaces\IMongoMapperWriteable.cs" />
