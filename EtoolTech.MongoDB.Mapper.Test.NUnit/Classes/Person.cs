@@ -9,6 +9,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [MongoKey(KeyFields = "")]
     [MongoIndex(IndexFields = "ID,Country")]
     [MongoIndex(IndexFields =  "Name")]
+    [MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = true)]
     public class Person : MongoMapper
     {        
 		public Person()

@@ -208,6 +208,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         public static bool UseIncrementalId(string objName)
         {
+            if (Helper.BufferIdIncrementables[objName] != null)
+                return Helper.BufferIdIncrementables[objName].IncremenalId;
+            
             if (CustomContext.Config != null) return CustomContext.Config.UseIncrementalId;
 
             CollectionElement cfg = FindByObjName(objName);
@@ -220,6 +223,10 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 		
 		public static bool UseChildIncrementalId(string objName)
 		{
+
+            if (Helper.BufferIdIncrementables[objName] != null)
+                return Helper.BufferIdIncrementables[objName].ChildsIncremenalId;
+
 			if (CustomContext.Config != null) return CustomContext.Config.UseChildIncrementalId;
 
             CollectionElement cfg = FindByObjName(objName);
