@@ -11,9 +11,9 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
         {
         }
 
-        public ValidateDownRelationException(string Relation)
+        public ValidateDownRelationException(string relation)
         {
-            _relation = Relation;
+            _relation = relation;
         }
 
         public override string Message

@@ -156,10 +156,6 @@ namespace EtoolTech.MongoDB.Mapper
 
         #endregion
 
-        public static IQueryable<T> QueryContext<T>()
-        {
-            return CollectionsManager.GetCollection<T>(typeof (T).Name).AsQueryable<T>();
-        }
 
         private Dictionary<string, object> GetKeyValues()
         {

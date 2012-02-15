@@ -10,28 +10,28 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         public static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
-        private static readonly Dictionary<string, CollectionElement> configByObject = new Dictionary<string, CollectionElement>();
+        private static readonly Dictionary<string, CollectionElement> ConfigByObject = new Dictionary<string, CollectionElement>();
 
-        private static readonly Object _lockObject = new Object();
+        private static readonly Object LockObject = new Object();
 
-        private static bool SetupLoaded = false;
+        private static bool _setupLoaded = false;
 
         public static string GetConnectionString(string objName)
         {
-            string LoginString = "";
+            string loginString = "";
             string userName = ConfigManager.UserName(objName);
 
             if (!String.IsNullOrEmpty(userName))
             {
-                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
+                loginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
             }
 
-            string DatabaseName = ConfigManager.DataBaseName(objName);
+            string databaseName = ConfigManager.DataBaseName(objName);
 
             string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?connect=direct;maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
                                                     ConfigManager.Host(objName), ConfigManager.Port(objName),
                                                     ConfigManager.PoolSize(objName),
-                                                    ConfigManager.WaitQueueTimeout(objName) * 1000, LoginString, DatabaseName,
+                                                    ConfigManager.WaitQueueTimeout(objName) * 1000, loginString, databaseName,
                                                     ConfigManager.SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
                                                     ConfigManager.FSync(objName).ToString(CultureInfo.InvariantCulture).ToLower());
             return connectionString;
@@ -46,26 +46,26 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return objName;
         }
 
-        private static CollectionElement FindByObjName(string ObjName)
+        private static CollectionElement FindByObjName(string objName)
         {
-            if (!SetupLoaded)
+            if (!_setupLoaded)
             {
-                lock (_lockObject)
+                lock (LockObject)
                 {
-                    if (!SetupLoaded)
+                    if (!_setupLoaded)
                     {                        
                         foreach (CollectionElement collection in Config.CollectionConfig)
                         {
-                            configByObject.Add(collection.Name, collection);
+                            ConfigByObject.Add(collection.Name, collection);
                         }
-                        SetupLoaded = true;
+                        _setupLoaded = true;
                     }
                 }
             }
 
-            ObjName = CleanObjName(ObjName);
+            objName = CleanObjName(objName);
 
-            return configByObject.ContainsKey(ObjName) ? configByObject[ObjName] : null;
+            return ConfigByObject.ContainsKey(objName) ? ConfigByObject[objName] : null;
         }
 
         public static string DataBaseName(string objName)
