@@ -138,18 +138,37 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         }
 
+
+        [Test()]
+        public void TestParallelMultiInsert()
+        {
+            Helper.DropAllCollections();
+
+            Parallel.For(0, 1000, i =>
+            {
+                Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
+                c.Save<Country>();
+           }
+            );
+
+            Assert.AreEqual(1000, MongoMapper.FindAsCursor<Country>().Size());
+        }
+
 		
 		[Test()]
 		public void TestMultiInsert()
 		{
 			Helper.DropAllCollections();
 			
-			Parallel.For (0, 1000, i => 
-			{				
+			for(int i=0; i<1000; i++)
+            {
 				Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}",i) };
             	c.Save<Country>();
-			}
-			);
+
+                Assert.AreEqual(i+1, MongoMapper.FindAsCursor<Country>().Size());
+			}			
+
+            Assert.AreEqual(1000, MongoMapper.FindAsCursor<Country>().Size());
 		}
 
 		[Test]

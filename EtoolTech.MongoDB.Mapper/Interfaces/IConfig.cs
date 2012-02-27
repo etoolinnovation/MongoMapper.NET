@@ -6,7 +6,13 @@
 
         string Host { get; }
 
-        int Port { get; }
+        string Port { get; }
+
+        string ReplicaSetName { get; }
+
+        int MinReplicaServersToWrite { get; }
+
+        bool BalancedReading { get; }
 
         string UserName { get; }
 

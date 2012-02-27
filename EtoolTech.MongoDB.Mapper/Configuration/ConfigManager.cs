@@ -28,8 +28,45 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             string databaseName = ConfigManager.DataBaseName(objName);
 
-            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?connect=direct;maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
-                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
+            string host = ConfigManager.Host(objName);
+            string port = ConfigManager.Port(objName);
+
+            string hostsStrings = "";
+            if (host.Contains(","))
+            {
+                string[] hostList = host.Split(',');
+                string[] portList = port.Split(',');
+                for (int index = 0; index < hostList.Length; index++)
+                {
+                    string h = hostList[index];
+                    hostsStrings += h + ":" + portList[index] + ",";
+                }
+                if (!String.IsNullOrEmpty(hostsStrings)) hostsStrings = hostsStrings.Remove(hostsStrings.Length - 1, 1);
+            }
+            else
+            {
+                hostsStrings = host + ":" + port;
+            }
+
+            string replicaOptions = "";
+            
+            string replicaSetName = ConfigManager.ReplicaSetName(objName);
+            if (!String.IsNullOrEmpty(replicaSetName))
+                replicaOptions = string.Format("replicaSet={0}", replicaSetName);
+
+            if (ConfigManager.MinReplicaServersToWrite(objName) != 0)
+                replicaOptions += String.Format(";w={0}", ConfigManager.MinReplicaServersToWrite(objName)); 
+
+            if (ConfigManager.BalancedReading(objName))
+                replicaOptions += String.Format(";slaveOk=true");
+
+            if (replicaOptions.StartsWith(";")) replicaOptions = replicaOptions.Remove(1);
+
+            if (!String.IsNullOrEmpty(replicaOptions)) replicaOptions += ";";
+            
+
+            string connectionString = String.Format("mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
+                                                    hostsStrings, replicaOptions,
                                                     ConfigManager.PoolSize(objName),
                                                     ConfigManager.WaitQueueTimeout(objName) * 1000, loginString, databaseName,
                                                     ConfigManager.SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
@@ -91,7 +128,42 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.Host;
         }
 
-        public static int Port(string objName)
+
+        public static string ReplicaSetName(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.ReplicaSetName;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.ReplicaSetName;
+
+            return Config.Server.ReplicaSetName;
+        }
+        
+        public static bool BalancedReading(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.BalancedReading;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.BalancedReading;
+
+            return Config.Server.BalancedReading;
+        }
+
+
+        public static int MinReplicaServersToWrite(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.MinReplicaServersToWrite;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.MinReplicaServersToWrite;
+
+            return Config.Server.MinReplicaServersToWrite;
+        }
+
+        public static string Port(string objName)
         {
             if (CustomContext.Config != null) return CustomContext.Config.Port;
 
