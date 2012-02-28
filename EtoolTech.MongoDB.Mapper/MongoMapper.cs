@@ -294,9 +294,8 @@ namespace EtoolTech.MongoDB.Mapper
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
 
-            FindAndModifyResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndRemove(
-                    query, null);
+            SafeModeResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Remove(query);
 
             //TODO: ver de devolver DeleteDocumentException
             if (ConfigManager.SafeMode(_classType.Name))
