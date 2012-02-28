@@ -207,8 +207,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 country.Delete<Country>();
             }
 
+            //TODO: Pruebas Replica Set
+            //System.Threading.Thread.Sleep(5000);
+
             Countries = Country.FindAsList<Country>("Code", "NL");
-            Assert.AreEqual(Countries.Count, 0);
+            Assert.AreEqual(0, Countries.Count);
         }
 
         [Test]

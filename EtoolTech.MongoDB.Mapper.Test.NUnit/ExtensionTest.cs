@@ -121,9 +121,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.FillByKey("ES");
             c.Delete();
 
+            //TODO: Pruebas Replica Set
+            //System.Threading.Thread.Sleep(5000);
+
             List<Country> country = new List<Country>();
             country.MongoFind();
-            Assert.AreEqual(country.Count, 0);
+            Assert.AreEqual(0, country.Count);
         }
 
 
