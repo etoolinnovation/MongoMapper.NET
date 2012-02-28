@@ -160,7 +160,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 		{
 			Helper.DropAllCollections();
 			
-			for(int i=0; i<1000; i++)
+			for(int i=0; i<100; i++)
             {
 				Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}",i) };
             	c.Save<Country>();
@@ -168,7 +168,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 Assert.AreEqual(i+1, MongoMapper.FindAsCursor<Country>().Size());
 			}			
 
-            Assert.AreEqual(1000, MongoMapper.FindAsCursor<Country>().Size());
+            Assert.AreEqual(100, MongoMapper.FindAsCursor<Country>().Size());
 		}
 
 		[Test]
