@@ -260,6 +260,8 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
+            var s = Helper.Db(_classType.Name).Server;
+            var instances = s.Instances;
 
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(this);

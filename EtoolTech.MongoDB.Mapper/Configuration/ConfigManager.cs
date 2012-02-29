@@ -15,6 +15,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         private static bool _setupLoaded = false;
 
+        internal static bool IsReplicaSet { get; set; }
+        internal static int? ActiveServers { get; set; }
+
         public static string GetConnectionString(string objName)
         {
             string loginString = "";
@@ -41,6 +44,8 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                     hostsStrings += h + ":" + portList[index] + ",";
                 }
                 if (!String.IsNullOrEmpty(hostsStrings)) hostsStrings = hostsStrings.Remove(hostsStrings.Length - 1, 1);
+
+                IsReplicaSet = true;
             }
             else
             {
