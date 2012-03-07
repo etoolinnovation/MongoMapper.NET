@@ -29,4 +29,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [MongoChildCollection]
 		public List<Child> Childs { get; set;}
     }
+
+
 }

@@ -138,18 +138,37 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         }
 
+
+        [Test()]
+        public void TestParallelMultiInsert()
+        {
+            Helper.DropAllCollections();
+
+            Parallel.For(0, 1000, i =>
+            {
+                Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
+                c.Save<Country>();
+           }
+            );
+
+            Assert.AreEqual(1000, MongoMapper.FindAsCursor<Country>().Size());
+        }
+
 		
 		[Test()]
 		public void TestMultiInsert()
 		{
 			Helper.DropAllCollections();
 			
-			Parallel.For (0, 1000, i => 
-			{				
+			for(int i=0; i<100; i++)
+            {
 				Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}",i) };
             	c.Save<Country>();
-			}
-			);
+
+                Assert.AreEqual(i+1, MongoMapper.FindAsCursor<Country>().Size());
+			}			
+
+            Assert.AreEqual(100, MongoMapper.FindAsCursor<Country>().Size());
 		}
 
 		[Test]
@@ -188,8 +207,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 country.Delete<Country>();
             }
 
+            //TODO: Pruebas Replica Set
+            //System.Threading.Thread.Sleep(5000);
+
             Countries = Country.FindAsList<Country>("Code", "NL");
-            Assert.AreEqual(Countries.Count, 0);
+            Assert.AreEqual(0, Countries.Count);
         }
 
         [Test]

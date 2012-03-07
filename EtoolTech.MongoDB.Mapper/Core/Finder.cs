@@ -55,7 +55,7 @@ namespace EtoolTech.MongoDB.Mapper
             QueryComplete query = Query.And(queryList.ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
-            if (!result.Any())
+            if (result.Size() == 0)
             {
                 throw new FindByKeyNotFoundException();
             }
@@ -74,7 +74,7 @@ namespace EtoolTech.MongoDB.Mapper
             QueryComplete query = Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
-            if (!result.Any())
+            if (result.Size() == 0)
             {
                 return default(long);
             }

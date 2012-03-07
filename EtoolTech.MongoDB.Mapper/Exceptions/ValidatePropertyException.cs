@@ -8,10 +8,10 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
         private readonly string _message;
         private readonly string _propertyName;
 
-        public ValidatePropertyException(string PropertyName, string Message)
+        public ValidatePropertyException(string propertyName, string message)
         {
-            _message = Message;
-            _propertyName = PropertyName;
+            _message = message;
+            _propertyName = propertyName;
         }
 
         public override string Message

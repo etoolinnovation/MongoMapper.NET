@@ -156,10 +156,6 @@ namespace EtoolTech.MongoDB.Mapper
 
         #endregion
 
-        public static IQueryable<T> QueryContext<T>()
-        {
-            return CollectionsManager.GetCollection<T>(typeof (T).Name).AsQueryable<T>();
-        }
 
         private Dictionary<string, object> GetKeyValues()
         {
@@ -264,6 +260,8 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
+            var s = Helper.Db(_classType.Name).Server;
+            var instances = s.Instances;
 
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Insert(this);
@@ -298,9 +296,8 @@ namespace EtoolTech.MongoDB.Mapper
             }
             QueryComplete query = Query.EQ("_id", MongoMapper_Id);
 
-            FindAndModifyResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndRemove(
-                    query, null);
+            SafeModeResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).Remove(query);
 
             //TODO: ver de devolver DeleteDocumentException
             if (ConfigManager.SafeMode(_classType.Name))

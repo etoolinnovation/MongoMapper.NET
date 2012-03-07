@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly List<string> ProcessedTypes = new List<string>();
 
-        private static readonly Object _lockObject = new Object();
+        private static readonly Object LockObject = new Object();
 
         private static void GetPropertyValidators(Type t)
         {
@@ -23,7 +23,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return;
             }
 
-            lock (_lockObject)
+            lock (LockObject)
             {
                 if (!ProcessedTypes.Contains(t.Name))
                 {
@@ -41,9 +41,9 @@ namespace EtoolTech.MongoDB.Mapper
                             methodInfo.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault();
                         if (propValidatorAtt != null)
                         {
-                            string ClassName = t.Name;
-                            string FieldName = propValidatorAtt.PropertyName;
-                            string key = String.Format("{0}|{1}", ClassName, FieldName);
+                            string className = t.Name;
+                            string fieldName = propValidatorAtt.PropertyName;
+                            string key = String.Format("{0}|{1}", className, fieldName);
                             if (!BufferPropertyValidatorMethods.ContainsKey(key))
                             {
                                 BufferPropertyValidatorMethods.Add(key, methodInfo);
@@ -54,7 +54,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        private static void ExecutePropertyValidator(object sender, Type t, MethodInfo m, string propertyName)
+        private static void ExecutePropertyValidator(object sender, MethodInfo m, string propertyName)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace EtoolTech.MongoDB.Mapper
                                                                           select b;
             foreach (var v in validatorList)
             {
-                ExecutePropertyValidator(sender, t, v.Value, v.Key.Split('|')[1]);
+                ExecutePropertyValidator(sender, v.Value, v.Key.Split('|')[1]);
             }
         }
     }

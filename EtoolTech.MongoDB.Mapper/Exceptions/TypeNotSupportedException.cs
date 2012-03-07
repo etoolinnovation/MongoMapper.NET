@@ -5,16 +5,16 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
     [Serializable]
     public class TypeNotSupportedException : Exception
     {
-        private readonly string typeName;
+        private readonly string _typeName;
 
-        public TypeNotSupportedException(string TypeName)
+        public TypeNotSupportedException(string typeName)
         {
-            typeName = TypeName;
+            _typeName = typeName;
         }
 
         public override string Message
         {
-            get { return String.Format("{0} not Supported", typeName); }
+            get { return String.Format("{0} not Supported", _typeName); }
         }
     }
 }

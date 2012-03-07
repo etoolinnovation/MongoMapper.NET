@@ -131,19 +131,19 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public List<T> GetRelation<T>(object sender, string Relation, Type ClassType, IFinder IFinder)
+        public List<T> GetRelation<T>(object sender, string relation, Type classType, IFinder finder)
         {
             //c.GetRelation<Person>("Person,Country");
-            string[] values = Relation.Split(',');
+            string[] values = relation.Split(',');
 
             string findString = String.Format("{0}|{1}", values[0], values[1]);
 
             string relationString =
-                GetUpRelations(ClassType).FirstOrDefault(upRelation => upRelation.Contains(findString));
+                GetUpRelations(classType).FirstOrDefault(upRelation => upRelation.Contains(findString));
             if (String.IsNullOrEmpty(relationString))
             {
                 relationString =
-                    GetDownRelations(ClassType).FirstOrDefault(downRelation => downRelation.EndsWith(findString));
+                    GetDownRelations(classType).FirstOrDefault(downRelation => downRelation.EndsWith(findString));
             }
 
             if (String.IsNullOrEmpty(relationString))
@@ -161,47 +161,47 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName)).FindAs<T>(query).ToList();
         }
 
-        public void EnsureUpRelations(object sender, Type ClassType, IFinder IFinder)
+        public void EnsureUpRelations(object sender, Type classType, IFinder finder)
         {
             //upRelations.Add(fieldInfo.Name + "|" + upRelationAtt.ObjectName + "|" + upRelationAtt.FieldName + 
             //"|" + upRelationAtt.ParentFieldName + "|" + upRelationAtt.ParentPropertyName);
-            foreach (string UpRelation in GetUpRelations(ClassType))
+            foreach (string upRelation in GetUpRelations(classType))
             {
-                string[] values = UpRelation.Split('|');
+                string[] values = upRelation.Split('|');
                 string fieldName = values[0];
                 string fkClassName = values[1];
                 string fkFieldName = values[2];
                 string fkParentfieldName = values[3];
                 string fkParentPropertyName = values[4];
 
-                QueryComplete ParentQuery = null;
+                QueryComplete parentQuery = null;
                 if (!String.IsNullOrEmpty(fkParentfieldName) && !String.IsNullOrEmpty(fkParentPropertyName))
                 {
-                    object Parentvalue = ReflectionUtility.GetPropertyValue(sender, fkParentPropertyName);
-                    ParentQuery = MongoQuery.Eq(fkParentfieldName, Parentvalue);
+                    object parentvalue = ReflectionUtility.GetPropertyValue(sender, fkParentPropertyName);
+                    parentQuery = MongoQuery.Eq(fkParentfieldName, parentvalue);
                 }
 
                 object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
                 QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
-                if (ParentQuery != null)
+                if (parentQuery != null)
                 {
-                    query = Query.And(ParentQuery, query);
+                    query = Query.And(parentQuery, query);
                 }
 
-                MongoCollection fkCol = CollectionsManager.GetCollection(fkClassName + "_Collection");
+                MongoCollection fkCol = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(fkClassName));
                 if (fkCol.Count(query) == 0)
                 {
-                    throw new ValidateUpRelationException(String.Format("{0}, Value:{1}", UpRelation, value));
+                    throw new ValidateUpRelationException(String.Format("{0}, Value:{1}", upRelation, value));
                 }
             }
         }
 
-        public void EnsureDownRelations(object sender, Type ClassType, IFinder IFinder)
+        public void EnsureDownRelations(object sender, Type classType, IFinder finder)
         {
-            foreach (string Relation in GetDownRelations(ClassType))
+            foreach (string relation in GetDownRelations(classType))
             {
-                string[] values = Relation.Split('|');
+                string[] values = relation.Split('|');
                 string fieldName = values[0];
                 string fkClassName = values[1];
                 string fkFieldName = values[2];
@@ -209,10 +209,10 @@ namespace EtoolTech.MongoDB.Mapper
                 object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
                 QueryComplete query = MongoQuery.Eq(fkFieldName, value);
 
-                MongoCollection fkCol = CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName));
+                MongoCollection fkCol = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(fkClassName));
                 if (fkCol.Count(query) != 0)
                 {
-                    throw new ValidateDownRelationException(String.Format("{0}, Value:{1}", Relation, value));
+                    throw new ValidateDownRelationException(String.Format("{0}, Value:{1}", relation, value));
                 }
             }
         }

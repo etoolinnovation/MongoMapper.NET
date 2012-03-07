@@ -60,14 +60,33 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("Port", IsKey = false, IsRequired = true)]
-        public int Port
+        [ConfigurationProperty("ReplicaSetName", IsKey = false, IsRequired = true)]
+        public string ReplicaSetName
         {
             get
             {
-                return int.Parse(this["Port"].ToString());
+                return this["ReplicaSetName"].ToString();
             }
         }
+
+        [ConfigurationProperty("MinReplicaServersToWrite", IsKey = false, IsRequired = true)]
+        public int MinReplicaServersToWrite
+        {
+            get
+            {
+                return int.Parse(this["MinReplicaServersToWrite"].ToString());
+            }
+        }
+        
+        [ConfigurationProperty("BalancedReading", IsKey = false, IsRequired = true)]
+        public bool BalancedReading
+        {
+            get
+            {
+                return bool.Parse(this["BalancedReading"].ToString());
+            }
+        }
+
 
         [ConfigurationProperty("PoolSize", IsKey = false, IsRequired = true)]
         public int PoolSize

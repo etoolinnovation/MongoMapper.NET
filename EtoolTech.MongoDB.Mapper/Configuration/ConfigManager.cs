@@ -10,28 +10,63 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         public static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
-        private static readonly Dictionary<string, CollectionElement> configByObject = new Dictionary<string, CollectionElement>();
+        private static readonly Dictionary<string, CollectionElement> ConfigByObject = new Dictionary<string, CollectionElement>();
 
-        private static readonly Object _lockObject = new Object();
+        private static readonly Object LockObject = new Object();
 
-        private static bool SetupLoaded = false;
+        private static bool _setupLoaded = false;
+
+        internal static bool IsReplicaSet { get; set; }
+        internal static int? ActiveServers { get; set; }
 
         public static string GetConnectionString(string objName)
         {
-            string LoginString = "";
+            string loginString = "";
             string userName = ConfigManager.UserName(objName);
 
             if (!String.IsNullOrEmpty(userName))
             {
-                LoginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
+                loginString = String.Format("{0}:{1}@", userName, ConfigManager.PassWord(objName));
             }
 
-            string DatabaseName = ConfigManager.DataBaseName(objName);
+            string databaseName = ConfigManager.DataBaseName(objName);
 
-            string connectionString = String.Format("mongodb://{4}{0}:{1}/{5}?connect=direct;maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
-                                                    ConfigManager.Host(objName), ConfigManager.Port(objName),
+            string host = ConfigManager.Host(objName);            
+
+            string hostsStrings = "";
+            if (host.Contains(","))
+            {
+                string[] hostList = host.Split(',');
+                hostsStrings = hostList.Aggregate(hostsStrings, (current, h) => current + (h + ","));
+                if (!String.IsNullOrEmpty(hostsStrings)) hostsStrings = hostsStrings.Remove(hostsStrings.Length - 1, 1);
+                IsReplicaSet = true;
+            }
+            else
+            {
+                hostsStrings = host;
+            }
+
+            string replicaOptions = "";
+            
+            string replicaSetName = ConfigManager.ReplicaSetName(objName);
+            if (!String.IsNullOrEmpty(replicaSetName))
+                replicaOptions = string.Format("replicaSet={0}", replicaSetName);
+
+            if (ConfigManager.MinReplicaServersToWrite(objName) != 0)
+                replicaOptions += String.Format(";w={0}", ConfigManager.MinReplicaServersToWrite(objName)); 
+
+            if (ConfigManager.BalancedReading(objName))
+                replicaOptions += String.Format(";slaveOk=true");
+
+            if (replicaOptions.StartsWith(";")) replicaOptions = replicaOptions.Remove(1);
+
+            if (!String.IsNullOrEmpty(replicaOptions)) replicaOptions += ";";
+            
+
+            string connectionString = String.Format("mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
+                                                    hostsStrings, replicaOptions,
                                                     ConfigManager.PoolSize(objName),
-                                                    ConfigManager.WaitQueueTimeout(objName) * 1000, LoginString, DatabaseName,
+                                                    ConfigManager.WaitQueueTimeout(objName) * 1000, loginString, databaseName,
                                                     ConfigManager.SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
                                                     ConfigManager.FSync(objName).ToString(CultureInfo.InvariantCulture).ToLower());
             return connectionString;
@@ -46,26 +81,26 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return objName;
         }
 
-        private static CollectionElement FindByObjName(string ObjName)
+        private static CollectionElement FindByObjName(string objName)
         {
-            if (!SetupLoaded)
+            if (!_setupLoaded)
             {
-                lock (_lockObject)
+                lock (LockObject)
                 {
-                    if (!SetupLoaded)
+                    if (!_setupLoaded)
                     {                        
                         foreach (CollectionElement collection in Config.CollectionConfig)
                         {
-                            configByObject.Add(collection.Name, collection);
+                            ConfigByObject.Add(collection.Name, collection);
                         }
-                        SetupLoaded = true;
+                        _setupLoaded = true;
                     }
                 }
             }
 
-            ObjName = CleanObjName(ObjName);
+            objName = CleanObjName(objName);
 
-            return configByObject.ContainsKey(ObjName) ? configByObject[ObjName] : null;
+            return ConfigByObject.ContainsKey(objName) ? ConfigByObject[objName] : null;
         }
 
         public static string DataBaseName(string objName)
@@ -91,16 +126,41 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.Host;
         }
 
-        public static int Port(string objName)
+
+        public static string ReplicaSetName(string objName)
         {
-            if (CustomContext.Config != null) return CustomContext.Config.Port;
+            if (CustomContext.Config != null) return CustomContext.Config.ReplicaSetName;
 
             CollectionElement cfg = FindByObjName(objName);
 
-            if (cfg != null) return cfg.Server.Port;
+            if (cfg != null) return cfg.Server.ReplicaSetName;
 
-            return Config.Server.Port;
+            return Config.Server.ReplicaSetName;
         }
+        
+        public static bool BalancedReading(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.BalancedReading;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.BalancedReading;
+
+            return Config.Server.BalancedReading;
+        }
+
+
+        public static int MinReplicaServersToWrite(string objName)
+        {
+            if (CustomContext.Config != null) return CustomContext.Config.MinReplicaServersToWrite;
+
+            CollectionElement cfg = FindByObjName(objName);
+
+            if (cfg != null) return cfg.Server.MinReplicaServersToWrite;
+
+            return Config.Server.MinReplicaServersToWrite;
+        }
+  
 
         public static int PoolSize(string objName)
         {

@@ -4,9 +4,13 @@
     {
         string Database { get; }
 
-        string Host { get; }
+        string Host { get; }        
 
-        int Port { get; }
+        string ReplicaSetName { get; }
+
+        int MinReplicaServersToWrite { get; }
+
+        bool BalancedReading { get; }
 
         string UserName { get; }
 
