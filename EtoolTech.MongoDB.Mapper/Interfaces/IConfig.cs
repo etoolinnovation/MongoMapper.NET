@@ -4,9 +4,7 @@
     {
         string Database { get; }
 
-        string Host { get; }
-
-        string Port { get; }
+        string Host { get; }        
 
         string ReplicaSetName { get; }
 

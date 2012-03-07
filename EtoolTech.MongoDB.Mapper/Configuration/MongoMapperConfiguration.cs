@@ -60,15 +60,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("Port", IsKey = false, IsRequired = true)]
-        public string Port
-        {
-            get
-            {
-                return this["Port"].ToString();
-            }
-        }
-
         [ConfigurationProperty("ReplicaSetName", IsKey = false, IsRequired = true)]
         public string ReplicaSetName
         {

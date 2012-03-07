@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
 {
@@ -30,26 +31,19 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             string databaseName = ConfigManager.DataBaseName(objName);
 
-            string host = ConfigManager.Host(objName);
-            string port = ConfigManager.Port(objName);
+            string host = ConfigManager.Host(objName);            
 
             string hostsStrings = "";
             if (host.Contains(","))
             {
                 string[] hostList = host.Split(',');
-                string[] portList = port.Split(',');
-                for (int index = 0; index < hostList.Length; index++)
-                {
-                    string h = hostList[index];
-                    hostsStrings += h + ":" + portList[index] + ",";
-                }
+                hostsStrings = hostList.Aggregate(hostsStrings, (current, h) => current + (h + ","));
                 if (!String.IsNullOrEmpty(hostsStrings)) hostsStrings = hostsStrings.Remove(hostsStrings.Length - 1, 1);
-
                 IsReplicaSet = true;
             }
             else
             {
-                hostsStrings = host + ":" + port;
+                hostsStrings = host;
             }
 
             string replicaOptions = "";
@@ -166,17 +160,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             return Config.Server.MinReplicaServersToWrite;
         }
-
-        public static string Port(string objName)
-        {
-            if (CustomContext.Config != null) return CustomContext.Config.Port;
-
-            CollectionElement cfg = FindByObjName(objName);
-
-            if (cfg != null) return cfg.Server.Port;
-
-            return Config.Server.Port;
-        }
+  
 
         public static int PoolSize(string objName)
         {
