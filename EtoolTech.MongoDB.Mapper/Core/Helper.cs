@@ -166,8 +166,11 @@ namespace EtoolTech.MongoDB.Mapper
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(
                         index.Split(','));
                 }
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(
-                    IndexKeys.Ascending(GetPrimaryKey(classType).ToArray()));
+
+                string[] pk = GetPrimaryKey(classType).ToArray();
+                if (pk.Count(k => k == "MongoMapper_Id") == 0)
+                    CollectionsManager.GetCollection(
+                        CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(IndexKeys.Ascending(pk));
             }
         }
 

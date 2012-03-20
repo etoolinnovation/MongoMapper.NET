@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(Decimal.Parse("999,5"), ReflectionUtility.GetPropertyValue<decimal>(test, "Decimal"));
             Assert.AreEqual(new DateTime(1972, 12, 5), ReflectionUtility.GetPropertyValue<DateTime>(test, "Date"));
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
+        }
+
+        public void BuildSchema()
+        {
+
+            ReflectionUtility.BuildSchema(this.GetType().Assembly);
         }
 
         public static void TestObjectVsTypedNewGetPropertyValue()

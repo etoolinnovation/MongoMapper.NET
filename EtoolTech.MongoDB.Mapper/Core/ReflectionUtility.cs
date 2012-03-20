@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -52,10 +54,19 @@ namespace EtoolTech.MongoDB.Mapper
             return property.GetValue(obj, null);
         }
 
-         public static T GetPropertyValue<T>(object obj, string propertyName)
+        public static T GetPropertyValue<T>(object obj, string propertyName)
          {
              return (T)GetPropertyValue(obj, propertyName);
          }
+
+        public static void BuildSchema(Assembly assembly)
+        {
+            List<Type> types = assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
+            foreach (var type in types)
+            {
+                Helper.RebuildClass(type,true);
+            }
+        }
       
     }
 }
