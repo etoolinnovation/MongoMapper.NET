@@ -77,9 +77,11 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region IBsonSerializable Members
 
+        readonly BsonClassMapSerializer _bsonClassMap = new BsonClassMapSerializer(null);
+
         public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
-        {
-            object o = BsonClassMapSerializer.Instance.Deserialize(bsonReader, nominalType, options);
+        {            
+			object o = _bsonClassMap.Deserialize(bsonReader, nominalType, options);
             //Guardamos el obj original en JSV para romper la referencia
             if (ConfigManager.EnableOriginalObject(_classType.Name))
             {
@@ -90,17 +92,18 @@ namespace EtoolTech.MongoDB.Mapper
 
         public bool GetDocumentId(out object id, out Type idNominalType, out IIdGenerator idGenerator)
         {
-            return BsonClassMapSerializer.Instance.GetDocumentId(this, out id, out idNominalType, out idGenerator);
+            
+            return _bsonClassMap.GetDocumentId(this, out id, out idNominalType, out idGenerator);
         }
 
         public void Serialize(BsonWriter bsonWriter, Type nominalType, IBsonSerializationOptions options)
-        {
-            BsonClassMapSerializer.Instance.Serialize(bsonWriter, nominalType, this, options);
+        {         
+            _bsonClassMap.Serialize(bsonWriter, nominalType, this, options);
         }
 
         public void SetDocumentId(object id)
-        {
-            BsonClassMapSerializer.Instance.SetDocumentId(this, id);
+        {         
+            _bsonClassMap.SetDocumentId(this, id);
         }
 
         #endregion
