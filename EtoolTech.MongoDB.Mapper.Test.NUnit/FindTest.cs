@@ -15,7 +15,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         [Test()]
         public void TestFindByPk()
-        {
+        {                    
             //Llenamos datos
             Helper.DropAllCollections();
 
@@ -100,7 +100,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             plist = Person.FindAsList<Person>("_id", p2.MongoMapper_Id);
 
-            Assert.AreEqual(plist.Count,2);
+            Assert.AreEqual(plist.Count,1);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");
 
         }
