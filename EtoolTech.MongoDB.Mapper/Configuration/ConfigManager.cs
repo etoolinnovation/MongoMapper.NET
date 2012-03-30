@@ -58,7 +58,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             if (ConfigManager.BalancedReading(objName))
                 replicaOptions += String.Format(";slaveOk=true");
 
-            if (replicaOptions.StartsWith(";")) replicaOptions = replicaOptions.Remove(1);
+            if (replicaOptions.StartsWith(";")) replicaOptions = replicaOptions.Remove(0, 1);
 
             if (!String.IsNullOrEmpty(replicaOptions)) replicaOptions += ";";
             
