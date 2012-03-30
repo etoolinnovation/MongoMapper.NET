@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\MongoCollectionName.cs" />
     <Compile Include="Attributes\MongoCustomDiscriminatorType.cs" />
     <Compile Include="Attributes\MongoChildCollection.cs" />
     <Compile Include="Attributes\MongoDownRelation.cs" />

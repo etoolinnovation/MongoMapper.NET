@@ -14,6 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
             get { return _relation; }
             set
             {
+                //TODO: Validar formato
                 _relation = value;
                 string[] values = _relation.Split(',');
                 ObjectName = values[0];

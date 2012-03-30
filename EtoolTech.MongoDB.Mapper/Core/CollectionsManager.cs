@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Driver;
+using EtoolTech.MongoDB.Mapper.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper
 {
     public class CollectionsManager
     {
         private static readonly Dictionary<string, MongoCollection> Collections = new Dictionary<string, MongoCollection>();
+
+        internal static readonly Dictionary<string, MongoCollectionName> CustomCollectionsName = new Dictionary<string, MongoCollectionName>();
 
         private static readonly Object LockObject = new Object();
 
@@ -29,7 +32,6 @@ namespace EtoolTech.MongoDB.Mapper
                 return Collections[name];
             }
         }
-
      
         public static string GetCollectioName(string name)
         {
@@ -37,6 +39,9 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 name = String.Format("{0}_Collection", name);
             }
+
+            if (CustomCollectionsName.ContainsKey(name)) return CustomCollectionsName[name];
+            
             return name;
         }
     }

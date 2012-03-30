@@ -29,7 +29,7 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
-
+                
         internal static readonly Dictionary<string,MongoMapperIdIncrementable> BufferIdIncrementables = new Dictionary<string, MongoMapperIdIncrementable>();
 
         private static readonly Object LockObjectPk = new Object();
@@ -158,6 +158,8 @@ namespace EtoolTech.MongoDB.Mapper
                     }
                 }
             }
+
+            //TODO: MongoCollectionName
 
             if (!ConfigManager.Config.Context.Generated || repairCollection)
             {
