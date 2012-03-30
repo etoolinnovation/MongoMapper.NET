@@ -22,7 +22,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             foreach (CollectionElement collection in config.CollectionConfig)
             {
-                if (collection.Name != "Fake") 
+                if (collection.Name != "TestConf1") 
 				{
 					foreach(string colName in Mapper.Helper.Db(collection.Name).GetCollectionNames())
 					{
