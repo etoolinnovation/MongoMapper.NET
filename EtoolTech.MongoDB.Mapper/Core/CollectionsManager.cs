@@ -40,7 +40,7 @@ namespace EtoolTech.MongoDB.Mapper
                 name = String.Format("{0}_Collection", name);
             }
 
-            if (CustomCollectionsName.ContainsKey(name)) return CustomCollectionsName[name];
+            if (CustomCollectionsName.ContainsKey(name)) return CustomCollectionsName[name].Name;
             
             return name;
         }
