@@ -24,3 +24,6 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 * Coming Soon
 
 ### You can find examples in the Test Project 
+
+* [Class Definition](https://github.com/emiliotorrens/MongoMapper.NET/tree/master/EtoolTech.MongoDB.Mapper.Test.NUnit/Classes) 
+
