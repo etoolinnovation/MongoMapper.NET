@@ -18,11 +18,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             //Insert de Paises
             Country c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
             c = new Country { Code = "UK", Name = "Reino Unido" };
-            c.Save<Country>();
+            c.Save();
             c = new Country { Code = "US", Name = "Estados Unidos" };
-            c.Save<Country>();
+            c.Save();
 
             List<Country> countries = new List<Country>();
             countries.MongoFind();
@@ -249,9 +249,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.Save();
 
             List<Person> persons = new List<Person>();
-            persons.MongoFind();
-
+            persons.MongoFind();            
             Assert.AreEqual(persons.Count, 5);
+
+            persons.MongoFind("Childs.Age", 2);
+            Assert.AreEqual(persons.Count, 1);
 
 
         }
