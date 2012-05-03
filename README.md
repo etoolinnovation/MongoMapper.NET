@@ -85,6 +85,10 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 		p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
 		p.Save();
+		
+		List<Person> persons = new List<Person>();
+		persons.MongoFind("Childs.Age",2);
+		Assert.AreEqual(persons.Count, 1);
 
 
 ### Change Log
