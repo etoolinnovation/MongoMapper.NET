@@ -19,6 +19,11 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         internal static bool IsReplicaSet { get; set; }
         internal static int? ActiveServers { get; set; }
 
+        public static bool OutConsole(string objName)
+        {
+            return false;
+        }
+
         public static string GetConnectionString(string objName)
         {
             string loginString = "";

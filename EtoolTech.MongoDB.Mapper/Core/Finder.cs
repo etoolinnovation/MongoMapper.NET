@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -22,13 +23,20 @@ namespace EtoolTech.MongoDB.Mapper
         public T FindById<T>(long id)
         {
             QueryComplete query = Query.EQ("_id", id);
-            return CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
+
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
+
+            return result;
+
         }
 
         public BsonDocument FindBsonDocumentById<T>(long id)
         {
             QueryComplete query = Query.EQ("_id", id);
-            return CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query).ToBsonDocument();
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
+
+            return result.ToBsonDocument<T>();
+            
         }
 
         public T FindByKey<T>(params object[] values)
@@ -55,6 +63,14 @@ namespace EtoolTech.MongoDB.Mapper
             QueryComplete query = Query.And(queryList.ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+
+            if (ConfigManager.OutConsole(""))
+            {
+                Console.Write(String.Format("{0}: ", typeof(T).Name));
+                Console.WriteLine(result.Query.ToString());
+                Console.WriteLine(result.Explain().ToJson());
+            }
+
             if (result.Size() == 0)
             {
                 throw new FindByKeyNotFoundException();
@@ -74,6 +90,14 @@ namespace EtoolTech.MongoDB.Mapper
             QueryComplete query = Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
+
+            if (ConfigManager.OutConsole(""))
+            {
+                Console.Write(String.Format("{0}: ", typeof(T).Name));
+                Console.WriteLine(result.Query.ToString());
+                Console.WriteLine(result.Explain().ToJson());
+            }
+
             if (result.Size() == 0)
             {
                 return default(long);
@@ -94,7 +118,16 @@ namespace EtoolTech.MongoDB.Mapper
                 return CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
             }
 
-            return CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+
+            if (ConfigManager.OutConsole(""))
+            {
+                Console.Write(String.Format("{0}: ", typeof(T).Name));
+                Console.WriteLine(result.Query.ToString());
+                Console.WriteLine(result.Explain().ToJson());
+            }
+
+            return result;
         }
 
         public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
@@ -107,7 +140,18 @@ namespace EtoolTech.MongoDB.Mapper
         {
             var ep = new ExpressionParser();
             QueryComplete query = ep.ParseExpression(exp);
-            return CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+            
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+
+            if (ConfigManager.OutConsole(""))
+            {
+                Console.Write(String.Format("{0}: ", typeof(T).Name));
+                Console.WriteLine(result.Query.ToString());
+                Console.WriteLine(result.Explain().ToJson());
+            }
+
+            return result;
+
         }
 
         #endregion
@@ -121,7 +165,16 @@ namespace EtoolTech.MongoDB.Mapper
 
         public MongoCursor<T> AllAsCursor<T>()
         {
-            return CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
+
+            if (ConfigManager.OutConsole(""))
+            {
+                Console.Write(String.Format("{0}: ", typeof(T).Name));
+                Console.WriteLine("{}");
+                Console.WriteLine(result.Explain().ToJson());
+            }
+
+            return result;
         }
 
         #endregion
