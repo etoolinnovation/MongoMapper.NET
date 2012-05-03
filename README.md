@@ -10,7 +10,7 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 * MongoDB Driver for CSharp: http://github.com/mongodb/mongo-csharp-driver
 * NUnit: http://www.nunit.org, NUnit for Visual Studio: http://nunitforvs.codeplex.com
 
-### Model
+### Defining the Model
 
 	[MongoKey(KeyFields = "Code")]
 	public class Country: MongoMapper
@@ -51,6 +51,41 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 		public List<Child> Childs { get; set;}
 	}
 	
+### Work with the Model
+
+		Country c = new Country { Code = "ES", Name = "España" };
+		c.Save();
+		c = new Country { Code = "UK", Name = "Reino Unido" };
+		c.Save();
+		c = new Country { Code = "US", Name = "Estados Unidos" };
+		c.Save();
+		
+		c = new Country();
+		c.FillByKey("ES");
+		Assert.AreEqual(country.Code, "ES"); 
+
+		List<Country> countries = new List<Country>();
+		countries.MongoFind();
+		Assert.AreEqual(countries.Count, 3);
+
+		countries.MongoFind(Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+		Assert.AreEqual(countries.Count, 2);
+		
+		Person p = new Person
+		{
+			Name = "Pepito Perez",
+			Age = 35,
+			BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+			Married = true,
+			Country = "ES",
+			BankBalance = decimal.Parse("3500,00")
+		};
+
+		p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+		p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+
+		p.Save();
+
 
 ### Change Log
 
