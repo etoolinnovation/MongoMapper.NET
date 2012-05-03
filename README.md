@@ -10,6 +10,47 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 * MongoDB Driver for CSharp: http://github.com/mongodb/mongo-csharp-driver
 * NUnit: http://www.nunit.org, NUnit for Visual Studio: http://nunitforvs.codeplex.com
 
+### Model
+
+[MongoKey(KeyFields = "Code")]
+public class Country: MongoMapper
+{        
+  [MongoDownRelation(ObjectName = "Person", FieldName = "Country")]
+	public string Code { get; set; }
+	public string Name { get; set; }
+
+	[MongoPropertyValidator(PropertyName="Code")]
+	public void CodeIsUp(string CountryCode)
+	{
+		if (CountryCode != CountryCode.ToUpper())
+			throw new Exception(String.Format("{0} must be {1}", CountryCode, CountryCode.ToUpper()));
+	}
+}
+
+[MongoKey(KeyFields = "")]
+[MongoIndex(IndexFields = "ID,Country")]
+[MongoIndex(IndexFields =  "Name")]
+[MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = true)]
+public class Person : MongoMapper
+{        
+	public Person()
+	{
+		Childs = new List<Child>();
+	}
+			
+	public string Name { get; set; }
+	public int Age { get; set; }
+	public DateTime BirthDate { get; set; }
+	public bool Married { get; set; }
+	public decimal BankBalance { get; set; }
+	
+	[MongoUpRelation(ObjectName = "Country", FieldName = "Code")]
+	public string Country { get; set; }
+		 
+	[MongoChildCollection]
+	public List<Child> Childs { get; set;}
+}
+
 ### Change Log
 
 * 30/12/2011: http://bit.ly/uy80RE
