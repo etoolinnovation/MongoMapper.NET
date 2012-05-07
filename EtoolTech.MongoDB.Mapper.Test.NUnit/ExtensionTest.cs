@@ -257,6 +257,40 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
 
         }
+
+        [Test]
+        public void TestServerUdpate()
+        {
+            Helper.DropAllCollections();
+
+            //Insert de Paises
+            Country c = new Country { Code = "ES", Name = "España" };
+            c.Save();
+            c.ServerUpdate(Update.Set("Name", "España 22"));
+
+            Assert.AreEqual(c.Name, "España 22");
+
+            //Insert de personas
+            Person p = new Person
+            {
+                Name = "Pepito Perez",
+                Age = 35,
+                BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+                Married = true,
+                Country = "ES",
+                BankBalance = decimal.Parse("3500,00")
+            };
+
+            p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+            p.Save();
+
+            p.ServerUpdate(Update.PushWrapped("Childs", new Child() { ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez" }));
+
+            Assert.AreEqual(p.Childs.Count, 2);
+            Assert.AreEqual(p.Childs[1].Name, "Laura Perez");
+
+
+        }
  	
 		
 		public void TestPerfFillByKeyNormalVsExtensionMethod()

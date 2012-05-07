@@ -1,49 +1,48 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using EtoolTech.MongoDB.Mapper.Attributes;
-using EtoolTech.MongoDB.Mapper.Configuration;
-using EtoolTech.MongoDB.Mapper.Exceptions;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
-using MongoDB.Driver.Builders;
-
 namespace EtoolTech.MongoDB.Mapper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using EtoolTech.MongoDB.Mapper.Attributes;
+    using EtoolTech.MongoDB.Mapper.Configuration;
+    using EtoolTech.MongoDB.Mapper.Exceptions;
+
+    using global::MongoDB.Bson.Serialization;
+    using global::MongoDB.Driver;
+    using global::MongoDB.Driver.Builders;
+
     public class Helper
     {
-        private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
-                                                                       {
-                                                                           typeof (string),
-                                                                           typeof (decimal),
-                                                                           typeof (int),
-                                                                           typeof (long),
-                                                                           typeof (DateTime),
-                                                                           typeof (bool)
-                                                                       };
+        #region Constants and Fields
 
-        private static readonly Dictionary<string, List<string>> BufferPrimaryKey = new Dictionary<string, List<string>>();
+        internal static readonly Dictionary<string, MongoMapperIdIncrementable> BufferIdIncrementables =
+            new Dictionary<string, MongoMapperIdIncrementable>();
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
+        private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
+            new Dictionary<string, List<string>>();
+
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
-                
-        internal static readonly Dictionary<string,MongoMapperIdIncrementable> BufferIdIncrementables = new Dictionary<string, MongoMapperIdIncrementable>();
-
-        private static readonly Object LockObjectPk = new Object();
-
-        private static readonly Object LockObjectIndex = new Object();
 
         private static readonly Object LockObjectCustomDiscritminatorTypes = new Object();
 
         private static readonly Object LockObjectIdIncrementables = new Object();
 
+        private static readonly Object LockObjectIndex = new Object();
+
+        private static readonly Object LockObjectPk = new Object();
+
+        private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
+            { typeof(string), typeof(decimal), typeof(int), typeof(long), typeof(DateTime), typeof(bool) };
+
+        #endregion
+
+        #region Public Methods
 
         public static MongoDatabase Db(string objName)
         {
-
             string databaseName = ConfigManager.DataBaseName(objName);
 
             string connectionString = ConfigManager.GetConnectionString(objName);
@@ -52,14 +51,6 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoDatabase dataBase = server.GetDatabase(databaseName);
             return dataBase;
-        }
-
-        public static void ValidateType(Type t)
-        {
-            if (!SupportedTypesLits.Contains(t))
-            {
-                throw new TypeNotSupportedException(t.Name);
-            }
         }
 
         public static IEnumerable<string> GetPrimaryKey(Type t)
@@ -73,7 +64,7 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (!BufferPrimaryKey.ContainsKey(t.Name))
                 {
-                    var keyAtt = (MongoKey) t.GetCustomAttributes(typeof (MongoKey), false).FirstOrDefault();
+                    var keyAtt = (MongoKey)t.GetCustomAttributes(typeof(MongoKey), false).FirstOrDefault();
                     if (keyAtt != null)
                     {
                         if (String.IsNullOrEmpty(keyAtt.KeyFields))
@@ -84,7 +75,7 @@ namespace EtoolTech.MongoDB.Mapper
                     }
                     else
                     {
-                        BufferPrimaryKey.Add(t.Name, new List<string> {"MongoMapper_Id"});
+                        BufferPrimaryKey.Add(t.Name, new List<string> { "MongoMapper_Id" });
                     }
                 }
 
@@ -92,32 +83,17 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        private static IEnumerable<string> GetIndexes(Type t)
+        public static void ValidateType(Type t)
         {
-            if (BufferIndexes.ContainsKey(t.Name))
+            if (!SupportedTypesLits.Contains(t))
             {
-                return BufferIndexes[t.Name];
-            }
-
-            lock (LockObjectIndex)
-            {
-                if (!BufferIndexes.ContainsKey(t.Name))
-                {
-                    BufferIndexes.Add(t.Name, new List<string>());
-                    object[] indexAtt = t.GetCustomAttributes(typeof (MongoIndex), false);
-
-                    foreach (object index in indexAtt)
-                    {
-                        if (index != null)
-                        {
-                            BufferIndexes[t.Name].Add(((MongoIndex) index).IndexFields);
-                        }
-                    }
-                }
-
-                return BufferIndexes[t.Name];
+                throw new TypeNotSupportedException(t.Name);
             }
         }
+
+        #endregion
+
+        #region Methods
 
         internal static void RebuildClass(Type classType, bool repairCollection)
         {
@@ -141,12 +117,12 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (!BufferIdIncrementables.ContainsKey(classType.Name))
             {
-                lock(LockObjectCustomDiscritminatorTypes)
+                lock (LockObjectIdIncrementables)
                 {
                     if (!BufferIdIncrementables.ContainsKey(classType.Name))
                     {
-                        var m =
-                            classType.GetCustomAttributes(typeof (MongoMapperIdIncrementable), false).FirstOrDefault();
+                        object m =
+                            classType.GetCustomAttributes(typeof(MongoMapperIdIncrementable), false).FirstOrDefault();
                         if (m == null)
                         {
                             BufferIdIncrementables.Add(classType.Name, null);
@@ -171,24 +147,55 @@ namespace EtoolTech.MongoDB.Mapper
 
                 string[] pk = GetPrimaryKey(classType).ToArray();
                 if (pk.Count(k => k == "MongoMapper_Id") == 0)
-                    CollectionsManager.GetCollection(
-                        CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(IndexKeys.Ascending(pk));
+                {
+                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(
+                        IndexKeys.Ascending(pk));
+                }
+            }
+        }
+
+        private static IEnumerable<string> GetIndexes(Type t)
+        {
+            if (BufferIndexes.ContainsKey(t.Name))
+            {
+                return BufferIndexes[t.Name];
+            }
+
+            lock (LockObjectIndex)
+            {
+                if (!BufferIndexes.ContainsKey(t.Name))
+                {
+                    BufferIndexes.Add(t.Name, new List<string>());
+                    object[] indexAtt = t.GetCustomAttributes(typeof(MongoIndex), false);
+
+                    foreach (object index in indexAtt)
+                    {
+                        if (index != null)
+                        {
+                            BufferIndexes[t.Name].Add(((MongoIndex)index).IndexFields);
+                        }
+                    }
+                }
+
+                return BufferIndexes[t.Name];
             }
         }
 
         private static void RegisterCustomDiscriminatorTypes(Type classType)
         {
-            object[] regTypes = classType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType), false);
+            object[] regTypes = classType.GetCustomAttributes(typeof(MongoCustomDiscriminatorType), false);
 
             foreach (object regType in regTypes)
             {
                 if (regType != null)
                 {
-                    var mongoCustomDiscriminatorType = (MongoCustomDiscriminatorType) regType;
+                    var mongoCustomDiscriminatorType = (MongoCustomDiscriminatorType)regType;
                     BsonDefaultSerializer.RegisterDiscriminator(
                         mongoCustomDiscriminatorType.Type, mongoCustomDiscriminatorType.Type.Name);
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -9,6 +9,8 @@ using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
+    using EtoolTech.MongoDB.Mapper.Configuration;
+
     [TestFixture()]
     public class FindTest
     {
@@ -18,6 +20,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {                    
             //Llenamos datos
             Helper.DropAllCollections();
+
+            ConfigManager.OutConsole = true;
 
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
@@ -112,6 +116,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Llenamos datos
             (new InsertModifyDeleteTest()).TestInsert();
 
+            ConfigManager.OutConsole = true;
 
             List<Country> Countries = Country.FindAsList<Country>(Query.Or(MongoQuery.Eq((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
@@ -134,6 +139,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             //llenamos datos
             (new InsertModifyDeleteTest()).TestInsert();
+
+            //TODO: Falla el OutPut cuando ya hemos pedido el cursor ver como hacerlo
+            //A MongoCursor object cannot be modified once it has been frozen
+            ConfigManager.OutConsole = false;
 
             List<Country> Countries = Country.FindAsCursor<Country>().ToList();
             Assert.AreEqual(Countries.Count, 3);

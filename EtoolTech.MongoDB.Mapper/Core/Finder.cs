@@ -64,7 +64,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.OutConsole(""))
+            if (ConfigManager.OutConsole)
             {
                 Console.Write(String.Format("{0}: ", typeof(T).Name));
                 Console.WriteLine(result.Query.ToString());
@@ -91,7 +91,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
 
-            if (ConfigManager.OutConsole(""))
+            if (ConfigManager.OutConsole)
             {
                 Console.Write(String.Format("{0}: ", typeof(T).Name));
                 Console.WriteLine(result.Query.ToString());
@@ -120,7 +120,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.OutConsole(""))
+            if (ConfigManager.OutConsole)
             {
                 Console.Write(String.Format("{0}: ", typeof(T).Name));
                 Console.WriteLine(result.Query.ToString());
@@ -143,7 +143,7 @@ namespace EtoolTech.MongoDB.Mapper
             
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.OutConsole(""))
+            if (ConfigManager.OutConsole)
             {
                 Console.Write(String.Format("{0}: ", typeof(T).Name));
                 Console.WriteLine(result.Query.ToString());
@@ -167,7 +167,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
 
-            if (ConfigManager.OutConsole(""))
+            if (ConfigManager.OutConsole)
             {
                 Console.Write(String.Format("{0}: ", typeof(T).Name));
                 Console.WriteLine("{}");
