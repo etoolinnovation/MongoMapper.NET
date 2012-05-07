@@ -20,6 +20,16 @@ namespace EtoolTech.MongoDB.Mapper
 
         }
 
+        public static void ServerUpdate<T>(this T o, UpdateBuilder update, bool refill = true)
+        {
+            if (typeof(T).BaseType != typeof(MongoMapper))
+            {
+                throw new NotSupportedException();
+            }
+
+            ((IMongoMapperWriteable)o).ServerUpdate<T>(update, refill);
+        }
+
         public static void Delete<T>(this T o)
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
