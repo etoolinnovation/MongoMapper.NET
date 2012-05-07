@@ -281,10 +281,7 @@
             Events.BeforeInsertDocument(this, this.OnBeforeInsert, this._classType);
 
             this.EnsureUpRelations();
-
-            MongoServer s = Helper.Db(this._classType.Name).Server;
-            MongoServerInstance[] instances = s.Instances;
-
+ 
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).Insert(this);
 
