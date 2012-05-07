@@ -117,7 +117,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (!BufferIdIncrementables.ContainsKey(classType.Name))
             {
-                lock (LockObjectCustomDiscritminatorTypes)
+                lock (LockObjectIdIncrementables)
                 {
                     if (!BufferIdIncrementables.ContainsKey(classType.Name))
                     {
