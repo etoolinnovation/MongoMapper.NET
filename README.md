@@ -54,10 +54,31 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 	
 ### Work with the Model
 
-		Country c = new Country { Code = "ES", Name = "España" };
-		c.Save();
+		Country c = new Country {Code = "es", Name = "España"};
+		try
+		{
+			c.Save();
+		}
+		catch(Exception ex)
+		{
+			Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException)); 
+			c.Code = "ES";
+			c.Save();
+		}
+		
 		c = new Country { Code = "UK", Name = "Reino Unido" };
 		c.Save();
+		
+		c = new Country { Code = "UK", Name = "Reino Unido" };
+		try
+		{
+			c.Save();
+		}
+		catch (Exception ex)
+		{
+			Assert.AreEqual(ex.GetBaseException().GetType(),typeof(DuplicateKeyException));	
+		}
+		
 		c = new Country { Code = "US", Name = "Estados Unidos" };
 		c.Save();
 		
