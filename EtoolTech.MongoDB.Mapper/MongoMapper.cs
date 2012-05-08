@@ -27,9 +27,6 @@
     {
         #region Constants and Fields
 
-        [BsonIgnore]
-        internal bool RepairCollection;
-
         private static readonly IChildsManager ChildsManager = Mapper.ChildsManager.Instance;
 
         private static readonly IEvents Events = Mapper.Events.Instance;
@@ -53,7 +50,7 @@
         protected MongoMapper()
         {
             this._classType = this.GetType();
-            Helper.RebuildClass(this._classType, this.RepairCollection);
+            Helper.RebuildClass(this._classType, false);
         }
 
         #endregion
