@@ -90,6 +90,9 @@
     <Compile Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\TestReplicaSet.cs">
       <Link>TestReplicaSet.cs</Link>
     </Compile>
+    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\ReadmeTest.cs">
+      <Link>ReadmeTest.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\App.config">

@@ -79,13 +79,14 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 			Assert.AreEqual(ex.GetBaseException().GetType(),typeof(DuplicateKeyException));	
 		}
 		
-		c = new Country { Code = "US", Name = "Estados Unidos" };
-		c.Save();
-		
-		c = new Country();
-		c.FillByKey("ES");
-		Assert.AreEqual(country.Code, "ES"); 
+		Country c2 = new Country { Code = "US", Name = "Francia" };
+        c2.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Estados Unidos"; };            
+        c2.Save();
 
+        Country c3 = new Country();
+		c3.FillByKey("US");
+        Assert.AreEqual(c3.Name, "Estados Unidos");
+		
 		List<Country> countries = new List<Country>();
 		countries.MongoFind();
 		Assert.AreEqual(countries.Count, 3);
@@ -99,14 +100,24 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 			Age = 35,
 			BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
 			Married = true,
-			Country = "ES",
+			Country = "XXXXX",
 			BankBalance = decimal.Parse("3500,00")
 		};
 
-		p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
-		p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+		p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });		
 
-		p.Save();
+		try
+        {
+            p.Save();
+        }
+        catch (Exception ex)
+        {
+			Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateUpRelationException));
+            p.Country = "ES";
+            p.Save();
+        }	
+
+		p.ServerUpdate(Update.PushWrapped("Childs", new Child() { ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" }));		
 		
 		List<Person> persons = new List<Person>();
 		persons.MongoFind("Childs.Age",2);

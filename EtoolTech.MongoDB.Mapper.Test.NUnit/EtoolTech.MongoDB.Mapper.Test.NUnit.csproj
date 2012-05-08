@@ -56,6 +56,7 @@
     <Compile Include="ExtensionTest.cs" />
     <Compile Include="IncrementalIdTest.cs" />
     <Compile Include="OriginalObjectTest.cs" />
+    <Compile Include="ReadmeTest.cs" />
     <Compile Include="ReflectionUtilityTest.cs" />
     <Compile Include="RelationsTest.cs" />
     <Compile Include="Classes\Child.cs" />

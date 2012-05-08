@@ -21,7 +21,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Llenamos datos
             Helper.DropAllCollections();
 
-            ConfigManager.OutConsole = true;
+            ConfigManager.Out = Console.Out;
 
             Country c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
@@ -116,7 +116,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Llenamos datos
             (new InsertModifyDeleteTest()).TestInsert();
 
-            ConfigManager.OutConsole = true;
+            ConfigManager.Out = Console.Out;
 
             List<Country> Countries = Country.FindAsList<Country>(Query.Or(MongoQuery.Eq((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
@@ -142,7 +142,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             //TODO: Falla el OutPut cuando ya hemos pedido el cursor ver como hacerlo
             //A MongoCursor object cannot be modified once it has been frozen
-            ConfigManager.OutConsole = false;
+            ConfigManager.Out = null;
 
             List<Country> Countries = Country.FindAsCursor<Country>().ToList();
             Assert.AreEqual(Countries.Count, 3);

@@ -64,11 +64,12 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.OutConsole)
+            if (ConfigManager.Out != null)
             {
-                Console.Write(String.Format("{0}: ", typeof(T).Name));
-                Console.WriteLine(result.Query.ToString());
-                Console.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.WriteLine(result.Query.ToString());
+                ConfigManager.Out.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.WriteLine();
             }
 
             if (result.Size() == 0)
@@ -91,11 +92,12 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
 
-            if (ConfigManager.OutConsole)
+            if (ConfigManager.Out != null)
             {
-                Console.Write(String.Format("{0}: ", typeof(T).Name));
-                Console.WriteLine(result.Query.ToString());
-                Console.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.WriteLine(result.Query.ToString());
+                ConfigManager.Out.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.WriteLine();
             }
 
             if (result.Size() == 0)
@@ -120,11 +122,12 @@ namespace EtoolTech.MongoDB.Mapper
 
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.OutConsole)
+            if (ConfigManager.Out != null)
             {
-                Console.Write(String.Format("{0}: ", typeof(T).Name));
-                Console.WriteLine(result.Query.ToString());
-                Console.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.WriteLine(result.Query.ToString());
+                ConfigManager.Out.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.WriteLine();
             }
 
             return result;
@@ -143,11 +146,12 @@ namespace EtoolTech.MongoDB.Mapper
             
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.OutConsole)
+            if (ConfigManager.Out != null)
             {
-                Console.Write(String.Format("{0}: ", typeof(T).Name));
-                Console.WriteLine(result.Query.ToString());
-                Console.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.WriteLine(result.Query.ToString());
+                ConfigManager.Out.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.WriteLine();
             }
 
             return result;
@@ -167,11 +171,12 @@ namespace EtoolTech.MongoDB.Mapper
         {
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
 
-            if (ConfigManager.OutConsole)
+            if (ConfigManager.Out != null)
             {
-                Console.Write(String.Format("{0}: ", typeof(T).Name));
-                Console.WriteLine("{}");
-                Console.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.WriteLine("{}");
+                ConfigManager.Out.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.WriteLine();
             }
 
             return result;
