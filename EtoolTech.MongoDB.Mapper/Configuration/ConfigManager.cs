@@ -1,4 +1,6 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Configuration
+﻿using System.IO;
+
+namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     using System;
     using System.Collections.Generic;
@@ -26,7 +28,7 @@
 
         internal static bool IsReplicaSet { get; set; }
 
-        public static bool OutConsole { get; set; }
+        public static TextWriter Out { get; set; }
       
         #endregion
 
