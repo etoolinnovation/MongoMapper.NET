@@ -105,7 +105,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Relations.cs" />
     <Compile Include="Transaction\Transaction.cs" />
-    <Compile Include="enums\CommitOperation.cs" />
     <Compile Include="MongoMapperChild.cs" />
     <Compile Include="Interfaces\IMongoMapperChildIdeable.cs" />
     <Compile Include="Core\ChildsManager.cs" />
