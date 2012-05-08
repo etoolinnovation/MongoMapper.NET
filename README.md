@@ -79,13 +79,13 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 			Assert.AreEqual(ex.GetBaseException().GetType(),typeof(DuplicateKeyException));	
 		}
 		
-		c = new Country { Code = "US", Name = "Estados Unidos" };
-		c.Save();
-		
-		c = new Country();
-		c.FillByKey("ES");
-		Assert.AreEqual(country.Code, "ES"); 
+		Country c2 = new Country { Code = "US", Name = "Francia" };
+        c2.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Estados Unidos"; };            
+        c2.Save();
 
+        Country c3 = Country.FindByKey("US");
+        Assert.AreEqual(c3.Name, "Estados Unidos");
+		
 		List<Country> countries = new List<Country>();
 		countries.MongoFind();
 		Assert.AreEqual(countries.Count, 3);
