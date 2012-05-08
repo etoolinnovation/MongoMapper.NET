@@ -83,7 +83,8 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
         c2.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Estados Unidos"; };            
         c2.Save();
 
-        Country c3 = Country.FindByKey("US");
+        Country c3 = new Country();
+		c3.FillByKey("US");
         Assert.AreEqual(c3.Name, "Estados Unidos");
 		
 		List<Country> countries = new List<Country>();
@@ -116,7 +117,7 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
             p.Save();
         }	
 
-		p.ServerUpdate(Update.PushWrapped("Childs", new Child() { ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });		
+		p.ServerUpdate(Update.PushWrapped("Childs", new Child() { ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" }));		
 		
 		List<Person> persons = new List<Person>();
 		persons.MongoFind("Childs.Age",2);
