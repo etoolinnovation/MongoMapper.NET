@@ -10,17 +10,17 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestReadConfig()
         {
 		
-			Assert.AreEqual(ConfigManager.GetConnectionString("TestConf1"),
-                "mongodb://user:pass@host1,host2,host3:1234/Conf1?replicaSet=Set;w=9;slaveOk=true;maxpoolsize=1;waitQueueTimeout=2000ms;safe=true;fsync=true");
+			Assert.AreEqual("mongodb://user:pass@host1,host2,host3:1234/Conf1?slaveOk=true;maxpoolsize=1;waitQueueTimeout=2000ms;safe=true;fsync=true",
+			                ConfigManager.GetConnectionString("TestConf1"));
 
-            Assert.AreEqual(ConfigManager.GetConnectionString("Country"),
-               "mongodb://127.0.0.1/TestDotNET?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;safe=true;fsync=true");
+            Assert.AreEqual("mongodb://127.0.0.1/TestDotNET?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;safe=false;fsync=true",
+			                ConfigManager.GetConnectionString("Country"));
 
-            Assert.AreEqual(ConfigManager.GetConnectionString("Person"),
-             "mongodb://127.0.0.1/TestDotNETPerson?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;safe=true;fsync=true");
+            Assert.AreEqual("mongodb://127.0.0.1/TestDotNETPerson?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;safe=true;fsync=true",
+			                ConfigManager.GetConnectionString("Person"));
 
-            Assert.AreEqual(ConfigManager.GetConnectionString("XXX"),
-             "mongodb://127.0.0.1/TestDotNET?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;safe=true;fsync=true");
+            Assert.AreEqual("mongodb://127.0.0.1/TestDotNET?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;safe=false;fsync=true",
+			                ConfigManager.GetConnectionString("XXX"));
 
 
             /*	
