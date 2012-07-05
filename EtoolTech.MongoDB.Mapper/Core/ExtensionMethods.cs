@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -66,7 +67,7 @@ namespace EtoolTech.MongoDB.Mapper
             ReflectionUtility.CopyObject(result, o);
         }
 
-        public static void MongoFind<T>(this List<T> list, QueryComplete query = null)
+        public static void MongoFind<T>(this List<T> list, IMongoQuery query = null)
         {
             if (typeof (T).BaseType != typeof (MongoMapper))
             {

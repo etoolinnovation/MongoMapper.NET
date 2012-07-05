@@ -115,7 +115,7 @@
 
         #region Properties
 
-        private BsonClassMapSerializer BsonSerializer
+        internal BsonClassMapSerializer BsonSerializer
         {
             get
             {
@@ -139,7 +139,7 @@
             return Finder.Instance.AllAsList<T>();
         }
 
-        public static MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
+        public static MongoCursor<T> FindAsCursor<T>(IMongoQuery query = null)
         {
             return Finder.Instance.FindAsCursor<T>(query);
         }
@@ -154,7 +154,7 @@
             return Finder.Instance.FindAsCursor(exp);
         }
 
-        public static List<T> FindAsList<T>(QueryComplete query)
+        public static List<T> FindAsList<T>(IMongoQuery query)
         {
             return Finder.Instance.FindAsList<T>(query);
         }
@@ -191,7 +191,7 @@
             {
                 this.MongoMapper_Id = Finder.Instance.FindIdByKey<T>(this.GetKeyValues());
             }
-            QueryComplete query = Query.EQ("_id", this.MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
 
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).Remove(
@@ -343,7 +343,7 @@
             {
                 this.MongoMapper_Id = Finder.Instance.FindIdByKey<T>(this.GetKeyValues());
             }
-            QueryComplete query = Query.EQ("_id", this.MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
 
             FindAndModifyResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).

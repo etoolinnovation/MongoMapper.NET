@@ -19,13 +19,13 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         T FindObjectByKey<T>(Dictionary<string, object> keyValues);
 
-        List<T> FindAsList<T>(QueryComplete query);
+        List<T> FindAsList<T>(IMongoQuery query);
 
         List<T> FindAsList<T>(Expression<Func<T, object>> exp);
 
         List<T> AllAsList<T>();
 
-        MongoCursor<T> FindAsCursor<T>(QueryComplete query);
+        MongoCursor<T> FindAsCursor<T>(IMongoQuery query);
 
         MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp);
 
