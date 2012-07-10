@@ -21,8 +21,7 @@ using MongoDB.Driver.Builders;
 namespace EtoolTech.MongoDB.Mapper
 {
     [Serializable]
-    public abstract class MongoMapper : IBsonSerializable,
-                                        IMongoMapperOriginable,
+    public abstract class MongoMapper : IMongoMapperOriginable,
                                         IMongoMapperRelationable,
                                         IMongoMapperWriteable,
                                         IMongoMapperIdeable
@@ -120,67 +119,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Methods
 
-        #region IBsonDocumentSerializer Members
-
-        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
-        {
-            var o = BsonSerializer.LookupSerializer(_classType).Deserialize(bsonReader, nominalType, options);
-            //Guardamos el obj original en JSV para romper la referencia
-            if (ConfigManager.EnableOriginalObject(_classType.Name))
-            {
-                ((IMongoMapperStringOriginalObject) o).StringOriginalObject = Serializer.Serialize(o);
-            }
-            return o;
-        }
-
-        public bool GetDocumentId(out object id, out Type idNominalType, out IIdGenerator idGenerator)
-        {
-
-            var idMemberMap = BsonClassMap.LookupClassMap(_classType).IdMemberMap;
-            if (idMemberMap != null)
-            {
-                id = idMemberMap.Getter(this);
-                idNominalType = idMemberMap.MemberType;
-                idGenerator = idMemberMap.IdGenerator;
-                return true;
-            }
-            else
-            {
-                id = null;
-                idNominalType = null;
-                idGenerator = null;
-                return false;
-            }
-        }
-
-        public void Serialize(BsonWriter bsonWriter, Type nominalType, IBsonSerializationOptions options)
-        {
-             BsonSerializer.LookupSerializer(_classType).Serialize(bsonWriter,nominalType, this , options);
-        }
-
-        public void SetDocumentId(object id)
-        {
-            var documentType = this.GetType();
-            if (documentType.IsValueType)
-            {
-                var message = string.Format("SetDocumentId cannot be used with value type {0}.", documentType.FullName);
-                throw new BsonSerializationException(message);
-            }
-
-            var idMemberMap = BsonClassMap.LookupClassMap(_classType).IdMemberMap;
-            if (idMemberMap != null)
-            {
-                idMemberMap.Setter(this, id);
-            }
-            else
-            {
-                var message = string.Format("Class {0} has no Id member.", this.GetType().FullName);
-                throw new InvalidOperationException(message);
-            }
-        }
-
-
-        #endregion
+    
 
         //TODO: Pendiente temas de transacciones
         //public bool Commited;
@@ -210,7 +149,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return (T) _tOriginalObjet;
             }
 
-            _tOriginalObjet = Serializer.Deserialize<T>(StringOriginalObject);
+            _tOriginalObjet = ObjectSerializer.DeserializeFromString<T>(StringOriginalObject);
             return (T) _tOriginalObjet;
         }
 
@@ -325,7 +264,7 @@ namespace EtoolTech.MongoDB.Mapper
                 //TODO: No estoy muy convencido de esto revisar ...                
                 if (string.IsNullOrEmpty(StringOriginalObject))
                 {
-                    StringOriginalObject = Serializer.Serialize(this);
+                    StringOriginalObject = ObjectSerializer.SerializeToString(this);
                 }
             }
             else
