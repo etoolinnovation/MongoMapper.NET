@@ -126,7 +126,7 @@ namespace EtoolTech.MongoDB.Mapper
     
         public void SaveOriginal()
         {
-                        
+            //TODO: Pendiente pruebas de performance serializacion en byte[]            
             if (String.IsNullOrEmpty(_stringOriginalObject) && MongoMapper_Id != default(long) &&
                 ConfigManager.EnableOriginalObject(this._classType.Name))
             {
