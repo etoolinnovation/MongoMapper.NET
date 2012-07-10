@@ -78,7 +78,7 @@
     <Compile Include="Configuration\MongoMapperConfiguration.cs" />
     <Compile Include="Core\MongoMapperIdGenerator.cs" />
     <Compile Include="Core\PropertyValidator.cs" />
-    <Compile Include="Core\Serializer.cs" />
+    <Compile Include="Core\ObjectSerializer.cs" />
     <Compile Include="Exceptions\DeleteDocumentException.cs" />
     <Compile Include="Exceptions\ServerUpdateException.cs" />
     <Compile Include="Exceptions\DuplicateKeyException.cs" />
