@@ -11,6 +11,8 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
     {
         T FindById<T>(long id);
 
+        object FindById(Type type, long id);
+
         BsonDocument FindBsonDocumentById<T>(long id);
 
         T FindByKey<T>(params object[] values);

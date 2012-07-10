@@ -21,22 +21,21 @@ namespace EtoolTech.MongoDB.Mapper
         #region FindAsList Methods
 
         public T FindById<T>(long id)
-        {
-            IMongoQuery query = Query.EQ("_id", id);
-
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
-
+        {            
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
             return result;
-
         }
 
-        public BsonDocument FindBsonDocumentById<T>(long id)
-        {
-            IMongoQuery query = Query.EQ("_id", id);
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
+        public object FindById(Type t, long id)
+        {            
+            var result = CollectionsManager.GetCollection(t.Name).FindOneByIdAs(t, id);
+            return result;
+        }       
 
-            return result.ToBsonDocument<T>();
-            
+        public BsonDocument FindBsonDocumentById<T>(long id)
+        {            
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
+            return result.ToBsonDocument<T>();            
         }
 
         public T FindByKey<T>(params object[] values)
