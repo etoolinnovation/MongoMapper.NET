@@ -17,7 +17,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             (new InsertModifyDeleteTest()).TestInsert();
             Person p = Person.AllAsList<Person>().First();
             p.Name = "hola 25";
-            p.Save<Person>();
+            
 
             Person p2 = p.GetOriginalObject<Person>();
             Assert.AreEqual("Pepito Perez", p2.Name);

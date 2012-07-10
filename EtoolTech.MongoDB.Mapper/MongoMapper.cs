@@ -103,9 +103,19 @@ namespace EtoolTech.MongoDB.Mapper
         #region IMongoMapperOriginable Members
 
         [BsonIgnore]
-        public string StringOriginalObject
+        private string StringOriginalObject
         {
-            get { return _stringOriginalObject; }
+            get
+            {
+                if (String.IsNullOrEmpty(_stringOriginalObject) &&
+                    MongoMapper_Id != default(long) && 
+                    ConfigManager.EnableOriginalObject(this._classType.Name))
+                {
+                    object o = Finder.Instance.FindById(_classType, MongoMapper_Id);
+                    _stringOriginalObject = ObjectSerializer.SerializeToString(o);
+                }
+                return _stringOriginalObject;
+            }
             set
             {
                 _stringOriginalObject = value;
@@ -262,7 +272,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
                 //TODO: No estoy muy convencido de esto revisar ...                
-                if (string.IsNullOrEmpty(StringOriginalObject))
+                if (string.IsNullOrEmpty(_stringOriginalObject))
                 {
                     StringOriginalObject = ObjectSerializer.SerializeToString(this);
                 }
