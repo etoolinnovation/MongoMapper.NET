@@ -10,8 +10,6 @@ using EtoolTech.MongoDB.Mapper.Core;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -26,6 +24,8 @@ namespace EtoolTech.MongoDB.Mapper
                                         IMongoMapperWriteable,
                                         IMongoMapperIdeable
     {
+                
+        
         #region Constants and Fields
 
         private static readonly IChildsManager ChildsManager = Mapper.ChildsManager.Instance;
@@ -94,26 +94,19 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region IMongoMapperIdeable Members
 
-        [BsonId(IdGenerator = typeof (MongoMapperIdGenerator))]
-        [XmlIgnore]
+        [BsonId(IdGenerator = typeof (MongoMapperIdGenerator)), XmlIgnore]
         public long MongoMapper_Id { get; set; }
 
         #endregion
 
         #region IMongoMapperOriginable Members
 
+
         [BsonIgnore]
         private string StringOriginalObject
         {
             get
-            {
-                if (String.IsNullOrEmpty(_stringOriginalObject) &&
-                    MongoMapper_Id != default(long) && 
-                    ConfigManager.EnableOriginalObject(this._classType.Name))
-                {
-                    object o = Finder.Instance.FindById(_classType, MongoMapper_Id);
-                    _stringOriginalObject = ObjectSerializer.SerializeToString(o);
-                }
+            {              
                 return _stringOriginalObject;
             }
             set
@@ -129,14 +122,17 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Methods
 
-    
-
-        //TODO: Pendiente temas de transacciones
-        //public bool Commited;
-        //public CommitOperation CommitOp;
-        //public string TransactionID;
-
         #region IMongoMapperOriginable Members
+    
+        public void SaveOriginal()
+        {
+                        
+            if (String.IsNullOrEmpty(_stringOriginalObject) && MongoMapper_Id != default(long) &&
+                ConfigManager.EnableOriginalObject(this._classType.Name))
+            {
+                StringOriginalObject = ObjectSerializer.SerializeToString(this);
+            }
+        }
 
         public T GetOriginalObject<T>()
         {
@@ -270,17 +266,16 @@ namespace EtoolTech.MongoDB.Mapper
                     UpdateDocument(id);
                 }
 
-                //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
-                //TODO: No estoy muy convencido de esto revisar ...                
-                if (string.IsNullOrEmpty(_stringOriginalObject))
-                {
-                    StringOriginalObject = ObjectSerializer.SerializeToString(this);
-                }
             }
             else
             {
                 UpdateDocument(MongoMapper_Id);
             }
+
+            //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
+            //TODO: No estoy muy convencido de esto revisar ...                
+            SaveOriginal();
+
         }
 
 
@@ -391,5 +386,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         #endregion
+
+     
     }
 }

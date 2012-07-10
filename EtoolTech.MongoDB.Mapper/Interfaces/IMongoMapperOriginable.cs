@@ -5,5 +5,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
         T GetOriginalObject<T>();
 
         T GetOriginalT<T>();
+
+        void SaveOriginal();
     }
 }
