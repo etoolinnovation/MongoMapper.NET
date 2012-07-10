@@ -21,22 +21,21 @@ namespace EtoolTech.MongoDB.Mapper
         #region FindAsList Methods
 
         public T FindById<T>(long id)
-        {
-            QueryComplete query = Query.EQ("_id", id);
-
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
-
+        {            
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
             return result;
-
         }
 
-        public BsonDocument FindBsonDocumentById<T>(long id)
-        {
-            QueryComplete query = Query.EQ("_id", id);
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);
+        public object FindById(Type t, long id)
+        {            
+            var result = CollectionsManager.GetCollection(t.Name).FindOneByIdAs(t, id);
+            return result;
+        }       
 
-            return result.ToBsonDocument<T>();
-            
+        public BsonDocument FindBsonDocumentById<T>(long id)
+        {            
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
+            return result.ToBsonDocument<T>();            
         }
 
         public T FindByKey<T>(params object[] values)
@@ -54,13 +53,13 @@ namespace EtoolTech.MongoDB.Mapper
 
         public T FindObjectByKey<T>(Dictionary<string, object> keyValues)
         {
-            var queryList = new List<QueryComplete>();
+            var queryList = new List<IMongoQuery>();
             foreach (var keyValue in keyValues)
             {
                 queryList.Add(MongoQuery.Eq(keyValue.Key, keyValue.Value));
             }
 
-            QueryComplete query = Query.And(queryList.ToArray());
+            IMongoQuery query = Query.And(queryList.ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
@@ -88,7 +87,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return default(long);
             }
 
-            QueryComplete query = Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+            IMongoQuery query = Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
 
@@ -108,12 +107,12 @@ namespace EtoolTech.MongoDB.Mapper
             return ((IMongoMapperIdeable) result.First()).MongoMapper_Id;
         }
 
-        public List<T> FindAsList<T>(QueryComplete query = null)
+        public List<T> FindAsList<T>(IMongoQuery query = null)
         {
             return FindAsCursor<T>(query).ToList();
         }
 
-        public MongoCursor<T> FindAsCursor<T>(QueryComplete query = null)
+        public MongoCursor<T> FindAsCursor<T>(IMongoQuery query = null)
         {
             if (query == null)
             {
@@ -142,7 +141,7 @@ namespace EtoolTech.MongoDB.Mapper
         public MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
         {
             var ep = new ExpressionParser();
-            QueryComplete query = ep.ParseExpression(exp);
+            IMongoQuery query = ep.ParseExpression(exp);
             
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 

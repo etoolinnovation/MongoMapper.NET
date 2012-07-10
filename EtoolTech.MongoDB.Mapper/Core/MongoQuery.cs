@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -8,9 +9,9 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region GetQuerys
 
-        public static QueryComplete Eq(string fieldName, object value)
+        public static IMongoQuery Eq(string fieldName, object value)
         {
-            QueryComplete query = null;
+            IMongoQuery query = null;
             Type type = value.GetType();
 
             if (value is string)
@@ -72,14 +73,14 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-        public static QueryComplete Eq<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Eq<T>(Expression<Func<T, object>> field, object value)
         {
             return Eq(ReflectionUtility.GetPropertyName(field), value);
         }
 
-        public static QueryComplete Gt(string fieldName, object value)
+        public static IMongoQuery Gt(string fieldName, object value)
         {
-            QueryComplete query = null;
+            IMongoQuery query = null;
             Type type = value.GetType();
 
             if (type == typeof (DateTime))
@@ -110,14 +111,14 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-        public static QueryComplete Gt<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Gt<T>(Expression<Func<T, object>> field, object value)
         {
             return Gt(ReflectionUtility.GetPropertyName(field), value);
         }
 
-        public static QueryComplete Gte(string fieldName, object value)
+        public static IMongoQuery Gte(string fieldName, object value)
         {
-            QueryComplete query = null;
+            IMongoQuery query = null;
             Type type = value.GetType();
 
             if (type == typeof (DateTime))
@@ -148,14 +149,14 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-        public static QueryComplete Gte<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Gte<T>(Expression<Func<T, object>> field, object value)
         {
             return Gte(ReflectionUtility.GetPropertyName(field), value);
         }
 
-        public static QueryComplete Lt(string fieldName, object value)
+        public static IMongoQuery Lt(string fieldName, object value)
         {
-            QueryComplete query = null;
+            IMongoQuery query = null;
             Type type = value.GetType();
 
             if (type == typeof (DateTime))
@@ -186,14 +187,14 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-        public static QueryComplete Lt<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Lt<T>(Expression<Func<T, object>> field, object value)
         {
             return Eq(ReflectionUtility.GetPropertyName(field), value);
         }
 
-        public static QueryComplete Lte(string fieldName, object value)
+        public static IMongoQuery Lte(string fieldName, object value)
         {
-            QueryComplete query = null;
+            IMongoQuery query = null;
             Type type = value.GetType();
 
             if (type == typeof (DateTime))
@@ -224,14 +225,14 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-        public static QueryComplete Lte<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Lte<T>(Expression<Func<T, object>> field, object value)
         {
             return Eq(ReflectionUtility.GetPropertyName(field), value);
         }
 
-        public static QueryComplete Ne(string fieldName, object value)
+        public static IMongoQuery Ne(string fieldName, object value)
         {
-            QueryComplete query = null;
+            IMongoQuery query = null;
             Type type = value.GetType();
 
             if (type == typeof (DateTime))
@@ -262,17 +263,17 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-        public static QueryComplete Ne<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Ne<T>(Expression<Func<T, object>> field, object value)
         {
             return Eq(ReflectionUtility.GetPropertyName(field), value);
         }
 
-        public static QueryComplete RegEx(string fieldName, string expresion)
+        public static IMongoQuery RegEx(string fieldName, string expresion)
         {
             return Query.Matches(fieldName, expresion);
         }
 
-        public static QueryComplete RegEx<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery RegEx<T>(Expression<Func<T, object>> field, object value)
         {
             return RegEx(ReflectionUtility.GetPropertyName(field), value.ToString());
         }

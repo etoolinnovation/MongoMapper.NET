@@ -15,13 +15,30 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObject()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = Person.AllAsList<Person>().First();
-            p.Name = "hola 25";
+            Person p = Person.AllAsList<Person>().First();            
             p.Save<Person>();
+            p.Name = "hola 25";            
+            
 
             Person p2 = p.GetOriginalObject<Person>();
             Assert.AreEqual("Pepito Perez", p2.Name);
         }
+
+
+        [Test()]
+        public void TestOriginalObjectWithOutSave()
+        {
+            (new InsertModifyDeleteTest()).TestInsert();
+            Person p = Person.AllAsList<Person>().First();
+            //TODO: ver donde colocarlo para que lo haga solo tras la deserializacion
+            p.SaveOriginal();
+            p.Name = "hola 25";
+
+
+            Person p2 = p.GetOriginalObject<Person>();
+            Assert.AreEqual("Pepito Perez", p2.Name);
+        }
+
 
         [Test()]
         public void TestOriginalValue()
@@ -46,11 +63,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
             p.Save<Person>();
        
-            p.Name = "Juan Sin Miedo";
+            p.Name = "Juan Sin Miedo";            
 
-            object OriginalName = p.GetOriginalObject<Person>().Name;
+            object originalName = p.GetOriginalObject<Person>().Name;
 
-            Assert.AreEqual(OriginalName.ToString(), "Pepito Perez");
+            Assert.AreEqual(originalName.ToString(), "Pepito Perez");
 
 
         }

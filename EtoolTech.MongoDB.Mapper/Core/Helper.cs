@@ -190,7 +190,7 @@ namespace EtoolTech.MongoDB.Mapper
                 if (regType != null)
                 {
                     var mongoCustomDiscriminatorType = (MongoCustomDiscriminatorType)regType;
-                    BsonDefaultSerializer.RegisterDiscriminator(
+                    BsonSerializer.RegisterDiscriminator(
                         mongoCustomDiscriminatorType.Type, mongoCustomDiscriminatorType.Type.Name);
                 }
             }

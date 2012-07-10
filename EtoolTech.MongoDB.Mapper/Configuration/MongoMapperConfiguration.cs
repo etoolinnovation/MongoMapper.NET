@@ -60,7 +60,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("ReplicaSetName", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("ReplicaSetName", IsKey = false, IsRequired = false)]
         public string ReplicaSetName
         {
             get
@@ -69,21 +69,21 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("MinReplicaServersToWrite", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("MinReplicaServersToWrite", IsKey = false, IsRequired = false)]
         public int MinReplicaServersToWrite
         {
             get
-            {
-                return int.Parse(this["MinReplicaServersToWrite"].ToString());
+            {				
+				return int.Parse(this["MinReplicaServersToWrite"].ToString());				
             }
         }
         
-        [ConfigurationProperty("BalancedReading", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("BalancedReading", IsKey = false, IsRequired = false)]
         public bool BalancedReading
         {
             get
             {
-                return bool.Parse(this["BalancedReading"].ToString());
+				return bool.Parse(this["BalancedReading"].ToString());
             }
         }
 
@@ -118,7 +118,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("User", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("User", IsKey = false, IsRequired = false)]
         public string User
         {
             get
@@ -127,7 +127,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("Password", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("Password", IsKey = false, IsRequired = false)]
         public string Password
         {
             get
@@ -139,12 +139,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
     public class Context : ConfigurationElement
     {
-        [ConfigurationProperty("Generated", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("Generated", IsKey = false, IsRequired = false)]
         public bool Generated
         {
             get
-            {
-                return bool.Parse(this["Generated"].ToString());
+            {                
+				return bool.Parse(this["Generated"].ToString());			
             }
         }
 
@@ -157,58 +157,58 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
         }
 
-        [ConfigurationProperty("SafeMode", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("SafeMode", IsKey = false, IsRequired = false)]
         public bool SafeMode
         {
             get
-            {
-                return bool.Parse(this["SafeMode"].ToString());
+            {             	
+				return bool.Parse(this["SafeMode"].ToString());
             }
         }
 
-        [ConfigurationProperty("FSync", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("FSync", IsKey = false, IsRequired = false)]
         public bool FSync
         {
             get
-            {
-                return bool.Parse(this["FSync"].ToString());
+            {                
+				return bool.Parse(this["FSync"].ToString());
             }
         }
 
-        [ConfigurationProperty("ExceptionOnDuplicateKey", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("ExceptionOnDuplicateKey", IsKey = false, IsRequired = false)]
         public bool ExceptionOnDuplicateKey
         {
             get
-            {
-                return bool.Parse(this["ExceptionOnDuplicateKey"].ToString());
+            {                
+				return bool.Parse(this["ExceptionOnDuplicateKey"].ToString());
             }
         }
 
-        [ConfigurationProperty("EnableOriginalObject", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("EnableOriginalObject", IsKey = false, IsRequired = false)]
         public bool EnableOriginalObject
         {
             get
-            {
-                return bool.Parse(this["EnableOriginalObject"].ToString());
+            {                
+				return bool.Parse(this["EnableOriginalObject"].ToString());
             }
         }
 
-        [ConfigurationProperty("UseIncrementalId", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("UseIncrementalId", IsKey = false, IsRequired = false)]
         public bool UseIncrementalId
         {
             get
-            {
-                return bool.Parse(this["UseIncrementalId"].ToString());
+            {                
+				return bool.Parse(this["UseIncrementalId"].ToString());
             }
         }
 		
 		
-        [ConfigurationProperty("UseChidlsIncrementalId", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("UseChidlsIncrementalId", IsKey = false, IsRequired = false)]
         public bool UseChidlsIncrementalId
         {
             get
-            {
-                return bool.Parse(this["UseChidlsIncrementalId"].ToString());
+            {                
+				return bool.Parse(this["UseChidlsIncrementalId"].ToString());				
             }
         }
     }
