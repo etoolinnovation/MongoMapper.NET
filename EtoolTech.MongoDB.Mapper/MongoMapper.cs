@@ -215,7 +215,7 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (!String.IsNullOrEmpty(result.ErrorMessage))
                 {
-                    throw new Exception(result.ErrorMessage);
+                    throw new DeleteDocumentException(result.ErrorMessage);
                 }
             }
         }
@@ -296,7 +296,7 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (!String.IsNullOrEmpty(result.ErrorMessage))
                 {
-                    throw new Exception(result.ErrorMessage);
+                    throw new ServerUpdateException(result.ErrorMessage);
                 }
             }
 
