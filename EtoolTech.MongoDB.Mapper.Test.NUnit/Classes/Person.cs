@@ -5,6 +5,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
     using EtoolTech.MongoDB.Mapper.Attributes;
 
+    [Serializable]
     [MongoKey(KeyFields = "")]
     [MongoIndex(IndexFields = "ID,Country")]
     [MongoIndex(IndexFields = "Name")]
