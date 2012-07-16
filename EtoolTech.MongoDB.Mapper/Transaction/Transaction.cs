@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using EtoolTech.MongoDB.Mapper.Interfaces;
-
-namespace EtoolTech.MongoDB.Mapper
+﻿namespace EtoolTech.MongoDB.Mapper
 {
+    using System.Collections.Generic;
+
+    using EtoolTech.MongoDB.Mapper.Interfaces;
+
     public class Transaction : MongoMapper, ITransaction
     {
-        #region ITransaction Members
+        #region Public Properties
 
         public List<string> Collections { get; set; }
 

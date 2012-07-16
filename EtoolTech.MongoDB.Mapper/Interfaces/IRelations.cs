@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EtoolTech.MongoDB.Mapper.Interfaces
+﻿namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
+    using System;
+    using System.Collections.Generic;
+
     public interface IRelations
     {
-        List<string> GetUpRelations(Type t);
+        #region Public Methods
+
+        void EnsureDownRelations(object sender, Type classType, IFinder finder);
+
+        void EnsureUpRelations(object sender, Type classType, IFinder finder);
 
         List<string> GetDownRelations(Type t);
 
         List<T> GetRelation<T>(object sender, string relation, Type classType, IFinder finder);
 
-        void EnsureUpRelations(object sender, Type classType, IFinder finder);
+        List<string> GetUpRelations(Type t);
 
-        void EnsureDownRelations(object sender, Type classType, IFinder finder);
+        #endregion
     }
 }

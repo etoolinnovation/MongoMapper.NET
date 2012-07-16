@@ -1,10 +1,9 @@
-﻿using System.IO;
-
-namespace EtoolTech.MongoDB.Mapper.Configuration
+﻿namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
 
     public class ConfigManager
@@ -22,14 +21,18 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         #endregion
 
+        #region Public Properties
+
+        public static TextWriter Out { get; set; }
+
+        #endregion
+
         #region Properties
 
         internal static int? ActiveServers { get; set; }
 
         internal static bool IsReplicaSet { get; set; }
 
-        public static TextWriter Out { get; set; }
-      
         #endregion
 
         #region Public Methods
@@ -241,8 +244,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             return Config.Server.MinReplicaServersToWrite;
         }
-
-     
 
         public static string PassWord(string objName)
         {

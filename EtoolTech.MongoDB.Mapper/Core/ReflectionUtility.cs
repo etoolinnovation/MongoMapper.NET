@@ -1,16 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-namespace EtoolTech.MongoDB.Mapper
+﻿namespace EtoolTech.MongoDB.Mapper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
 
     using EtoolTech.MongoDB.Mapper.Interfaces;
 
     public static class ReflectionUtility
     {
+        #region Public Methods
+
+        public static void BuildSchema(Assembly assembly)
+        {
+            List<Type> types = assembly.GetTypes().Where(t => t.BaseType == typeof(MongoMapper)).ToList();
+            foreach (Type type in types)
+            {
+                Helper.RebuildClass(type, true);
+            }
+        }
+
+        public static void CopyObject<T>(T source, T destination)
+        {
+            Type t = source.GetType();
+
+            foreach (PropertyInfo property in t.GetProperties())
+            {
+                property.SetValue(destination, property.GetValue(source, null), null);
+            }
+        }
+
         public static string GetPropertyName<T>(Expression<Func<T, object>> exp)
         {
             var memberExpression = exp.Body as UnaryExpression;
@@ -34,20 +54,12 @@ namespace EtoolTech.MongoDB.Mapper
             return string.Empty;
         }
 
-        public static void CopyObject<T>(T source, T destination)
-        {
-            Type t = source.GetType();
-
-            foreach (var property in t.GetProperties())
-            {
-                property.SetValue(destination,property.GetValue(source,null),null);
-            }
-        }
-
         public static object GetPropertyValue(object obj, string propertyName)
         {
             if ((propertyName == "MongoMapper_Id") && (obj is IMongoMapperIdeable))
+            {
                 return ((IMongoMapperIdeable)obj).MongoMapper_Id;
+            }
 
             Type t = obj.GetType();
             PropertyInfo property = t.GetProperty(propertyName);
@@ -55,18 +67,10 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public static T GetPropertyValue<T>(object obj, string propertyName)
-         {
-             return (T)GetPropertyValue(obj, propertyName);
-         }
-
-        public static void BuildSchema(Assembly assembly)
         {
-            List<Type> types = assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
-            foreach (var type in types)
-            {
-                Helper.RebuildClass(type,true);
-            }
+            return (T)GetPropertyValue(obj, propertyName);
         }
-      
+
+        #endregion
     }
 }

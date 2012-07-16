@@ -1,17 +1,21 @@
-﻿using ServiceStack.Text;
-
-namespace EtoolTech.MongoDB.Mapper.Core
+﻿namespace EtoolTech.MongoDB.Mapper.Core
 {
+    using ServiceStack.Text;
+
     public static class ObjectSerializer
     {
-        public static string SerializeToString(object o)
-        {
-            return TypeSerializer.SerializeToString(o);            
-        }
+        #region Public Methods
 
         public static T DeserializeFromString<T>(string data)
         {
-            return TypeSerializer.DeserializeFromString<T>(data);            
+            return TypeSerializer.DeserializeFromString<T>(data);
         }
+
+        public static string SerializeToString(object o)
+        {
+            return TypeSerializer.SerializeToString(o);
+        }
+
+        #endregion
     }
 }
