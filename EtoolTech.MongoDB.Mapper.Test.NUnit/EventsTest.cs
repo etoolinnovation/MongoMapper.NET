@@ -1,29 +1,26 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-
-
-using NUnit.Framework;
-
-namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    [TestFixture()]
+    using global::NUnit.Framework;
+
+    [TestFixture]
     public class EventsTest
     {
-        [Test()]
+        #region Public Methods
+
+        [Test]
         public void TestEvents()
         {
             Helper.DropAllCollections();
-            
-            Country c = new Country { Code = "FR", Name = "España" };
-            c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };            
+
+            var c = new Country { Code = "FR", Name = "España" };
+            c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };
             c.Save<Country>();
 
-            Country c3 = Country.FindByKey<Country>("FR");
+            var c3 = MongoMapper.FindByKey<Country>("FR");
 
             Assert.AreEqual(c3.Name, "Francia");
-
         }
+
+        #endregion
     }
 }

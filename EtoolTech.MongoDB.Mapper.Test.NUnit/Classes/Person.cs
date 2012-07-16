@@ -1,34 +1,43 @@
-using System;
-using System.Collections.Generic;
-using EtoolTech.MongoDB.Mapper.Attributes;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
-
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
+    using System;
+    using System.Collections.Generic;
+
+    using EtoolTech.MongoDB.Mapper.Attributes;
+
     [MongoKey(KeyFields = "")]
     [MongoIndex(IndexFields = "ID,Country")]
-    [MongoIndex(IndexFields =  "Name")]
+    [MongoIndex(IndexFields = "Name")]
     [MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = true)]
     public class Person : MongoMapper
-    {        
-		public Person()
+    {
+        #region Constructors and Destructors
+
+        public Person()
         {
-            Childs = new List<Child>();
+            this.Childs = new List<Child>();
         }
-                
-        public string Name { get; set; }
+
+        #endregion
+
+        #region Public Properties
+
         public int Age { get; set; }
-        public DateTime BirthDate { get; set; }
-        public bool Married { get; set; }
+
         public decimal BankBalance { get; set; }
-        
+
+        public DateTime BirthDate { get; set; }
+
+        [MongoChildCollection]
+        public List<Child> Childs { get; set; }
+
         [MongoUpRelation(ObjectName = "Country", FieldName = "Code")]
         public string Country { get; set; }
-             
-        [MongoChildCollection]
-		public List<Child> Childs { get; set;}
+
+        public bool Married { get; set; }
+
+        public string Name { get; set; }
+
+        #endregion
     }
-
-
 }
