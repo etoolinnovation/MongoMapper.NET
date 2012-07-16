@@ -18,17 +18,29 @@ namespace EtoolTech.MongoDB.Mapper
 
         private Finder() {}
 
+        private static void SaveOriginal<T>(T result)
+        {
+            var mongoMapperOriginable = result as IMongoMapperOriginable;
+            if (mongoMapperOriginable != null)
+            {
+                (mongoMapperOriginable).SaveOriginal();
+            }
+        }
+
         #region FindAsList Methods
 
         public T FindById<T>(long id)
         {            
             var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
+            SaveOriginal(result);
             return result;
         }
 
+    
         public object FindById(Type t, long id)
         {            
             var result = CollectionsManager.GetCollection(t.Name).FindOneByIdAs(t, id);
+            SaveOriginal(result);
             return result;
         }       
 
@@ -53,13 +65,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public T FindObjectByKey<T>(Dictionary<string, object> keyValues)
         {
-            var queryList = new List<IMongoQuery>();
-            foreach (var keyValue in keyValues)
-            {
-                queryList.Add(MongoQuery.Eq(keyValue.Key, keyValue.Value));
-            }
-
-            IMongoQuery query = Query.And(queryList.ToArray());
+            IMongoQuery query = Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
@@ -75,7 +81,9 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 throw new FindByKeyNotFoundException();
             }
-            return result.First();
+            var o = result.First();
+            SaveOriginal(o);
+            return o;
         }
 
         public long FindIdByKey<T>(Dictionary<string, object> keyValues)
@@ -109,7 +117,13 @@ namespace EtoolTech.MongoDB.Mapper
 
         public List<T> FindAsList<T>(IMongoQuery query = null)
         {
-            return FindAsCursor<T>(query).ToList();
+            var list = FindAsCursor<T>(query).ToList();            
+            foreach (var result in list)
+            {
+                SaveOriginal(result);
+            }
+            return list;
+
         }
 
         public MongoCursor<T> FindAsCursor<T>(IMongoQuery query = null)
@@ -134,7 +148,12 @@ namespace EtoolTech.MongoDB.Mapper
 
         public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
-            return FindAsCursor(exp).ToList();
+            var list = FindAsCursor(exp).ToList();          
+            foreach (var result in list)
+            {
+                SaveOriginal(result);
+            }
+            return list;
         }
 
         //TODO: Pendiente de probar
@@ -163,7 +182,12 @@ namespace EtoolTech.MongoDB.Mapper
 
         public List<T> AllAsList<T>()
         {
-            return AllAsCursor<T>().ToList();
+            var list =  AllAsCursor<T>().ToList();
+            foreach (var result in list)
+            {
+                SaveOriginal(result);
+            }
+            return list;
         }
 
         public MongoCursor<T> AllAsCursor<T>()

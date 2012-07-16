@@ -29,9 +29,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObjectWithOutSave()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = Person.AllAsList<Person>().First();
-            //TODO: ver donde colocarlo para que lo haga solo tras la deserializacion
-            p.SaveOriginal();
+            Person p = Person.AllAsList<Person>().First();           
             p.Name = "hola 25";
 
 
