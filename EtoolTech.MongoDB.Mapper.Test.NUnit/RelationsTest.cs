@@ -1,62 +1,62 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-
-using EtoolTech.MongoDB.Mapper.Exceptions;
-
-using NUnit.Framework;
-
-namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    [TestFixture()]
+    using System;
+    using System.Linq;
+
+    using EtoolTech.MongoDB.Mapper.Exceptions;
+
+    using global::NUnit.Framework;
+
+    [TestFixture]
     public class RelationsTest
     {
-        [Test()]
+        #region Public Methods
+
+        [Test]
         public void TestRelations()
         {
             Helper.DropAllCollections();
 
-            Country c = new Country { Code = "ES", Name = "España" };
+            var c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
             c = new Country { Code = "UK", Name = "Reino Unido" };
             c.Save<Country>();
 
-            Person p = new Person
-            {                
-                Name = "Pepito Perez",
-                Age = 35,
-                BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
-                Married = true,
-                Country = "XXXXX",
-                BankBalance = decimal.Parse("3500,00")
-            };
+            var p = new Person
+                {
+                    Name = "Pepito Perez",
+                    Age = 35,
+                    BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+                    Married = true,
+                    Country = "XXXXX",
+                    BankBalance = decimal.Parse("3500,00")
+                };
 
-            p.Childs.Add(new Child() { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
-            p.Childs.Add(new Child() { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+            p.Childs.Add(
+                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+            p.Childs.Add(
+                new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
-            
             try
             {
                 p.Save<Person>();
             }
             catch (Exception ex)
             {
-				Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateUpRelationException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateUpRelationException));
                 p.Country = "ES";
                 p.Save<Person>();
             }
 
-
-            c = Country.FindByKey<Country>("ES");
+            c = MongoMapper.FindByKey<Country>("ES");
             try
             {
                 c.Delete<Country>();
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateDownRelationException));				
-                List<Person> Persons = c.GetRelation<Person>("Person,Country");
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateDownRelationException));
+                global::System.Collections.Generic.List<Person> Persons = c.GetRelation<Person>("Person,Country");
                 foreach (Person p2 in Persons)
                 {
                     p2.Country = "UK";
@@ -64,19 +64,17 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 }
                 c.Delete<Person>();
             }
-            
 
-            c = Country.FindByKey<Country>("UK");
+            c = MongoMapper.FindByKey<Country>("UK");
 
-            List<Person> PersonasEnUK = c.GetRelation<Person>("Person,Country");
+            global::System.Collections.Generic.List<Person> PersonasEnUK = c.GetRelation<Person>("Person,Country");
             foreach (Person PersonInUK in PersonasEnUK)
             {
                 Assert.AreEqual(PersonInUK.Country, "UK");
                 Assert.AreEqual(PersonInUK.GetRelation<Country>("Country,Code").First().Code, "UK");
             }
-
-
         }
 
+        #endregion
     }
 }

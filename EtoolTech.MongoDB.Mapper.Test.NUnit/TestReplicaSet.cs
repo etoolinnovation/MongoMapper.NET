@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
-
-namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using global::NUnit.Framework;
+
     public class TestReplicaSet
     {
-        public void Insert()
-        {
-            Helper.DropAllCollections();
-
-            Parallel.For(0, 10, i =>
-            {
-                Country c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
-                c.Save<Country>();
-            }
-            );
-        }
+        #region Public Methods
 
         public void Count()
         {
@@ -28,10 +17,25 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.Delete<Country>();
         }
 
-
         public void Count2()
         {
             Assert.AreEqual(9, MongoMapper.FindAsCursor<Country>().Size());
         }
+
+        public void Insert()
+        {
+            Helper.DropAllCollections();
+
+            Parallel.For(
+                0,
+                10,
+                i =>
+                    {
+                        var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
+                        c.Save<Country>();
+                    });
+        }
+
+        #endregion
     }
 }
