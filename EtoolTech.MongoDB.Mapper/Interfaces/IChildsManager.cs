@@ -4,8 +4,12 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
     public interface IChildsManager
     {
-        void ManageChilds(object sender);
+        #region Public Methods
 
         void GenerateChilsIds(string objName, IEnumerable<object> list);
+
+        void ManageChilds(object sender);
+
+        #endregion
     }
 }

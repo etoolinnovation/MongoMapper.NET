@@ -4,16 +4,20 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
     public interface IMongoMapperWriteable
     {
+        #region Public Methods
+
+        void Delete<T>();
+
+        void DeleteDocument<T>();
+
+        void InsertDocument();
+
         void Save<T>();
 
         void ServerUpdate<T>(UpdateBuilder update, bool refill = true);
 
         void UpdateDocument(long id);
 
-        void InsertDocument();
-
-        void Delete<T>();
-
-        void DeleteDocument<T>();
+        #endregion
     }
 }

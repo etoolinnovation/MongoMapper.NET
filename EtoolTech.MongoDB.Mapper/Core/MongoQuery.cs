@@ -1,13 +1,14 @@
-﻿using System;
-using System.Linq.Expressions;
-using MongoDB.Driver;
-using MongoDB.Driver.Builders;
-
-namespace EtoolTech.MongoDB.Mapper
+﻿namespace EtoolTech.MongoDB.Mapper
 {
+    using System;
+    using System.Linq.Expressions;
+
+    using global::MongoDB.Driver;
+    using global::MongoDB.Driver.Builders;
+
     public static class MongoQuery
     {
-        #region GetQuerys
+        #region Public Methods
 
         public static IMongoQuery Eq(string fieldName, object value)
         {
@@ -41,33 +42,33 @@ namespace EtoolTech.MongoDB.Mapper
                 }
             }
 
-            if (type == typeof (DateTime))
+            if (type == typeof(DateTime))
             {
-                query = Query.EQ(fieldName, (DateTime) value);
+                query = Query.EQ(fieldName, (DateTime)value);
             }
-            else if (type == typeof (int))
+            else if (type == typeof(int))
             {
-                query = Query.EQ(fieldName, (int) value);
+                query = Query.EQ(fieldName, (int)value);
             }
-            else if (type == typeof (string))
+            else if (type == typeof(string))
             {
-                query = Query.EQ(fieldName, (string) value);
+                query = Query.EQ(fieldName, (string)value);
             }
-            else if (type == typeof (long))
+            else if (type == typeof(long))
             {
-                query = Query.EQ(fieldName, (long) value);
+                query = Query.EQ(fieldName, (long)value);
             }
-            else if (type == typeof (bool))
+            else if (type == typeof(bool))
             {
-                query = Query.EQ(fieldName, (bool) value);
+                query = Query.EQ(fieldName, (bool)value);
             }
-            else if (type == typeof (double))
+            else if (type == typeof(double))
             {
-                query = Query.EQ(fieldName, (double) value);
+                query = Query.EQ(fieldName, (double)value);
             }
-            else if (type == typeof (Guid))
+            else if (type == typeof(Guid))
             {
-                query = Query.EQ(fieldName, (Guid) value);
+                query = Query.EQ(fieldName, (Guid)value);
             }
 
             return query;
@@ -83,29 +84,29 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = value.GetType();
 
-            if (type == typeof (DateTime))
+            if (type == typeof(DateTime))
             {
-                query = Query.GT(fieldName, (DateTime) value);
+                query = Query.GT(fieldName, (DateTime)value);
             }
-            else if (type == typeof (int))
+            else if (type == typeof(int))
             {
-                query = Query.GT(fieldName, (int) value);
+                query = Query.GT(fieldName, (int)value);
             }
-            else if (type == typeof (string))
+            else if (type == typeof(string))
             {
-                query = Query.GT(fieldName, (string) value);
+                query = Query.GT(fieldName, (string)value);
             }
-            else if (type == typeof (long))
+            else if (type == typeof(long))
             {
-                query = Query.GT(fieldName, (long) value);
+                query = Query.GT(fieldName, (long)value);
             }
-            else if (type == typeof (bool))
+            else if (type == typeof(bool))
             {
-                query = Query.GT(fieldName, (bool) value);
+                query = Query.GT(fieldName, (bool)value);
             }
-            else if (type == typeof (double))
+            else if (type == typeof(double))
             {
-                query = Query.GT(fieldName, (double) value);
+                query = Query.GT(fieldName, (double)value);
             }
 
             return query;
@@ -121,29 +122,29 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = value.GetType();
 
-            if (type == typeof (DateTime))
+            if (type == typeof(DateTime))
             {
-                query = Query.GTE(fieldName, (DateTime) value);
+                query = Query.GTE(fieldName, (DateTime)value);
             }
-            else if (type == typeof (int))
+            else if (type == typeof(int))
             {
-                query = Query.GTE(fieldName, (int) value);
+                query = Query.GTE(fieldName, (int)value);
             }
-            else if (type == typeof (string))
+            else if (type == typeof(string))
             {
-                query = Query.GTE(fieldName, (string) value);
+                query = Query.GTE(fieldName, (string)value);
             }
-            else if (type == typeof (long))
+            else if (type == typeof(long))
             {
-                query = Query.GTE(fieldName, (long) value);
+                query = Query.GTE(fieldName, (long)value);
             }
-            else if (type == typeof (bool))
+            else if (type == typeof(bool))
             {
-                query = Query.GTE(fieldName, (bool) value);
+                query = Query.GTE(fieldName, (bool)value);
             }
-            else if (type == typeof (double))
+            else if (type == typeof(double))
             {
-                query = Query.GTE(fieldName, (double) value);
+                query = Query.GTE(fieldName, (double)value);
             }
 
             return query;
@@ -159,29 +160,29 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = value.GetType();
 
-            if (type == typeof (DateTime))
+            if (type == typeof(DateTime))
             {
-                query = Query.LT(fieldName, (DateTime) value);
+                query = Query.LT(fieldName, (DateTime)value);
             }
-            else if (type == typeof (int))
+            else if (type == typeof(int))
             {
-                query = Query.LT(fieldName, (int) value);
+                query = Query.LT(fieldName, (int)value);
             }
-            else if (type == typeof (string))
+            else if (type == typeof(string))
             {
-                query = Query.LT(fieldName, (string) value);
+                query = Query.LT(fieldName, (string)value);
             }
-            else if (type == typeof (long))
+            else if (type == typeof(long))
             {
-                query = Query.LT(fieldName, (long) value);
+                query = Query.LT(fieldName, (long)value);
             }
-            else if (type == typeof (bool))
+            else if (type == typeof(bool))
             {
-                query = Query.LT(fieldName, (bool) value);
+                query = Query.LT(fieldName, (bool)value);
             }
-            else if (type == typeof (double))
+            else if (type == typeof(double))
             {
-                query = Query.LT(fieldName, (double) value);
+                query = Query.LT(fieldName, (double)value);
             }
 
             return query;
@@ -197,29 +198,29 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = value.GetType();
 
-            if (type == typeof (DateTime))
+            if (type == typeof(DateTime))
             {
-                query = Query.LTE(fieldName, (DateTime) value);
+                query = Query.LTE(fieldName, (DateTime)value);
             }
-            else if (type == typeof (int))
+            else if (type == typeof(int))
             {
-                query = Query.LTE(fieldName, (int) value);
+                query = Query.LTE(fieldName, (int)value);
             }
-            else if (type == typeof (string))
+            else if (type == typeof(string))
             {
-                query = Query.LTE(fieldName, (string) value);
+                query = Query.LTE(fieldName, (string)value);
             }
-            else if (type == typeof (long))
+            else if (type == typeof(long))
             {
-                query = Query.LTE(fieldName, (long) value);
+                query = Query.LTE(fieldName, (long)value);
             }
-            else if (type == typeof (bool))
+            else if (type == typeof(bool))
             {
-                query = Query.LTE(fieldName, (bool) value);
+                query = Query.LTE(fieldName, (bool)value);
             }
-            else if (type == typeof (double))
+            else if (type == typeof(double))
             {
-                query = Query.LTE(fieldName, (double) value);
+                query = Query.LTE(fieldName, (double)value);
             }
 
             return query;
@@ -235,29 +236,29 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = value.GetType();
 
-            if (type == typeof (DateTime))
+            if (type == typeof(DateTime))
             {
-                query = Query.NE(fieldName, (DateTime) value);
+                query = Query.NE(fieldName, (DateTime)value);
             }
-            else if (type == typeof (int))
+            else if (type == typeof(int))
             {
-                query = Query.NE(fieldName, (int) value);
+                query = Query.NE(fieldName, (int)value);
             }
-            else if (type == typeof (string))
+            else if (type == typeof(string))
             {
-                query = Query.NE(fieldName, (string) value);
+                query = Query.NE(fieldName, (string)value);
             }
-            else if (type == typeof (long))
+            else if (type == typeof(long))
             {
-                query = Query.NE(fieldName, (long) value);
+                query = Query.NE(fieldName, (long)value);
             }
-            else if (type == typeof (bool))
+            else if (type == typeof(bool))
             {
-                query = Query.NE(fieldName, (bool) value);
+                query = Query.NE(fieldName, (bool)value);
             }
-            else if (type == typeof (double))
+            else if (type == typeof(double))
             {
-                query = Query.NE(fieldName, (double) value);
+                query = Query.NE(fieldName, (double)value);
             }
 
             return query;

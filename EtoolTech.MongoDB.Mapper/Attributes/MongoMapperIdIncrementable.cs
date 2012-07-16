@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace EtoolTech.MongoDB.Mapper.Attributes
+﻿namespace EtoolTech.MongoDB.Mapper.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
-    public class MongoMapperIdIncrementable: Attribute
+    public class MongoMapperIdIncrementable : Attribute
     {
-        public bool IncremenalId { get; set; }
+        #region Public Properties
+
         public bool ChildsIncremenalId { get; set; }
+
+        public bool IncremenalId { get; set; }
+
+        #endregion
     }
 }

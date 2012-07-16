@@ -1,13 +1,17 @@
-using System.Collections.Generic;
-
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
+    using System.Collections.Generic;
+
     public interface IMongoMapperRelationable
     {
-        List<T> GetRelation<T>(string relation);
+        #region Public Methods
+
+        void EnsureDownRelations();
 
         void EnsureUpRelations();
 
-        void EnsureDownRelations();
+        List<T> GetRelation<T>(string relation);
+
+        #endregion
     }
 }
