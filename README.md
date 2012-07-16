@@ -8,11 +8,11 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 
 * [MongoDB distributions] (http://www.mongodb.org/downloads)
 * [MongoDB Driver for CSharp] (http://github.com/mongodb/mongo-csharp-driver)
-* [ServiceStack.Text] (http://github.com/ServiceStack/ServiceStack.Text)
 * [NUnit] (http://www.nunit.org), [NUnit for Visual Studio] (http://nunitforvs.codeplex.com)
 
 ### Defining the Model
 
+	[Serializable]
 	[MongoKey(KeyFields = "Code")]
 	public class Country: MongoMapper
 	{        
@@ -28,6 +28,7 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 		}
 	}
 
+	[Serializable]
 	[MongoKey(KeyFields = "")]
 	[MongoIndex(IndexFields = "ID,Country")]
 	[MongoIndex(IndexFields =  "Name")]
