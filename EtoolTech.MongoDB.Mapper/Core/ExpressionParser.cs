@@ -3,13 +3,14 @@
     using System;
     using System.Linq.Expressions;
 
+    using global::MongoDB.Driver;
     using global::MongoDB.Driver.Builders;
 
     public class ExpressionParser
     {
         #region Public Methods
 
-        public QueryComplete ParseExpression<T>(Expression<Func<T, object>> exp)
+        public IMongoQuery ParseExpression<T>(Expression<Func<T, object>> exp)
         {
             throw new NotImplementedException();
             //Parse(exp);

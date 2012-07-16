@@ -10,10 +10,10 @@ namespace EtoolTech.MongoDB.Mapper
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Runtime.Serialization;
     using System.Xml.Serialization;
 
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Core;
+    using EtoolTech.MongoDB.Mapper.Configuration;    
     using EtoolTech.MongoDB.Mapper.Exceptions;
     using EtoolTech.MongoDB.Mapper.Interfaces;
 
@@ -40,7 +40,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private readonly Dictionary<string, object> _relationBuffer = new Dictionary<string, object>();
 
-        private string _stringOriginalObject;
+        private byte[] _stringOriginalObject;
 
         private object _tOriginalObjet;
 
@@ -103,7 +103,7 @@ namespace EtoolTech.MongoDB.Mapper
         #region Properties
 
         [BsonIgnore]
-        private string StringOriginalObject
+        private byte[] StringOriginalObject
         {
             get
             {
@@ -215,7 +215,7 @@ namespace EtoolTech.MongoDB.Mapper
                 throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
             }
 
-            if (this.MongoMapper_Id == default(long) || string.IsNullOrEmpty(this.StringOriginalObject))
+            if (this.MongoMapper_Id == default(long) || this.StringOriginalObject == null || this.StringOriginalObject.Length == 0)
             {
                 return (Activator.CreateInstance<T>());
             }
@@ -229,7 +229,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return (T)this._tOriginalObjet;
             }
 
-            this._tOriginalObjet = ObjectSerializer.DeserializeFromString<T>(this.StringOriginalObject);
+            this._tOriginalObjet = ObjectSerializer.ToObjectSerialize<T>(this.StringOriginalObject);
             return (T)this._tOriginalObjet;
         }
 
@@ -302,10 +302,10 @@ namespace EtoolTech.MongoDB.Mapper
         public void SaveOriginal()
         {
             //TODO: Pendiente pruebas de performance serializacion en byte[]            
-            if (String.IsNullOrEmpty(this._stringOriginalObject) && this.MongoMapper_Id != default(long)
-                && ConfigManager.EnableOriginalObject(this._classType.Name))
+            if ((this._stringOriginalObject == null || this._stringOriginalObject.Length == 0)
+                && this.MongoMapper_Id != default(long) && ConfigManager.EnableOriginalObject(this._classType.Name))
             {
-                this.StringOriginalObject = ObjectSerializer.SerializeToString(this);
+                this.StringOriginalObject = ObjectSerializer.ToByteArray(this);
             }
         }
 
@@ -369,5 +369,10 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         #endregion
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

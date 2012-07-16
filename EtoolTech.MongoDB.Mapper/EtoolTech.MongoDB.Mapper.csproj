@@ -50,9 +50,6 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\Dependencies\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\Dependencies\ServiceStack.Text.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\MongoCollectionName.cs" />
@@ -66,6 +63,7 @@
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
+    <Compile Include="Core\ObjectSerializer.cs" />
     <Compile Include="Interfaces\IChildsManager.cs" />
     <Compile Include="Core\MongoQuery.cs" />
     <Compile Include="Core\ReflectionUtility.cs" />
@@ -75,7 +73,6 @@
     <Compile Include="Configuration\MongoMapperConfiguration.cs" />
     <Compile Include="Core\MongoMapperIdGenerator.cs" />
     <Compile Include="Core\PropertyValidator.cs" />
-    <Compile Include="Core\ObjectSerializer.cs" />
     <Compile Include="Exceptions\DeleteDocumentException.cs" />
     <Compile Include="Exceptions\ServerUpdateException.cs" />
     <Compile Include="Exceptions\DuplicateKeyException.cs" />

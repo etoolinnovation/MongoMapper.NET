@@ -4,6 +4,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
     using EtoolTech.MongoDB.Mapper.Attributes;
 
+    [Serializable]
     public class Child : MongoMapperChild
     {
         #region Public Properties

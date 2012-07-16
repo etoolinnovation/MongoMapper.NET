@@ -1,21 +1,52 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Core
+﻿namespace EtoolTech.MongoDB.Mapper
 {
-    using ServiceStack.Text;
+    using System;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
-    public static class ObjectSerializer
+    internal static class ObjectSerializer
     {
-        #region Public Methods
+        #region Methods
 
-        public static T DeserializeFromString<T>(string data)
+        internal static byte[] ToByteArray(Object obj)
         {
-            return TypeSerializer.DeserializeFromString<T>(data);
+            if (obj == null)
+            {
+                return null;
+            }
+
+            byte[] data;
+            using (var ms = new MemoryStream())
+            {
+                var b = new BinaryFormatter();
+                b.Serialize(ms, obj);
+                data = ms.ToArray();
+                ms.Close();
+            }
+
+            return data;
         }
 
-        public static string SerializeToString(object o)
+        internal static T ToObjectSerialize<T>(byte[] serializedObject)
         {
-            return TypeSerializer.SerializeToString(o);
+            if (serializedObject == null)
+            {
+                return default(T);
+            }
+
+            Object obj;
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(serializedObject, 0, serializedObject.Length);
+                ms.Seek(0, 0);
+                var b = new BinaryFormatter();
+                obj = b.Deserialize(ms);
+                ms.Close();
+            }
+            return (T)obj;
         }
 
         #endregion
     }
 }
+
