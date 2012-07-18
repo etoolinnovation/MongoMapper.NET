@@ -217,7 +217,7 @@
             var mongoMapperOriginable = result as IMongoMapperOriginable;
             if (mongoMapperOriginable != null)
             {
-                (mongoMapperOriginable).SaveOriginal();
+                (mongoMapperOriginable).SaveOriginal(false);
             }
         }
 

@@ -33,6 +33,27 @@
             Assert.AreEqual("Pepito Perez", p2.Name);
         }
 
+		[Test]
+        public void TestOriginalObjectCustom()
+        {
+            (new InsertModifyDeleteTest()).TestInsert();
+            Person p = MongoMapper.AllAsList<Person>().First();
+            p.Name = "hola 25";
+
+            var p2 = p.GetOriginalObject<Person>();
+            Assert.AreEqual("Pepito Perez", p2.Name);
+			p.Save();
+
+			p.Name = "Andres";
+			p.SaveOriginal(true);
+			p.Name = "Pepe";
+
+			p2 = p.GetOriginalObject<Person>();
+            Assert.AreEqual("Andres", p2.Name);
+
+        }
+
+
         [Test]
         public void TestOriginalValue()
         {
@@ -66,4 +87,5 @@
 
         #endregion
     }
+
 }

@@ -8,7 +8,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         T GetOriginalT<T>();
 
-        void SaveOriginal();
+        void SaveOriginal(bool force);
 
         #endregion
     }
