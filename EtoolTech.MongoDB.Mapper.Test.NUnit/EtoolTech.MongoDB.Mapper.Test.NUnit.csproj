@@ -61,6 +61,7 @@
     <Compile Include="Classes\Helper.cs" />
     <Compile Include="Classes\Person.cs" />
     <Compile Include="TestReplicaSet.cs" />
+    <Compile Include="TransactionTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -257,8 +257,16 @@ namespace EtoolTech.MongoDB.Mapper
             Events.AfterInsertDocument(this, this.OnAfterInsert, this.OnAfterComplete, this._classType);
         }
 
-        public void Save<T>()
+        public int Save<T>()
         {
+
+            int result = -1;
+            if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
+            {
+                MongoMapperTransaction.AddToQueue(OperationType.Save, this);
+                return result;
+            }
+
             PropertyValidator.Validate(this, this._classType);
 
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
@@ -271,6 +279,7 @@ namespace EtoolTech.MongoDB.Mapper
                 if (id == default(long))
                 {
                     this.InsertDocument();
+                    result = 0;
                 }
                 else
                 {
@@ -281,16 +290,19 @@ namespace EtoolTech.MongoDB.Mapper
                     }
 
                     this.UpdateDocument(id);
+                    result = 1;
                 }
             }
             else
             {
                 this.UpdateDocument(this.MongoMapper_Id);
+                result = 1;
             }
 
             //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
             //TODO: No estoy muy convencido de esto revisar ...                
             this.SaveOriginal();
+            return result;
         }
 
 		private bool OriginalIsEmpty(bool force = false)

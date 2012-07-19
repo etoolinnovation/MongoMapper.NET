@@ -64,6 +64,7 @@
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
     <Compile Include="Core\ObjectSerializer.cs" />
+    <Compile Include="Exceptions\DuplicateTransaction.cs" />
     <Compile Include="Interfaces\IChildsManager.cs" />
     <Compile Include="Core\MongoQuery.cs" />
     <Compile Include="Core\ReflectionUtility.cs" />
@@ -94,14 +95,16 @@
     <Compile Include="Interfaces\ICache.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\IRules.cs" />
-    <Compile Include="Interfaces\ITransaction.cs" />
     <Compile Include="MongoMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Relations.cs" />
-    <Compile Include="Transaction\Transaction.cs" />
+    <Compile Include="Interfaces\IMongoMapperTransaction.cs" />
+    <Compile Include="Transaction\MongoMapperTransaction.cs" />
     <Compile Include="MongoMapperChild.cs" />
     <Compile Include="Interfaces\IMongoMapperChildIdeable.cs" />
     <Compile Include="Core\ChildsManager.cs" />
+    <Compile Include="Transaction\OperationType.cs" />
+    <Compile Include="Transaction\Queue.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,7 +15,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static void Delete<T>(this T o)
         {
-            if (typeof(T).BaseType != typeof(MongoMapper))
+            if (typeof(T).BaseType != typeof(MongoMapper) && typeof(T) != typeof(MongoMapper))
             {
                 throw new NotSupportedException();
             }
@@ -77,14 +77,14 @@ namespace EtoolTech.MongoDB.Mapper
             list.AddRange(Finder.Instance.FindAsList(exp));
         }
 
-        public static void Save<T>(this T o)
+        public static int Save<T>(this T o)
         {
-            if (typeof(T).BaseType != typeof(MongoMapper))
+            if (typeof(T).BaseType != typeof(MongoMapper) && typeof(T) != typeof(MongoMapper))
             {
                 throw new NotSupportedException();
             }
 
-            ((IMongoMapperWriteable)o).Save<T>();
+            return ((IMongoMapperWriteable)o).Save<T>();
         }
 
         public static void ServerUpdate<T>(this T o, UpdateBuilder update, bool refill = true)

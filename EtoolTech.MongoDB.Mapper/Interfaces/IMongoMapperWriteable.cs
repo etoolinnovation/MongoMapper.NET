@@ -12,7 +12,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         void InsertDocument();
 
-        void Save<T>();
+        int Save<T>();
 
         void ServerUpdate<T>(UpdateBuilder update, bool refill = true);
 
