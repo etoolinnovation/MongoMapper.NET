@@ -43,7 +43,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test]
         public void TestInsert()
         {
-            using (var runner = MongoDbRunner.Start())
+            using (var runner = MongoDbRunner.StartForDebugging())
             {
                 ConfigManager.OverrideConnectionString(runner.ConnectionString);
 
@@ -165,6 +165,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 persons.MongoFind();
 
                 Assert.AreEqual(persons.Count, 5);
+
+                  
             }
 
          

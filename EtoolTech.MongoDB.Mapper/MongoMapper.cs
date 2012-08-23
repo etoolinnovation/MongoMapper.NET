@@ -185,7 +185,7 @@ namespace EtoolTech.MongoDB.Mapper
             //TODO: ver de devolver DeleteDocumentException
             if (ConfigManager.SafeMode(this._classType.Name))
             {
-                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new DeleteDocumentException(result.ErrorMessage);
                 }
@@ -248,7 +248,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (ConfigManager.SafeMode(this._classType.Name))
             {
-                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new Exception(result.ErrorMessage);
                 }
@@ -359,7 +359,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (ConfigManager.SafeMode(this._classType.Name))
             {
-                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new Exception(result.ErrorMessage);
                 }
