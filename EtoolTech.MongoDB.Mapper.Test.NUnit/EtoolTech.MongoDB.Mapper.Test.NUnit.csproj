@@ -80,14 +80,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="tools\mongodb-win32-i386_1\bin\mongod.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="tools\mongodb-win32-i386-2.2.0-rc1\bin\mongod.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\mongodb-win32-i386_1\bin\mongoexport.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="tools\mongodb-win32-i386-2.2.0-rc1\bin\mongoexport.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\mongodb-win32-i386_1\bin\mongoimport.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="tools\mongodb-win32-i386-2.2.0-rc1\bin\mongoimport.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <PropertyGroup>
