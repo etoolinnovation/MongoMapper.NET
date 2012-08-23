@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
 
+    using EtoolTech.MongoDB.Mapper.Configuration;
     using EtoolTech.MongoDB.Mapper.Exceptions;
 
     using global::MongoDB.Driver.Builders;
@@ -12,6 +13,22 @@
     [TestFixture]
     public class ExtensionTest
     {
+        private MongoTestServer _mongoTestServer;
+
+        [TestFixtureSetUp]
+        public void Init()
+        {
+            MongoTestServer.SetMongodPtah(@"mongod\");
+            this._mongoTestServer = MongoTestServer.Start(27017);
+            ConfigManager.OverrideConnectionString(this._mongoTestServer.ConnectionString);
+        }
+
+        [TestFixtureTearDown]
+        public void Dispose()
+        {
+            this._mongoTestServer.Dispose();
+        }
+
         #region Public Methods
 
         [Test]

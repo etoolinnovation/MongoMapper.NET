@@ -1,15 +1,34 @@
-﻿
-namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     using System;
     using System.Threading.Tasks;
+
+    using EtoolTech.MongoDB.Mapper.Configuration;
     using EtoolTech.MongoDB.Mapper.Exceptions;
+
     using global::MongoDB.Driver.Builders;
+
     using global::NUnit.Framework;
 
     [TestFixture]
     public class InsertModifyDeleteTest
     {
+        private MongoTestServer _mongoTestServer;
+
+        [TestFixtureSetUp]
+        public void Init()
+        {
+            MongoTestServer.SetMongodPtah(@"mongod\");
+            this._mongoTestServer = MongoTestServer.Start(27017);
+            ConfigManager.OverrideConnectionString(this._mongoTestServer.ConnectionString);
+        }
+
+        [TestFixtureTearDown]
+        public void Dispose()
+        {
+            this._mongoTestServer.Dispose();
+        }
+
         #region Public Methods
 
         [Test]
@@ -17,7 +36,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             Helper.DropAllCollections();
 
-            var c = new Country {Code = "NL", Name = "Holanda"};
+            var c = new Country { Code = "NL", Name = "Holanda" };
             c.Save<Country>();
 
             global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "NL");
@@ -41,36 +60,35 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Helper.DropAllCollections();
 
             //Insert de Paises
-            var c = new Country {Code = "es", Name = "España"};
+            var c = new Country { Code = "es", Name = "España" };
             try
             {
                 c.Save<Country>();
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException));
                 c.Code = "ES";
                 c.Save<Country>();
             }
 
-            c = new Country {Code = "UK", Name = "Reino Unido"};
+            c = new Country { Code = "UK", Name = "Reino Unido" };
             c.Save<Country>();
 
-            c = new Country {Code = "UK", Name = "Reino Unido"};
+            c = new Country { Code = "UK", Name = "Reino Unido" };
             try
             {
                 c.Save<Country>();
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(DuplicateKeyException));
             }
 
-            c = new Country {Code = "US", Name = "Estados Unidos"};
+            c = new Country { Code = "US", Name = "Estados Unidos" };
             c.Save<Country>();
 
-            global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code",
-                                                                                                         "ES");
+            global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
 
             Countries = MongoMapper.FindAsList<Country>("Code", "UK");
@@ -94,10 +112,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 };
 
             p.Childs.Add(
-                new Child
-                    {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
+                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
             p.Childs.Add(
-                new Child {ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"});
+                new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
             p.Save<Person>();
 
@@ -112,7 +129,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 };
 
             p.Childs.Add(
-                new Child {ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez"});
+                new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
 
             p.Save<Person>();
 
@@ -139,7 +156,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 };
 
             p.Childs.Add(
-                new Child {ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano"});
+                new Child { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
             p.Save<Person>();
 
             p = new Person
@@ -167,7 +184,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             for (int i = 0; i < 100; i++)
             {
-                var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
+                var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
                 c.Save<Country>();
 
                 Assert.AreEqual(i + 1, MongoMapper.FindAsCursor<Country>().Size());
@@ -186,7 +203,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 1000,
                 i =>
                     {
-                        var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
+                        var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
                         c.Save<Country>();
                     });
 
@@ -199,7 +216,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Helper.DropAllCollections();
 
             //Insert de Paises
-            var c = new Country {Code = "ES", Name = "España"};
+            var c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
             c.ServerUpdate<Country>(Update.Set("Name", "España 22"));
 
@@ -217,14 +234,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 };
 
             p.Childs.Add(
-                new Child {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
+                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
             p.Save<Person>();
 
             p.ServerUpdate<Person>(
                 Update.PushWrapped(
                     "Childs",
                     new Child
-                        {ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez"}));
+                        { ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez" }));
 
             Assert.AreEqual(p.Childs.Count, 2);
             Assert.AreEqual(p.Childs[1].Name, "Laura Perez");
@@ -235,7 +252,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             Helper.DropAllCollections();
 
-            var c = new Country {Code = "ES", Name = "España"};
+            var c = new Country { Code = "ES", Name = "España" };
             c.Save<Country>();
 
             var c2 = MongoMapper.FindByKey<Country>("ES");

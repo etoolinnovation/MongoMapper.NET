@@ -12,6 +12,7 @@
         [Test]
         public void TestReadConfig()
         {
+            ConfigManager.OverrideConnectionString(string.Empty);
             Assert.AreEqual(
                 "mongodb://user:pass@host1,host2,host3:1234/Conf1?slaveOk=true;maxpoolsize=1;waitQueueTimeout=2000ms;safe=true;fsync=true",
                 ConfigManager.GetConnectionString("TestConf1"));
