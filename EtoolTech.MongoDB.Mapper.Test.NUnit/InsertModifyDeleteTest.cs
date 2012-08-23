@@ -1,4 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using EtoolTech.MongoDB.Mapper.Configuration;
+using Mongo2Go;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     using System;
     using System.Threading.Tasks;
@@ -40,51 +43,55 @@
         [Test]
         public void TestInsert()
         {
-            Helper.DropAllCollections();
-
-            //Insert de Paises
-            var c = new Country { Code = "es", Name = "España" };
-            try
+            using (var runner = MongoDbRunner.Start())
             {
+                ConfigManager.OverrideConnectionString(runner.ConnectionString);
+
+                Helper.DropAllCollections();
+
+                //Insert de Paises
+                var c = new Country { Code = "es", Name = "España" };
+                try
+                {
+                    c.Save<Country>();
+                }
+                catch (Exception ex)
+                {
+                    Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException));
+                    c.Code = "ES";
+                    c.Save<Country>();
+                }
+
+                c = new Country { Code = "UK", Name = "Reino Unido" };
                 c.Save<Country>();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException));
-                c.Code = "ES";
+
+                c = new Country { Code = "UK", Name = "Reino Unido" };
+                try
+                {
+                    c.Save<Country>();
+                }
+                catch (Exception ex)
+                {
+                    Assert.AreEqual(ex.GetBaseException().GetType(), typeof(DuplicateKeyException));
+                }
+
+                c = new Country { Code = "US", Name = "Estados Unidos" };
                 c.Save<Country>();
-            }
 
-            c = new Country { Code = "UK", Name = "Reino Unido" };
-            c.Save<Country>();
+                global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "ES");
+                Assert.AreEqual(Countries.Count, 1);
 
-            c = new Country { Code = "UK", Name = "Reino Unido" };
-            try
-            {
-                c.Save<Country>();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(DuplicateKeyException));
-            }
+                Countries = MongoMapper.FindAsList<Country>("Code", "UK");
+                Assert.AreEqual(Countries.Count, 1);
 
-            c = new Country { Code = "US", Name = "Estados Unidos" };
-            c.Save<Country>();
+                Countries = MongoMapper.FindAsList<Country>("Code", "US");
+                Assert.AreEqual(Countries.Count, 1);
 
-            global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "ES");
-            Assert.AreEqual(Countries.Count, 1);
+                Countries = MongoMapper.AllAsList<Country>();
+                Assert.AreEqual(Countries.Count, 3);
 
-            Countries = MongoMapper.FindAsList<Country>("Code", "UK");
-            Assert.AreEqual(Countries.Count, 1);
-
-            Countries = MongoMapper.FindAsList<Country>("Code", "US");
-            Assert.AreEqual(Countries.Count, 1);
-
-            Countries = MongoMapper.AllAsList<Country>();
-            Assert.AreEqual(Countries.Count, 3);
-
-            //Insert de personas
-            var p = new Person
+                //Insert de personas
+                var p = new Person
                 {
                     Name = "Pepito Perez",
                     Age = 35,
@@ -94,14 +101,14 @@
                     BankBalance = decimal.Parse("3500,00")
                 };
 
-            p.Childs.Add(
-                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
-            p.Childs.Add(
-                new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+                p.Childs.Add(
+                    new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+                p.Childs.Add(
+                    new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
-            p.Save<Person>();
+                p.Save<Person>();
 
-            p = new Person
+                p = new Person
                 {
                     Name = "Juanito Sanchez",
                     Age = 25,
@@ -111,12 +118,12 @@
                     BankBalance = decimal.Parse("1500,00")
                 };
 
-            p.Childs.Add(
-                new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
+                p.Childs.Add(
+                    new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
 
-            p.Save<Person>();
+                p.Save<Person>();
 
-            p = new Person
+                p = new Person
                 {
                     Name = "Andres Perez",
                     Age = 25,
@@ -126,9 +133,9 @@
                     BankBalance = decimal.Parse("500,00")
                 };
 
-            p.Save<Person>();
+                p.Save<Person>();
 
-            p = new Person
+                p = new Person
                 {
                     Name = "Marta Serrano",
                     Age = 28,
@@ -138,11 +145,11 @@
                     BankBalance = decimal.Parse("9500,00")
                 };
 
-            p.Childs.Add(
-                new Child { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
-            p.Save<Person>();
+                p.Childs.Add(
+                    new Child { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
+                p.Save<Person>();
 
-            p = new Person
+                p = new Person
                 {
                     Name = "Jonh Smith",
                     Age = 21,
@@ -152,12 +159,15 @@
                     BankBalance = decimal.Parse("100,00")
                 };
 
-            p.Save<Person>();
+                p.Save<Person>();
 
-            var persons = new global::System.Collections.Generic.List<Person>();
-            persons.MongoFind();
+                var persons = new global::System.Collections.Generic.List<Person>();
+                persons.MongoFind();
 
-            Assert.AreEqual(persons.Count, 5);
+                Assert.AreEqual(persons.Count, 5);
+            }
+
+         
         }
 
         [Test]

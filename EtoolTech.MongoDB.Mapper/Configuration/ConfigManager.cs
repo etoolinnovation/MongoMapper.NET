@@ -122,8 +122,17 @@
             return Config.Context.FSync;
         }
 
+        private static string _connectionString = String.Empty;
+
+        public static void OverrideConnectionString(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         public static string GetConnectionString(string objName)
         {
+            if (!string.IsNullOrEmpty(_connectionString)) return _connectionString;
+            
             string loginString = "";
             string userName = UserName(objName);
 
