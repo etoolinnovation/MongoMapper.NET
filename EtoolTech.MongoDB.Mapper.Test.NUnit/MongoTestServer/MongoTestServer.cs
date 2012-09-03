@@ -43,7 +43,7 @@
             Process process = Process.Start(startInfo);            
             var newInstance = new MongoTestInstance { Process = process, Clients = 1 };
             InstancesByPort.Add(port, newInstance);
-            Thread.Sleep(10000);
+            Thread.Sleep(3000);
         }
 
         #endregion
@@ -73,8 +73,7 @@
         }
 
         public void Dispose()
-        {
-            Thread.Sleep(3000);
+        {            
             foreach (var instance in InstancesByPort)
             {
                 if (instance.Key == this._port)
@@ -87,7 +86,7 @@
                             instance.Value.Process.Kill();
                         }
                         //Damos tiempo a que se cierre el mongo
-                        Thread.Sleep(5000);
+                        Thread.Sleep(3000);
                         Directory.Delete(_mongodPath + this._port, true);
                         InstancesByPort.Remove(this._port);
                     }

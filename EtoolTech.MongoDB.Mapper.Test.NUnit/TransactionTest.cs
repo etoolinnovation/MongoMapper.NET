@@ -15,21 +15,21 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     public class TransactionTest
     {
 
-        private MongoTestServer _mongoTestServer;
+        //private MongoTestServer _mongoTestServer;
 
-        [TestFixtureSetUp]
-        public void Init()
-        {
-            MongoTestServer.SetMongodPtah(@"mongod\");
-            this._mongoTestServer = MongoTestServer.Start(27017);
-            ConfigManager.OverrideConnectionString(this._mongoTestServer.ConnectionString);
-        }
+        //[TestFixtureSetUp]
+        //public void Init()
+        //{
+        //    MongoTestServer.SetMongodPtah(@"mongod\");
+        //    this._mongoTestServer = MongoTestServer.Start(27017);
+        //    ConfigManager.OverrideConnectionString(this._mongoTestServer.ConnectionString);
+        //}
 
-        [TestFixtureTearDown]
-        public void Dispose()
-        {
-            this._mongoTestServer.Dispose();
-        }
+        //[TestFixtureTearDown]
+        //public void Dispose()
+        //{
+        //    this._mongoTestServer.Dispose();
+        //}
         
         [Test]
         public void TestAddingSaveToQueue()
