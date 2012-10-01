@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmbiguousDiscriminatorTest.cs" />
+    <Compile Include="Cursors.cs" />
     <Compile Include="InsertModifyDeleteTest.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="FindTest.cs" />
