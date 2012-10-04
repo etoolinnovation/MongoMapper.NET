@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
@@ -27,6 +25,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             
             CountryEnumerable countryEnumerable = new CountryEnumerable(countries);
 
+            List<Country> c1 = countryEnumerable.ToList();
+
             foreach (Country c in countryEnumerable)
             {
                 string s = c.Code;
@@ -39,40 +39,23 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
     public class CountryEnumerable : IEnumerable<Country>
     {
-        private IEnumerable<Country> _cursor;
+        private readonly IEnumerable<Country> _cursor;
 
-        public CountryEnumerable(IEnumerable<Country> cursor)
-        {
-            _cursor = cursor;
-        }
+        public CountryEnumerable(IEnumerable<Country> cursor) { _cursor = cursor; }
 
-        public IEnumerator<Country> GetEnumerator()
-        {
-            return new CountryEnumerator(_cursor);
-        }
+        public IEnumerator<Country> GetEnumerator() { return new CountryEnumerator(_cursor); }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
     }
 
     public class CountryEnumerator : IEnumerator<Country>
-    {
-        private readonly IEnumerable<Country> _cursor;
+    {        
         private readonly IEnumerator<Country> _enumerator;
         private Country _current;        
 
-        public CountryEnumerator(IEnumerable<Country> cursor)
-        {            
-            _cursor = cursor;
-            _enumerator = _cursor.GetEnumerator();            
-        }
+        public CountryEnumerator(IEnumerable<Country> cursor) { _enumerator = cursor.GetEnumerator();}
 
-        public void Dispose()
-        {
-            
-        }
+        public void Dispose() {}
 
         public bool MoveNext()
         {
@@ -87,19 +70,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             return true;
         }
 
-        public void Reset()
-        {
-           _enumerator.Reset();
-        }
+        public void Reset() { _enumerator.Reset(); }
 
-        public Country Current
-        {
-            get { return _current; }
-        }
+        public Country Current { get { return _current; } }
 
-        object IEnumerator.Current
-        {
-            get { return Current; }
-        }
+        object IEnumerator.Current { get { return Current; } }
     }
 }
