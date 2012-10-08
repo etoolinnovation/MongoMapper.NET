@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Interfaces;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
@@ -8,7 +10,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [TestFixture]
     public class Cursors
     {
-
         [Test]
         public void Test()
         {
@@ -21,10 +22,19 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 Assert.AreEqual(c.MongoMapper_Id, i + 1);
             }
 
-            IEnumerable<Country> countries = MongoMapper.FindAsCursor<Country>();
+            MongoCursor<Country> countries = MongoMapper.FindAsCursor<Country>();
             
+
+            if (countries.GetType().GetInterface("IMongoCursorEvents") != null)
+            {
+                countries.OnEnumeratorGetCurrent += Cursors_OnGetCurrent;
+            }
+
+            List<Country> c3 = countries.ToList();
+
             CountryEnumerable countryEnumerable = new CountryEnumerable(countries);
 
+            
             List<Country> c1 = countryEnumerable.ToList();
 
             foreach (Country c in countryEnumerable)
@@ -34,6 +44,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             List<Country> c2 = countryEnumerable.ToList();
 
+        }
+
+        void Cursors_OnGetCurrent(object sender, System.EventArgs e)
+        {
+            Country c = ((MongoCursor<Country>.OnEnumeratorGetCurrentEventArgs)e).Document;
         }
     }
 

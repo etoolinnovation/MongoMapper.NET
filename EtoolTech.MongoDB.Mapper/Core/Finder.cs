@@ -40,6 +40,10 @@
         public MongoCursor<T> AllAsCursor<T>()
         {
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();
+            if (ConfigManager.EnableOriginalObject(typeof(T).Name))
+            {
+                result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
+            }
 
             if (ConfigManager.Out != null)
             {
@@ -51,14 +55,11 @@
 
             return result;
         }
+      
 
         public List<T> AllAsList<T>()
         {
-            List<T> list = this.AllAsCursor<T>().ToList();
-            foreach (T result in list)
-            {
-                SaveOriginal(result);
-            }
+            List<T> list = this.AllAsCursor<T>().ToList();          
             return list;
         }
 
@@ -66,10 +67,15 @@
         {
             if (query == null)
             {
-                return CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();
+                return AllAsCursor<T>();
             }
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
+            
+            if (ConfigManager.EnableOriginalObject(typeof(T).Name))
+            {
+                result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
+            }
 
             if (ConfigManager.Out != null)
             {
@@ -89,6 +95,11 @@
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
 
+            if (ConfigManager.EnableOriginalObject(typeof(T).Name))
+            {
+                result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
+            }
+
             if (ConfigManager.Out != null)
             {
                 ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
@@ -102,21 +113,13 @@
 
         public List<T> FindAsList<T>(IMongoQuery query = null)
         {
-            List<T> list = FindAsCursor<T>(query).ToList();
-            foreach (T result in list)
-            {
-                SaveOriginal(result);
-            }
+            List<T> list = FindAsCursor<T>(query).ToList();          
             return list;
         }
 
         public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
         {
-            List<T> list = FindAsCursor(exp).ToList();
-            foreach (T result in list)
-            {
-                SaveOriginal(result);
-            }
+            List<T> list = FindAsCursor(exp).ToList();          
             return list;
         }
 
@@ -214,11 +217,17 @@
 
         private static void SaveOriginal<T>(T result)
         {
+            if (!ConfigManager.EnableOriginalObject(result.GetType().Name)) return;
             var mongoMapperOriginable = result as IMongoMapperOriginable;
             if (mongoMapperOriginable != null)
             {
                 (mongoMapperOriginable).SaveOriginal(false);
             }
+        }
+
+        private void Cursors_OnGetCurrent<T>(object sender, EventArgs e)
+        {
+            SaveOriginal(((MongoCursor<T>.OnEnumeratorGetCurrentEventArgs)e).Document);
         }
 
         #endregion
