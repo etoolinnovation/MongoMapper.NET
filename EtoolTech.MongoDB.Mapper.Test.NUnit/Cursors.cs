@@ -17,7 +17,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             for (int i = 0; i < 100; i++)
             {
-                var c = new Country { Code = "ES_" + i.ToString(), Name = "España" };
+                var c = new Country { Code = string.Format("ES_{0}", i.ToString()), Name = "España" };
                 c.Save<Country>();
                 Assert.AreEqual(c.MongoMapper_Id, i + 1);
             }

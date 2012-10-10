@@ -243,16 +243,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             this.EnsureUpRelations();
 
-            SafeModeResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).Insert(this);
-
-            if (ConfigManager.SafeMode(this._classType.Name))
-            {
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new Exception(result.ErrorMessage);
-                }
-            }
+            Writer.Instance.Insert(this._classType.Name, this._classType, this);
 
             Events.AfterInsertDocument(this, this.OnAfterInsert, this.OnAfterComplete, this._classType);
         }
@@ -261,11 +252,6 @@ namespace EtoolTech.MongoDB.Mapper
         {
 
             int result = -1;
-            if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
-            {
-                MongoMapperTransaction.AddToQueue(OperationType.Save, this);
-                return result;
-            }
 
             PropertyValidator.Validate(this, this._classType);
 
@@ -354,16 +340,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             this.MongoMapper_Id = id;
 
-            SafeModeResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).Save(this);
-
-            if (ConfigManager.SafeMode(this._classType.Name))
-            {
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new Exception(result.ErrorMessage);
-                }
-            }
+            Writer.Instance.Update(this._classType.Name, this._classType, this);
 
             Events.AfterUpdateDocument(this, this.OnAfterModify, this.OnAfterComplete, this._classType);
         }

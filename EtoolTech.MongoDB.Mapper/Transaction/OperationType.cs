@@ -2,6 +2,6 @@
 {
     public enum OperationType
     {
-        Save,Delete
+        Insert,Update,Delete
     }
 }

@@ -63,7 +63,9 @@
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
+    <Compile Include="Core\IWriter.cs" />
     <Compile Include="Core\ObjectSerializer.cs" />
+    <Compile Include="Core\Writer.cs" />
     <Compile Include="Exceptions\DuplicateTransaction.cs" />
     <Compile Include="Interfaces\IChildsManager.cs" />
     <Compile Include="Core\MongoQuery.cs" />

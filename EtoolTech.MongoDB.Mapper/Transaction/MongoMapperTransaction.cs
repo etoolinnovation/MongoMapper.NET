@@ -1,4 +1,8 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using EtoolTech.MongoDB.Mapper.Configuration;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
+namespace EtoolTech.MongoDB.Mapper
 {
     using System;
     using System.Linq;
@@ -21,13 +25,14 @@
             }
         }
 
-        internal static void AddToQueue(OperationType operationType, object document)
+        internal static void AddToQueue(OperationType operationType, Type t, object document)
         {
             TransactionQueue.Add(new Queue
             {
                 Order = !TransactionQueue.Any() ? 1 : TransactionQueue.Last().Order + 1,
                 OperationType = operationType,
-                Document = document
+                Document = document,
+                Type = t
             });
         }
 
@@ -45,16 +50,22 @@
 
                 foreach (Queue queue in TransactionQueue.OrderBy(q => q.Order))
                 {
-                    if (queue.OperationType == OperationType.Save)
+                    if (queue.OperationType == OperationType.Insert)
                     {
-                        queue.Result = ((MongoMapper)queue.Document).Save();
+                        var result = Writer.Instance.Insert(queue.Type.Name, queue.Type, queue.Document);
+                        queue.Procesed = true;
+                    }
+
+                    if (queue.OperationType == OperationType.Update)
+                    {
+                        var result = Writer.Instance.Update(queue.Type.Name, queue.Type, queue.Document);
                         queue.Procesed = true;
                     }
 
                     if (queue.OperationType == OperationType.Delete)
                     {
-                        ((MongoMapper)queue.Document).Delete();
-                        queue.Procesed = true;
+                        var result = Writer.Instance.Delete(queue.Type.Name, queue.Type, queue.Document);
+                        queue.Procesed = true;                        
                         queue.Result = 2;
                     }
                 }
@@ -62,7 +73,7 @@
             }
             catch (Exception)
             {
-                //TODO: Dejarlo todo como estaba. 1 Update, 0 Insert, 2 delete
+                //TODO: Dejarlo todo como estaba.
             }
             finally
             {
@@ -71,6 +82,7 @@
             }
         }
 
+ 
         public void RollBack()
         {
             //TODO: si ya ha empezado dejarlo como al principio. 1 Update, 0 Insert, 2 delete

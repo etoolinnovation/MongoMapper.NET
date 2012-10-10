@@ -185,7 +185,8 @@
             }
 
             return ((IMongoMapperIdeable)result.First()).MongoMapper_Id;
-        }
+        }      
+
 
         public T FindObjectByKey<T>(Dictionary<string, object> keyValues)
         {
@@ -218,6 +219,7 @@
         private static void SaveOriginal<T>(T result)
         {
             if (!ConfigManager.EnableOriginalObject(result.GetType().Name)) return;
+
             var mongoMapperOriginable = result as IMongoMapperOriginable;
             if (mongoMapperOriginable != null)
             {
