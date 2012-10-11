@@ -159,6 +159,13 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.Instance.FindByKey<T>(values);
         }
 
+        public static AggregateResult Aggregate<T>(params BsonDocument[] operations)
+        {
+            return
+                CollectionsManager.GetCollection(
+                CollectionsManager.GetCollectioName(typeof (T).Name)).Aggregate(operations);
+        }
+
         public void Delete<T>()
         {
             Events.BeforeDeleteDocument(this, this.OnBeforeDelete, this._classType);
