@@ -45,6 +45,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgregationTest.cs" />
     <Compile Include="AmbiguousDiscriminatorTest.cs" />
     <Compile Include="Cursors.cs" />
     <Compile Include="InsertModifyDeleteTest.cs" />
