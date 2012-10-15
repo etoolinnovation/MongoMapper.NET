@@ -166,6 +166,22 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollectioName(typeof (T).Name)).Aggregate(operations);
         }
 
+        public static void ServerDelete<T>(IMongoQuery query)
+        {
+            SafeModeResult result = CollectionsManager.GetCollection(
+                CollectionsManager.GetCollectioName(typeof (T).Name)).Remove(query);
+
+            if (ConfigManager.SafeMode(typeof(T).Name))
+            {
+                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+                {
+                    throw new DeleteDocumentException(result.ErrorMessage);
+                }
+            }
+
+
+        }
+
         public void Delete<T>()
         {
             Events.BeforeDeleteDocument(this, this.OnBeforeDelete, this._classType);
@@ -188,8 +204,7 @@ namespace EtoolTech.MongoDB.Mapper
             SafeModeResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).Remove(
                     query);
-
-            //TODO: ver de devolver DeleteDocumentException
+            
             if (ConfigManager.SafeMode(this._classType.Name))
             {
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))

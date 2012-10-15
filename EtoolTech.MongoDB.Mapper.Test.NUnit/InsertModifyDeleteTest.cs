@@ -267,6 +267,24 @@
             Assert.AreEqual(Countries.Count, 1);
         }
 
+        [Test]
+        public void TestServerDelete()
+        {
+            Helper.DropAllCollections();
+
+            for (int i = 0; i < 100; i++)
+            {
+                var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
+                c.Save<Country>();
+
+                Assert.AreEqual(i + 1, MongoMapper.FindAsCursor<Country>().Size());
+            }
+
+            Country.ServerDelete<Country>(Query.EQ("Code","0"));
+
+            Assert.AreEqual(99, MongoMapper.FindAsCursor<Country>().Size());
+        }
+
         #endregion
     }
 }
