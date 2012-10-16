@@ -6192,7 +6192,7 @@
             Creates a new instance of MongoServerSettings. Usually you would use a connection string instead.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoServerSettings.#ctor(MongoDB.Driver.ConnectionMode,System.TimeSpan,MongoDB.Driver.MongoCredentialsStore,MongoDB.Driver.MongoCredentials,MongoDB.Bson.GuidRepresentation,System.Boolean,System.TimeSpan,System.TimeSpan,System.Int32,System.Int32,MongoDB.Driver.ReadPreference,System.String,MongoDB.Driver.SafeMode,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerAddress},System.TimeSpan,System.Boolean,System.Boolean,System.Int32,System.TimeSpan)">
+        <member name="M:MongoDB.Driver.MongoServerSettings.#ctor(MongoDB.Driver.ConnectionMode,System.TimeSpan,MongoDB.Driver.MongoCredentialsStore,MongoDB.Driver.MongoCredentials,MongoDB.Bson.GuidRepresentation,System.Boolean,System.TimeSpan,System.TimeSpan,System.Int32,System.Int32,MongoDB.Driver.ReadPreference,System.String,MongoDB.Driver.SafeMode,System.TimeSpan,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerAddress},System.TimeSpan,System.Boolean,System.Boolean,System.Int32,System.TimeSpan)">
             <summary>
             Creates a new instance of MongoServerSettings. Usually you would use a connection string instead.
             </summary>
@@ -6209,12 +6209,14 @@
             <param name="readPreference">The default read preference.</param>
             <param name="replicaSetName">The name of the replica set.</param>
             <param name="safeMode">The safe mode.</param>
+            <param name="secondaryAcceptableLatency">The secondary acceptable latency.</param>
             <param name="servers">The server addresses (normally one unless it is the seed list for connecting to a replica set).</param>
             <param name="socketTimeout">The socket timeout.</param>
             <param name="useSsl">Whether to use SSL.</param>
             <param name="verifySslCertificate">Whether to verify an SSL certificate.</param>
             <param name="waitQueueSize">The wait queue size.</param>
             <param name="waitQueueTimeout">The wait queue timeout.</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.Clone">
             <summary>
@@ -6333,6 +6335,12 @@
         <member name="P:MongoDB.Driver.MongoServerSettings.SafeMode">
             <summary>
             Gets or sets the SafeMode to use.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoServerSettings.SecondaryAcceptableLatency">
+            <summary>
+            Gets or sets the acceptable latency for considering a replica set member for inclusion in load balancing
+            when using a read preference of Secondary, SecondaryPreferred, and Nearest.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoServerSettings.Server">
@@ -6515,6 +6523,12 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.SafeMode">
             <summary>
             Gets or sets the SafeMode to use.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.SecondaryAcceptableLatency">
+            <summary>
+            Gets or sets the acceptable latency for considering a replica set member for inclusion in load balancing
+            when using a read preference of Secondary, SecondaryPreferred, and Nearest.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.Server">
@@ -9128,6 +9142,11 @@
             Gets the state.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.Server">
+            <summary>
+            Gets the server.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.Internal.ShardedMongoServerProxy">
             <summary>
             Connects to a number of mongos' and distributes load based on ping times.
@@ -9256,12 +9275,29 @@
             Clears all the instances.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.ChooseServerInstance(MongoDB.Driver.ReadPreference)">
+        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetAllInstances">
             <summary>
-            Chooses the server instance based on the read preference.
+            Gets a list of all instances.
             </summary>
-            <param name="readPreference">The read preference.</param>
-            <returns>A MongoServerInstance.</returns>
+            <returns>The list of all instances.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetPrimary">
+            <summary>
+            Gets the primary instance.
+            </summary>
+            <returns>The primary instance (or null if there is none).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetPrimaryAndSecondaries">
+            <summary>
+            Gets a list of primary and secondary instances.
+            </summary>
+            <returns>The list of primary and secondary instances.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetSecondaries">
+            <summary>
+            Gets a list of secondaries.
+            </summary>
+            <returns>The list of secondaries.</returns>
         </member>
         <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.EnsureContains(MongoDB.Driver.MongoServerInstance)">
             <summary>
@@ -9743,6 +9779,15 @@
             Processes the connected instance state change.
             </summary>
             <param name="instance">The instance.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.GetMatchingInstance(System.Collections.Generic.List{MongoDB.Driver.Internal.ConnectedInstanceCollection.InstanceWithPingTime},MongoDB.Driver.ReadPreference,System.TimeSpan)">
+            <summary>
+            Gets a randomly selected matching instance.
+            </summary>
+            <param name="instancesWithPingTime">A list of instances from which to find a matching instance.</param>
+            <param name="readPreference">The read preference that must be matched.</param>
+            <param name="secondaryAcceptableLatency">The maximum acceptable secondary latency.</param>
+            <returns>A randomly selected matching instance.</returns>
         </member>
         <member name="P:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.ReplicaSetName">
             <summary>
@@ -11111,6 +11156,12 @@
         <member name="P:MongoDB.Driver.MongoDefaults.SafeMode">
             <summary>
             Gets or sets the safe mode.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoDefaults.SecondaryAcceptableLatency">
+            <summary>
+            Gets or sets the default acceptable latency for considering a replica set member for inclusion in load balancing
+            when using a read preference of Secondary, SecondaryPreferred, and Nearest.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoDefaults.SocketTimeout">
@@ -13051,6 +13102,12 @@
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.SafeMode">
             <summary>
             Gets or sets the SafeMode to use.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.SecondaryAcceptableLatency">
+            <summary>
+            Gets or sets the acceptable latency for considering a replica set member for inclusion in load balancing
+            when using a read preference of Secondary, SecondaryPreferred, and Nearest.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.Server">
