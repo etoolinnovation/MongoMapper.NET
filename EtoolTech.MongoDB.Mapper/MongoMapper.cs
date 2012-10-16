@@ -159,6 +159,11 @@ namespace EtoolTech.MongoDB.Mapper
             return Finder.Instance.FindByKey<T>(values);
         }
 
+        public static MongoCollection GetCollection<T>()
+        {
+            return CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(typeof (T).Name));
+        }
+
         public static AggregateResult Aggregate<T>(params BsonDocument[] operations)
         {
             return
