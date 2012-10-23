@@ -55,16 +55,7 @@
             countries.MongoFind(
                 Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
-
-            var strings = new global::System.Collections.Generic.List<string>();			
-            try
-            {
-                //strings.MongoFind();
-            }
-            catch (Exception ex)
-            {
-                //Assert.AreEqual(ex.GetBaseException().GetType(), typeof(NotSupportedException));
-            }
+       
         }
 
         [Test]
@@ -123,15 +114,6 @@
             p = new Person();
             p.FillByKey(id);
 
-            string s = "";
-            try
-            {
-                //s.FillByKey(null);
-            }
-            catch (Exception ex)
-            {
-                //Assert.AreEqual(ex.GetBaseException().GetType(), typeof(NotSupportedException));
-            }
         }
 
         [Test]
