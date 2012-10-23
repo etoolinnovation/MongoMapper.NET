@@ -39,9 +39,6 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\Dependencies\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\Dependencies\ServiceStack.Text.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -93,6 +90,12 @@
     <Compile Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\ReadmeTest.cs">
       <Link>ReadmeTest.cs</Link>
     </Compile>
+    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\MongoTestServer\MongoTestInstance.cs">
+      <Link>MongoTestServer\MongoTestInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\MongoTestServer\MongoTestServer.cs">
+      <Link>MongoTestServer\MongoTestServer.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\EtoolTech.MongoDB.Mapper.Test.NUnit\App.config">
@@ -104,5 +107,9 @@
       <Project>{9189E04F-8BC5-4219-B706-F986444474A0}</Project>
       <Name>EtoolTech.MongoDB.Mapper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MongoTestServer\" />
+    <Folder Include="mongod\" />
   </ItemGroup>
 </Project>

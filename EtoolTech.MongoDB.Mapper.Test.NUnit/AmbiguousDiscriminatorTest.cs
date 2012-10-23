@@ -55,7 +55,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [TestFixture]
     public class AmbiguousDiscriminatorTest
     {
-        private MongoTestServer _mongoTestServer;
+        //private MongoTestServer _mongoTestServer;
 
         //[TestFixtureSetUp]
         //public void Init()
@@ -87,6 +87,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             col.Insert(class2);
 
             global::System.Collections.Generic.List<IMyInterface> list = col.FindAll().ToList();
+			Assert.AreEqual(list.Count,2);
         }
 
         #endregion
