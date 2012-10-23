@@ -13,7 +13,7 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        public static void Delete<T>(this T o)
+        public static void Delete<T>(this T o) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper) && typeof(T) != typeof(MongoMapper))
             {
@@ -23,7 +23,7 @@ namespace EtoolTech.MongoDB.Mapper
             ((IMongoMapperWriteable)o).Delete<T>();
         }
 
-        public static void FillByKey<T>(this T o, params object[] values)
+        public static void FillByKey<T>(this T o, params object[] values) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
@@ -35,7 +35,7 @@ namespace EtoolTech.MongoDB.Mapper
             ReflectionUtility.CopyObject(result, o);
         }
 
-        public static void FindByMongoId<T>(this T o, long Id)
+        public static void FindByMongoId<T>(this T o, long Id) where T : MongoMapper
         {
             if (typeof(T) != typeof(MongoMapper) && typeof(T).BaseType != typeof(MongoMapper))
             {
@@ -47,7 +47,7 @@ namespace EtoolTech.MongoDB.Mapper
             ReflectionUtility.CopyObject(result, o);
         }
 
-        public static void MongoFind<T>(this List<T> list, IMongoQuery query = null)
+        public static void MongoFind<T>(this List<T> list, IMongoQuery query = null) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
@@ -57,7 +57,7 @@ namespace EtoolTech.MongoDB.Mapper
             list.AddRange(query == null ? Finder.Instance.AllAsList<T>() : Finder.Instance.FindAsList<T>(query));
         }
 
-        public static void MongoFind<T>(this List<T> list, string fieldName, object value)
+        public static void MongoFind<T>(this List<T> list, string fieldName, object value) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
@@ -67,7 +67,7 @@ namespace EtoolTech.MongoDB.Mapper
             list.AddRange(Finder.Instance.FindAsList<T>(MongoQuery.Eq(fieldName, value)));
         }
 
-        public static void MongoFind<T>(this List<T> list, Expression<Func<T, object>> exp)
+        public static void MongoFind<T>(this List<T> list, Expression<Func<T, object>> exp) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
@@ -77,7 +77,7 @@ namespace EtoolTech.MongoDB.Mapper
             list.AddRange(Finder.Instance.FindAsList(exp));
         }
 
-        public static int Save<T>(this T o)
+        public static int Save<T>(this T o) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper) && typeof(T) != typeof(MongoMapper))
             {
@@ -87,7 +87,7 @@ namespace EtoolTech.MongoDB.Mapper
             return ((IMongoMapperWriteable)o).Save<T>();
         }
 
-        public static void ServerUpdate<T>(this T o, UpdateBuilder update, bool refill = true)
+        public static void ServerUpdate<T>(this T o, UpdateBuilder update, bool refill = true) where T : MongoMapper
         {
             if (typeof(T).BaseType != typeof(MongoMapper))
             {
