@@ -156,6 +156,38 @@
             return this.FindObjectByKey<T>(keyValues);
         }
 
+        public long FindIdByKey(Type t, Dictionary<string, object> keyValues)
+        {
+            //Si la key es la interna y vieb
+            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is long
+                && (long)keyValues.First().Value == default(long))
+            {
+                return default(long);
+            }
+
+            IMongoQuery query =
+                Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+
+            var result =
+                CollectionsManager.GetCollection(t.Name).FindAs(t, query).SetFields(Fields.Include("_id"));
+
+            if (ConfigManager.Out != null)
+            {
+                ConfigManager.Out.Write(String.Format("{0}: ", t.Name));
+                ConfigManager.Out.WriteLine(result.Query.ToString());
+                ConfigManager.Out.WriteLine(result.Explain().ToJson());
+                ConfigManager.Out.WriteLine();
+            }
+
+            if (result.Size() == 0)
+            {
+                return default(long);
+            }
+
+            
+            return ((IMongoMapperIdeable)result.Cast<object>().First()).MongoMapper_Id;
+        }      
+
         public long FindIdByKey<T>(Dictionary<string, object> keyValues)
         {
             //Si la key es la interna y vieb

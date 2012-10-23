@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Driver;
@@ -58,8 +59,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public SafeModeResult Delete(string name, Type type, object document)
-        {
-            throw new NotImplementedException();
+        {            
 
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
@@ -67,28 +67,29 @@ namespace EtoolTech.MongoDB.Mapper
                 return new SafeModeResult();
             }
 
+            
+            if ( ((MongoMapper)document).MongoMapper_Id == default(long))
+            {
+                ((MongoMapper)document).MongoMapper_Id = Finder.Instance.FindIdByKey(type,
+                    Helper.GetPrimaryKey(type).ToDictionary(keyField => keyField, keyField => ReflectionUtility.GetPropertyValue(this, keyField))
+                    );
+            }
 
-            //TODO: Pendiente ver como solucionar el tema el T
-            //if ( ((MongoMapper)queue.Document).MongoMapper_Id == default(long))
-            //{
-            //    ((MongoMapper)queue.Document).MongoMapper_Id = Finder.Instance.FindIdByKey<T>(
-            //        Helper.GetPrimaryKey(queue.Type).ToDictionary(keyField => keyField, keyField => ReflectionUtility.GetPropertyValue(this, keyField))
-            //        );
-            //}
+            IMongoQuery query = Query.EQ("_id", ((MongoMapper)document).MongoMapper_Id);
 
-            //IMongoQuery query = Query.EQ("_id", ((MongoMapper)queue.Document).MongoMapper_Id);
+            SafeModeResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(type.Name)).Remove(
+                    query);
 
-            //SafeModeResult result =
-            //    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(queue.Type.Name)).Remove(
-            //        query);
+            if (ConfigManager.SafeMode(type.Name))
+            {
+                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+                {
+                    throw new DeleteDocumentException(result.ErrorMessage);
+                }
+            }
 
-            //if (ConfigManager.SafeMode(queue.Type.Name))
-            //{
-            //    if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-            //    {
-            //        throw new DeleteDocumentException(result.ErrorMessage);
-            //    }
-            //}
+            return result;
         }
 
     

@@ -200,23 +200,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void DeleteDocument<T>()
         {
-            if (this.MongoMapper_Id == default(long))
-            {
-                this.MongoMapper_Id = Finder.Instance.FindIdByKey<T>(this.GetKeyValues());
-            }
-            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
-
-            SafeModeResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).Remove(
-                    query);
-            
-            if (ConfigManager.SafeMode(this._classType.Name))
-            {
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new DeleteDocumentException(result.ErrorMessage);
-                }
-            }
+            Writer.Instance.Delete(this._classType.Name, this._classType, this);
         }
 
         public void EnsureDownRelations()

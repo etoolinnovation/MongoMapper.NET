@@ -33,6 +33,8 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         long FindIdByKey<T>(Dictionary<string, object> keyValues);
 
+        long FindIdByKey(Type t, Dictionary<string, object> keyValues);
+
         T FindObjectByKey<T>(Dictionary<string, object> keyValues);
 
         #endregion

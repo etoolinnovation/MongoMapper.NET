@@ -43,11 +43,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var countries1 = new List<Country>();
                 countries1.MongoFind();
                 Assert.AreEqual(0, countries1.Count);
+
                 var c2 = new Country { Code = "ES", Name = "España" };
                 c2.Save<Country>();
                 var countries2 = new List<Country>();
                 countries2.MongoFind();
                 Assert.AreEqual(0, countries2.Count);
+
                 var c3 = new Country { Code = "US", Name = "USA" };
                 c3.Save<Country>();
                 var countries3 = new List<Country>();
@@ -80,17 +82,59 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var countries1 = new List<Country>();
                 countries1.MongoFind();
                 Assert.AreEqual(0, countries1.Count);
+
                 var c2 = new Country { Code = "ES", Name = "España" };
                 c2.Save<Country>();
                 var countries2 = new List<Country>();
                 countries2.MongoFind();
                 Assert.AreEqual(0, countries2.Count);
+
                 var c3 = new Country { Code = "US", Name = "USA" };
                 c3.Save<Country>();
                 var countries3 = new List<Country>();
                 countries3.MongoFind();
                 Assert.AreEqual(0, countries3.Count);
+                Assert.AreEqual(3, t.QueueLenght);                
 
+                var countries4 = new List<Country>();
+                countries4.MongoFind();
+                Assert.AreEqual(0, countries4.Count);
+
+                t.Commit();
+
+                Assert.AreEqual(0, t.QueueLenght);
+            }
+
+            var countries = new List<Country>();
+            countries.MongoFind();
+            Assert.AreEqual(3, countries.Count);
+
+        }
+
+        [Test]
+        public void TestErrorInCommitingQueue()
+        {
+            Helper.DropAllCollections();
+
+            using (var t = new MongoMapperTransaction())
+            {
+                var c = new Country { Code = "NL", Name = "Holanda" };
+                c.Save<Country>();
+                var countries1 = new List<Country>();
+                countries1.MongoFind();
+                Assert.AreEqual(0, countries1.Count);
+
+                var c2 = new Country { Code = "ES", Name = "España" };
+                c2.Save<Country>();
+                var countries2 = new List<Country>();
+                countries2.MongoFind();
+                Assert.AreEqual(0, countries2.Count);
+
+                var c3 = new Country { Code = "us", Name = "USA" };
+                c3.Save<Country>();
+                var countries3 = new List<Country>();
+                countries3.MongoFind();
+                Assert.AreEqual(0, countries3.Count);
                 Assert.AreEqual(3, t.QueueLenght);
 
                 var countries4 = new List<Country>();
