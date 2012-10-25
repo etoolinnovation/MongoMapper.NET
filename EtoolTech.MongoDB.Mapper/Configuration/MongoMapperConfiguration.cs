@@ -178,12 +178,12 @@
             }
         }
 
-        [ConfigurationProperty("FSync", IsKey = false, IsRequired = false)]
-        public bool FSync
+        [ConfigurationProperty("Journal", IsKey = false, IsRequired = false)]
+        public bool Journal
         {
             get
             {
-                return bool.Parse(this["FSync"].ToString());
+                return bool.Parse(this["Journal"].ToString());
             }
         }
 

@@ -105,21 +105,21 @@
             return Config.Context.ExceptionOnDuplicateKey;
         }
 
-        public static bool FSync(string objName)
+        public static bool Journal(string objName)
         {
             if (CustomContext.Config != null)
             {
-                return CustomContext.Config.FSync;
+                return CustomContext.Config.Journal;
             }
 
             CollectionElement cfg = FindByObjName(objName);
 
             if (cfg != null)
             {
-                return cfg.Context.FSync;
+                return cfg.Context.Journal;
             }
 
-            return Config.Context.FSync;
+            return Config.Context.Journal;
         }
 
         private static string _connectionString = String.Empty;
@@ -191,7 +191,7 @@
 
             string connectionString =
                 String.Format(
-                    "mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};fsync={7}",
+                    "mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};journal={7}",
                     hostsStrings,
                     replicaOptions,
                     PoolSize(objName),
@@ -199,7 +199,7 @@
                     loginString,
                     databaseName,
                     SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
-                    FSync(objName).ToString(CultureInfo.InvariantCulture).ToLower());
+                    Journal(objName).ToString(CultureInfo.InvariantCulture).ToLower());
             return connectionString;
         }
 

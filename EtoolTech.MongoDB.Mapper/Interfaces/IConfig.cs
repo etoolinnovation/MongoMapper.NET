@@ -12,7 +12,7 @@
 
         bool ExceptionOnDuplicateKey { get; }
 
-        bool FSync { get; }
+        bool Journal { get; }
 
         string Host { get; }
 
