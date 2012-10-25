@@ -82,7 +82,7 @@
         private FindAndModifyResult FindAndModifyResult(string objName)
         {
             FindAndModifyResult result =
-                Helper.Db("Counters").GetCollection("Counters").FindAndModify(
+                Helper.Db("Counters", true).GetCollection("Counters").FindAndModify(
                     Query.EQ("document", objName), null, Update.Inc("last", (long)1), true, true);
             return result;
         }

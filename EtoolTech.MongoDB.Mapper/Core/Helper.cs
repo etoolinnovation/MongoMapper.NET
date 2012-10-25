@@ -43,9 +43,16 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static MongoDatabase Db(string objName)
         {
+            return Db(objName, false);
+        }
+
+        public static MongoDatabase Db(string objName, bool primary)
+        {
             string databaseName = ConfigManager.DataBaseName(objName);
 
             string connectionString = ConfigManager.GetConnectionString(objName);
+
+            if (primary) connectionString = string.Format("{0};readPreference=primary", connectionString);
 
             MongoServer server = MongoServer.Create(connectionString);
 
