@@ -111,7 +111,20 @@ namespace EtoolTech.MongoDB.Mapper
                     Fields.Include("MongoMapperDocumentVersion"));
 
             return ((IMongoMapperVersionable)result.Cast<object>().First()).MongoMapperDocumentVersion == this.MongoMapperDocumentVersion;
+        }
 
+        public void FillFromLastVersion()
+        {
+            
+            if (this.MongoMapper_Id == default(long))
+            {
+                this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());
+            }
+            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
+
+            MongoCursor result = CollectionsManager.GetPrimaryCollection(this._classType.Name).FindAs(this._classType, query);
+           
+            ReflectionUtility.CopyObject(result.Cast<object>().First(), this);
         }
 
         #endregion
@@ -320,7 +333,7 @@ namespace EtoolTech.MongoDB.Mapper
                 result = 1;
             }
 
-            //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
+            //Si salvan y no se pide el objeto otra vez la string queda vacia, la llenamos aqui
             //TODO: No estoy muy convencido de esto revisar ...                
             this.SaveOriginal();
             return result;

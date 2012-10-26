@@ -49,5 +49,21 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Assert.AreEqual(false, c.IsLastVersion());
 
         }
+
+        public void TestFillFromLastVersion()
+        {
+            Helper.DropAllCollections();
+
+
+            var c = new Country { Code = "NL", Name = "Holanda" };
+            c.Save<Country>();
+
+            Assert.AreEqual(true, c.IsLastVersion());
+            
+            c.MongoMapperDocumentVersion = 99;
+            c.FillFromLastVersion();
+            Assert.AreEqual(1, c.MongoMapperDocumentVersion);
+
+        }
     }
 }
