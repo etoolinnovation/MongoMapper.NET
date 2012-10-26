@@ -14,8 +14,9 @@
         internal static readonly Dictionary<string, MongoCollectionName> CustomCollectionsName =
             new Dictionary<string, MongoCollectionName>();
 
-        private static readonly Dictionary<string, MongoCollection> Collections =
-            new Dictionary<string, MongoCollection>();
+        private static readonly Dictionary<string, MongoCollection> Collections = new Dictionary<string, MongoCollection>();
+
+        private static readonly Dictionary<string, MongoCollection> PrimaryCollections = new Dictionary<string, MongoCollection>();
 
         private static readonly Object LockObject = new Object();
 
@@ -53,6 +54,26 @@
                 {
                     MongoCollection collection = Helper.Db(name).GetCollection(name);
                     Collections.Add(name, collection);
+                }
+                return Collections[name];
+            }
+        }
+
+        public static MongoCollection GetPrimaryCollection(string name)
+        {
+            name = GetCollectioName(name);
+
+            if (PrimaryCollections.ContainsKey(name))
+            {
+                return PrimaryCollections[name];
+            }
+
+            lock (LockObject)
+            {
+                if (!PrimaryCollections.ContainsKey(name))
+                {
+                    MongoCollection collection = Helper.Db(name, true).GetCollection(name);
+                    PrimaryCollections.Add(name, collection);
                 }
                 return Collections[name];
             }

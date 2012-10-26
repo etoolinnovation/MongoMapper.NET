@@ -20,7 +20,8 @@ namespace EtoolTech.MongoDB.Mapper
     public abstract class MongoMapper : IMongoMapperOriginable,
                                         IMongoMapperRelationable,
                                         IMongoMapperWriteable,
-                                        IMongoMapperIdeable
+                                        IMongoMapperIdeable,
+                                        IMongoMapperVersionable
     {
         #region Constants and Fields
 
@@ -91,6 +92,40 @@ namespace EtoolTech.MongoDB.Mapper
         [BsonId(IdGenerator = typeof(MongoMapperIdGenerator))]
         [XmlIgnore]
         public long MongoMapper_Id { get; set; }
+
+        [XmlIgnore]
+        public long MongoMapperDocumentVersion { get; set; }
+
+        public bool IsLastVersion()
+        {
+            if (String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
+            
+            if (this.MongoMapper_Id == default(long))
+            {
+                this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());
+            }
+            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
+
+            MongoCursor result =
+                CollectionsManager.GetPrimaryCollection(this._classType.Name).FindAs(this._classType, query).SetFields(
+                    Fields.Include("MongoMapperDocumentVersion"));
+
+            return ((IMongoMapperVersionable)result.Cast<object>().First()).MongoMapperDocumentVersion == this.MongoMapperDocumentVersion;
+        }
+
+        public void FillFromLastVersion()
+        {
+            
+            if (this.MongoMapper_Id == default(long))
+            {
+                this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());
+            }
+            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
+
+            MongoCursor result = CollectionsManager.GetPrimaryCollection(this._classType.Name).FindAs(this._classType, query);
+           
+            ReflectionUtility.CopyObject(result.Cast<object>().First(), this);
+        }
 
         #endregion
 
@@ -238,6 +273,8 @@ namespace EtoolTech.MongoDB.Mapper
             return (T)this._tOriginalObjet;
         }
 
+
+
         public List<T> GetRelation<T>(string relation)
         {
             if (!this._relationBuffer.ContainsKey(relation))
@@ -296,7 +333,7 @@ namespace EtoolTech.MongoDB.Mapper
                 result = 1;
             }
 
-            //Si salvan y no se pide el objeto otra vez la string json queda vacia, la llenamos aqui
+            //Si salvan y no se pide el objeto otra vez la string queda vacia, la llenamos aqui
             //TODO: No estoy muy convencido de esto revisar ...                
             this.SaveOriginal();
             return result;
@@ -367,10 +404,6 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         #endregion
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
-        }
+   
     }
 }
