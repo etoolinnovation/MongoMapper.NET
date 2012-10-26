@@ -9,6 +9,8 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
     {
         long MongoMapperDocumentVersion { get; set; }
         bool IsLastVersion();
+        bool IsLastVersion(bool force);
         void FillFromLastVersion();
+        void FillFromLastVersion(bool force);
     }
 }

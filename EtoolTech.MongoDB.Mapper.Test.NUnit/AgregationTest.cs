@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    [TestFixture]
+    //[TestFixture]
     public class AgregationTest
     {
 
