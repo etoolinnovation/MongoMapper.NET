@@ -96,6 +96,23 @@ namespace EtoolTech.MongoDB.Mapper
         [XmlIgnore]
         public long MongoMapperDocumentVersion { get; set; }
 
+        public bool IsLastVersion()
+        {
+            if (String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
+            
+            if (this.MongoMapper_Id == default(long))
+            {
+                this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());
+            }
+            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
+
+            MongoCursor result =
+                CollectionsManager.GetPrimaryCollection(this._classType.Name).FindAs(this._classType, query).SetFields(
+                    Fields.Include("MongoMapperDocumentVersion"));
+
+            return ((IMongoMapperVersionable)result.Cast<object>().First()).MongoMapperDocumentVersion == this.MongoMapperDocumentVersion;
+
+        }
 
         #endregion
 
@@ -243,6 +260,8 @@ namespace EtoolTech.MongoDB.Mapper
             return (T)this._tOriginalObjet;
         }
 
+
+
         public List<T> GetRelation<T>(string relation)
         {
             if (!this._relationBuffer.ContainsKey(relation))
@@ -372,10 +391,6 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         #endregion
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
-        }
+   
     }
 }

@@ -13,7 +13,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             Helper.DropAllCollections();
 
-            List<Country> countries = new List<Country>();
+            var countries = new List<Country>();
 
             var c = new Country { Code = "NL", Name = "Holanda" };
             c.Save<Country>();
@@ -31,6 +31,22 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             countries.MongoFind();
             Assert.AreEqual(1, countries.Count);
 
+
+        }
+
+        public void TestIsLastVersion()
+        {
+            Helper.DropAllCollections();
+            
+
+            var c = new Country { Code = "NL", Name = "Holanda" };
+            c.Save<Country>();
+
+            Assert.AreEqual(true, c.IsLastVersion());
+
+            //Esto solo funciona en un replica set, lo dejo comentado
+            //c.MongoMapperDocumentVersion = 99;
+            //Assert.AreEqual(false, c.IsLastVersion());
 
         }
     }
