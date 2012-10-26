@@ -20,7 +20,8 @@ namespace EtoolTech.MongoDB.Mapper
     public abstract class MongoMapper : IMongoMapperOriginable,
                                         IMongoMapperRelationable,
                                         IMongoMapperWriteable,
-                                        IMongoMapperIdeable
+                                        IMongoMapperIdeable,
+                                        IMongoMapperVersionable
     {
         #region Constants and Fields
 
@@ -91,6 +92,10 @@ namespace EtoolTech.MongoDB.Mapper
         [BsonId(IdGenerator = typeof(MongoMapperIdGenerator))]
         [XmlIgnore]
         public long MongoMapper_Id { get; set; }
+
+        [XmlIgnore]
+        public long MongoMapperDocumentVersion { get; set; }
+
 
         #endregion
 

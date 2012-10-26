@@ -97,6 +97,7 @@ namespace EtoolTech.MongoDB.Mapper
                 throw new TypeNotSupportedException(t.Name);
             }
         }
+        
 
         #endregion
 

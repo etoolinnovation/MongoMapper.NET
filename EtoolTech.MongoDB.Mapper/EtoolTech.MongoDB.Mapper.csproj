@@ -63,6 +63,7 @@
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
+    <Compile Include="Interfaces\IMongoMapperVersionable.cs" />
     <Compile Include="Interfaces\IWriter.cs" />
     <Compile Include="Core\ObjectSerializer.cs" />
     <Compile Include="Core\Writer.cs" />

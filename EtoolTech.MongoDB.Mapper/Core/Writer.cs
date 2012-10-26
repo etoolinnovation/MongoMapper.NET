@@ -2,6 +2,7 @@
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -26,6 +27,12 @@ namespace EtoolTech.MongoDB.Mapper
                 return new SafeModeResult();
             }
 
+            var mongoMapperVersionable = document as IMongoMapperVersionable;
+            if (mongoMapperVersionable != null)
+            {
+                mongoMapperVersionable.MongoMapperDocumentVersion++;
+            }
+
             SafeModeResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Insert(type, document);
 
             if (ConfigManager.SafeMode(type.Name))
@@ -45,7 +52,13 @@ namespace EtoolTech.MongoDB.Mapper
                 MongoMapperTransaction.AddToQueue(OperationType.Update, type, document);
                 return new SafeModeResult();
             }
-            
+
+            var mongoMapperVersionable = document as IMongoMapperVersionable;
+            if (mongoMapperVersionable != null)
+            {
+                mongoMapperVersionable.MongoMapperDocumentVersion++;
+            }
+
             SafeModeResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Save(type, document);
 
             if (ConfigManager.SafeMode(name))
