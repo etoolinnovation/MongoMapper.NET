@@ -98,7 +98,11 @@ namespace EtoolTech.MongoDB.Mapper
 
         public bool IsLastVersion()
         {
-            if (String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
+            return IsLastVersion(false);
+        }
+        public bool IsLastVersion(bool force)
+        {
+            if (!force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
             
             if (this.MongoMapper_Id == default(long))
             {
@@ -112,10 +116,15 @@ namespace EtoolTech.MongoDB.Mapper
 
             return ((IMongoMapperVersionable)result.Cast<object>().First()).MongoMapperDocumentVersion == this.MongoMapperDocumentVersion;
         }
-
         public void FillFromLastVersion()
         {
-            
+            FillFromLastVersion(false);
+        }
+
+        public void FillFromLastVersion(bool force)
+        {
+            if (!force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return;
+
             if (this.MongoMapper_Id == default(long))
             {
                 this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());

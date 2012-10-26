@@ -9,6 +9,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [TestFixture]
     public class VersionTest
     {
+        [Test]
         public void TestVersionInc()
         {
             Helper.DropAllCollections();
@@ -34,6 +35,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         }
 
+        [Test]
         public void TestIsLastVersion()
         {
             Helper.DropAllCollections();
@@ -43,13 +45,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.Save<Country>();
 
             Assert.AreEqual(true, c.IsLastVersion());
-
-            //Esto solo funciona en un replica set, lo dejo comentado
-            //c.MongoMapperDocumentVersion = 99;
-            //Assert.AreEqual(false, c.IsLastVersion());
+            
+            c.MongoMapperDocumentVersion = 99;
+            Assert.AreEqual(false, c.IsLastVersion(true));
 
         }
 
+        [Test]
         public void TestFillFromLastVersion()
         {
             Helper.DropAllCollections();
@@ -61,7 +63,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(true, c.IsLastVersion());
             
             c.MongoMapperDocumentVersion = 99;
-            c.FillFromLastVersion();
+            c.FillFromLastVersion(true);
             Assert.AreEqual(1, c.MongoMapperDocumentVersion);
 
         }
