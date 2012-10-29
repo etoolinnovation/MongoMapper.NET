@@ -62,13 +62,21 @@
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof(DuplicateKeyException));
             }
 
-            var c2 = new Country { Code = "US", Name = "Francia" };
-            c2.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Estados Unidos"; };
-            c2.Save();
+            using (var t = new MongoMapperTransaction())
+            {
+                var c2 = new Country {Code = "US", Name = "Francia"};
+                c2.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Estados Unidos"; };
+                c2.Save();
+
+                t.Commit();
+            }
 
             var c3 = new Country();
             c3.FillByKey("US");
             Assert.AreEqual(c3.Name, "Estados Unidos");
+
+            if (!c3.IsLastVersion())
+                c3.FillFromLastVersion();
 
             var countries = new global::System.Collections.Generic.List<Country>();
             countries.MongoFind();
