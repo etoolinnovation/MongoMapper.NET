@@ -152,5 +152,6 @@ A .NET Object Mapper for MongoDB over MongoDB C# Driver
 * [07/03/2012] (http://bit.ly/wMX6Ha)
 * [20/03/2012] (http://bit.ly/GAIbez)
 * [18/07/2012] (http://bit.ly/M9gqOp)
+* [29/10/2012] (http://bit.ly/VyLjyT)
 
 
