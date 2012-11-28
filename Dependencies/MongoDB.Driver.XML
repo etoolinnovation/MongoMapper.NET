@@ -5191,6 +5191,16 @@
             Gets the document.
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.WriteConcernResult">
+            <summary>
+            Represents the results of an operation performed with a WriteConcern other than FireAndForget.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.SafeModeResult">
+            <summary>
+            Represents the results of an operation performed with a WriteConcern other than FireAndForget.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.GetLastErrorResult">
             <summary>
             Represents the results of a GetLastError command.
@@ -5335,16 +5345,6 @@
         <member name="P:MongoDB.Driver.IsMasterResult.Tags">
             <summary>
             Gets the tags.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.SafeModeResult">
-            <summary>
-            Represents the results of an operation performed with a safe mode.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.SafeModeResult.#ctor">
-            <summary>
-            Initializes a new instance of the SafeModeResult class.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.ValidateCollectionResult">
@@ -5522,6 +5522,229 @@
             A marker interface that represents a scope (a set of variables with values, see ScopeDocument).
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.MongoClient">
+            <summary>
+            Represents a client to MongoDB.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.#ctor">
+            <summary>
+            Initializes a new instance of the MongoClient class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.#ctor(MongoDB.Driver.MongoClientSettings)">
+            <summary>
+            Initializes a new instance of the MongoClient class.
+            </summary>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.#ctor(MongoDB.Driver.MongoUrl)">
+            <summary>
+            Initializes a new instance of the MongoClient class.
+            </summary>
+            <param name="url">The URL.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the MongoClient class.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.GetDatabase(MongoDB.Driver.MongoDatabaseSettings)">
+            <summary>
+            Gets a MongoDatabase instance representing a database. See also GetServer.
+            </summary>
+            <param name="databaseSettings">The settings to use with this database.</param>
+            <returns>An instance of MongoDatabase.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.GetDatabase(System.String)">
+            <summary>
+            Gets a MongoDatabase instance representing a database. See also GetServer.
+            </summary>
+            <param name="databaseName">The name of the database.</param>
+            <returns>An instance of MongoDatabase.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClient.GetServer">
+            <summary>
+            Gets a MongoServer object using this client's settings. See also GetDatabase.
+            </summary>
+            <returns>A MongoServer.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClient.Settings">
+            <summary>
+            Gets the client settings.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoClientSettings">
+            <summary>
+            The settings for a MongoDB client.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.#ctor">
+            <summary>
+            Creates a new instance of MongoClientSettings. Usually you would use a connection string instead.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.FromConnectionStringBuilder(MongoDB.Driver.MongoConnectionStringBuilder)">
+            <summary>
+            Gets a MongoClientSettings object intialized with values from a connection string builder.
+            </summary>
+            <returns>A MongoClientSettings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.FromUrl(MongoDB.Driver.MongoUrl)">
+            <summary>
+            Gets a MongoClientSettings object intialized with values from a URL.
+            </summary>
+            <returns>A MongoClientSettings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.Clone">
+            <summary>
+            Creates a clone of the settings.
+            </summary>
+            <returns>A clone of the settings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.Equals(System.Object)">
+            <summary>
+            Compares two MongoClientSettings instances.
+            </summary>
+            <param name="obj">The other instance.</param>
+            <returns>True if the two instances are equal.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.Freeze">
+            <summary>
+            Freezes the settings.
+            </summary>
+            <returns>The frozen settings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.FrozenCopy">
+            <summary>
+            Returns a frozen copy of the settings.
+            </summary>
+            <returns>A frozen copy of the settings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.GetHashCode">
+            <summary>
+            Gets the hash code.
+            </summary>
+            <returns>The hash code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.ToString">
+            <summary>
+            Returns a string representation of the settings.
+            </summary>
+            <returns>A string representation of the settings.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.ConnectionMode">
+            <summary>
+            Gets or sets the connection mode.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.ConnectTimeout">
+            <summary>
+            Gets or sets the connect timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.CredentialsStore">
+            <summary>
+            Gets or sets the credentials store.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.DefaultCredentials">
+            <summary>
+            Gets or sets the default credentials.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.GuidRepresentation">
+            <summary>
+            Gets or sets the representation to use for Guids.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.IsFrozen">
+            <summary>
+            Gets whether the settings have been frozen to prevent further changes.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.IPv6">
+            <summary>
+            Gets or sets whether to use IPv6.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.MaxConnectionIdleTime">
+            <summary>
+            Gets or sets the max connection idle time.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.MaxConnectionLifeTime">
+            <summary>
+            Gets or sets the max connection life time.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.MaxConnectionPoolSize">
+            <summary>
+            Gets or sets the max connection pool size.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.MinConnectionPoolSize">
+            <summary>
+            Gets or sets the min connection pool size.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.ReadPreference">
+            <summary>
+            Gets or sets the read preferences.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.ReplicaSetName">
+            <summary>
+            Gets or sets the name of the replica set.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.SecondaryAcceptableLatency">
+            <summary>
+            Gets or sets the acceptable latency for considering a replica set member for inclusion in load balancing
+            when using a read preference of Secondary, SecondaryPreferred, and Nearest.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.Server">
+            <summary>
+            Gets or sets the address of the server (see also Servers if using more than one address).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.Servers">
+            <summary>
+            Gets or sets the list of server addresses (see also Server if using only one address).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.SocketTimeout">
+            <summary>
+            Gets or sets the socket timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.UseSsl">
+            <summary>
+            Gets or sets whether to use SSL.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.VerifySslCertificate">
+            <summary>
+            Gets or sets whether to verify an SSL certificate.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.WaitQueueSize">
+            <summary>
+            Gets or sets the wait queue size.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.WaitQueueTimeout">
+            <summary>
+            Gets or sets the wait queue timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern to use.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoCollectionSettings">
             <summary>
             The settings used to access a collection (an abstract class, see MongoCollectionSettings{TDefaultDocument}).
@@ -5535,7 +5758,7 @@
             <param name="collectionName">The name of the collection.</param>
             <param name="defaultDocumentType">The default document type for the collection.</param>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollectionSettings.#ctor(System.String,System.Boolean,System.Type,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollectionSettings.#ctor(System.String,System.Boolean,System.Type,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.WriteConcern)">
             <summary>
             Initializes a new instance of the MongoCollectionSettings class.
             </summary>
@@ -5544,7 +5767,7 @@
             <param name="defaultDocumentType">The default document type for the collection.</param>
             <param name="guidRepresentation">The GUID representation to use with this collection.</param>
             <param name="readPreference">The read preference.</param>
-            <param name="safeMode">The SafeMode to use with this collection.</param>
+            <param name="writeConcern">The WriteConcern to use with this collection.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoCollectionSettings.Clone">
             <summary>
@@ -5623,6 +5846,11 @@
             Gets or sets whether queries should be sent to secondary servers.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoCollectionSettings.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern to use.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoCollectionSettings`1">
             <summary>
             Settings used to access a collection.
@@ -5636,7 +5864,7 @@
             <param name="database">The database to inherit settings from.</param>
             <param name="collectionName">The name of the collection.</param>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollectionSettings`1.#ctor(System.String,System.Boolean,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollectionSettings`1.#ctor(System.String,System.Boolean,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.WriteConcern)">
             <summary>
             Creates a new instance of MongoCollectionSettings.
             </summary>
@@ -5644,7 +5872,7 @@
             <param name="assignIdOnInsert">Whether the driver should assign the Id values if necessary.</param>
             <param name="guidRepresentation">The representation for Guids.</param>
             <param name="readPreference">The read preference.</param>
-            <param name="safeMode">The safe mode to use.</param>
+            <param name="writeConcern">The write concern to use.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoCollectionSettings`1.Clone">
             <summary>
@@ -5715,6 +5943,11 @@
             <param name="credentials">The credentials.</param>
             <returns>True if the store contained credentials for the database. Otherwise false.</returns>
         </member>
+        <member name="P:MongoDB.Driver.MongoCredentialsStore.IsFrozen">
+            <summary>
+            Gets whether the credentials store has been frozen to prevent further changes.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoDatabaseSettings">
             <summary>
             The settings used to access a database.
@@ -5727,7 +5960,7 @@
             <param name="server">The server to inherit settings from.</param>
             <param name="databaseName">The name of the database.</param>
         </member>
-        <member name="M:MongoDB.Driver.MongoDatabaseSettings.#ctor(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoDatabaseSettings.#ctor(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.WriteConcern)">
             <summary>
             Creates a new instance of MongoDatabaseSettings.
             </summary>
@@ -5735,7 +5968,7 @@
             <param name="credentials">The credentials to access the database.</param>
             <param name="guidRepresentation">The representation for Guids.</param>
             <param name="readPreference">The read preference.</param>
-            <param name="safeMode">The safe mode to use.</param>
+            <param name="writeConcern">The write concern to use.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabaseSettings.Clone">
             <summary>
@@ -5807,6 +6040,11 @@
         <member name="P:MongoDB.Driver.MongoDatabaseSettings.SlaveOk">
             <summary>
             Gets or sets whether queries can be sent to secondary servers.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoDatabaseSettings.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern to use.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoDBRef">
@@ -5954,6 +6192,11 @@
         <member name="P:MongoDB.Driver.MongoInsertOptions.SafeMode">
             <summary>
             Gets or sets the SafeMode to use for the Insert.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoInsertOptions.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern to use for the Insert.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoServerBuildInfo">
@@ -6218,6 +6461,25 @@
             <param name="waitQueueTimeout">The wait queue timeout.</param>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="M:MongoDB.Driver.MongoServerSettings.FromClientSettings(MongoDB.Driver.MongoClientSettings)">
+            <summary>
+            Creates a new MongoServerSettings object from a MongoClientSettings object.
+            </summary>
+            <param name="clientSettings"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoServerSettings.FromConnectionStringBuilder(MongoDB.Driver.MongoConnectionStringBuilder)">
+            <summary>
+            Gets a MongoServerSettings object intialized with values from a MongoConnectionStringBuilder.
+            </summary>
+            <returns>A MongoServerSettings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoServerSettings.FromUrl(MongoDB.Driver.MongoUrl)">
+            <summary>
+            Gets a MongoServerSettings object intialized with values from a URL.
+            </summary>
+            <returns>A MongoServerSettings.</returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.Clone">
             <summary>
             Creates a clone of the settings.
@@ -6383,6 +6645,11 @@
             Gets or sets the wait queue timeout.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoServerSettings.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern to use.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoUpdateOptions">
             <summary>
             Represents the options to use for an Update operation.
@@ -6414,6 +6681,11 @@
             Gets or sets the SafeMode to use for the Update.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUpdateOptions.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern to use for the Update.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoUrlBuilder">
             <summary>
             Represents URL style connection strings. This is the recommended connection string style, but see also
@@ -6430,6 +6702,13 @@
             Creates a new instance of MongoUrlBuilder.
             </summary>
             <param name="url">The initial settings.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoUrlBuilder.GetWriteConcern(System.Boolean)">
+            <summary>
+            Returns a WriteConcern value based on this instance's settings and a fire and forget default.
+            </summary>
+            <param name="fireAndForgetDefault">The fire and forget default.</param>
+            <returns>A WriteConcern.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoUrlBuilder.Parse(System.String)">
             <summary>
@@ -6480,6 +6759,16 @@
             Gets or sets the default credentials.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.FireAndForget">
+            <summary>
+            Gets or sets the fireAndForget value.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.FSync">
+            <summary>
+            Gets or sets the FSync component of the write concern.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.GuidRepresentation">
             <summary>
             Gets or sets the representation to use for Guids.
@@ -6488,6 +6777,11 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.IPv6">
             <summary>
             Gets or sets whether to use IPv6.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.Journal">
+            <summary>
+            Gets or sets the Journal component of the write concern.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.MaxConnectionIdleTime">
@@ -6518,6 +6812,11 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.ReplicaSetName">
             <summary>
             Gets or sets the name of the replica set.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.Safe">
+            <summary>
+            Gets or sets the safe value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.SafeMode">
@@ -6561,6 +6860,11 @@
             Gets or sets whether to verify an SSL certificate.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.W">
+            <summary>
+            Gets or sets the W component of the write concern.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.WaitQueueMultiple">
             <summary>
             Gets or sets the wait queue multiple (the actual wait queue size will be WaitQueueMultiple x MaxConnectionPoolSize).
@@ -6574,6 +6878,11 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.WaitQueueTimeout">
             <summary>
             Gets or sets the wait queue timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.WTimeout">
+            <summary>
+            Gets or sets the WTimeout component of the write concern.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoUser">
@@ -8711,6 +9020,264 @@
             <param name="update">The wrapped object.</param>
             <returns>A new instance of UpdateWrapper or null.</returns>
         </member>
+        <member name="T:MongoDB.Driver.WriteConcern">
+            <summary>
+            Represents the different WriteConcerns that can be used.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.op_Inequality(MongoDB.Driver.WriteConcern,MongoDB.Driver.WriteConcern)">
+            <summary>
+            Determines whether two specified WriteConcern objects have different values.
+            </summary>
+            <param name="lhs">The first value to compare, or null.</param>
+            <param name="rhs">The second value to compare, or null.</param>
+            <returns>True if the value of lhs is different from the value of rhs; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.op_Equality(MongoDB.Driver.WriteConcern,MongoDB.Driver.WriteConcern)">
+            <summary>
+            Determines whether two specified WriteConcern objects have the same value.
+            </summary>
+            <param name="lhs">The first value to compare, or null.</param>
+            <param name="rhs">The second value to compare, or null.</param>
+            <returns>True if the value of lhs is the same as the value of rhs; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.Equals(MongoDB.Driver.WriteConcern,MongoDB.Driver.WriteConcern)">
+            <summary>
+            Determines whether two specified WriteConcern objects have the same value.
+            </summary>
+            <param name="lhs">The first value to compare, or null.</param>
+            <param name="rhs">The second value to compare, or null.</param>
+            <returns>True if the value of lhs is the same as the value of rhs; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.Clone">
+            <summary>
+            Creates a clone of the WriteConcern.
+            </summary>
+            <returns>A clone of the WriteConcern.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.Equals(System.Object)">
+            <summary>
+            Determines whether this instance and a specified object, which must also be a WriteConcern object, have the same value.
+            </summary>
+            <param name="obj">The WriteConcern object to compare to this instance.</param>
+            <returns>True if obj is a WriteConcern object and its value is the same as this instance; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.Equals(MongoDB.Driver.WriteConcern)">
+            <summary>
+            Determines whether this instance and another specified WriteConcern object have the same value.
+            </summary>
+            <param name="rhs">The WriteConcern object to compare to this instance.</param>
+            <returns>True if the value of the rhs parameter is the same as this instance; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.Freeze">
+            <summary>
+            Freezes the WriteConcern.
+            </summary>
+            <returns>The frozen WriteConcern.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.FrozenCopy">
+            <summary>
+            Returns a frozen copy of the WriteConcern.
+            </summary>
+            <returns>A frozen copy of the WriteConcern.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.GetHashCode">
+            <summary>
+            Gets the hash code.
+            </summary>
+            <returns>The hash code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.ToString">
+            <summary>
+            Returns a string representation of the WriteConcern.
+            </summary>
+            <returns>A string representation of the WriteConcern.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.Errors">
+            <summary>
+            Gets an instance of WriteConcern that checks for errors.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.None">
+            <summary>
+            Gets an instance of WriteConcern that doesn't check for errors.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.W2">
+            <summary>
+            Gets an instance of WriteConcern where w=2.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.W3">
+            <summary>
+            Gets an instance of WriteConcern where w=3.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.W4">
+            <summary>
+            Gets an instance of WriteConcern where w=4.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.WMajority">
+            <summary>
+            Gets an instance of WriteConcern where w="majority".
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.FireAndForget">
+            <summary>
+            Gets or sets whether WriteConcern is fire and forget.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.FSync">
+            <summary>
+            Gets or sets whether to wait for an fsync to complete.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.IsFrozen">
+            <summary>
+            Gets whether this instance is frozen.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.Journal">
+            <summary>
+            Gets or sets whether to wait for journal commit.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.W">
+            <summary>
+            Gets or sets the w value.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.WTimeout">
+            <summary>
+            Gets or sets the wtimeout value (the timeout before which the server must return).
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.WriteConcern.WValue">
+            <summary>
+            Represents a "w" value in a WriteConcern.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.op_Implicit(System.Int32)~MongoDB.Driver.WriteConcern.WValue">
+            <summary>
+            Converts an int value to a WValue of type WCount.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>A WValue of type WCount.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.op_Implicit(System.String)~MongoDB.Driver.WriteConcern.WValue">
+            <summary>
+            Convert a string value to a WValue of type WMode.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>A WValue of type WMode.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.op_Equality(MongoDB.Driver.WriteConcern.WValue,MongoDB.Driver.WriteConcern.WValue)">
+            <summary>
+            Determines whether two specified WValue objects have the same value.
+            </summary>
+            <param name="lhs">A WValue, or null.</param>
+            <param name="rhs">A WValue, or null.</param>
+            <returns>True if the value of lhs is the same as the value of rhs; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.op_Inequality(MongoDB.Driver.WriteConcern.WValue,MongoDB.Driver.WriteConcern.WValue)">
+            <summary>
+            Determines whether two specified WValue objects have different values.
+            </summary>
+            <param name="lhs">A WValue, or null.</param>
+            <param name="rhs">A WValue, or null.</param>
+            <returns>True if the value of lhs is different from the value of rhs; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.Parse(System.String)">
+            <summary>
+            Converts the string representation of a WValue to a WValue.
+            </summary>
+            <param name="s">A string containing the WValue to convert.</param>
+            <returns>A WValue equivalent to s.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.Equals(System.Object)">
+            <summary>
+            Determines whether this instance of WValue and a specified object, which must also be a WValue object, have the same value.
+            </summary>
+            <param name="obj">An object.</param>
+            <returns>True if obj is a WValue of the same type as this instance and its value is the same as this instance; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WValue.GetHashCode">
+            <summary>
+            Returns the hash code for this WValue.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="T:MongoDB.Driver.WriteConcern.WCount">
+            <summary>
+            Represents an integer "w" value in a WriteConcern.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WCount.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the WCount class.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WCount.Equals(System.Object)">
+            <summary>
+            Determines whether this instance of WCount and a specified object, which must also be a WCount object, have the same value.
+            </summary>
+            <param name="obj">An object.</param>
+            <returns>True if obj is a WCount and its value is the same as this instance; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WCount.GetHashCode">
+            <summary>
+            Returns the hash code for this WCount.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WCount.ToString">
+            <summary>
+            Converts the numeric value of this instance to its equivalent string representation.
+            </summary>
+            <returns>The string representation of the value of this instance.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.WCount.Value">
+            <summary>
+            Gets the value.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.WriteConcern.WMode">
+            <summary>
+            Represents a string "w" value in a WriteConcern (the name of a mode).
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WMode.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the WMode class.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WMode.Equals(System.Object)">
+            <summary>
+            Determines whether this instance of WMode and a specified object, which must also be a WMode object, have the same value.
+            </summary>
+            <param name="obj">An object.</param>
+            <returns>True if obj is a WMode and its value is the same as this instance; otherwise, false.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WMode.GetHashCode">
+            <summary>
+            Returns the hash code for this WMode.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcern.WMode.ToString">
+            <summary>
+            Converts the numeric value of this instance to its equivalent string representation.
+            </summary>
+            <returns>The string representation of the value of this instance.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.WriteConcern.WMode.Value">
+            <summary>
+            Gets the value.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoAuthenticationException">
             <summary>
             Represents a MongoDB authentication exception
@@ -8829,6 +9396,44 @@
             <param name="info">The SerializationInfo.</param>
             <param name="context">The StreamingContext.</param>
         </member>
+        <member name="T:MongoDB.Driver.WriteConcernException">
+            <summary>
+            Represents a get last error exception.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoSafeModeException">
+            <summary>
+            Represents a MongoDB safe mode exception.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoSafeModeException.#ctor(System.String,MongoDB.Driver.CommandResult)">
+            <summary>
+            Initializes a new instance of the MongoSafeModeException class.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="commandResult">The command result.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoSafeModeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the MongoSafeModeException class (this overload supports deserialization).
+            </summary>
+            <param name="info">The SerializationInfo.</param>
+            <param name="context">The StreamingContext.</param>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcernException.#ctor(System.String,MongoDB.Driver.CommandResult)">
+            <summary>
+            Initializes a new instance of the WriteConcernException class.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="commandResult">The command result.</param>
+        </member>
+        <member name="M:MongoDB.Driver.WriteConcernException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the WriteConcernException class (this overload supports deserialization).
+            </summary>
+            <param name="info">The SerializationInfo.</param>
+            <param name="context">The StreamingContext.</param>
+        </member>
         <member name="T:MongoDB.Driver.GridFS.MongoGridFSException">
             <summary>
             Represents a MongoDB GridFS exception.
@@ -8915,25 +9520,6 @@
             <summary>
             Gets the error document returned by the server.
             </summary>
-        </member>
-        <member name="T:MongoDB.Driver.MongoSafeModeException">
-            <summary>
-            Represents a MongoDB safe mode exception.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MongoSafeModeException.#ctor(System.String,MongoDB.Driver.CommandResult)">
-            <summary>
-            Initializes a new instance of the MongoSafeModeException class.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="commandResult">The command result.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoSafeModeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the MongoSafeModeException class (this overload supports deserialization).
-            </summary>
-            <param name="info">The SerializationInfo.</param>
-            <param name="context">The StreamingContext.</param>
         </member>
         <member name="T:MongoDB.Driver.GridFS.MongoGridFSCreateOptions">
             <summary>
@@ -9444,6 +10030,23 @@
             </summary>
             <param name="databaseName">The name of the database containing the collection.</param>
             <param name="collectionName">The name of the collection.</param>
+        </member>
+        <member name="T:MongoDB.Driver.CanCommandBeSentToSecondary">
+            <summary>
+            Represents a container for the CanCommandBeSentToSecondary delegate.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.CanCommandBeSentToSecondary.DefaultImplementation(MongoDB.Bson.BsonDocument)">
+            <summary>
+            Default implementation of the CanCommandBeSentToSecondary delegate.
+            </summary>
+            <param name="document">The command.</param>
+            <returns>True if the command can be sent to a secondary member of a replica set.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.CanCommandBeSentToSecondary.Delegate">
+            <summary>
+            Gets or sets the CanCommandBeSentToSecondary delegate.
+            </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoCursorEnumerator`1">
             <summary>
@@ -11821,13 +12424,13 @@
             </summary>
             <param name="database">The database from which to inherit some of the settings.</param>
         </member>
-        <member name="M:MongoDB.Driver.GridFS.MongoGridFSSettings.#ctor(System.Int32,System.String,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.GridFS.MongoGridFSSettings.#ctor(System.Int32,System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Initializes a new instance of the MongoGridFSSettings class.
             </summary>
             <param name="chunkSize">The chunk size.</param>
             <param name="root">The root collection name.</param>
-            <param name="safeMode">The safe mode.</param>
+            <param name="writeConcern">The write concern.</param>
         </member>
         <member name="M:MongoDB.Driver.GridFS.MongoGridFSSettings.op_Inequality(MongoDB.Driver.GridFS.MongoGridFSSettings,MongoDB.Driver.GridFS.MongoGridFSSettings)">
             <summary>
@@ -11926,6 +12529,11 @@
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.VerifyMD5">
             <summary>
             Gets or sets whether to verify the MD5 hash when a file is uploaded or downloaded.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.WriteConcern">
+            <summary>
+            Gets or sets the WriteConcern.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.GridFS.MongoGridFSStream">
@@ -12152,21 +12760,21 @@
             </summary>
             <param name="keys">The indexed fields (usually an IndexKeysDocument or constructed using the IndexKeys builder).</param>
             <param name="options">The index options(usually an IndexOptionsDocument or created using the IndexOption builder).</param>
-            <returns>A SafeModeResult.</returns>
+            <returns>A WriteConcernResult.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.CreateIndex(MongoDB.Driver.IMongoIndexKeys)">
             <summary>
             Creates an index for this collection.
             </summary>
             <param name="keys">The indexed fields (usually an IndexKeysDocument or constructed using the IndexKeys builder).</param>
-            <returns>A SafeModeResult.</returns>
+            <returns>A WriteConcernResult.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.CreateIndex(System.String[])">
             <summary>
             Creates an index for this collection.
             </summary>
             <param name="keyNames">The names of the indexed fields.</param>
-            <returns>A SafeModeResult.</returns>
+            <returns>A WriteConcernResult.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Distinct(System.String)">
             <summary>
@@ -12517,7 +13125,7 @@
             </summary>
             <typeparam name="TNominalType">The nominal type of the document to insert.</typeparam>
             <param name="document">The document to insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Insert``1(``0,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12526,16 +13134,16 @@
             <typeparam name="TNominalType">The nominal type of the document to insert.</typeparam>
             <param name="document">The document to insert.</param>
             <param name="options">The options to use for this Insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Insert``1(``0,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Insert``1(``0,MongoDB.Driver.WriteConcern)">
             <summary>
             Inserts a document into this collection (see also InsertBatch to insert multiple documents at once).
             </summary>
             <typeparam name="TNominalType">The nominal type of the document to insert.</typeparam>
             <param name="document">The document to insert.</param>
-            <param name="safeMode">The SafeMode to use for this Insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Insert(System.Type,System.Object)">
             <summary>
@@ -12543,7 +13151,7 @@
             </summary>
             <param name="nominalType">The nominal type of the document to insert.</param>
             <param name="document">The document to insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Insert(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12552,16 +13160,16 @@
             <param name="nominalType">The nominal type of the document to insert.</param>
             <param name="document">The document to insert.</param>
             <param name="options">The options to use for this Insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Insert(System.Type,System.Object,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Insert(System.Type,System.Object,MongoDB.Driver.WriteConcern)">
             <summary>
             Inserts a document into this collection (see also InsertBatch to insert multiple documents at once).
             </summary>
             <param name="nominalType">The nominal type of the document to insert.</param>
             <param name="document">The document to insert.</param>
-            <param name="safeMode">The SafeMode to use for this Insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.InsertBatch``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
@@ -12569,7 +13177,7 @@
             </summary>
             <typeparam name="TNominalType">The type of the documents to insert.</typeparam>
             <param name="documents">The documents to insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.InsertBatch``1(System.Collections.Generic.IEnumerable{``0},MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12578,16 +13186,16 @@
             <typeparam name="TNominalType">The type of the documents to insert.</typeparam>
             <param name="documents">The documents to insert.</param>
             <param name="options">The options to use for this Insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.InsertBatch``1(System.Collections.Generic.IEnumerable{``0},MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.InsertBatch``1(System.Collections.Generic.IEnumerable{``0},MongoDB.Driver.WriteConcern)">
             <summary>
             Inserts multiple documents at once into this collection (see also Insert to insert a single document).
             </summary>
             <typeparam name="TNominalType">The type of the documents to insert.</typeparam>
             <param name="documents">The documents to insert.</param>
-            <param name="safeMode">The SafeMode to use for this Insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.InsertBatch(System.Type,System.Collections.IEnumerable)">
             <summary>
@@ -12595,16 +13203,16 @@
             </summary>
             <param name="nominalType">The nominal type of the documents to insert.</param>
             <param name="documents">The documents to insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.WriteConcern)">
             <summary>
             Inserts multiple documents at once into this collection (see also Insert to insert a single document).
             </summary>
             <param name="nominalType">The nominal type of the documents to insert.</param>
             <param name="documents">The documents to insert.</param>
-            <param name="safeMode">The SafeMode to use for this Insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12613,7 +13221,7 @@
             <param name="nominalType">The nominal type of the documents to insert.</param>
             <param name="documents">The documents to insert.</param>
             <param name="options">The options to use for this Insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.IsCapped">
             <summary>
@@ -12668,15 +13276,15 @@
             Removes documents from this collection that match a query.
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.WriteConcern)">
             <summary>
             Removes documents from this collection that match a query.
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags)">
             <summary>
@@ -12684,29 +13292,29 @@
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="flags">The flags for this Remove (see <see cref="T:MongoDB.Driver.RemoveFlags"/>).</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)">
             <summary>
             Removes documents from this collection that match a query.
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="flags">The flags for this Remove (see <see cref="T:MongoDB.Driver.RemoveFlags"/>).</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.RemoveAll">
             <summary>
             Removes all documents from this collection (see also <see cref="M:MongoDB.Driver.MongoCollection.Drop"/>).
             </summary>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.RemoveAll(MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.RemoveAll(MongoDB.Driver.WriteConcern)">
             <summary>
             Removes all documents from this collection (see also <see cref="M:MongoDB.Driver.MongoCollection.Drop"/>).
             </summary>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.ResetIndexCache">
             <summary>
@@ -12722,7 +13330,7 @@
             </summary>
             <typeparam name="TNominalType">The type of the document to save.</typeparam>
             <param name="document">The document to save.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Save``1(``0,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12732,17 +13340,17 @@
             <typeparam name="TNominalType">The type of the document to save.</typeparam>
             <param name="document">The document to save.</param>
             <param name="options">The options to use for this Save.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Save``1(``0,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Save``1(``0,MongoDB.Driver.WriteConcern)">
             <summary>
             Saves a document to this collection. The document must have an identifiable Id field. Based on the value
             of the Id field Save will perform either an Insert or an Update.
             </summary>
             <typeparam name="TNominalType">The type of the document to save.</typeparam>
             <param name="document">The document to save.</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Save(System.Type,System.Object)">
             <summary>
@@ -12751,7 +13359,7 @@
             </summary>
             <param name="nominalType">The type of the document to save.</param>
             <param name="document">The document to save.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12761,17 +13369,17 @@
             <param name="nominalType">The type of the document to save.</param>
             <param name="document">The document to save.</param>
             <param name="options">The options to use for this Save.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Save(System.Type,System.Object,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Save(System.Type,System.Object,MongoDB.Driver.WriteConcern)">
             <summary>
             Saves a document to this collection. The document must have an identifiable Id field. Based on the value
             of the Id field Save will perform either an Insert or an Update.
             </summary>
             <param name="nominalType">The type of the document to save.</param>
             <param name="document">The document to save.</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.ToString">
             <summary>
@@ -12785,7 +13393,7 @@
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="update">The update to perform on the matching document.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)">
             <summary>
@@ -12794,16 +13402,16 @@
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="update">The update to perform on the matching document.</param>
             <param name="options">The update options.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.WriteConcern)">
             <summary>
             Updates one matching document in this collection.
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="update">The update to perform on the matching document.</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.UpdateFlags)">
             <summary>
@@ -12812,17 +13420,17 @@
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="update">The update to perform on the matching document.</param>
             <param name="flags">The flags for this Update.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.UpdateFlags,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection.Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.UpdateFlags,MongoDB.Driver.WriteConcern)">
             <summary>
             Updates one or more matching documents in this collection (for multiple updates use UpdateFlags.Multi).
             </summary>
             <param name="query">The query (usually a QueryDocument or constructed using the Query builder).</param>
             <param name="update">The update to perform on the matching document.</param>
             <param name="flags">The flags for this Update.</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Validate">
             <summary>
@@ -12932,7 +13540,7 @@
             Inserts a document into this collection (see also InsertBatch to insert multiple documents at once).
             </summary>
             <param name="document">The document to insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection`1.Insert(`0,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12940,22 +13548,22 @@
             </summary>
             <param name="document">The document to insert.</param>
             <param name="options">The options to use for this Insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection`1.Insert(`0,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection`1.Insert(`0,MongoDB.Driver.WriteConcern)">
             <summary>
             Inserts a document into this collection (see also InsertBatch to insert multiple documents at once).
             </summary>
             <param name="document">The document to insert.</param>
-            <param name="safeMode">The SafeMode to use for this Insert.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection`1.InsertBatch(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Inserts multiple documents at once into this collection (see also Insert to insert a single document).
             </summary>
             <param name="documents">The documents to insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection`1.InsertBatch(System.Collections.Generic.IEnumerable{`0},MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12963,15 +13571,15 @@
             </summary>
             <param name="documents">The documents to insert.</param>
             <param name="options">The options to use for this Insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection`1.InsertBatch(System.Collections.Generic.IEnumerable{`0},MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection`1.InsertBatch(System.Collections.Generic.IEnumerable{`0},MongoDB.Driver.WriteConcern)">
             <summary>
             Inserts multiple documents at once into this collection (see also Insert to insert a single document).
             </summary>
             <param name="documents">The documents to insert.</param>
-            <param name="safeMode">The SafeMode to use for this Insert.</param>
-            <returns>A list of SafeModeResults (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A list of WriteConcernResults (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection`1.Save(`0)">
             <summary>
@@ -12979,7 +13587,7 @@
             of the Id field Save will perform either an Insert or an Update.
             </summary>
             <param name="document">The document to save.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection`1.Save(`0,MongoDB.Driver.MongoInsertOptions)">
             <summary>
@@ -12988,16 +13596,16 @@
             </summary>
             <param name="document">The document to save.</param>
             <param name="options">The options to use for this Save.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection`1.Save(`0,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoCollection`1.Save(`0,MongoDB.Driver.WriteConcern)">
             <summary>
             Saves a document to this collection. The document must have an identifiable Id field. Based on the value
             of the Id field Save will perform either an Insert or an Update.
             </summary>
             <param name="document">The document to save.</param>
-            <param name="safeMode">The SafeMode to use for this operation.</param>
-            <returns>A SafeModeResult (or null if SafeMode is not being used).</returns>
+            <param name="writeConcern">The write concern to use for this Insert.</param>
+            <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
         </member>
         <member name="T:MongoDB.Driver.MongoConnectionStringBuilder">
             <summary>
@@ -13028,6 +13636,13 @@
             <param name="keyword">The keyword.</param>
             <returns>True if the keyword is valid.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoConnectionStringBuilder.GetWriteConcern(System.Boolean)">
+            <summary>
+            Returns a WriteConcern value based on this instance's settings and a fire and forget default.
+            </summary>
+            <param name="fireAndForgetDefault">The fire and forget default.</param>
+            <returns>A WriteConcern.</returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoConnectionStringBuilder.ToServerSettings">
             <summary>
             Creates a new instance of MongoServerSettings based on the settings in this MongoConnectionStringBuilder.
@@ -13054,14 +13669,29 @@
             Gets or sets the optional database name.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.FireAndForget">
+            <summary>
+            Gets or sets the fireAndForget value.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.FSync">
+            <summary>
+            Gets or sets the FSync component of the write concern.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.GuidRepresentation">
             <summary>
-            Gets or sets the representation for Guids.
+            Gets or sets the representation to use for Guids.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.IPv6">
             <summary>
             Gets or sets whether to use IPv6.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.Journal">
+            <summary>
+            Gets or sets the Journal component of the write concern.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.MaxConnectionIdleTime">
@@ -13097,6 +13727,11 @@
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.ReplicaSetName">
             <summary>
             Gets or sets the name of the replica set.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.Safe">
+            <summary>
+            Gets or sets the safe value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.SafeMode">
@@ -13145,6 +13780,11 @@
             Gets or sets whether to verify an SSL certificate.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.W">
+            <summary>
+            Gets or sets the W component of the write concern.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.WaitQueueMultiple">
             <summary>
             Gets or sets the wait queue multiple (the actual wait queue size will be WaitQueueMultiple x MaxConnectionPoolSize).
@@ -13158,6 +13798,11 @@
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.WaitQueueTimeout">
             <summary>
             Gets or sets the wait queue timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.WTimeout">
+            <summary>
+            Gets or sets the WTimeout component of the write concern.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.Item(System.String)">
@@ -13531,23 +14176,23 @@
             <param name="credentials">The credentials to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoDatabase instance representing a database on this server. Only one instance
             is created for each combination of database settings.
             </summary>
             <param name="databaseName">The name of the database.</param>
             <param name="credentials">The credentials to use with this database.</param>
-            <param name="safeMode">The safe mode to use with this database.</param>
+            <param name="writeConcern">The write concern to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoDatabase instance representing a database on this server. Only one instance
             is created for each combination of database settings.
             </summary>
             <param name="databaseName">The name of the database.</param>
-            <param name="safeMode">The safe mode to use with this database.</param>
+            <param name="writeConcern">The write concern to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServer.GetDatabaseNames">
@@ -13774,23 +14419,23 @@
             <param name="databaseSettings">The settings to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
-        <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Driver.SafeMode)">
+        <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoDatabase instance representing a database on this server. Only one instance
             is created for each combination of database settings.
             </summary>
             <param name="databaseName">The name of the database.</param>
             <param name="credentials">The credentials to use with this database.</param>
-            <param name="safeMode">The safe mode to use with this database.</param>
+            <param name="writeConcern">The write concern to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
-        <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.SafeMode)">
+        <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoDatabase instance representing a database on this server. Only one instance
             is created for each combination of database settings.
             </summary>
             <param name="databaseName">The name of the database.</param>
-            <param name="safeMode">The safe mode to use with this database.</param>
+            <param name="writeConcern">The write concern to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
         <member name="T:MongoDB.Driver.MongoCursor">
@@ -14455,14 +15100,14 @@
             <param name="collectionName">The name of the collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection``1(System.String,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection``1(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoCollection instance representing a collection on this database
             with a default document type of TDefaultDocument.
             </summary>
             <typeparam name="TDefaultDocument">The default document type for this collection.</typeparam>
             <param name="collectionName">The name of the collection.</param>
-            <param name="safeMode">The safe mode to use when accessing this collection.</param>
+            <param name="writeConcern">The write concern to use when accessing this collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(MongoDB.Driver.MongoCollectionSettings)">
@@ -14481,13 +15126,13 @@
             <param name="collectionName">The name of the collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.String,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoCollection instance representing a collection on this database
             with a default document type of BsonDocument.
             </summary>
             <param name="collectionName">The name of the collection.</param>
-            <param name="safeMode">The safe mode to use when accessing this collection.</param>
+            <param name="writeConcern">The write concern to use when accessing this collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.Type,System.String)">
@@ -14499,14 +15144,14 @@
             <param name="collectionName">The name of the collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.Type,System.String,MongoDB.Driver.SafeMode)">
+        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.Type,System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoCollection instance representing a collection on this database
             with a default document type of BsonDocument.
             </summary>
             <param name="defaultDocumentType">The default document type.</param>
             <param name="collectionName">The name of the collection.</param>
-            <param name="safeMode">The safe mode to use when accessing this collection.</param>
+            <param name="writeConcern">The write concern to use when accessing this collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.GetCollectionNames">
@@ -14761,13 +15406,13 @@
             <param name="collectionName">The name of the collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
-        <member name="P:MongoDB.Driver.MongoDatabase.Item(System.String,MongoDB.Driver.SafeMode)">
+        <member name="P:MongoDB.Driver.MongoDatabase.Item(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoCollection instance representing a collection on this database
             with a default document type of BsonDocument.
             </summary>
             <param name="collectionName">The name of the collection.</param>
-            <param name="safeMode">The safe mode to use when accessing this collection.</param>
+            <param name="writeConcern">The write concern to use when accessing this collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
         <member name="T:MongoDB.Driver.MongoServerAddress">
@@ -14947,6 +15592,13 @@
             </summary>
             <returns>The hash code.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoUrl.GetWriteConcern(System.Boolean)">
+            <summary>
+            Returns a WriteConcern value based on this instance's settings and a fire and forget default.
+            </summary>
+            <param name="fireAndForgetDefault">The fire and forget default.</param>
+            <returns>A WriteConcern.</returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoUrl.ToServerSettings">
             <summary>
             Creates a new instance of MongoServerSettings based on the settings in this MongoUrlBuilder.
@@ -14984,6 +15636,16 @@
             Gets the default credentials.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrl.FireAndForget">
+            <summary>
+            Gets the fireAndForget value.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.FSync">
+            <summary>
+            Gets the FSync component of the write concern.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrl.GuidRepresentation">
             <summary>
             Gets the representation to use for Guids.
@@ -14992,6 +15654,11 @@
         <member name="P:MongoDB.Driver.MongoUrl.IPv6">
             <summary>
             Gets whether to use IPv6.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.Journal">
+            <summary>
+            Gets the Journal component of the write concern.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.MaxConnectionIdleTime">
@@ -15024,9 +15691,20 @@
             Gets the name of the replica set.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrl.Safe">
+            <summary>
+            Gets the safe value.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrl.SafeMode">
             <summary>
             Gets the SafeMode to use.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.SecondaryAcceptableLatency">
+            <summary>
+            Gets the acceptable latency for considering a replica set member for inclusion in load balancing
+            when using a read preference of Secondary, SecondaryPreferred, and Nearest.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.Server">
@@ -15064,6 +15742,11 @@
             Gets whether to verify an SSL certificate.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrl.W">
+            <summary>
+            Gets the W component of the write concern.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrl.WaitQueueMultiple">
             <summary>
             Gets the wait queue multiple (the actual wait queue size will be WaitQueueMultiple x MaxConnectionPoolSize).
@@ -15077,6 +15760,11 @@
         <member name="P:MongoDB.Driver.MongoUrl.WaitQueueTimeout">
             <summary>
             Gets the wait queue timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.WTimeout">
+            <summary>
+            Gets the WTimeout component of the write concern.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.RemoveFlags">
@@ -15147,6 +15835,13 @@
             Creates a new instance of the SafeMode class.
             </summary>
             <param name="other">Another SafeMode to initialize this one from.</param>
+        </member>
+        <member name="M:MongoDB.Driver.SafeMode.op_Implicit(MongoDB.Driver.SafeMode)~MongoDB.Driver.WriteConcern">
+            <summary>
+            Converts a SafeMode to a WriteConcern.
+            </summary>
+            <param name="safeMode">The SafeMode.</param>
+            <returns>A WriteConcern.</returns>
         </member>
         <member name="M:MongoDB.Driver.SafeMode.op_Inequality(MongoDB.Driver.SafeMode,MongoDB.Driver.SafeMode)">
             <summary>
@@ -15303,6 +15998,11 @@
         <member name="P:MongoDB.Driver.SafeMode.FSync">
             <summary>
             Gets whether fsync is true.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SafeMode.IsFrozen">
+            <summary>
+            Gets whether this instance is frozen.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.SafeMode.J">

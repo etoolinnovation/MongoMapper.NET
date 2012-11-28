@@ -54,7 +54,9 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (primary) connectionString = string.Format("{0};readPreference=primary", connectionString);
 
-            MongoServer server = MongoServer.Create(connectionString);
+            var client = new MongoClient(connectionString);
+
+            MongoServer server = client.GetServer();
 
             MongoDatabase dataBase = server.GetDatabase(databaseName);
             return dataBase;

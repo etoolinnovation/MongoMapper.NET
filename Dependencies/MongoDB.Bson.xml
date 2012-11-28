@@ -6400,6 +6400,11 @@
             <param name="memberInfo">The member info.</param>
             <returns>The type of the member.</returns>
         </member>
+        <member name="M:MongoDB.Bson.Serialization.BsonClassMap.GetRegisteredClassMaps">
+            <summary>
+            Returns all registered class maps.
+            </summary>
+        </member>
         <member name="M:MongoDB.Bson.Serialization.BsonClassMap.IsClassMapRegistered(System.Type)">
             <summary>
             Checks whether a class map is registered for a type.

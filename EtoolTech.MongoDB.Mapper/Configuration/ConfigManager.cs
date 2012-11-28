@@ -189,16 +189,19 @@
                 replicaOptions += ";";
             }
 
+            //TODO: Fire and Forget solo se puede asignar si:
+            //return _fsync != null || _journal != null || _w != null || _wTimeout != null;
+
             string connectionString =
                 String.Format(
-                    "mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};journal={7}",
+                    "mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;journal={7}",
                     hostsStrings,
                     replicaOptions,
                     PoolSize(objName),
                     WaitQueueTimeout(objName) * 1000,
                     loginString,
                     databaseName,
-                    SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
+                    (!SafeMode(objName)).ToString(CultureInfo.InvariantCulture).ToLower(),
                     Journal(objName).ToString(CultureInfo.InvariantCulture).ToLower());
             return connectionString;
         }
