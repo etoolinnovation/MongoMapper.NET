@@ -167,6 +167,8 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 settigs.Servers.ToList().Add(new MongoServerAddress(host));    
             }
 
+            var wc = new WriteConcern();
+
             string replicaSetName = ReplicaSetName(objName);
             if (!String.IsNullOrEmpty(replicaSetName))
             {
@@ -175,7 +177,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             if (MinReplicaServersToWrite(objName) != 0)
             {
-                settigs.WriteConcern.W = MinReplicaServersToWrite(objName);
+                wc.W = MinReplicaServersToWrite(objName);
             }
 
             if (BalancedReading(objName))
@@ -185,97 +187,23 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             if (Journal(objName))
             {
-                settigs.WriteConcern.Journal = true;
+                wc.Journal = true;
             }
 
+            settigs.WriteConcern = wc;
             if (!SafeMode(objName) && settigs.WriteConcern.Journal == null && settigs.WriteConcern.W == null)
             {
-                settigs.WriteConcern.FireAndForget = true;
+                wc.FireAndForget = true;
             }
 
             settigs.MaxConnectionPoolSize = PoolSize(objName);
             settigs.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout(objName));
-
+            
+            
             return settigs;
 
         }
-
-        public static string GetConnectionString(string objName)
-        {
-            if (!string.IsNullOrEmpty(_connectionString)) return _connectionString;
-            
-            string loginString = "";
-            string userName = UserName(objName);
-
-            if (!String.IsNullOrEmpty(userName))
-            {
-                loginString = String.Format("{0}:{1}@", userName, PassWord(objName));
-            }
-
-            string databaseName = DataBaseName(objName);
-
-            string host = Host(objName);
-
-            string hostsStrings = "";
-            if (host.Contains(","))
-            {
-                string[] hostList = host.Split(',');
-                hostsStrings = hostList.Aggregate(hostsStrings, (current, h) => current + (h + ","));
-                if (!String.IsNullOrEmpty(hostsStrings))
-                {
-                    hostsStrings = hostsStrings.Remove(hostsStrings.Length - 1, 1);
-                }
-                IsReplicaSet = true;
-            }
-            else
-            {
-                hostsStrings = host;
-            }
-
-            string replicaOptions = "";
-
-            string replicaSetName = ReplicaSetName(objName);
-            if (!String.IsNullOrEmpty(replicaSetName))
-            {
-                replicaOptions = string.Format("replicaSet={0}", replicaSetName);
-            }
-
-            if (MinReplicaServersToWrite(objName) != 0)
-            {
-                replicaOptions += String.Format(";w={0}", MinReplicaServersToWrite(objName));
-            }
-
-            if (BalancedReading(objName))
-            {
-                replicaOptions += String.Format(";slaveOk=true");
-            }
-
-            if (replicaOptions.StartsWith(";"))
-            {
-                replicaOptions = replicaOptions.Remove(0, 1);
-            }
-
-            if (!String.IsNullOrEmpty(replicaOptions))
-            {
-                replicaOptions += ";";
-            }
-
-            //TODO: Fire and Forget solo se puede asignar si:
-            //return _fsync != null || _journal != null || _w != null || _wTimeout != null;
-
-            string connectionString =
-                String.Format(
-                    "mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;journal={7}",
-                    hostsStrings,
-                    replicaOptions,
-                    PoolSize(objName),
-                    WaitQueueTimeout(objName) * 1000,
-                    loginString,
-                    databaseName,
-                    (!SafeMode(objName)).ToString(CultureInfo.InvariantCulture).ToLower(),
-                    Journal(objName).ToString(CultureInfo.InvariantCulture).ToLower());
-            return connectionString;
-        }
+     
 
         public static string Host(string objName)
         {
