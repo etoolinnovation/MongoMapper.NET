@@ -1,4 +1,6 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Configuration
+﻿using MongoDB.Driver;
+
+namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     using System;
     using System.Collections.Generic;
@@ -127,6 +129,75 @@
         public static void OverrideConnectionString(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+
+        public static MongoClientSettings GetClientSettings(string objName)
+        {
+
+            if (!string.IsNullOrEmpty(_connectionString))
+            {
+                var builder = new MongoUrlBuilder(_connectionString);
+                var url = builder.ToMongoUrl();
+                return MongoClientSettings.FromUrl(url);                                
+            }
+
+            var settigs = new MongoClientSettings();
+            
+            string databaseName = DataBaseName(objName);            
+            string userName = UserName(objName);
+            
+            if (!String.IsNullOrEmpty(userName))
+            {
+                settigs.CredentialsStore.AddCredentials(databaseName,new MongoCredentials(userName,PassWord(objName)));                
+            }
+
+            string host = Host(objName);
+            
+            if (host.Contains(","))
+            {
+                string[] hostList = host.Split(',');
+                foreach (string h in hostList)
+                {
+                    settigs.Servers.ToList().Add(new MongoServerAddress(h));    
+                }
+            }
+            else
+            {
+                settigs.Servers.ToList().Add(new MongoServerAddress(host));    
+            }
+
+            string replicaSetName = ReplicaSetName(objName);
+            if (!String.IsNullOrEmpty(replicaSetName))
+            {
+                settigs.ReplicaSetName = replicaSetName;
+            }
+
+            if (MinReplicaServersToWrite(objName) != 0)
+            {
+                settigs.WriteConcern.W = MinReplicaServersToWrite(objName);
+            }
+
+            if (BalancedReading(objName))
+            {
+                settigs.ReadPreference = ReadPreference.SecondaryPreferred;
+            }
+
+            if (Journal(objName))
+            {
+                settigs.WriteConcern.Journal = true;
+            }
+
+            if (!SafeMode(objName) && settigs.WriteConcern.Journal == null && settigs.WriteConcern.W == null)
+            {
+                settigs.WriteConcern.FireAndForget = true;
+            }
+
+            settigs.MaxConnectionPoolSize = PoolSize(objName);
+            settigs.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout(objName));
+
+            return settigs;
+
         }
 
         public static string GetConnectionString(string objName)
