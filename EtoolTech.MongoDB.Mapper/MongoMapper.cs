@@ -217,7 +217,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static void ServerDelete<T>(IMongoQuery query)
         {
-            SafeModeResult result = CollectionsManager.GetCollection(
+            WriteConcernResult result = CollectionsManager.GetCollection(
                 CollectionsManager.GetCollectioName(typeof (T).Name)).Remove(query);
 
             if (ConfigManager.SafeMode(typeof(T).Name))

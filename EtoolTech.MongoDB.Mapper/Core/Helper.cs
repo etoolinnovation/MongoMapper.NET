@@ -50,11 +50,13 @@ namespace EtoolTech.MongoDB.Mapper
         {
             string databaseName = ConfigManager.DataBaseName(objName);
 
-            string connectionString = ConfigManager.GetConnectionString(objName);
+            var settings = ConfigManager.GetClientSettings(objName);
 
-            if (primary) connectionString = string.Format("{0};readPreference=primary", connectionString);
+            if (primary) settings.ReadPreference = ReadPreference.Primary;
 
-            MongoServer server = MongoServer.Create(connectionString);
+            var client = new MongoClient(settings);
+
+            MongoServer server = client.GetServer();
 
             MongoDatabase dataBase = server.GetDatabase(databaseName);
             return dataBase;

@@ -1,4 +1,6 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Configuration
+﻿using MongoDB.Driver;
+
+namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     using System;
     using System.Collections.Generic;
@@ -129,79 +131,79 @@
             _connectionString = connectionString;
         }
 
-        public static string GetConnectionString(string objName)
-        {
-            if (!string.IsNullOrEmpty(_connectionString)) return _connectionString;
-            
-            string loginString = "";
-            string userName = UserName(objName);
 
-            if (!String.IsNullOrEmpty(userName))
+        public static MongoClientSettings GetClientSettings(string objName)
+        {
+
+            if (!string.IsNullOrEmpty(_connectionString))
             {
-                loginString = String.Format("{0}:{1}@", userName, PassWord(objName));
+                var builder = new MongoUrlBuilder(_connectionString);
+                var url = builder.ToMongoUrl();
+                return MongoClientSettings.FromUrl(url);                                
             }
 
-            string databaseName = DataBaseName(objName);
+            var settigs = new MongoClientSettings();
+            
+            string databaseName = DataBaseName(objName);            
+            string userName = UserName(objName);
+            
+            if (!String.IsNullOrEmpty(userName))
+            {
+                settigs.CredentialsStore.AddCredentials(databaseName,new MongoCredentials(userName,PassWord(objName)));                
+            }
 
             string host = Host(objName);
-
-            string hostsStrings = "";
+            
             if (host.Contains(","))
             {
                 string[] hostList = host.Split(',');
-                hostsStrings = hostList.Aggregate(hostsStrings, (current, h) => current + (h + ","));
-                if (!String.IsNullOrEmpty(hostsStrings))
+                foreach (string h in hostList)
                 {
-                    hostsStrings = hostsStrings.Remove(hostsStrings.Length - 1, 1);
+                    settigs.Servers.ToList().Add(new MongoServerAddress(h));    
                 }
-                IsReplicaSet = true;
             }
             else
             {
-                hostsStrings = host;
+                settigs.Servers.ToList().Add(new MongoServerAddress(host));    
             }
 
-            string replicaOptions = "";
+            var wc = new WriteConcern();
 
             string replicaSetName = ReplicaSetName(objName);
             if (!String.IsNullOrEmpty(replicaSetName))
             {
-                replicaOptions = string.Format("replicaSet={0}", replicaSetName);
+                settigs.ReplicaSetName = replicaSetName;
             }
 
             if (MinReplicaServersToWrite(objName) != 0)
             {
-                replicaOptions += String.Format(";w={0}", MinReplicaServersToWrite(objName));
+                wc.W = MinReplicaServersToWrite(objName);
             }
 
             if (BalancedReading(objName))
             {
-                replicaOptions += String.Format(";slaveOk=true");
+                settigs.ReadPreference = ReadPreference.SecondaryPreferred;
             }
 
-            if (replicaOptions.StartsWith(";"))
+            if (Journal(objName))
             {
-                replicaOptions = replicaOptions.Remove(0, 1);
+                wc.Journal = true;
             }
 
-            if (!String.IsNullOrEmpty(replicaOptions))
+            settigs.WriteConcern = wc;
+            if (!SafeMode(objName) && settigs.WriteConcern.Journal == null && settigs.WriteConcern.W == null)
             {
-                replicaOptions += ";";
+                wc.W = 0;
             }
 
-            string connectionString =
-                String.Format(
-                    "mongodb://{4}{0}/{5}?{1}maxpoolsize={2};waitQueueTimeout={3}ms;safe={6};journal={7}",
-                    hostsStrings,
-                    replicaOptions,
-                    PoolSize(objName),
-                    WaitQueueTimeout(objName) * 1000,
-                    loginString,
-                    databaseName,
-                    SafeMode(objName).ToString(CultureInfo.InvariantCulture).ToLower(),
-                    Journal(objName).ToString(CultureInfo.InvariantCulture).ToLower());
-            return connectionString;
+            settigs.MaxConnectionPoolSize = PoolSize(objName);
+            settigs.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout(objName));
+            
+            
+            return settigs;
+
         }
+     
 
         public static string Host(string objName)
         {

@@ -18,13 +18,13 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public SafeModeResult Insert(string name, Type type, object document)
+        public WriteConcernResult Insert(string name, Type type, object document)
         {
 
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Insert, type, document);
-                return new SafeModeResult();
+                return new WriteConcernResult();
             }
 
             var mongoMapperVersionable = document as IMongoMapperVersionable;
@@ -33,7 +33,7 @@ namespace EtoolTech.MongoDB.Mapper
                 mongoMapperVersionable.MongoMapperDocumentVersion++;
             }
 
-            SafeModeResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Insert(type, document);
+            WriteConcernResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Insert(type, document);
 
             if (ConfigManager.SafeMode(type.Name))
             {
@@ -45,12 +45,12 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public SafeModeResult Update(string name, Type type, object document)
+        public WriteConcernResult Update(string name, Type type, object document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Update, type, document);
-                return new SafeModeResult();
+                return new WriteConcernResult();
             }
 
             var mongoMapperVersionable = document as IMongoMapperVersionable;
@@ -59,7 +59,7 @@ namespace EtoolTech.MongoDB.Mapper
                 mongoMapperVersionable.MongoMapperDocumentVersion++;
             }
 
-            SafeModeResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Save(type, document);
+            WriteConcernResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Save(type, document);
 
             if (ConfigManager.SafeMode(name))
             {
@@ -71,13 +71,13 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public SafeModeResult Delete(string name, Type type, object document)
+        public WriteConcernResult Delete(string name, Type type, object document)
         {            
 
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Delete, type, document);
-                return new SafeModeResult();
+                return new WriteConcernResult();
             }
 
             
@@ -90,7 +90,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             IMongoQuery query = Query.EQ("_id", ((MongoMapper)document).MongoMapper_Id);
 
-            SafeModeResult result =
+            WriteConcernResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(type.Name)).Remove(
                     query);
 

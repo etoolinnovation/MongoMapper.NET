@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Interfaces;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
