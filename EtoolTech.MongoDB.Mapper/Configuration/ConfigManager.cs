@@ -193,7 +193,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             settigs.WriteConcern = wc;
             if (!SafeMode(objName) && settigs.WriteConcern.Journal == null && settigs.WriteConcern.W == null)
             {
-                wc.FireAndForget = true;
+                wc.W = 0;
             }
 
             settigs.MaxConnectionPoolSize = PoolSize(objName);

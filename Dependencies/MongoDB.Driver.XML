@@ -2520,142 +2520,6 @@
             Gets a null value with a type of IMongoQuery.
             </summary>
         </member>
-        <member name="T:MongoDB.Driver.Builders.SortBy">
-            <summary>
-            A builder for specifying a sort order.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortBy.Ascending(System.String[])">
-            <summary>
-            Adds keys to be sorted by in ascending order.
-            </summary>
-            <param name="keys">One or more key names.</param>
-            <returns>The builder (so method calls can be chained).</returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortBy.Descending(System.String[])">
-            <summary>
-            Adds keys to be sorted by in descending order.
-            </summary>
-            <param name="keys">One or more key names.</param>
-            <returns>The builder (so method calls can be chained).</returns>
-        </member>
-        <member name="P:MongoDB.Driver.Builders.SortBy.Null">
-            <summary>
-            Gets a null value with a type of IMongoSortBy.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.Builders.SortByBuilder">
-            <summary>
-            A builder for specifying a sort order.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.IMongoSortBy">
-            <summary>
-            A marker interface that represents a sort order (see SortByDocument and the SortBy builder).
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder.#ctor">
-            <summary>
-            Initializes a new instance of the SortByBuider class.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder.Ascending(System.String[])">
-            <summary>
-            Adds keys to be sorted by in ascending order.
-            </summary>
-            <param name="keys">One or more key names.</param>
-            <returns>The builder (so method calls can be chained).</returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder.Descending(System.String[])">
-            <summary>
-            Adds keys to be sorted by in descending order.
-            </summary>
-            <param name="keys">One or more key names.</param>
-            <returns>The builder (so method calls can be chained).</returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder.ToBsonDocument">
-            <summary>
-            Returns the result of the builder as a BsonDocument.
-            </summary>
-            <returns>A BsonDocument.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
-            <summary>
-            Serializes the result of the builder to a BsonWriter.
-            </summary>
-            <param name="bsonWriter">The writer.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="options">The serialization options.</param>
-        </member>
-        <member name="T:MongoDB.Driver.Builders.SortBy`1">
-            <summary>
-            A builder for specifying a sort order.
-            </summary>
-            <typeparam name="TDocument">The type of the document.</typeparam>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortBy`1.Ascending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
-            <summary>
-            Adds keys to be sorted by in ascending order.
-            </summary>
-            <param name="memberExpressions">The member expressions.</param>
-            <returns>
-            The builder (so method calls can be chained).
-            </returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortBy`1.Descending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
-            <summary>
-            Adds keys to be sorted by in descending order.
-            </summary>
-            <param name="memberExpressions">The member expressions.</param>
-            <returns>
-            The builder (so method calls can be chained).
-            </returns>
-        </member>
-        <member name="T:MongoDB.Driver.Builders.SortByBuilder`1">
-            <summary>
-            A builder for specifying a sort order.
-            </summary>
-            <typeparam name="TDocument">The type of the document.</typeparam>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:MongoDB.Driver.Builders.SortByBuilder`1"/> class.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.Ascending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
-            <summary>
-            Adds keys to be sorted by in ascending order.
-            </summary>
-            <param name="memberExpressions">The member expressions indicating which elements to sort by.</param>
-            <returns>
-            The builder (so method calls can be chained).
-            </returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.Descending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
-            <summary>
-            Adds keys to be sorted by in descending order.
-            </summary>
-            <param name="memberExpressions">The member expressions indicating which elements to sort by.</param>
-            <returns>
-            The builder (so method calls can be chained).
-            </returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.ToBsonDocument">
-            <summary>
-            Converts this object to a BsonDocument.
-            </summary>
-            <returns>
-            A BsonDocument.
-            </returns>
-        </member>
-        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
-            <summary>
-            Serializes the result of the builder to a BsonWriter.
-            </summary>
-            <param name="bsonWriter">The writer.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="options">The serialization options.</param>
-        </member>
         <member name="T:MongoDB.Driver.Builders.Query`1">
             <summary>
             Aids in building mongo queries based on type information.
@@ -3367,6 +3231,142 @@
             <param name="upperRightX">The x coordinate of the upper right corner.</param>
             <param name="upperRightY">The y coordinate of the upper right corner.</param>
             <returns>An IMongoQuery.</returns>
+        </member>
+        <member name="T:MongoDB.Driver.Builders.SortBy">
+            <summary>
+            A builder for specifying a sort order.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortBy.Ascending(System.String[])">
+            <summary>
+            Adds keys to be sorted by in ascending order.
+            </summary>
+            <param name="keys">One or more key names.</param>
+            <returns>The builder (so method calls can be chained).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortBy.Descending(System.String[])">
+            <summary>
+            Adds keys to be sorted by in descending order.
+            </summary>
+            <param name="keys">One or more key names.</param>
+            <returns>The builder (so method calls can be chained).</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Builders.SortBy.Null">
+            <summary>
+            Gets a null value with a type of IMongoSortBy.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Builders.SortByBuilder">
+            <summary>
+            A builder for specifying a sort order.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.IMongoSortBy">
+            <summary>
+            A marker interface that represents a sort order (see SortByDocument and the SortBy builder).
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the SortByBuider class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder.Ascending(System.String[])">
+            <summary>
+            Adds keys to be sorted by in ascending order.
+            </summary>
+            <param name="keys">One or more key names.</param>
+            <returns>The builder (so method calls can be chained).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder.Descending(System.String[])">
+            <summary>
+            Adds keys to be sorted by in descending order.
+            </summary>
+            <param name="keys">One or more key names.</param>
+            <returns>The builder (so method calls can be chained).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder.ToBsonDocument">
+            <summary>
+            Returns the result of the builder as a BsonDocument.
+            </summary>
+            <returns>A BsonDocument.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+            <summary>
+            Serializes the result of the builder to a BsonWriter.
+            </summary>
+            <param name="bsonWriter">The writer.</param>
+            <param name="nominalType">The nominal type.</param>
+            <param name="options">The serialization options.</param>
+        </member>
+        <member name="T:MongoDB.Driver.Builders.SortBy`1">
+            <summary>
+            A builder for specifying a sort order.
+            </summary>
+            <typeparam name="TDocument">The type of the document.</typeparam>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortBy`1.Ascending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Adds keys to be sorted by in ascending order.
+            </summary>
+            <param name="memberExpressions">The member expressions.</param>
+            <returns>
+            The builder (so method calls can be chained).
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortBy`1.Descending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Adds keys to be sorted by in descending order.
+            </summary>
+            <param name="memberExpressions">The member expressions.</param>
+            <returns>
+            The builder (so method calls can be chained).
+            </returns>
+        </member>
+        <member name="T:MongoDB.Driver.Builders.SortByBuilder`1">
+            <summary>
+            A builder for specifying a sort order.
+            </summary>
+            <typeparam name="TDocument">The type of the document.</typeparam>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Builders.SortByBuilder`1"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.Ascending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Adds keys to be sorted by in ascending order.
+            </summary>
+            <param name="memberExpressions">The member expressions indicating which elements to sort by.</param>
+            <returns>
+            The builder (so method calls can be chained).
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.Descending(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Adds keys to be sorted by in descending order.
+            </summary>
+            <param name="memberExpressions">The member expressions indicating which elements to sort by.</param>
+            <returns>
+            The builder (so method calls can be chained).
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.ToBsonDocument">
+            <summary>
+            Converts this object to a BsonDocument.
+            </summary>
+            <returns>
+            A BsonDocument.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.Builders.SortByBuilder`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+            <summary>
+            Serializes the result of the builder to a BsonWriter.
+            </summary>
+            <param name="bsonWriter">The writer.</param>
+            <param name="nominalType">The nominal type.</param>
+            <param name="options">The serialization options.</param>
         </member>
         <member name="T:MongoDB.Driver.Builders.Update">
             <summary>
@@ -5191,16 +5191,6 @@
             Gets the document.
             </summary>
         </member>
-        <member name="T:MongoDB.Driver.WriteConcernResult">
-            <summary>
-            Represents the results of an operation performed with a WriteConcern other than FireAndForget.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.SafeModeResult">
-            <summary>
-            Represents the results of an operation performed with a WriteConcern other than FireAndForget.
-            </summary>
-        </member>
         <member name="T:MongoDB.Driver.GetLastErrorResult">
             <summary>
             Represents the results of a GetLastError command.
@@ -5347,6 +5337,90 @@
             Gets the tags.
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.MapReduceResult">
+            <summary>
+            Represents the result of a map/reduce command.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.#ctor">
+            <summary>
+            Initializes a new instance of the MapReduceResult class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs``1">
+            <summary>
+            Gets the inline results as TDocuments.
+            </summary>
+            <typeparam name="TDocument">The type of the documents.</typeparam>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs(System.Type)">
+            <summary>
+            Gets the inline results as TDocuments.
+            </summary>
+            <param name="documentType">The type of the documents.</param>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetResults">
+            <summary>
+            Gets the results (either inline or fetched from the output collection).
+            </summary>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs``1">
+            <summary>
+            Gets the results as TDocuments (either inline or fetched from the output collection).
+            </summary>
+            <typeparam name="TDocument">The type of the documents.</typeparam>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs(System.Type)">
+            <summary>
+            Gets the results as TDocuments (either inline or fetched from the output collection).
+            </summary>
+            <param name="documentType">The type of the documents.</param>
+            <returns>The documents.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.CollectionName">
+            <summary>
+            Gets the output collection name (null if none).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.DatabaseName">
+            <summary>
+            Gets the output database name (null if none).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.Duration">
+            <summary>
+            Gets the duration.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.EmitCount">
+            <summary>
+            Gets the emit count.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.OutputCount">
+            <summary>
+            Gets the output count.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.InlineResults">
+            <summary>
+            Gets the inline results.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.InputCount">
+            <summary>
+            Gets the input count.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.SafeModeResult">
+            <summary>
+            Represents the results of an operation performed with WriteConcern enabled.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.ValidateCollectionResult">
             <summary>
             Represents the results of a validate collection command.
@@ -5482,6 +5556,36 @@
             Gets the prev extent.
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.WriteConcernResult">
+            <summary>
+            Represents the results of an operation performed with WriteConcern enabled.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoServerInstanceType">
+            <summary>
+            Represents an instance of a MongoDB server host (in the case of a replica set a MongoServer uses multiple MongoServerInstances).
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.MongoServerInstanceType.Unknown">
+            <summary>
+            The server instance type is unknown.  This is the default.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.MongoServerInstanceType.StandAlone">
+            <summary>
+            The server is a standalone instance.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.MongoServerInstanceType.ReplicaSetMember">
+            <summary>
+            The server is a replica set member.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.MongoServerInstanceType.ShardRouter">
+            <summary>
+            The server is a shard router (mongos).
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.EvalFlags">
             <summary>
             Flags used with the Eval method in MongoDatabase.
@@ -5550,23 +5654,9 @@
             </summary>
             <param name="connectionString">The connection string.</param>
         </member>
-        <member name="M:MongoDB.Driver.MongoClient.GetDatabase(MongoDB.Driver.MongoDatabaseSettings)">
-            <summary>
-            Gets a MongoDatabase instance representing a database. See also GetServer.
-            </summary>
-            <param name="databaseSettings">The settings to use with this database.</param>
-            <returns>An instance of MongoDatabase.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoClient.GetDatabase(System.String)">
-            <summary>
-            Gets a MongoDatabase instance representing a database. See also GetServer.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <returns>An instance of MongoDatabase.</returns>
-        </member>
         <member name="M:MongoDB.Driver.MongoClient.GetServer">
             <summary>
-            Gets a MongoServer object using this client's settings. See also GetDatabase.
+            Gets a MongoServer object using this client's settings.
             </summary>
             <returns>A MongoServer.</returns>
         </member>
@@ -5589,12 +5679,14 @@
             <summary>
             Gets a MongoClientSettings object intialized with values from a connection string builder.
             </summary>
+            <param name="builder">The connection string builder.</param>
             <returns>A MongoClientSettings.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoClientSettings.FromUrl(MongoDB.Driver.MongoUrl)">
             <summary>
-            Gets a MongoClientSettings object intialized with values from a URL.
+            Gets a MongoClientSettings object intialized with values from a MongoURL.
             </summary>
+            <param name="url">The MongoURL.</param>
             <returns>A MongoClientSettings.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoClientSettings.Clone">
@@ -6245,31 +6337,6 @@
             Gets the version string.
             </summary>
         </member>
-        <member name="T:MongoDB.Driver.MongoServerInstanceType">
-            <summary>
-            Represents an instance of a MongoDB server host (in the case of a replica set a MongoServer uses multiple MongoServerInstances).
-            </summary>
-        </member>
-        <member name="F:MongoDB.Driver.MongoServerInstanceType.Unknown">
-            <summary>
-            The server instance type is unknown.  This is the default.
-            </summary>
-        </member>
-        <member name="F:MongoDB.Driver.MongoServerInstanceType.StandAlone">
-            <summary>
-            The server is a standalone instance.
-            </summary>
-        </member>
-        <member name="F:MongoDB.Driver.MongoServerInstanceType.ReplicaSetMember">
-            <summary>
-            The server is a replica set member.
-            </summary>
-        </member>
-        <member name="F:MongoDB.Driver.MongoServerInstanceType.ShardRouter">
-            <summary>
-            The server is a shard router (mongos).
-            </summary>
-        </member>
         <member name="T:MongoDB.Driver.MongoServerInstance">
             <summary>
             Represents an instance of a MongoDB server host.
@@ -6465,19 +6532,21 @@
             <summary>
             Creates a new MongoServerSettings object from a MongoClientSettings object.
             </summary>
-            <param name="clientSettings"></param>
-            <returns></returns>
+            <param name="clientSettings">The MongoClientSettings.</param>
+            <returns>A MongoServerSettings.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.FromConnectionStringBuilder(MongoDB.Driver.MongoConnectionStringBuilder)">
             <summary>
             Gets a MongoServerSettings object intialized with values from a MongoConnectionStringBuilder.
             </summary>
+            <param name="builder">The MongoConnectionStringBuilder.</param>
             <returns>A MongoServerSettings.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.FromUrl(MongoDB.Driver.MongoUrl)">
             <summary>
-            Gets a MongoServerSettings object intialized with values from a URL.
+            Gets a MongoServerSettings object intialized with values from a MongoUrl.
             </summary>
+            <param name="url">The MongoUrl.</param>
             <returns>A MongoServerSettings.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.Clone">
@@ -6705,9 +6774,9 @@
         </member>
         <member name="M:MongoDB.Driver.MongoUrlBuilder.GetWriteConcern(System.Boolean)">
             <summary>
-            Returns a WriteConcern value based on this instance's settings and a fire and forget default.
+            Returns a WriteConcern value based on this instance's settings and a default enabled value.
             </summary>
-            <param name="fireAndForgetDefault">The fire and forget default.</param>
+            <param name="enabledDefault">The default enabled value.</param>
             <returns>A WriteConcern.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoUrlBuilder.Parse(System.String)">
@@ -6759,11 +6828,6 @@
             Gets or sets the default credentials.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoUrlBuilder.FireAndForget">
-            <summary>
-            Gets or sets the fireAndForget value.
-            </summary>
-        </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.FSync">
             <summary>
             Gets or sets the FSync component of the write concern.
@@ -6812,11 +6876,6 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.ReplicaSetName">
             <summary>
             Gets or sets the name of the replica set.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoUrlBuilder.Safe">
-            <summary>
-            Gets or sets the safe value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.SafeMode">
@@ -7758,7 +7817,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.CollectionOptionsDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.CollectionOptionsDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the CollectionOptionsDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -7862,7 +7921,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.QueryDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.QueryDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the QueryDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -7938,7 +7997,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.CommandDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.CommandDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the CommandDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8055,7 +8114,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.FieldsDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.FieldsDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the FieldsDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8154,7 +8213,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.GeoHaystackSearchOptionsDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.GeoHaystackSearchOptionsDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the GeoHaystackSearchOptionsDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8253,7 +8312,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.GeoNearOptionsDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.GeoNearOptionsDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the GeoNearOptionsDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8352,7 +8411,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.GroupByDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.GroupByDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the GroupByDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8451,7 +8510,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.IndexKeysDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.IndexKeysDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the IndexKeysDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8550,7 +8609,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.IndexOptionsDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.IndexOptionsDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the IndexOptionsDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8649,7 +8708,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.MapReduceOptionsDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.MapReduceOptionsDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the MapReduceOptionsDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8748,7 +8807,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.ScopeDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.ScopeDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the ScopeDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8847,7 +8906,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.SortByDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.SortByDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the SortByDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -8946,7 +9005,7 @@
             <param name="dictionary">A dictionary to initialize the document from.</param>
             <param name="keys">A list of keys to select values from the dictionary.</param>
         </member>
-        <member name="M:MongoDB.Driver.UpdateDocument.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+        <member name="M:MongoDB.Driver.UpdateDocument.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
             <summary>
             Initializes a new instance of the UpdateDocument class and adds new elements from a dictionary of key/value pairs.
             </summary>
@@ -9025,6 +9084,11 @@
             Represents the different WriteConcerns that can be used.
             </summary>
         </member>
+        <member name="M:MongoDB.Driver.WriteConcern.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.WriteConcern"/> class.
+            </summary>
+        </member>
         <member name="M:MongoDB.Driver.WriteConcern.op_Inequality(MongoDB.Driver.WriteConcern,MongoDB.Driver.WriteConcern)">
             <summary>
             Determines whether two specified WriteConcern objects have different values.
@@ -9093,14 +9157,14 @@
             </summary>
             <returns>A string representation of the WriteConcern.</returns>
         </member>
-        <member name="P:MongoDB.Driver.WriteConcern.Errors">
+        <member name="P:MongoDB.Driver.WriteConcern.Acknowledged">
             <summary>
-            Gets an instance of WriteConcern that checks for errors.
+            Gets an instance of WriteConcern that acknowledges writes.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.WriteConcern.None">
+        <member name="P:MongoDB.Driver.WriteConcern.Unacknowledged">
             <summary>
-            Gets an instance of WriteConcern that doesn't check for errors.
+            Gets an instance of WriteConcern that doesn't acknowledge writes.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.WriteConcern.W2">
@@ -9123,9 +9187,9 @@
             Gets an instance of WriteConcern where w="majority".
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.WriteConcern.FireAndForget">
+        <member name="P:MongoDB.Driver.WriteConcern.Enabled">
             <summary>
-            Gets or sets whether WriteConcern is fire and forget.
+            Gets or sets whether WriteConcern is enabled.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.WriteConcern.FSync">
@@ -13638,9 +13702,9 @@
         </member>
         <member name="M:MongoDB.Driver.MongoConnectionStringBuilder.GetWriteConcern(System.Boolean)">
             <summary>
-            Returns a WriteConcern value based on this instance's settings and a fire and forget default.
+            Returns a WriteConcern value based on this instance's settings and a default enabled value.
             </summary>
-            <param name="fireAndForgetDefault">The fire and forget default.</param>
+            <param name="enabledDefault">The default enabled value.</param>
             <returns>A WriteConcern.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoConnectionStringBuilder.ToServerSettings">
@@ -13667,11 +13731,6 @@
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.DatabaseName">
             <summary>
             Gets or sets the optional database name.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.FireAndForget">
-            <summary>
-            Gets or sets the fireAndForget value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.FSync">
@@ -13727,11 +13786,6 @@
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.ReplicaSetName">
             <summary>
             Gets or sets the name of the replica set.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.Safe">
-            <summary>
-            Gets or sets the safe value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.SafeMode">
@@ -13895,85 +13949,6 @@
         <member name="P:MongoDB.Driver.MongoCredentials.Admin">
             <summary>
             Gets whether the credentials should be validated against the admin database.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.MapReduceResult">
-            <summary>
-            Represents the result of a map/reduce command.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.#ctor">
-            <summary>
-            Initializes a new instance of the MapReduceResult class.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs``1">
-            <summary>
-            Gets the inline results as TDocuments.
-            </summary>
-            <typeparam name="TDocument">The type of the documents.</typeparam>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs(System.Type)">
-            <summary>
-            Gets the inline results as TDocuments.
-            </summary>
-            <param name="documentType">The type of the documents.</param>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetResults">
-            <summary>
-            Gets the results (either inline or fetched from the output collection).
-            </summary>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs``1">
-            <summary>
-            Gets the results as TDocuments (either inline or fetched from the output collection).
-            </summary>
-            <typeparam name="TDocument">The type of the documents.</typeparam>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs(System.Type)">
-            <summary>
-            Gets the results as TDocuments (either inline or fetched from the output collection).
-            </summary>
-            <param name="documentType">The type of the documents.</param>
-            <returns>The documents.</returns>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.CollectionName">
-            <summary>
-            Gets the output collection name (null if none).
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.DatabaseName">
-            <summary>
-            Gets the output database name (null if none).
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.Duration">
-            <summary>
-            Gets the duration.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.EmitCount">
-            <summary>
-            Gets the emit count.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.OutputCount">
-            <summary>
-            Gets the output count.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.InlineResults">
-            <summary>
-            Gets the inline results.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.InputCount">
-            <summary>
-            Gets the input count.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoServer">
@@ -15594,9 +15569,9 @@
         </member>
         <member name="M:MongoDB.Driver.MongoUrl.GetWriteConcern(System.Boolean)">
             <summary>
-            Returns a WriteConcern value based on this instance's settings and a fire and forget default.
+            Returns a WriteConcern value based on this instance's settings and a default enabled value.
             </summary>
-            <param name="fireAndForgetDefault">The fire and forget default.</param>
+            <param name="enabledDefault">The default enabled value.</param>
             <returns>A WriteConcern.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoUrl.ToServerSettings">
@@ -15634,11 +15609,6 @@
         <member name="P:MongoDB.Driver.MongoUrl.DefaultCredentials">
             <summary>
             Gets the default credentials.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoUrl.FireAndForget">
-            <summary>
-            Gets the fireAndForget value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.FSync">
@@ -15689,11 +15659,6 @@
         <member name="P:MongoDB.Driver.MongoUrl.ReplicaSetName">
             <summary>
             Gets the name of the replica set.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoUrl.Safe">
-            <summary>
-            Gets the safe value.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.SafeMode">
