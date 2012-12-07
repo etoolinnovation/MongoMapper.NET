@@ -124,20 +124,20 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.Journal;
         }
 
-        private static string _connectionString = String.Empty;
+        private static string _urlString = String.Empty;
 
-        public static void OverrideConnectionString(string connectionString)
+        public static void OverrideUrlString(string urlString)
         {
-            _connectionString = connectionString;
+            _urlString = urlString;
         }
 
 
         public static MongoClientSettings GetClientSettings(string objName)
         {
 
-            if (!string.IsNullOrEmpty(_connectionString))
+            if (!string.IsNullOrEmpty(_urlString))
             {
-                var builder = new MongoUrlBuilder(_connectionString);
+                var builder = new MongoUrlBuilder(_urlString);
                 var url = builder.ToMongoUrl();
                 return MongoClientSettings.FromUrl(url);                                
             }
@@ -153,14 +153,26 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
 
             string host = Host(objName);
+
             
             if (host.Contains(","))
             {
+                var servers = new List<MongoServerAddress>();
                 string[] hostList = host.Split(',');
                 foreach (string h in hostList)
                 {
-                    settigs.Servers.ToList().Add(new MongoServerAddress(h));    
+                    if (h.Contains(":"))
+                    {
+                        string[] hostPort = h.Split(':');
+                        servers.Add(new MongoServerAddress(hostPort[0], int.Parse(hostPort[1])));
+                    }
+                    else
+                    {
+                        servers.Add(new MongoServerAddress(h));
+                    }
                 }
+                
+                settigs.Servers = servers;
             }
             else
             {
@@ -180,10 +192,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 wc.W = MinReplicaServersToWrite(objName);
             }
 
-            if (BalancedReading(objName))
-            {
-                settigs.ReadPreference = ReadPreference.SecondaryPreferred;
-            }
+            settigs.ReadPreference = BalancedReading(objName) ? ReadPreference.SecondaryPreferred : ReadPreference.PrimaryPreferred;
 
             if (Journal(objName))
             {
