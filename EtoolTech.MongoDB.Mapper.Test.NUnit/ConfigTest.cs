@@ -1,4 +1,8 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using System;
+using System.Linq;
+using MongoDB.Driver;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     using EtoolTech.MongoDB.Mapper.Configuration;
 
@@ -12,11 +16,21 @@
         [Test]
         public void TestReadConfig()
         {
-            //ConfigManager.OverrideConnectionString(string.Empty);
-            //Assert.AreEqual(
-            //    "mongodb://user:pass@host1,host2,host3:1234/Conf1?slaveOk=true;maxpoolsize=1;waitQueueTimeout=2000ms;fireAndForget=false;journal=true",
-            //    ConfigManager.GetConnectionString("TestConf1"));
+            ConfigManager.OverrideUrlString(string.Empty);
 
+            var conf = ConfigManager.GetClientSettings("TestConf1");
+
+            Assert.AreEqual(3, conf.Servers.Count());
+            Assert.AreEqual("host1:27017", conf.Servers.ToList()[0].ToString());
+            Assert.AreEqual("host2:27017", conf.Servers.ToList()[1].ToString());
+            Assert.AreEqual("host3:1234", conf.Servers.ToList()[2].ToString());
+
+            Assert.AreEqual(ReadPreference.PrimaryPreferred, conf.ReadPreference);
+            Assert.AreEqual(1, conf.MaxConnectionPoolSize);
+            Assert.AreEqual(TimeSpan.FromSeconds(2), conf.WaitQueueTimeout);
+            Assert.AreEqual(true, conf.WriteConcern.Journal);
+
+        
             //Assert.AreEqual(
             //    "mongodb://127.0.0.1/TestDotNET?w=1;maxpoolsize=50;waitQueueTimeout=1000ms;fireAndForget=true;journal=true",
             //    ConfigManager.GetConnectionString("Country"));

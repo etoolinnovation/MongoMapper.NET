@@ -14,7 +14,7 @@
         //{
         //    MongoTestServer.SetMongodPtah(@"mongod\");
         //    this._mongoTestServer = MongoTestServer.Start(27017);
-        //    ConfigManager.OverrideConnectionString(this._mongoTestServer.ConnectionString);
+        //    ConfigManager.OverrideUrlString(this._mongoTestServer.ConnectionString);
         //}
 
         //[TestFixtureTearDown]
