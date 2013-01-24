@@ -6,6 +6,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
     [Serializable]
     [MongoKey(KeyFields = "Code")]
+    [MongoGeo2DIndex(IndexField = "Pos")]
     public class Country : MongoMapper
     {
         #region Public Properties
@@ -14,6 +15,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public string Code { get; set; }
 
         public string Name { get; set; }
+
+        public long[] Pos { get; set; }
 
         #endregion
 

@@ -113,6 +113,12 @@
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
         }
 
+        [Test]
+        public void TestGenerateSchema()
+        {
+            ReflectionUtility.BuildSchema(this.GetType().Assembly);
+        }
+
         #endregion
     }
 }
