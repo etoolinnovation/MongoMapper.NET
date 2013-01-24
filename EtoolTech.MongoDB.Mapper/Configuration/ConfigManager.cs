@@ -146,7 +146,10 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             if (!String.IsNullOrEmpty(userName))
             {
-                settigs.CredentialsStore.AddCredentials(databaseName, new MongoCredentials(userName, PassWord(ObjName)));
+                var credentials = new MongoCredentials(MongoAuthenticationProtocol.Strongest,
+                                                       new MongoInternalIdentity(databaseName, userName),
+                                                       new PasswordEvidence(PassWord(ObjName)));
+                settigs.CredentialsStore.Add(credentials);
             }
 
             string host = Host(ObjName);

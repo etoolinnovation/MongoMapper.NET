@@ -5561,6 +5561,23 @@
             Represents the results of an operation performed with WriteConcern enabled.
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Authenticator">
+            <summary>
+            Authenticates credentials against MongoDB.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Authenticator.#ctor(MongoDB.Driver.Internal.MongoConnection,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoCredentials})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Authenticator"/> class.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Authenticator.Authenticate">
+            <summary>
+            Authenticates the specified connection.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.MongoServerInstanceType">
             <summary>
             Represents an instance of a MongoDB server host (in the case of a replica set a MongoServer uses multiple MongoServerInstances).
@@ -5585,6 +5602,1207 @@
             <summary>
             The server is a shard router (mongos).
             </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.IAuthenticationMethod">
+            <summary>
+            Authenticates a MongoConnection.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.IAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Authenticates the specified connection with the given credentials.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.IAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can use the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can use the specified credentials; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.IAuthenticationMethod.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.SaslImplementationBase">
+            <summary>
+            Base implementation for a sasl step to provide some common methods.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.SaslImplementationBase.GetMongoPassword(System.Security.Cryptography.MD5,System.Text.Encoding,System.String,System.String)">
+            <summary>
+            Gets the mongo password.
+            </summary>
+            <param name="md5">The MD5.</param>
+            <param name="encoding">The encoding.</param>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.SaslImplementationBase.ToHexString(System.Byte[])">
+            <summary>
+            To the hex string.
+            </summary>
+            <param name="bytes">The bytes.</param>
+            <returns></returns>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism">
+            <summary>
+            A mechanism for CRAM-MD5.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.ISaslMechanism">
+            <summary>
+            Represents a sasl mechanism.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.ISaslMechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can authenticate with the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.ISaslMechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Initializes the mechanism.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+            <returns>The initial step.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.ISaslMechanism.Name">
+            <summary>
+            Gets the name of the mechanism.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can authenticate with the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Initializes the mechanism.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+            <returns>The initial step.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.Name">
+            <summary>
+            Gets the name of the mechanism.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism">
+            <summary>
+            A mechanism for DIGEST-MD5.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can authenticate with the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Initializes the mechanism.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+            <returns>The initial step.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.Name">
+            <summary>
+            Gets the name of the mechanism.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslCramMD5Implementation">
+            <summary>
+            A mechanism implementing the CRAM-MD5 sasl specification.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslImplementationBase">
+            <summary>
+            A base class for implementing a mechanism using Libgsasl.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.ISaslStep">
+            <summary>
+            A step in a Sasl Conversation.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.ISaslStep.Transition(MongoDB.Driver.Communication.Security.SaslConversation,System.Byte[])">
+            <summary>
+            Transitions to the next step in the conversation.
+            </summary>
+            <param name="conversation">The conversation.</param>
+            <param name="bytesReceivedFromServer">The bytes received from the server.</param>
+            <returns>An ISaslStep.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.ISaslStep.BytesToSendToServer">
+            <summary>
+            The bytes that should be sent to ther server before calling Transition.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslImplementationBase.#ctor(System.String,System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslImplementationBase"/> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="output">The output.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslImplementationBase.Transition(MongoDB.Driver.Communication.Security.SaslConversation,System.Byte[])">
+            <summary>
+            Transitions to the next step in the conversation.
+            </summary>
+            <param name="conversation">The conversation.</param>
+            <param name="input">The input.</param>
+            <returns>An ISaslStep.</returns>
+            <exception cref="T:MongoDB.Driver.Communication.Security.MongoSecurityException">Unable to initialize context.</exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslImplementationBase.GetProperties">
+            <summary>
+            Gets the properties that should be used in the specified mechanism.
+            </summary>
+            <returns>The properties.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.GsaslImplementationBase.BytesToSendToServer">
+            <summary>
+            The bytes that should be sent to ther server before calling Transition.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslCramMD5Implementation.#ctor(System.String,MongoDB.Driver.PasswordEvidence)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslCramMD5Implementation"/> class.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslCramMD5Implementation.GetProperties">
+            <summary>
+            Gets the properties that should be used in the specified mechanism.
+            </summary>
+            <returns>The properties.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.GetError(System.Int32)">
+            <summary>
+            Gets the description of an error code.
+            </summary>
+            <param name="error">The error.</param>
+            <returns>The description.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_client_start(MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext,System.String,MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession@)">
+            <summary>
+            Begins a GsaslSession.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="mechanism">The mechanism.</param>
+            <param name="session">The session.</param>
+            <returns>A result code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_done(System.IntPtr)">
+            <summary>
+            Frees a GsaslContext.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_finish(System.IntPtr)">
+            <summary>
+            Frees a GsaslSession.
+            </summary>
+            <param name="session">The session.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_free(System.IntPtr)">
+            <summary>
+            Frees memory allocated by libgsasl.
+            </summary>
+            <param name="ptr">The PTR.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_init(MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext@)">
+            <summary>
+            Initiates a GsaslContext.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_property_set(MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession,MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslProperty,System.String)">
+            <summary>
+            Sets a property on a GsaslSession.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="prop">The prop.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_step(MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession,System.IntPtr,System.Int32,System.IntPtr@,System.Int32@)">
+            <summary>
+            Steps through the state machine.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="input">The input.</param>
+            <param name="input_len">The input_len.</param>
+            <param name="output">The output.</param>
+            <param name="output_len">The output_len.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.Gsasl.gsasl_strerror(System.Int32)">
+            <summary>
+            Gets a description for the error code.
+            </summary>
+            <param name="err">The err.</param>
+            <returns>A string describing the error.</returns>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext">
+            <summary>
+            A handle to a gsasl context.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext.Initialize">
+            <summary>
+            Initializes this instance.
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.Exception">Unable to initialize context.</exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext.BeginSession(System.String)">
+            <summary>
+            Begins the session.
+            </summary>
+            <param name="mechanism">The mechanism.</param>
+            <returns>A GsaslSession.</returns>
+            <exception cref="T:System.Exception">Unable to being session.</exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext.ReleaseHandle">
+            <summary>
+            When overridden in a derived class, executes the code required to free the handle.
+            </summary>
+            <returns>
+            true if the handle is released successfully; otherwise, in the event of a catastrophic failure, false. In this case, it generates a releaseHandleFailed MDA Managed Debugging Assistant.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslContext.IsInvalid">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the handle value is invalid.
+            </summary>
+            <returns>true if the handle value is invalid; otherwise, false.</returns>
+              <PermissionSet>
+              <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+              </PermissionSet>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException">
+            <summary>
+            Thrown from a gsasl wrapped operation.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException"/> class.
+            </summary>
+            <param name="errorCode">The error code.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException.#ctor(System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException"/> class.
+            </summary>
+            <param name="errorCode">The error code.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslException"/> class.
+            </summary>
+            <param name="info">The info.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslProperty">
+            <summary>
+            Valid properties used in a GsaslSession.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession">
+            <summary>
+            A handle to a gsasl session.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession.SetProperty(System.String,System.String)">
+            <summary>
+            Sets the property.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+            <exception cref="T:MongoDB.Driver.Communication.Security.MongoSecurityException"></exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession.Step(System.Byte[])">
+            <summary>
+            Steps the specified input.
+            </summary>
+            <param name="input">The input.</param>
+            <returns>The output bytes to be sent to the server.</returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession.ReleaseHandle">
+            <summary>
+            When overridden in a derived class, executes the code required to free the handle.
+            </summary>
+            <returns>
+            true if the handle is released successfully; otherwise, in the event of a catastrophic failure, false. In this case, it generates a releaseHandleFailed MDA Managed Debugging Assistant.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession.IsComplete">
+            <summary>
+            Gets a value indicating whether this instance is complete.
+            </summary>
+            <value>
+            <c>true</c> if this instance is complete; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Gsasl.GsaslSession.IsInvalid">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the handle value is invalid.
+            </summary>
+            <returns>true if the handle value is invalid; otherwise, false.</returns>
+              <PermissionSet>
+              <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+              </PermissionSet>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod">
+            <summary>
+            Authenticates credentials using the MONGO-CR protocol.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Authenticates the connection against the given database.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can use the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can use the specified credentials; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslGssapiImplementation">
+            <summary>
+            Implements the GssApi specification using the Gsasl library.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslGssapiImplementation.#ctor(System.String,System.String,MongoDB.Driver.MongoIdentityEvidence)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslGssapiImplementation"/> class.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="username">The username.</param>
+            <param name="evidence">The evidence.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GsaslGssapiImplementation.GetProperties">
+            <summary>
+            Gets the properties that should be used in the specified mechanism.
+            </summary>
+            <returns>The properties.</returns>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism">
+            <summary>
+            A mechanism implementing the GSS API specification.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can authenticate with the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Initializes the mechanism.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+            <returns>The initial step.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.Name">
+            <summary>
+            Gets the name of the mechanism.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.ManagedCramMD5Implementation">
+            <summary>
+            Managed implementation of the CRAM-MD5 sasl spec (http://tools.ietf.org/html/draft-ietf-sasl-crammd5-10).
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.ManagedCramMD5Implementation.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.ManagedCramMD5Implementation"/> class.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.ManagedCramMD5Implementation.BytesToSendToServer">
+            <summary>
+            The bytes that should be sent to ther server before calling Transition.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.ManagedDigestMD5Implementation">
+            <summary>
+            A managed implementation of the DIGEST-MD5 sasl spec (http://www.ietf.org/rfc/rfc2831.txt).
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.ManagedDigestMD5Implementation.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.ManagedDigestMD5Implementation"/> class.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.ManagedDigestMD5Implementation.Transition(MongoDB.Driver.Communication.Security.SaslConversation,System.Byte[])">
+            <summary>
+            Transitions to the next step in the conversation.
+            </summary>
+            <param name="conversation">The conversation.</param>
+            <param name="bytesReceivedFromServer">The bytes received from the server.</param>
+            <returns>An ISaslStep.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.ManagedDigestMD5Implementation.BytesToSendToServer">
+            <summary>
+            The bytes that should be sent to ther server before calling Transition.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.WindowsGssapiImplementation">
+            <summary>
+            Implements the GSS API specification on Windows utilizing the native sspi libraries.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.WindowsGssapiImplementation.#ctor(System.String,System.String,MongoDB.Driver.MongoIdentityEvidence)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.WindowsGssapiImplementation"/> class.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="username">The username.</param>
+            <param name="evidence">The evidence.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.WindowsGssapiImplementation.Transition(MongoDB.Driver.Communication.Security.SaslConversation,System.Byte[])">
+            <summary>
+            Transitions to the next step in the conversation.
+            </summary>
+            <param name="conversation">The conversation.</param>
+            <param name="bytesReceivedFromServer">The bytes received from the server.</param>
+            <returns>An ISaslStep.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.WindowsGssapiImplementation.BytesToSendToServer">
+            <summary>
+            The bytes that should be sent to ther server before calling Transition.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.MongoSecurityException">
+            <summary>
+            An exception thrown during login and privilege negotiation.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoException">
+            <summary>
+            Represents a MongoDB exception.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the MongoException class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the MongoException class.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the MongoException class (this overload supports deserialization).
+            </summary>
+            <param name="info">The SerializationInfo.</param>
+            <param name="context">The StreamingContext.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.MongoSecurityException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.MongoSecurityException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.MongoSecurityException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.MongoSecurityException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.MongoSecurityException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.MongoSecurityException"/> class.
+            </summary>
+            <param name="info">The info.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod">
+            <summary>
+            Authenticates credentials using the SASL protocol.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.#ctor(MongoDB.Driver.Communication.Security.ISaslMechanism)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod"/> class.
+            </summary>
+            <param name="mechanism">The mechanism.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Authenticates the connection against the given database.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="credentials">The credentials.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredentials)">
+            <summary>
+            Determines whether this instance can use the specified credentials.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <returns>
+              <c>true</c> if this instance can use the specified credentials; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.SaslCompletionStep">
+            <summary>
+            A step indicating the expected completion of a sasl conversation. Calling Transition
+            on this step will result in an exception indicating a communication failure between
+            the client and server.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslCompletionStep.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.SaslCompletionStep"/> class.
+            </summary>
+            <param name="output">The output.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslCompletionStep.Transition(MongoDB.Driver.Communication.Security.SaslConversation,System.Byte[])">
+            <summary>
+            Transitions to the next step in the conversation.
+            </summary>
+            <param name="conversation">The conversation.</param>
+            <param name="input">The input.</param>
+            <returns>An ISaslStep.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.SaslCompletionStep.BytesToSendToServer">
+            <summary>
+            Gets the output from the transition. The output will be used to send back to the server.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.SaslCompletionStep.IsComplete">
+            <summary>
+            Gets a value indicating whether the conversation is complete.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.SaslConversation">
+            <summary>
+            A high-level sasl conversation object.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslConversation.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.SaslConversation"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslConversation.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:MongoDB.Driver.Communication.Security.SaslConversation"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslConversation.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.SaslConversation.RegisterItemForDisposal(System.IDisposable)">
+            <summary>
+            Registers the item for disposal.
+            </summary>
+            <param name="disposable">The disposable.</param>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentity">
+            <summary>
+            SEC_WINNT_AUTH_IDENTITY
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentity.#ctor(System.String,System.Security.SecureString)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentity"/> struct.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentity.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentityFlag">
+            <summary>
+            Flag for the AuthIdentity structure.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentityFlag.Ansi">
+            <summary>
+            SEC_WINNT_AUTH_IDENTITY_ANSI
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentityFlag.Unicode">
+            <summary>
+            SEC_WINNT_AUTH_IDENTITY_UNICODE
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.DataRepresentation">
+            <summary>
+            Flags for InitiateSecurityContext.
+            </summary>
+            <remarks>
+            See the TargetDataRep parameter at 
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375507(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.DataRepresentation.Network">
+            <summary>
+            SECURITY_NETWORK_DREP
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.DataRepresentation.Native">
+            <summary>
+            SECURITY_NATIVE_DREP
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.EncryptQualityOfProtection">
+            <summary>
+            Flags for EncryptMessage.
+            </summary>
+            <remarks>
+            See the fQOP parameter at 
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375378(v=vs.85).aspx.
+            </remarks>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.EncryptQualityOfProtection.WrapNoEncrypt">
+            <summary>
+            SECQOP_WRAP_NO_ENCRYPT
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.QueryContextAttributes">
+            <summary>
+            Flags for QueryContextAttributes.
+            </summary>
+            <remarks>
+            See the ulAttribute parameter at 
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa379326(v=vs.85).aspx.
+            </remarks>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.QueryContextAttributes.Sizes">
+            <summary>
+            SECPKG_ATTR_SIZES
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer">
+            <summary>
+            A SecBuffer structure.
+            </summary>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa379814(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer"/> struct.
+            </summary>
+            <param name="bufferSize">Size of the buffer.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer"/> struct.
+            </summary>
+            <param name="bytes">The bytes.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer.#ctor(System.Byte[],MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer"/> struct.
+            </summary>
+            <param name="bytes">The bytes.</param>
+            <param name="bufferType">Type of the buffer.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor">
+            <summary>
+            A SecBufferDesc structure.
+            </summary>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa379815(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor"/> struct.
+            </summary>
+            <param name="bufferSize">Size of the buffer.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor"/> struct.
+            </summary>
+            <param name="secBufferBytes">The sec buffer bytes.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor.#ctor(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBuffer[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor"/> struct.
+            </summary>
+            <param name="buffers">The buffers.</param>
+            <exception cref="T:System.ArgumentException">cannot be null or 0 length;buffers</exception>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor.ToByteArray">
+            <summary>
+            To the byte array.
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException">Object has already been disposed!!!</exception>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType">
+            <summary>
+            Types for the SecurityBuffer structure.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType.Version">
+            <summary>
+            SECBUFFER_VERSION
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType.Empty">
+            <summary>
+            SECBUFFER_EMPTY
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType.Data">
+            <summary>
+            SECBUFFER_DATA
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType.Token">
+            <summary>
+            SECBUFFER_TOKEN
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType.Padding">
+            <summary>
+            SECBUFFER_PADDING
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferType.Stream">
+            <summary>
+            SECBUFFER_STREAM
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext">
+            <summary>
+            A wrapper around the SspiHandle structure specificly used as a security context handle.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.Initialize(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials,System.String,System.Byte[],System.Byte[]@)">
+            <summary>
+            Initializes the context.
+            </summary>
+            <param name="credentials">The credentials.</param>
+            <param name="servicePrincipalName">Name of the service principal.</param>
+            <param name="input">The input.</param>
+            <param name="output">The output.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.DecryptMessage(System.Int32,System.Byte[],System.Byte[]@)">
+            <summary>
+            Decrypts the message.
+            </summary>
+            <param name="messageLength">Length of the message.</param>
+            <param name="encryptedBytes">The encrypted bytes.</param>
+            <param name="decryptedBytes">The decrypted bytes.</param>
+            <returns>A result code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.EncryptMessage(System.Byte[],System.Byte[]@)">
+            <summary>
+            Encrypts the message.
+            </summary>
+            <param name="inBytes">The in bytes.</param>
+            <param name="outBytes">The out bytes.</param>
+            <returns>A result code.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.Initialize(System.String,System.Byte[],System.Byte[]@)">
+            <summary>
+            Initializes the specified service principal name.
+            </summary>
+            <param name="servicePrincipalName">Name of the service principal.</param>
+            <param name="inBytes">The in bytes.</param>
+            <param name="outBytes">The out bytes.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.ReleaseHandle">
+            <summary>
+            When overridden in a derived class, executes the code required to free the handle.
+            </summary>
+            <returns>
+            true if the handle is released successfully; otherwise, in the event of a catastrophic failure, false. In this case, it generates a releaseHandleFailed MDA Managed Debugging Assistant.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.IsInitialized">
+            <summary>
+            Gets a value indicating whether this instance is initialized.
+            </summary>
+            <value>
+            <c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.IsInvalid">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the handle value is invalid.
+            </summary>
+            <returns>true if the handle value is invalid; otherwise, false.</returns>
+              <PermissionSet>
+              <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+              </PermissionSet>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials">
+            <summary>
+            A wrapper around the SspiHandle structure specificly used as a credentials handle.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.Acquire(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiPackage,System.String,MongoDB.Driver.MongoIdentityEvidence)">
+            <summary>
+            Acquires the credentials handle.
+            </summary>
+            <param name="package">The package.</param>
+            <param name="username">The username.</param>
+            <param name="evidence">The evidence.</param>
+            <returns>A security credential.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.ReleaseHandle">
+            <summary>
+            When overridden in a derived class, executes the code required to free the handle.
+            </summary>
+            <returns>
+            true if the handle is released successfully; otherwise, in the event of a catastrophic failure, false. In this case, it generates a releaseHandleFailed MDA Managed Debugging Assistant.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.IsInvalid">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the handle value is invalid.
+            </summary>
+            <returns>true if the handle value is invalid; otherwise, false.</returns>
+              <PermissionSet>
+              <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+              </PermissionSet>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentialUse">
+            <summary>
+            Flags for AcquireCredentialsHandle.
+            </summary>
+            <remarks>
+            See the fCredentialUse at http://msdn.microsoft.com/en-us/library/windows/desktop/aa374712(v=vs.85).aspx.
+            </remarks>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentialUse.Outbound">
+            <summary>
+            SECPKG_CRED_OUTBOUND
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityPackageContextSizes">
+            <summary>
+            A SecPkgContext_Sizes structure.
+            </summary>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa380097(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags">
+            <summary>
+            Flags for InitiateSecurityContext.
+            </summary>
+            <remarks>
+            See the fContextReq parameter at 
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375507(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags.MutualAuth">
+            <summary>
+            ISC_REQ_MUTUAL_AUTH
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags.Confidentiality">
+            <summary>
+            ISC_REQ_CONFIDENTIALITY
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags.InitIntegrity">
+            <summary>
+            ISC_REQ_INTEGRITY
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle">
+            <summary>
+            A SecHandle structure.
+            </summary>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa380495(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle.SetToInvalid">
+            <summary>
+            Sets to invalid.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle.IsZero">
+            <summary>
+            Gets a value indicating whether this instance is zero.
+            </summary>
+            <value>
+              <c>true</c> if this instance is zero; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiPackage">
+            <summary>
+            This is represented as a string in AcquireCredentialsHandle. This value will have .ToString() called on it.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiPackage.Kerberos">
+            <summary>
+            Kerberos
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.CreateException(System.Int64,System.String)">
+            <summary>
+            Creates an exception for the specified error code.
+            </summary>
+            <param name="errorCode">The error code.</param>
+            <param name="defaultMessage">The default message.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.AcquireCredentialsHandle(System.String,System.String,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentialUse,System.IntPtr,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.AuthIdentity,System.Int32,System.IntPtr,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,System.Int64@)">
+            <summary>
+            Acquires the credentials handle.
+            </summary>
+            <param name="principal">The principal.</param>
+            <param name="package">The package.</param>
+            <param name="credentialUsage">The credential usage.</param>
+            <param name="logonId">The logon id.</param>
+            <param name="identity">The identity.</param>
+            <param name="keyCallback">The key callback.</param>
+            <param name="keyArgument">The key argument.</param>
+            <param name="credentialHandle">The credential handle.</param>
+            <param name="timestamp">The timestamp.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa374712(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.AcquireCredentialsHandle(System.String,System.String,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentialUse,System.IntPtr,System.IntPtr,System.Int32,System.IntPtr,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,System.Int64@)">
+            <summary>
+            Acquires the credentials handle.
+            </summary>
+            <param name="principal">The principal.</param>
+            <param name="package">The package.</param>
+            <param name="credentialUsage">The credential usage.</param>
+            <param name="logonId">The logon id.</param>
+            <param name="identity">The identity.</param>
+            <param name="keyCallback">The key callback.</param>
+            <param name="keyArgument">The key argument.</param>
+            <param name="credentialHandle">The credential handle.</param>
+            <param name="timestamp">The timestamp.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa374712(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.DeleteSecurityContext(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@)">
+            <summary>
+            Deletes the security context.
+            </summary>
+            <param name="context">The context.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375354(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.DecryptMessage(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor@,System.UInt32,System.UInt32@)">
+            <summary>
+            Decrypts the message.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="pMessage">The p message.</param>
+            <param name="sequenceNumber">The sequence number.</param>
+            <param name="quality">The quality.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375211(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.EncryptMessage(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.EncryptQualityOfProtection,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor@,System.UInt32)">
+            <summary>
+            Encrypts the message.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="quality">The quality.</param>
+            <param name="pMessage">The p message.</param>
+            <param name="sequenceNumber">The sequence number.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375378(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.FreeCredentialsHandle(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@)">
+            <summary>
+            Frees the credentials handle.
+            </summary>
+            <param name="sspiHandle">The sspi handle.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375417(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.InitializeSecurityContext(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,System.IntPtr,System.String,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags,System.Int32,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.DataRepresentation,System.IntPtr,System.Int32,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags@,System.Int64@)">
+            <summary>
+            Initializes the security context.
+            </summary>
+            <param name="credentialHandle">The credential handle.</param>
+            <param name="inContextPtr">The in context PTR.</param>
+            <param name="targetName">Name of the target.</param>
+            <param name="flags">The flags.</param>
+            <param name="reserved1">The reserved1.</param>
+            <param name="dataRepresentation">The data representation.</param>
+            <param name="inputBuffer">The input buffer.</param>
+            <param name="reserved2">The reserved2.</param>
+            <param name="outContextHandle">The out context handle.</param>
+            <param name="outputBuffer">The output buffer.</param>
+            <param name="outAttributes">The out attributes.</param>
+            <param name="timestamp">The timestamp.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375506(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.InitializeSecurityContext(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,System.String,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags,System.Int32,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.DataRepresentation,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor@,System.Int32,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityBufferDescriptor@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiContextFlags@,System.Int64@)">
+            <summary>
+            Initializes the security context.
+            </summary>
+            <param name="credentialHandle">The credential handle.</param>
+            <param name="inContextHandle">The in context handle.</param>
+            <param name="targetName">Name of the target.</param>
+            <param name="flags">The flags.</param>
+            <param name="reserved1">The reserved1.</param>
+            <param name="dataRepresentation">The data representation.</param>
+            <param name="inputBuffer">The input buffer.</param>
+            <param name="reserved2">The reserved2.</param>
+            <param name="outContext">The out context.</param>
+            <param name="outputBuffer">The output buffer.</param>
+            <param name="outAttributes">The out attributes.</param>
+            <param name="timestamp">The timestamp.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa375506(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32.QueryContextAttributes(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiHandle@,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.QueryContextAttributes,MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityPackageContextSizes@)">
+            <summary>
+            Queries the context attributes.
+            </summary>
+            <param name="inContextHandle">The in context handle.</param>
+            <param name="attribute">The attribute.</param>
+            <param name="sizes">The sizes.</param>
+            <returns>A result code.</returns>
+            <remarks>
+            http://msdn.microsoft.com/en-us/library/windows/desktop/aa379326(v=vs.85).aspx
+            </remarks>
+        </member>
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception">
+            <summary>
+            Thrown from a win32 wrapped operation.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception.#ctor(System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception"/> class.
+            </summary>
+            <param name="errorCode">The error code.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception.#ctor(System.Int64,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception"/> class.
+            </summary>
+            <param name="errorCode">The error code.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.Win32Exception"/> class.
+            </summary>
+            <param name="info">The info.</param>
+            <param name="context">The context.</param>
         </member>
         <member name="T:MongoDB.Driver.EvalFlags">
             <summary>
@@ -5624,6 +6842,21 @@
         <member name="T:MongoDB.Driver.IMongoScope">
             <summary>
             A marker interface that represents a scope (a set of variables with values, see ScopeDocument).
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoAuthenticationProtocol">
+            <summary>
+            The protocol used to authenticate with MongoDB.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.MongoAuthenticationProtocol.Strongest">
+            <summary>
+            Authenticate to the server using the strongest means possible.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.MongoAuthenticationProtocol.Gssapi">
+            <summary>
+            Authenticate to the server using GSSAPI.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoClient">
@@ -5741,11 +6974,6 @@
             Gets or sets the credentials store.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoClientSettings.DefaultCredentials">
-            <summary>
-            Gets or sets the default credentials.
-            </summary>
-        </member>
         <member name="P:MongoDB.Driver.MongoClientSettings.GuidRepresentation">
             <summary>
             Gets or sets the representation to use for Guids.
@@ -5839,7 +7067,12 @@
         </member>
         <member name="T:MongoDB.Driver.MongoCollectionSettings">
             <summary>
-            The settings used to access a collection (an abstract class, see MongoCollectionSettings{TDefaultDocument}).
+            The settings used to access a collection.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCollectionSettings.#ctor">
+            <summary>
+            Initializes a new instance of the MongoCollectionSettings class.
             </summary>
         </member>
         <member name="M:MongoDB.Driver.MongoCollectionSettings.#ctor(MongoDB.Driver.MongoDatabase,System.String,System.Type)">
@@ -5945,7 +7178,7 @@
         </member>
         <member name="T:MongoDB.Driver.MongoCollectionSettings`1">
             <summary>
-            Settings used to access a collection.
+            Settings used to access a collection (this class is obsolete, use the non-generic MongoCollectionSettings class instead).
             </summary>
             <typeparam name="TDefaultDocument">The default document type of the collection.</typeparam>
         </member>
@@ -5982,11 +7215,10 @@
             Creates a new instance of the MongoCredentialsStore class.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.AddCredentials(System.String,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.MongoCredentialsStore.Add(MongoDB.Driver.MongoCredentials)">
             <summary>
-            Adds the credentials for a database to the store.
+            Adds the specified credentials.
             </summary>
-            <param name="databaseName">The database name.</param>
             <param name="credentials">The credentials.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoCredentialsStore.Clone">
@@ -6015,6 +7247,12 @@
             </summary>
             <returns>The frozen credentials store.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoCredentialsStore.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoCredentialsStore.GetHashCode">
             <summary>
             Gets the hashcode for the credentials store.
@@ -6027,13 +7265,18 @@
             </summary>
             <returns>A string representation of the credentials store.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.TryGetCredentials(System.String,MongoDB.Driver.MongoCredentials@)">
+        <member name="M:MongoDB.Driver.MongoCredentialsStore.System#Collections#IEnumerable#GetEnumerator">
             <summary>
-            Gets the credentials for a database.
+            Returns an enumerator that iterates through a collection.
             </summary>
-            <param name="databaseName">The database name.</param>
-            <param name="credentials">The credentials.</param>
-            <returns>True if the store contained credentials for the database. Otherwise false.</returns>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.MongoCredentialsStore.Count">
+            <summary>
+            Gets the number of credentials in the store.
+            </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoCredentialsStore.IsFrozen">
             <summary>
@@ -6045,22 +7288,17 @@
             The settings used to access a database.
             </summary>
         </member>
+        <member name="M:MongoDB.Driver.MongoDatabaseSettings.#ctor">
+            <summary>
+            Creates a new instance of MongoDatabaseSettings.
+            </summary>
+        </member>
         <member name="M:MongoDB.Driver.MongoDatabaseSettings.#ctor(MongoDB.Driver.MongoServer,System.String)">
             <summary>
             Creates a new instance of MongoDatabaseSettings.
             </summary>
             <param name="server">The server to inherit settings from.</param>
             <param name="databaseName">The name of the database.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoDatabaseSettings.#ctor(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Bson.GuidRepresentation,MongoDB.Driver.ReadPreference,MongoDB.Driver.WriteConcern)">
-            <summary>
-            Creates a new instance of MongoDatabaseSettings.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <param name="credentials">The credentials to access the database.</param>
-            <param name="guidRepresentation">The representation for Guids.</param>
-            <param name="readPreference">The read preference.</param>
-            <param name="writeConcern">The write concern to use.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabaseSettings.Clone">
             <summary>
@@ -6098,11 +7336,6 @@
             Returns a string representation of the settings.
             </summary>
             <returns>A string representation of the settings.</returns>
-        </member>
-        <member name="P:MongoDB.Driver.MongoDatabaseSettings.Credentials">
-            <summary>
-            Gets or sets the credentials to access the database.
-            </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoDatabaseSettings.DatabaseName">
             <summary>
@@ -6255,6 +7488,133 @@
             <param name="value">The object.</param>
             <param name="options">The serialization options.</param>
         </member>
+        <member name="T:MongoDB.Driver.MongoExternalIdentity">
+            <summary>
+            Represents an identity defined outside of mongodb.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoIdentity">
+            <summary>
+            Represents an identity in MongoDB.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentity.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoIdentity"/> class.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="username">The username.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentity.op_Equality(MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentity)">
+            <summary>
+            Compares two MongoCredentials.
+            </summary>
+            <param name="lhs">The first MongoCredentials.</param>
+            <param name="rhs">The other MongoCredentials.</param>
+            <returns>True if the two MongoCredentials are equal (or both null).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentity.op_Inequality(MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentity)">
+            <summary>
+            Compares two MongoCredentials.
+            </summary>
+            <param name="lhs">The first MongoCredentials.</param>
+            <param name="rhs">The other MongoCredentials.</param>
+            <returns>True if the two MongoCredentials are not equal (or one is null and the other is not).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentity.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentity.Equals(MongoDB.Driver.MongoIdentity)">
+            <summary>
+            Determines whether the specified instance is equal to this instance.
+            </summary>
+            <param name="rhs">The right-hand side.</param>
+            <returns>
+              <c>true</c> if the specified instance is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentity.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="P:MongoDB.Driver.MongoIdentity.Source">
+            <summary>
+            Gets the source.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoIdentity.Username">
+            <summary>
+            Gets the username.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoExternalIdentity.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoExternalIdentity"/> class.
+            </summary>
+            <param name="username">The username.</param>
+        </member>
+        <member name="M:MongoDB.Driver.MongoExternalIdentity.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoExternalIdentity"/> class.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="username">The username.</param>
+        </member>
+        <member name="T:MongoDB.Driver.MongoIdentityEvidence">
+            <summary>
+            Evidence used as proof of a MongoIdentity.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentityEvidence.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoIdentityEvidence"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentityEvidence.op_Equality(MongoDB.Driver.MongoIdentityEvidence,MongoDB.Driver.MongoIdentityEvidence)">
+            <summary>
+            Compares two MongoCredentials.
+            </summary>
+            <param name="lhs">The first MongoCredentials.</param>
+            <param name="rhs">The other MongoCredentials.</param>
+            <returns>True if the two MongoCredentials are equal (or both null).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentityEvidence.op_Inequality(MongoDB.Driver.MongoIdentityEvidence,MongoDB.Driver.MongoIdentityEvidence)">
+            <summary>
+            Compares two MongoCredentials.
+            </summary>
+            <param name="lhs">The first MongoCredentials.</param>
+            <param name="rhs">The other MongoCredentials.</param>
+            <returns>True if the two MongoCredentials are not equal (or one is null and the other is not).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentityEvidence.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.NotImplementedException">Subclasses of MongoIdentityEvidence must override Equals.</exception>
+        </member>
+        <member name="M:MongoDB.Driver.MongoIdentityEvidence.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+            <exception cref="T:System.NotImplementedException">Subclasses of MongoIdentityEvidence must override Equals.</exception>
+        </member>
         <member name="T:MongoDB.Driver.MongoInsertOptions">
             <summary>
             Represents the options to use for an Insert or InsertBatch operation.
@@ -6290,6 +7650,18 @@
             <summary>
             Gets or sets the WriteConcern to use for the Insert.
             </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MongoInternalIdentity">
+            <summary>
+            Represents an identity defined inside mongodb.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoInternalIdentity.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoInternalIdentity"/> class.
+            </summary>
+            <param name="databaseName">Name of the database.</param>
+            <param name="username">The username.</param>
         </member>
         <member name="T:MongoDB.Driver.MongoServerBuildInfo">
             <summary>
@@ -6342,11 +7714,11 @@
             Represents an instance of a MongoDB server host.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoServerInstance.#ctor(MongoDB.Driver.MongoServer,MongoDB.Driver.MongoServerAddress)">
+        <member name="M:MongoDB.Driver.MongoServerInstance.#ctor(MongoDB.Driver.MongoServerSettings,MongoDB.Driver.MongoServerAddress)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoServerInstance"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
             <param name="address">The address.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoServerInstance.GetIPEndPoint">
@@ -6365,11 +7737,10 @@
             Verifies the state of the server instance.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoServerInstance.AcquireConnection(MongoDB.Driver.MongoDatabase)">
+        <member name="M:MongoDB.Driver.MongoServerInstance.AcquireConnection">
             <summary>
             Acquires the connection.
             </summary>
-            <param name="database">The database.</param>
             <returns>A MongoConnection.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServerInstance.Connect">
@@ -6482,7 +7853,7 @@
             Gets the unique sequential Id for this server instance.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoServerInstance.Server">
+        <member name="P:MongoDB.Driver.MongoServerInstance.Settings">
             <summary>
             Gets the server for this server instance.
             </summary>
@@ -6574,13 +7945,6 @@
             </summary>
             <returns>A frozen copy of the settings.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServerSettings.GetCredentials(System.String)">
-            <summary>
-            Gets credentials for a particular database.
-            </summary>
-            <param name="databaseName">The database name.</param>
-            <returns>The credentials for that database (or null).</returns>
-        </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.GetHashCode">
             <summary>
             Gets the hash code.
@@ -6611,11 +7975,6 @@
         <member name="P:MongoDB.Driver.MongoServerSettings.CredentialsStore">
             <summary>
             Gets or sets the credentials store.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoServerSettings.DefaultCredentials">
-            <summary>
-            Gets or sets the default credentials.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoServerSettings.GuidRepresentation">
@@ -6803,6 +8162,16 @@
             </summary>
             <returns>The canonical URL.</returns>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.AuthenticationProtocol">
+            <summary>
+            Gets or sets the authentication protocol.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.AuthenticationSource">
+            <summary>
+            Gets or sets the authentication source.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.ComputedWaitQueueSize">
             <summary>
             Gets the actual wait queue size (either WaitQueueSize or WaitQueueMultiple x MaxConnectionPoolSize).
@@ -6821,11 +8190,6 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.DatabaseName">
             <summary>
             Gets or sets the optional database name.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoUrlBuilder.DefaultCredentials">
-            <summary>
-            Gets or sets the default credentials.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.FSync">
@@ -6866,6 +8230,11 @@
         <member name="P:MongoDB.Driver.MongoUrlBuilder.MinConnectionPoolSize">
             <summary>
             Gets or sets the min connection pool size.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.Password">
+            <summary>
+            Gets or sets the password.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.ReadPreference">
@@ -6909,6 +8278,11 @@
             Gets or sets the socket timeout.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrlBuilder.Username">
+            <summary>
+            Gets or sets the username.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrlBuilder.UseSsl">
             <summary>
             Gets or sets whether to use SSL.
@@ -6949,12 +8323,15 @@
             Represents a MongoDB user.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoUser.#ctor(MongoDB.Driver.MongoCredentials,System.Boolean)">
+        <member name="M:MongoDB.Driver.MongoUser.#ctor(System.String,MongoDB.Driver.PasswordEvidence,System.Boolean)">
             <summary>
             Creates a new instance of MongoUser.
             </summary>
-            <param name="credentials">The user's credentials.</param>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
             <param name="isReadOnly">Whether the user has read-only access.</param>
+            <exception cref="T:System.ArgumentNullException">credentials</exception>
+            <exception cref="T:System.ArgumentException">Credentials must have password evidence to create a user.</exception>
         </member>
         <member name="M:MongoDB.Driver.MongoUser.#ctor(System.String,System.String,System.Boolean)">
             <summary>
@@ -7036,6 +8413,82 @@
             <summary>
             Gets or sets whether the user is a read-only user.
             </summary>
+        </member>
+        <member name="T:MongoDB.Driver.PasswordEvidence">
+            <summary>
+            Evidence of a MongoIdentity via a shared secret.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.PasswordEvidence.#ctor(System.Security.SecureString)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.PasswordEvidence"/> class.
+            </summary>
+            <param name="password">The password.</param>
+        </member>
+        <member name="M:MongoDB.Driver.PasswordEvidence.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.PasswordEvidence"/> class.
+            </summary>
+            <param name="password">The password.</param>
+        </member>
+        <member name="M:MongoDB.Driver.PasswordEvidence.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="rhs">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.PasswordEvidence.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.PasswordEvidence.GenerateDigest(System.Security.SecureString)">
+            <summary>
+            Computes the hash value of the secured string 
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.PasswordEvidence.Password">
+            <summary>
+            Gets the password.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.PasswordEvidence.SecurePassword">
+            <summary>
+            Gets the secure password.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.ProcessEvidence">
+            <summary>
+            Evidence of a MongoIdentity via the currently executing process.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.ProcessEvidence.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.ProcessEvidence"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.ProcessEvidence.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.ProcessEvidence.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
         </member>
         <member name="T:MongoDB.Driver.ProfilingLevel">
             <summary>
@@ -7431,6 +8884,32 @@
             Gets whether the tag set has been frozen to prevent further changes.
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.Setting`1">
+            <summary>
+            Represents a setting that may or may not have been set.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Setting`1.Reset">
+            <summary>
+            Resets the setting to the unset state.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Setting`1.ToString">
+            <summary>
+            Gets a canonical string representation for this setting.
+            </summary>
+            <returns>A canonical string representation for this setting.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Setting`1.Value">
+            <summary>
+            Gets the value of the setting.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.Setting`1.HasBeenSet">
+            <summary>
+            Gets whether the setting has been set.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.SystemProfileInfo">
             <summary>
             Represents a document from the system.profile collection.
@@ -7532,6 +9011,16 @@
             Gets or sets the namespace.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.SystemProfileInfo.NumberMoved">
+            <summary>
+            Gets or sets the number of documents moved.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SystemProfileInfo.NumberOfYields">
+            <summary>
+            Gets or sets the number of yields.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.SystemProfileInfo.NumberReturned">
             <summary>
             Gets or sets the number of documents returned.
@@ -7552,9 +9041,9 @@
             Gets or sets the number of documents to skip.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.SystemProfileInfo.NumberOfYields">
+        <member name="P:MongoDB.Driver.SystemProfileInfo.NumberUpdated">
             <summary>
-            Gets or sets the number of yields.
+            Gets or sets the number of documents update by an update operation.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.SystemProfileInfo.Op">
@@ -7649,6 +9138,26 @@
             </summary>
             <param name="backingDocument">The backing document.</param>
         </member>
+        <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.DatabaseReadLock">
+            <summary>
+            Gets or sets the time spent acquiring or holding the database read lock.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.DatabaseWriteLock">
+            <summary>
+            Gets or sets the time spent acquiring or holding the database write lock.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.GlobalReadLock">
+            <summary>
+            Gets or sets the time spent acquiring or holding the gobal read lock.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.GlobalWriteLock">
+            <summary>
+            Gets or sets the time spent acquiring or holding the global write lock.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.RawDocument">
             <summary>
             Gets the raw document.
@@ -7656,12 +9165,12 @@
         </member>
         <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.Read">
             <summary>
-            Gets or sets the time spent for a read.
+            Gets or sets the time spent acquiring or holding the read lock.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.SystemProfileReadWriteLockStatistics.Write">
             <summary>
-            Gets or sets the time spent for a write.
+            Gets or sets the time spent acquiring or holding the write lock.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.SystemProfileInfoSerializer">
@@ -9347,31 +10856,6 @@
             Represents a MongoDB authentication exception
             </summary>
         </member>
-        <member name="T:MongoDB.Driver.MongoException">
-            <summary>
-            Represents a MongoDB exception.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MongoException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the MongoException class.
-            </summary>
-            <param name="message">The error message.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoException.#ctor(System.String,System.Exception)">
-            <summary>
-            Initializes a new instance of the MongoException class.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="innerException">The inner exception.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the MongoException class (this overload supports deserialization).
-            </summary>
-            <param name="info">The SerializationInfo.</param>
-            <param name="context">The StreamingContext.</param>
-        </member>
         <member name="M:MongoDB.Driver.MongoAuthenticationException.#ctor(System.String)">
             <summary>
             Initializes a new instance of the MongoAuthenticationException class.
@@ -9684,17 +11168,17 @@
             Gets the state.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.#ctor(MongoDB.Driver.MongoServer)">
+        <member name="M:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings)">
             <summary>
-            Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.ShardedMongoServerProxy"/> class.
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
         </member>
-        <member name="M:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.#ctor(MongoDB.Driver.MongoServer,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerInstance},MongoDB.Driver.Internal.BlockingQueue{MongoDB.Driver.MongoServerInstance},System.Int32)">
+        <member name="M:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerInstance},MongoDB.Driver.Internal.BlockingQueue{MongoDB.Driver.MongoServerInstance},System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.ShardedMongoServerProxy"/> class.
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
             <param name="instances">The instances.</param>
             <param name="connectionQueue">The state change queue.</param>
             <param name="connectionAttempt">The connection attempt.</param>
@@ -9792,9 +11276,9 @@
             Gets the state.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.Server">
+        <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.Settings">
             <summary>
-            Gets the server.
+            Gets the server settings.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.Internal.ShardedMongoServerProxy">
@@ -9802,17 +11286,17 @@
             Connects to a number of mongos' and distributes load based on ping times.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.ShardedMongoServerProxy.#ctor(MongoDB.Driver.MongoServer)">
+        <member name="M:MongoDB.Driver.Internal.ShardedMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.ShardedMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
         </member>
-        <member name="M:MongoDB.Driver.Internal.ShardedMongoServerProxy.#ctor(MongoDB.Driver.MongoServer,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerInstance},MongoDB.Driver.Internal.BlockingQueue{MongoDB.Driver.MongoServerInstance},System.Int32)">
+        <member name="M:MongoDB.Driver.Internal.ShardedMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerInstance},MongoDB.Driver.Internal.BlockingQueue{MongoDB.Driver.MongoServerInstance},System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.ShardedMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
             <param name="instances">The instances.</param>
             <param name="stateChangedQueue">The state changed queue.</param>
             <param name="connectionAttempt">The connection attempt.</param>
@@ -9847,17 +11331,17 @@
             Connects directly to a specified instance, failing over to other addresses as necessary.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.DirectMongoServerProxy.#ctor(MongoDB.Driver.MongoServer)">
+        <member name="M:MongoDB.Driver.Internal.DirectMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.DirectMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
         </member>
-        <member name="M:MongoDB.Driver.Internal.DirectMongoServerProxy.#ctor(MongoDB.Driver.MongoServer,MongoDB.Driver.MongoServerInstance,System.Int32)">
+        <member name="M:MongoDB.Driver.Internal.DirectMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings,MongoDB.Driver.MongoServerInstance,System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.DirectMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="serverSettings">The server settings.</param>
             <param name="instance">The instance.</param>
             <param name="connectionAttempt">The connection attempt.</param>
         </member>
@@ -9966,11 +11450,11 @@
             Creates a MongoServerInstanceManager based on the settings.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.MongoServerProxyFactory.Create(MongoDB.Driver.MongoServer)">
+        <member name="M:MongoDB.Driver.Internal.MongoServerProxyFactory.Create(MongoDB.Driver.MongoServerSettings)">
             <summary>
             Creates an IMongoServerProxy of some type that depends on the server settings.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
             <returns>An IMongoServerProxy.</returns>
         </member>
         <member name="T:MongoDB.Driver.Internal.DiscoveringMongoServerProxy">
@@ -9978,11 +11462,11 @@
             A proxy that dynamically discovers the type of server it is connecting to.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.DiscoveringMongoServerProxy.#ctor(MongoDB.Driver.MongoServer)">
+        <member name="M:MongoDB.Driver.Internal.DiscoveringMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.DiscoveringMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
         </member>
         <member name="M:MongoDB.Driver.Internal.DiscoveringMongoServerProxy.ChooseServerInstance(MongoDB.Driver.ReadPreference)">
             <summary>
@@ -10409,17 +11893,17 @@
             Proxy for connecting to a replica set.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.#ctor(MongoDB.Driver.MongoServer)">
+        <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="settings">The settings.</param>
         </member>
-        <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.#ctor(MongoDB.Driver.MongoServer,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerInstance},MongoDB.Driver.Internal.BlockingQueue{MongoDB.Driver.MongoServerInstance},System.Int32)">
+        <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.#ctor(MongoDB.Driver.MongoServerSettings,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerInstance},MongoDB.Driver.Internal.BlockingQueue{MongoDB.Driver.MongoServerInstance},System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy"/> class.
             </summary>
-            <param name="server">The server.</param>
+            <param name="serverSettings">The server settings.</param>
             <param name="instances">The instances.</param>
             <param name="stateChangeQueue">The state change queue.</param>
             <param name="connectionAttempt">The connection attempt.</param>
@@ -12784,11 +14268,12 @@
             Represents a MongoDB collection and the settings used to access it. This class is thread-safe.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoCollection.#ctor(MongoDB.Driver.MongoDatabase,MongoDB.Driver.MongoCollectionSettings)">
+        <member name="M:MongoDB.Driver.MongoCollection.#ctor(MongoDB.Driver.MongoDatabase,System.String,MongoDB.Driver.MongoCollectionSettings)">
             <summary>
             Protected constructor for abstract base class.
             </summary>
             <param name="database">The database that contains this collection.</param>
+            <param name="name">The name of the collection.</param>
             <param name="settings">The settings to use to access this collection.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Aggregate(System.Collections.Generic.IEnumerable{MongoDB.Bson.BsonDocument})">
@@ -13528,6 +15013,15 @@
             </summary>
             <typeparam name="TDefaultDocument">The default document type of the collection.</typeparam>
         </member>
+        <member name="M:MongoDB.Driver.MongoCollection`1.#ctor(MongoDB.Driver.MongoDatabase,System.String,MongoDB.Driver.MongoCollectionSettings)">
+            <summary>
+            Creates a new instance of MongoCollection. Normally you would call one of the indexers or GetCollection methods
+            of MongoDatabase instead.
+            </summary>
+            <param name="database">The database that contains this collection.</param>
+            <param name="name">The name of the collection.</param>
+            <param name="settings">The settings to use to access this collection.</param>
+        </member>
         <member name="M:MongoDB.Driver.MongoCollection`1.#ctor(MongoDB.Driver.MongoDatabase,MongoDB.Driver.MongoCollectionSettings{`0})">
             <summary>
             Creates a new instance of MongoCollection. Normally you would call one of the indexers or GetCollection methods
@@ -13713,6 +15207,16 @@
             </summary>
             <returns>A new instance of MongoServerSettings.</returns>
         </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.AuthenticationProtocol">
+            <summary>
+            Gets or sets the authentication protocol.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.AuthenticationSource">
+            <summary>
+            Gets or sets the auth source.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoConnectionStringBuilder.ComputedWaitQueueSize">
             <summary>
             Gets the actual wait queue size (either WaitQueueSize or WaitQueueMultiple x MaxConnectionPoolSize).
@@ -13871,28 +15375,13 @@
             Credentials to access a MongoDB database.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.#ctor(System.String,System.String)">
+        <member name="M:MongoDB.Driver.MongoCredentials.#ctor(MongoDB.Driver.MongoAuthenticationProtocol,MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentityEvidence)">
             <summary>
-            Creates a new instance of MongoCredentials.
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoCredentials"/> class.
             </summary>
-            <param name="username">The username.</param>
-            <param name="password">The password.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.#ctor(System.String,System.String,System.Boolean)">
-            <summary>
-            Creates a new instance of MongoCredentials.
-            </summary>
-            <param name="username">The username.</param>
-            <param name="password">The password.</param>
-            <param name="admin">Whether the credentials should be validated against the admin database.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.Create(System.String,System.String)">
-            <summary>
-            Creates an instance of MongoCredentials.
-            </summary>
-            <param name="username">The username.</param>
-            <param name="password">The password.</param>
-            <returns>A new instance of MongoCredentials (or null if either parameter is null).</returns>
+            <param name="authenticationProtocol">Protocol to authenticate with.</param>
+            <param name="identity">The identity.</param>
+            <param name="evidence">The evidence.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoCredentials.op_Equality(MongoDB.Driver.MongoCredentials,MongoDB.Driver.MongoCredentials)">
             <summary>
@@ -13909,6 +15398,46 @@
             <param name="lhs">The first MongoCredentials.</param>
             <param name="rhs">The other MongoCredentials.</param>
             <returns>True if the two MongoCredentials are not equal (or one is null and the other is not).</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCredentials.CreateGssapiCredentials">
+            <summary>
+            Creates GSSAPI credentials.
+            </summary>
+            <returns>Credentials for GSSAPI.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCredentials.CreateGssapiCredentials(System.String,System.String)">
+            <summary>
+            Creates GSSAPI credentials.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <returns>Credentials for GSSAPI.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCredentials.CreateGssapiCredentials(System.String,System.Security.SecureString)">
+            <summary>
+            Creates GSSAPI credentials.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <returns>Credentials for GSSAPI.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCredentials.CreateStrongestCredentials(System.String,System.String,System.String)">
+            <summary>
+            Creates credentials used in negotiated authentication.
+            </summary>
+            <param name="databaseName">Name of the database.</param>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCredentials.CreateStrongestCredentials(System.String,System.String,System.Security.SecureString)">
+            <summary>
+            Creates credentials used in negotiated authentication.
+            </summary>
+            <param name="databaseName">Name of the database.</param>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <returns></returns>
         </member>
         <member name="M:MongoDB.Driver.MongoCredentials.Equals(MongoDB.Driver.MongoCredentials)">
             <summary>
@@ -13936,9 +15465,19 @@
             </summary>
             <returns>A string representation of the credentials.</returns>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Username">
+        <member name="P:MongoDB.Driver.MongoCredentials.AuthenticationProtocol">
             <summary>
-            Gets the username.
+            Gets the protocol to authenticate with.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoCredentials.Evidence">
+            <summary>
+            Gets the evidence.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoCredentials.Identity">
+            <summary>
+            Gets the identity.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoCredentials.Password">
@@ -13946,9 +15485,14 @@
             Gets the password.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Admin">
+        <member name="P:MongoDB.Driver.MongoCredentials.Source">
             <summary>
-            Gets whether the credentials should be validated against the admin database.
+            Gets the source.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoCredentials.Username">
+            <summary>
+            Gets the username.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoServer">
@@ -14074,14 +15618,6 @@
             <param name="databaseName">The name of the database.</param>
             <returns>True if the database exists.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServer.DatabaseExists(System.String,MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Tests whether a database exists.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <param name="adminCredentials">Credentials for the admin database.</param>
-            <returns>True if the database exists.</returns>
-        </member>
         <member name="M:MongoDB.Driver.MongoServer.Disconnect">
             <summary>
             Disconnects from the server. Normally there is no need to call this method so
@@ -14093,14 +15629,6 @@
             Drops a database.
             </summary>
             <param name="databaseName">The name of the database to be dropped.</param>
-            <returns>A <see cref="T:MongoDB.Driver.CommandResult"/>.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoServer.DropDatabase(System.String,MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Drops a database.
-            </summary>
-            <param name="databaseName">The name of the database to be dropped.</param>
-            <param name="credentials">Credentials for the database to be dropped (or admin credentials).</param>
             <returns>A <see cref="T:MongoDB.Driver.CommandResult"/>.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServer.FetchDBRef(MongoDB.Driver.MongoDBRef)">
@@ -14142,25 +15670,6 @@
             <param name="databaseName">The name of the database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Gets a MongoDatabase instance representing a database on this server. Only one instance
-            is created for each combination of database settings.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <param name="credentials">The credentials to use with this database.</param>
-            <returns>A new or existing instance of MongoDatabase.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Driver.WriteConcern)">
-            <summary>
-            Gets a MongoDatabase instance representing a database on this server. Only one instance
-            is created for each combination of database settings.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <param name="credentials">The credentials to use with this database.</param>
-            <param name="writeConcern">The write concern to use with this database.</param>
-            <returns>A new or existing instance of MongoDatabase.</returns>
-        </member>
         <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoDatabase instance representing a database on this server. Only one instance
@@ -14170,30 +15679,25 @@
             <param name="writeConcern">The write concern to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoServer.GetDatabase(System.String,MongoDB.Driver.MongoDatabaseSettings)">
+            <summary>
+            Gets a MongoDatabase instance representing a database on this server. Only one instance
+            is created for each combination of database settings.
+            </summary>
+            <param name="databaseName">The name of the database.</param>
+            <param name="databaseSettings">The settings to use with this database.</param>
+            <returns>A new or existing instance of MongoDatabase.</returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoServer.GetDatabaseNames">
             <summary>
             Gets the names of the databases on this server.
             </summary>
             <returns>A list of database names.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServer.GetDatabaseNames(MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Gets the names of the databases on this server.
-            </summary>
-            <param name="adminCredentials">Credentials for the admin database.</param>
-            <returns>A list of database names.</returns>
-        </member>
         <member name="M:MongoDB.Driver.MongoServer.GetLastError">
             <summary>
             Gets the last error (if any) that occurred on this connection. You MUST be within a RequestStart to call this method.
             </summary>
-            <returns>The last error (<see cref="T:MongoDB.Driver.GetLastErrorResult"/>)</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoServer.GetLastError(MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Gets the last error (if any) that occurred on this connection. You MUST be within a RequestStart to call this method.
-            </summary>
-            <param name="adminCredentials">Credentials for the admin database.</param>
             <returns>The last error (<see cref="T:MongoDB.Driver.GetLastErrorResult"/>)</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServer.IsDatabaseNameValid(System.String,System.String@)">
@@ -14272,12 +15776,6 @@
             <summary>
             Shuts down the server.
             </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MongoServer.Shutdown(MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Shuts down the server.
-            </summary>
-            <param name="adminCredentials">Credentials for the admin database.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoServer.VerifyState">
             <summary>
@@ -14377,31 +15875,12 @@
             <param name="databaseName">The name of the database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
-        <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Gets a MongoDatabase instance representing a database on this server. Only one instance
-            is created for each combination of database settings.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <param name="credentials">The credentials to use with this database.</param>
-            <returns>A new or existing instance of MongoDatabase.</returns>
-        </member>
         <member name="P:MongoDB.Driver.MongoServer.Item(MongoDB.Driver.MongoDatabaseSettings)">
             <summary>
             Gets a MongoDatabase instance representing a database on this server. Only one instance
             is created for each combination of database settings.
             </summary>
             <param name="databaseSettings">The settings to use with this database.</param>
-            <returns>A new or existing instance of MongoDatabase.</returns>
-        </member>
-        <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.MongoCredentials,MongoDB.Driver.WriteConcern)">
-            <summary>
-            Gets a MongoDatabase instance representing a database on this server. Only one instance
-            is created for each combination of database settings.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-            <param name="credentials">The credentials to use with this database.</param>
-            <param name="writeConcern">The write concern to use with this database.</param>
             <returns>A new or existing instance of MongoDatabase.</returns>
         </member>
         <member name="P:MongoDB.Driver.MongoServer.Item(System.String,MongoDB.Driver.WriteConcern)">
@@ -14875,6 +16354,15 @@
             <param name="server">The server that contains this database.</param>
             <param name="settings">The settings to use to access this database.</param>
         </member>
+        <member name="M:MongoDB.Driver.MongoDatabase.#ctor(MongoDB.Driver.MongoServer,System.String,MongoDB.Driver.MongoDatabaseSettings)">
+            <summary>
+            Creates a new instance of MongoDatabase. Normally you would call one of the indexers or GetDatabase methods
+            of MongoServer instead.
+            </summary>
+            <param name="server">The server that contains this database.</param>
+            <param name="name">The name of the database.</param>
+            <param name="settings">The settings to use to access this database.</param>
+        </member>
         <member name="M:MongoDB.Driver.MongoDatabase.Create(MongoDB.Driver.MongoConnectionStringBuilder)">
             <summary>
             Creates a new instance or returns an existing instance of MongoDatabase. Only one instance
@@ -14930,19 +16418,6 @@
             <returns>
             A new or existing instance of MongoDatabase.
             </returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.AddUser(MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Adds a user to this database.
-            </summary>
-            <param name="credentials">The user's credentials.</param>
-        </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.AddUser(MongoDB.Driver.MongoCredentials,System.Boolean)">
-            <summary>
-            Adds a user to this database.
-            </summary>
-            <param name="credentials">The user's credentials.</param>
-            <param name="readOnly">True if the user is a read-only user.</param>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.AddUser(MongoDB.Driver.MongoUser)">
             <summary>
@@ -15075,6 +16550,16 @@
             <param name="collectionName">The name of the collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection``1(System.String,MongoDB.Driver.MongoCollectionSettings)">
+            <summary>
+            Gets a MongoCollection instance representing a collection on this database
+            with a default document type of TDefaultDocument.
+            </summary>
+            <typeparam name="TDefaultDocument">The default document type for this collection.</typeparam>
+            <param name="collectionName">The name of the collection.</param>
+            <param name="collectionSettings">The settings to use when accessing this collection.</param>
+            <returns>An instance of MongoCollection.</returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoDatabase.GetCollection``1(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoCollection instance representing a collection on this database
@@ -15101,6 +16586,15 @@
             <param name="collectionName">The name of the collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.String,MongoDB.Driver.MongoCollectionSettings)">
+            <summary>
+            Gets a MongoCollection instance representing a collection on this database
+            with a default document type of TDefaultDocument.
+            </summary>
+            <param name="collectionName">The name of the collection.</param>
+            <param name="collectionSettings">The settings to use when accessing this collection.</param>
+            <returns>An instance of MongoCollection.</returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.String,MongoDB.Driver.WriteConcern)">
             <summary>
             Gets a MongoCollection instance representing a collection on this database
@@ -15117,6 +16611,16 @@
             </summary>
             <param name="defaultDocumentType">The default document type.</param>
             <param name="collectionName">The name of the collection.</param>
+            <returns>An instance of MongoCollection.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.Type,System.String,MongoDB.Driver.MongoCollectionSettings)">
+            <summary>
+            Gets a MongoCollection instance representing a collection on this database
+            with a default document type of BsonDocument.
+            </summary>
+            <param name="defaultDocumentType">The default document type.</param>
+            <param name="collectionName">The name of the collection.</param>
+            <param name="collectionSettings">The settings to use when accessing this collection.</param>
             <returns>An instance of MongoCollection.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.GetCollection(System.Type,System.String,MongoDB.Driver.WriteConcern)">
@@ -15215,25 +16719,6 @@
             <param name="oldCollectionName">The old name for the collection.</param>
             <param name="newCollectionName">The new name for the collection.</param>
             <param name="dropTarget">Whether to drop the target collection first if it already exists.</param>
-            <returns>A CommandResult.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.RenameCollection(System.String,System.String,System.Boolean,MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Renames a collection on this database.
-            </summary>
-            <param name="oldCollectionName">The old name for the collection.</param>
-            <param name="newCollectionName">The new name for the collection.</param>
-            <param name="dropTarget">Whether to drop the target collection first if it already exists.</param>
-            <param name="adminCredentials">Credentials for the admin database.</param>
-            <returns>A CommandResult.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.RenameCollection(System.String,System.String,MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Renames a collection on this database.
-            </summary>
-            <param name="oldCollectionName">The old name for the collection.</param>
-            <param name="newCollectionName">The new name for the collection.</param>
-            <param name="adminCredentials">Credentials for the admin database.</param>
             <returns>A CommandResult.</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.RequestDone">
@@ -15345,11 +16830,6 @@
         <member name="P:MongoDB.Driver.MongoDatabase.CommandCollection">
             <summary>
             Gets the command collection for this database.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoDatabase.Credentials">
-            <summary>
-            Gets the credentials being used to access this database.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoDatabase.GridFS">
@@ -15586,6 +17066,16 @@
             </summary>
             <returns>The canonical URL.</returns>
         </member>
+        <member name="P:MongoDB.Driver.MongoUrl.AuthenticationProtocol">
+            <summary>
+            Gets the authentication protocol.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.AuthenticationSource">
+            <summary>
+            Gets the authentication source.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.MongoUrl.ComputedWaitQueueSize">
             <summary>
             Gets the actual wait queue size (either WaitQueueSize or WaitQueueMultiple x MaxConnectionPoolSize).
@@ -15604,11 +17094,6 @@
         <member name="P:MongoDB.Driver.MongoUrl.DatabaseName">
             <summary>
             Gets the optional database name.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoUrl.DefaultCredentials">
-            <summary>
-            Gets the default credentials.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.FSync">
@@ -15649,6 +17134,11 @@
         <member name="P:MongoDB.Driver.MongoUrl.MinConnectionPoolSize">
             <summary>
             Gets the min connection pool size.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.Password">
+            <summary>
+            Gets the password.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.ReadPreference">
@@ -15695,6 +17185,11 @@
         <member name="P:MongoDB.Driver.MongoUrl.Url">
             <summary>
             Gets the URL (in canonical form).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoUrl.Username">
+            <summary>
+            Gets the username.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoUrl.UseSsl">
