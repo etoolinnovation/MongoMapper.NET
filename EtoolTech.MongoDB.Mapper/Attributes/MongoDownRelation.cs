@@ -1,7 +1,7 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Attributes
 {
-    using System;
-
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class MongoDownRelation : Attribute
     {
@@ -19,17 +19,14 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
 
         public string Relation
         {
-            get
-            {
-                return this._relation;
-            }
+            get { return _relation; }
             set
             {
                 //TODO: Validar formato
-                this._relation = value;
-                string[] values = this._relation.Split(',');
-                this.ObjectName = values[0];
-                this.FieldName = values[1];
+                _relation = value;
+                string[] values = _relation.Split(',');
+                ObjectName = values[0];
+                FieldName = values[1];
             }
         }
 

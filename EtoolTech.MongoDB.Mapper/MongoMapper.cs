@@ -1,21 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Xml.Serialization;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Runtime.Serialization;
-    using System.Xml.Serialization;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;    
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
-    using global::MongoDB.Bson;
-    using global::MongoDB.Bson.Serialization.Attributes;
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     [Serializable]
     public abstract class MongoMapper : IMongoMapperOriginable,
                                         IMongoMapperRelationable,
@@ -45,8 +42,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         protected MongoMapper()
         {
-            this._classType = this.GetType();
-            Helper.RebuildClass(this._classType, false);
+            _classType = GetType();
+            Helper.RebuildClass(_classType, false);
         }
 
         #endregion
@@ -89,9 +86,15 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Properties
 
-        [BsonId(IdGenerator = typeof(MongoMapperIdGenerator))]
+        #region IMongoMapperIdeable Members
+
+        [BsonId(IdGenerator = typeof (MongoMapperIdGenerator))]
         [XmlIgnore]
         public long MongoMapper_Id { get; set; }
+
+        #endregion
+
+        #region IMongoMapperVersionable Members
 
         [XmlIgnore]
         public long MongoMapperDocumentVersion { get; set; }
@@ -101,21 +104,22 @@ namespace EtoolTech.MongoDB.Mapper
             return IsLastVersion(false);
         }
 
-        public bool IsLastVersion(bool force)
+        public bool IsLastVersion(bool Force)
         {
-            if (!force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
-            
-            if (this.MongoMapper_Id == default(long))
+            if (!Force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
+
+            if (MongoMapper_Id == default(long))
             {
-                this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());
+                MongoMapper_Id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
 
             MongoCursor result =
-                CollectionsManager.GetPrimaryCollection(this._classType.Name).FindAs(this._classType, query).SetFields(
+                CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query).SetFields(
                     Fields.Include("MongoMapperDocumentVersion"));
 
-            return ((IMongoMapperVersionable)result.Cast<object>().First()).MongoMapperDocumentVersion == this.MongoMapperDocumentVersion;
+            return ((IMongoMapperVersionable) result.Cast<object>().First()).MongoMapperDocumentVersion ==
+                   MongoMapperDocumentVersion;
         }
 
         public void FillFromLastVersion()
@@ -123,20 +127,22 @@ namespace EtoolTech.MongoDB.Mapper
             FillFromLastVersion(false);
         }
 
-        public void FillFromLastVersion(bool force)
+        public void FillFromLastVersion(bool Force)
         {
-            if (!force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return;
+            if (!Force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return;
 
-            if (this.MongoMapper_Id == default(long))
+            if (MongoMapper_Id == default(long))
             {
-                this.MongoMapper_Id = Finder.Instance.FindIdByKey(this._classType, this.GetKeyValues());
+                MongoMapper_Id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
 
-            MongoCursor result = CollectionsManager.GetPrimaryCollection(this._classType.Name).FindAs(this._classType, query);
-           
+            MongoCursor result = CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query);
+
             ReflectionUtility.CopyObject(result.Cast<object>().First(), this);
         }
+
+        #endregion
 
         #endregion
 
@@ -145,20 +151,191 @@ namespace EtoolTech.MongoDB.Mapper
         [BsonIgnore]
         private byte[] OriginalObject
         {
-            get
-            {
-                return this._originalObject;
-            }
+            get { return _originalObject; }
             set
             {
-                this._originalObject = value;
-                this._tOriginalObjet = null;
+                _originalObject = value;
+                _tOriginalObjet = null;
             }
         }
 
         #endregion
 
         #region Public Methods
+
+        #region IMongoMapperOriginable Members
+
+        public T GetOriginalObject<T>()
+        {
+            if (!ConfigManager.EnableOriginalObject(_classType.Name))
+            {
+                throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+            }
+
+            if (MongoMapper_Id == default(long) || OriginalObject == null || OriginalObject.Length == 0)
+            {
+                return (Activator.CreateInstance<T>());
+            }
+            return GetOriginalT<T>();
+        }
+
+        public T GetOriginalT<T>()
+        {
+            if (_tOriginalObjet != null)
+            {
+                return (T) _tOriginalObjet;
+            }
+
+            _tOriginalObjet = ObjectSerializer.ToObjectSerialize<T>(OriginalObject);
+            return (T) _tOriginalObjet;
+        }
+
+        public void SaveOriginal(bool Force = false)
+        {
+            if (OriginalIsEmpty(Force) && MongoMapper_Id != default(long) &&
+                ConfigManager.EnableOriginalObject(_classType.Name))
+            {
+                OriginalObject = ObjectSerializer.ToByteArray(this);
+            }
+        }
+
+        #endregion
+
+        #region IMongoMapperRelationable Members
+
+        public void EnsureDownRelations()
+        {
+            Relations.EnsureDownRelations(this, _classType, Finder.Instance);
+        }
+
+        public void EnsureUpRelations()
+        {
+            Relations.EnsureUpRelations(this, _classType, Finder.Instance);
+        }
+
+        public List<T> GetRelation<T>(string Relation)
+        {
+            if (!_relationBuffer.ContainsKey(Relation))
+            {
+                _relationBuffer.Add(
+                    Relation, Relations.GetRelation<T>(this, Relation, _classType, Finder.Instance));
+            }
+            return (List<T>) _relationBuffer[Relation];
+        }
+
+        #endregion
+
+        #region IMongoMapperWriteable Members
+
+        public void Delete<T>()
+        {
+            Events.BeforeDeleteDocument(this, OnBeforeDelete, _classType);
+
+            EnsureDownRelations();
+
+            DeleteDocument<T>();
+
+            Events.AfterDeleteDocument(this, OnAfterDelete, OnAfterComplete, _classType);
+        }
+
+        public void DeleteDocument<T>()
+        {
+            Writer.Instance.Delete(_classType.Name, _classType, this);
+        }
+
+        public void InsertDocument()
+        {
+            Events.BeforeInsertDocument(this, OnBeforeInsert, _classType);
+
+            EnsureUpRelations();
+
+            Writer.Instance.Insert(_classType.Name, _classType, this);
+
+            Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
+        }
+
+        public int Save<T>()
+        {
+            int result = -1;
+
+            PropertyValidator.Validate(this, _classType);
+
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(_classType.Name)*1024*1024;
+
+            ChildsManager.ManageChilds(this);
+
+            if (MongoMapper_Id == default(long))
+            {
+                long id = Finder.Instance.FindIdByKey<T>(GetPrimaryKeyValues());
+                if (id == default(long))
+                {
+                    InsertDocument();
+                    result = 0;
+                }
+                else
+                {
+                    //Si llega aqui ya existe un registro con esa key y no es el que tenemos cargado
+                    if (ConfigManager.ExceptionOnDuplicateKey(_classType.Name))
+                    {
+                        throw new DuplicateKeyException();
+                    }
+
+                    UpdateDocument(id);
+                    result = 1;
+                }
+            }
+            else
+            {
+                UpdateDocument(MongoMapper_Id);
+                result = 1;
+            }
+
+            //Si salvan y no se pide el objeto otra vez la string queda vacia, la llenamos aqui
+            //TODO: No estoy muy convencido de esto revisar ...                
+            SaveOriginal();
+            return result;
+        }
+
+        public void ServerUpdate<T>(UpdateBuilder Update, bool Refill = true)
+        {
+            if (MongoMapper_Id == default(long))
+            {
+                MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetPrimaryKeyValues());
+            }
+            IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
+
+            FindAndModifyResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
+                    FindAndModify(query, null, Update, Refill, true);
+
+            if (ConfigManager.SafeMode(_classType.Name))
+            {
+                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                {
+                    throw new ServerUpdateException(result.ErrorMessage);
+                }
+            }
+
+            if (Refill)
+            {
+                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof (T)), this);
+            }
+        }
+
+        public void UpdateDocument(long Id)
+        {
+            Events.BeforeUpdateDocument(this, OnBeforeModify, _classType);
+
+            EnsureUpRelations();
+
+            MongoMapper_Id = Id;
+
+            Writer.Instance.Update(_classType.Name, _classType, this);
+
+            Events.AfterUpdateDocument(this, OnAfterModify, OnAfterComplete, _classType);
+        }
+
+        #endregion
 
         public static MongoCursor<T> AllAsCursor<T>()
         {
@@ -214,7 +391,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return
                 CollectionsManager.GetCollection(
-                CollectionsManager.GetCollectioName(typeof (T).Name)).Aggregate(operations);
+                    CollectionsManager.GetCollectioName(typeof (T).Name)).Aggregate(operations);
         }
 
         public static void ServerDelete<T>(IMongoQuery query)
@@ -222,199 +399,31 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result = CollectionsManager.GetCollection(
                 CollectionsManager.GetCollectioName(typeof (T).Name)).Remove(query);
 
-            if (ConfigManager.SafeMode(typeof(T).Name))
+            if (ConfigManager.SafeMode(typeof (T).Name))
             {
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new DeleteDocumentException(result.ErrorMessage);
                 }
             }
-
-
         }
 
-        public void Delete<T>()
+        private bool OriginalIsEmpty(bool force = false)
         {
-            Events.BeforeDeleteDocument(this, this.OnBeforeDelete, this._classType);
-
-            this.EnsureDownRelations();
-
-            this.DeleteDocument<T>();
-
-            Events.AfterDeleteDocument(this, this.OnAfterDelete, this.OnAfterComplete, this._classType);
-        }
-
-        public void DeleteDocument<T>()
-        {
-            Writer.Instance.Delete(this._classType.Name, this._classType, this);
-        }
-
-        public void EnsureDownRelations()
-        {
-            Relations.EnsureDownRelations(this, this._classType, Finder.Instance);
-        }
-
-        public void EnsureUpRelations()
-        {
-            Relations.EnsureUpRelations(this, this._classType, Finder.Instance);
-        }
-
-        public T GetOriginalObject<T>()
-        {
-            if (!ConfigManager.EnableOriginalObject(this._classType.Name))
-            {
-                throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
-            }
-
-            if (this.MongoMapper_Id == default(long) || this.OriginalObject == null || this.OriginalObject.Length == 0)
-            {
-                return (Activator.CreateInstance<T>());
-            }
-            return this.GetOriginalT<T>();
-        }
-
-        public T GetOriginalT<T>()
-        {
-            if (this._tOriginalObjet != null)
-            {
-                return (T)this._tOriginalObjet;
-            }
-
-            this._tOriginalObjet = ObjectSerializer.ToObjectSerialize<T>(this.OriginalObject);
-            return (T)this._tOriginalObjet;
-        }
-
-
-
-        public List<T> GetRelation<T>(string relation)
-        {
-            if (!this._relationBuffer.ContainsKey(relation))
-            {
-                this._relationBuffer.Add(
-                    relation, Relations.GetRelation<T>(this, relation, this._classType, Finder.Instance));
-            }
-            return (List<T>)this._relationBuffer[relation];
-        }
-
-        public void InsertDocument()
-        {
-            Events.BeforeInsertDocument(this, this.OnBeforeInsert, this._classType);
-
-            this.EnsureUpRelations();
-
-            Writer.Instance.Insert(this._classType.Name, this._classType, this);
-
-            Events.AfterInsertDocument(this, this.OnAfterInsert, this.OnAfterComplete, this._classType);
-        }
-
-        public int Save<T>()
-        {
-
-            int result = -1;
-
-            PropertyValidator.Validate(this, this._classType);
-
-            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(this._classType.Name) * 1024 * 1024;
-
-            ChildsManager.ManageChilds(this);
-
-            if (this.MongoMapper_Id == default(long))
-            {
-                long id = Finder.Instance.FindIdByKey<T>(this.GetKeyValues());
-                if (id == default(long))
-                {
-                    this.InsertDocument();
-                    result = 0;
-                }
-                else
-                {
-                    //Si llega aqui ya existe un registro con esa key y no es el que tenemos cargado
-                    if (ConfigManager.ExceptionOnDuplicateKey(this._classType.Name))
-                    {
-                        throw new DuplicateKeyException();
-                    }
-
-                    this.UpdateDocument(id);
-                    result = 1;
-                }
-            }
-            else
-            {
-                this.UpdateDocument(this.MongoMapper_Id);
-                result = 1;
-            }
-
-            //Si salvan y no se pide el objeto otra vez la string queda vacia, la llenamos aqui
-            //TODO: No estoy muy convencido de esto revisar ...                
-            this.SaveOriginal();
-            return result;
-        }
-
-		private bool OriginalIsEmpty(bool force = false)
-		{
-			if (force) return true;
-			return this._originalObject == null || this._originalObject.Length == 0;
-		}
-
-        public void SaveOriginal(bool force = false)
-        {      
-            if (OriginalIsEmpty(force) && this.MongoMapper_Id != default(long) && ConfigManager.EnableOriginalObject(this._classType.Name))
-            {
-                this.OriginalObject = ObjectSerializer.ToByteArray(this);
-            }
-        }
-
-        public void ServerUpdate<T>(UpdateBuilder update, bool refill = true)
-        {
-            if (this.MongoMapper_Id == default(long))
-            {
-                this.MongoMapper_Id = Finder.Instance.FindIdByKey<T>(this.GetKeyValues());
-            }
-            IMongoQuery query = Query.EQ("_id", this.MongoMapper_Id);
-
-            FindAndModifyResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(this._classType.Name)).
-                    FindAndModify(query, null, update, refill, true);
-
-            //TODO: ver de devolver ServerUpdateException
-            if (ConfigManager.SafeMode(this._classType.Name))
-            {
-                if (!String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new ServerUpdateException(result.ErrorMessage);
-                }
-            }
-
-            if (refill)
-            {
-                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof(T)), this);
-            }
-        }
-
-        public void UpdateDocument(long id)
-        {
-            Events.BeforeUpdateDocument(this, this.OnBeforeModify, this._classType);
-
-            this.EnsureUpRelations();
-
-            this.MongoMapper_Id = id;
-
-            Writer.Instance.Update(this._classType.Name, this._classType, this);
-
-            Events.AfterUpdateDocument(this, this.OnAfterModify, this.OnAfterComplete, this._classType);
+            if (force) return true;
+            return _originalObject == null || _originalObject.Length == 0;
         }
 
         #endregion
 
         #region Methods
 
-        private Dictionary<string, object> GetKeyValues()
+        private Dictionary<string, object> GetPrimaryKeyValues()
         {
-            return Helper.GetPrimaryKey(this._classType).ToDictionary(
-                keyField => keyField, keyField => ReflectionUtility.GetPropertyValue(this, keyField));
+            return Helper.GetPrimaryKey(_classType).ToDictionary(
+                KeyField => KeyField, KeyField => ReflectionUtility.GetPropertyValue(this, KeyField));
         }
 
         #endregion
-   
     }
 }

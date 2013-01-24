@@ -1,14 +1,14 @@
+using System.Collections.Generic;
+
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    using System.Collections.Generic;
-
     public interface IChildsManager
     {
         #region Public Methods
 
-        void GenerateChilsIds(string objName, IEnumerable<object> list);
+        void GenerateChilsIds(string ObjName, IEnumerable<object> List);
 
-        void ManageChilds(object sender);
+        void ManageChilds(object Sender);
 
         #endregion
     }

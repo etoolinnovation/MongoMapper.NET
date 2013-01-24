@@ -1,7 +1,7 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Exceptions
 {
-    using System;
-
     [Serializable]
     public class ValidateUpRelationException : Exception
     {
@@ -19,7 +19,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public ValidateUpRelationException(string Relation)
         {
-            this._relation = Relation;
+            _relation = Relation;
         }
 
         #endregion
@@ -28,10 +28,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public override string Message
         {
-            get
-            {
-                return "Error Validatin Relation " + this._relation;
-            }
+            get { return "Error Validatin Relation " + _relation; }
         }
 
         #endregion

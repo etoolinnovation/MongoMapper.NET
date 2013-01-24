@@ -1,13 +1,11 @@
-﻿using MongoDB.Driver;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-
     public class ConfigManager
     {
         #region Constants and Fields
@@ -39,14 +37,16 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         #region Public Methods
 
-        public static bool BalancedReading(string objName)
+        private static string _urlString = String.Empty;
+
+        public static bool BalancedReading(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.BalancedReading;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -56,14 +56,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.BalancedReading;
         }
 
-        public static string DataBaseName(string objName)
+        public static string DataBaseName(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.Database;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -73,14 +73,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Database.Name;
         }
 
-        public static bool EnableOriginalObject(string objName)
+        public static bool EnableOriginalObject(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.EnableOriginalObject;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -90,14 +90,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.EnableOriginalObject;
         }
 
-        public static bool ExceptionOnDuplicateKey(string objName)
+        public static bool ExceptionOnDuplicateKey(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.ExceptionOnDuplicateKey;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -107,14 +107,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.ExceptionOnDuplicateKey;
         }
 
-        public static bool Journal(string objName)
+        public static bool Journal(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.Journal;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -124,37 +124,34 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.Journal;
         }
 
-        private static string _urlString = String.Empty;
-
         public static void OverrideUrlString(string urlString)
         {
             _urlString = urlString;
         }
 
 
-        public static MongoClientSettings GetClientSettings(string objName)
+        public static MongoClientSettings GetClientSettings(string ObjName)
         {
-
             if (!string.IsNullOrEmpty(_urlString))
             {
                 var builder = new MongoUrlBuilder(_urlString);
-                var url = builder.ToMongoUrl();
-                return MongoClientSettings.FromUrl(url);                                
+                MongoUrl url = builder.ToMongoUrl();
+                return MongoClientSettings.FromUrl(url);
             }
 
             var settigs = new MongoClientSettings();
-            
-            string databaseName = DataBaseName(objName);            
-            string userName = UserName(objName);
-            
+
+            string databaseName = DataBaseName(ObjName);
+            string userName = UserName(ObjName);
+
             if (!String.IsNullOrEmpty(userName))
             {
-                settigs.CredentialsStore.AddCredentials(databaseName,new MongoCredentials(userName,PassWord(objName)));                
+                settigs.CredentialsStore.AddCredentials(databaseName, new MongoCredentials(userName, PassWord(ObjName)));
             }
 
-            string host = Host(objName);
+            string host = Host(ObjName);
 
-            
+
             if (host.Contains(","))
             {
                 var servers = new List<MongoServerAddress>();
@@ -171,57 +168,58 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                         servers.Add(new MongoServerAddress(h));
                     }
                 }
-                
+
                 settigs.Servers = servers;
             }
             else
             {
-                settigs.Servers.ToList().Add(new MongoServerAddress(host));    
+                settigs.Servers.ToList().Add(new MongoServerAddress(host));
             }
 
             var wc = new WriteConcern();
 
-            string replicaSetName = ReplicaSetName(objName);
+            string replicaSetName = ReplicaSetName(ObjName);
             if (!String.IsNullOrEmpty(replicaSetName))
             {
                 settigs.ReplicaSetName = replicaSetName;
             }
 
-            if (MinReplicaServersToWrite(objName) != 0)
+            if (MinReplicaServersToWrite(ObjName) != 0)
             {
-                wc.W = MinReplicaServersToWrite(objName);
+                wc.W = MinReplicaServersToWrite(ObjName);
             }
 
-            settigs.ReadPreference = BalancedReading(objName) ? ReadPreference.SecondaryPreferred : ReadPreference.PrimaryPreferred;
+            settigs.ReadPreference = BalancedReading(ObjName)
+                                         ? ReadPreference.SecondaryPreferred
+                                         : ReadPreference.PrimaryPreferred;
 
-            if (Journal(objName))
+            if (Journal(ObjName))
             {
                 wc.Journal = true;
             }
 
             settigs.WriteConcern = wc;
-            if (!SafeMode(objName) && settigs.WriteConcern.Journal == null && settigs.WriteConcern.W == null)
+            if (!SafeMode(ObjName) && settigs.WriteConcern.Journal == null && settigs.WriteConcern.W == null)
             {
                 wc.W = 0;
             }
 
-            settigs.MaxConnectionPoolSize = PoolSize(objName);
-            settigs.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout(objName));
-            
-            
+            settigs.MaxConnectionPoolSize = PoolSize(ObjName);
+            settigs.WaitQueueTimeout = TimeSpan.FromSeconds(WaitQueueTimeout(ObjName));
+
+
             return settigs;
-
         }
-     
 
-        public static string Host(string objName)
+
+        public static string Host(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.Host;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -231,14 +229,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.Host;
         }
 
-        public static int MaxDocumentSize(string objName)
+        public static int MaxDocumentSize(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.MaxDocumentSize;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -248,14 +246,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.MaxDocumentSize;
         }
 
-        public static int MinReplicaServersToWrite(string objName)
+        public static int MinReplicaServersToWrite(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.MinReplicaServersToWrite;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -265,14 +263,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.MinReplicaServersToWrite;
         }
 
-        public static string PassWord(string objName)
+        public static string PassWord(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.PassWord;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -282,14 +280,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Database.Password;
         }
 
-        public static int PoolSize(string objName)
+        public static int PoolSize(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.PoolSize;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -299,14 +297,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.PoolSize;
         }
 
-        public static string ReplicaSetName(string objName)
+        public static string ReplicaSetName(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.ReplicaSetName;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -316,14 +314,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Server.ReplicaSetName;
         }
 
-        public static bool SafeMode(string objName)
+        public static bool SafeMode(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.SafeMode;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -333,11 +331,11 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.SafeMode;
         }
 
-        public static bool UseChildIncrementalId(string objName)
+        public static bool UseChildIncrementalId(string ObjName)
         {
-            if (Helper.BufferIdIncrementables[objName] != null)
+            if (Helper.BufferIdIncrementables[ObjName] != null)
             {
-                return Helper.BufferIdIncrementables[objName].ChildsIncremenalId;
+                return Helper.BufferIdIncrementables[ObjName].ChildsIncremenalId;
             }
 
             if (CustomContext.Config != null)
@@ -345,7 +343,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.UseChildIncrementalId;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -355,11 +353,11 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.UseChidlsIncrementalId;
         }
 
-        public static bool UseIncrementalId(string objName)
+        public static bool UseIncrementalId(string ObjName)
         {
-            if (Helper.BufferIdIncrementables[objName] != null)
+            if (Helper.BufferIdIncrementables[ObjName] != null)
             {
-                return Helper.BufferIdIncrementables[objName].IncremenalId;
+                return Helper.BufferIdIncrementables[ObjName].IncremenalId;
             }
 
             if (CustomContext.Config != null)
@@ -367,7 +365,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.UseIncrementalId;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -377,14 +375,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.UseIncrementalId;
         }
 
-        public static string UserName(string objName)
+        public static string UserName(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.UserName;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -394,14 +392,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Database.User;
         }
 
-        public static int WaitQueueTimeout(string objName)
+        public static int WaitQueueTimeout(string ObjName)
         {
             if (CustomContext.Config != null)
             {
                 return CustomContext.Config.WaitQueueTimeout;
             }
 
-            CollectionElement cfg = FindByObjName(objName);
+            CollectionElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -415,16 +413,16 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         #region Methods
 
-        private static string CleanObjName(string objName)
+        private static string CleanObjName(string ObjName)
         {
-            if (objName.EndsWith("_Collection"))
+            if (ObjName.EndsWith("_Collection"))
             {
-                objName = objName.Replace("_Collection", "");
+                ObjName = ObjName.Replace("_Collection", "");
             }
-            return objName;
+            return ObjName;
         }
 
-        private static CollectionElement FindByObjName(string objName)
+        private static CollectionElement FindByObjName(string ObjName)
         {
             if (!_setupLoaded)
             {
@@ -441,9 +439,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 }
             }
 
-            objName = CleanObjName(objName);
+            ObjName = CleanObjName(ObjName);
 
-            return ConfigByObject.ContainsKey(objName) ? ConfigByObject[objName] : null;
+            return ConfigByObject.ContainsKey(ObjName) ? ConfigByObject[ObjName] : null;
         }
 
         #endregion

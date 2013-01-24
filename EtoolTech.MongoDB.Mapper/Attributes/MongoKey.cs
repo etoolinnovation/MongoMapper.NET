@@ -1,7 +1,7 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Attributes
 {
-    using System;
-
     [AttributeUsage(AttributeTargets.Class)]
     public class MongoKey : Attribute
     {

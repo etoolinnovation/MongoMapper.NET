@@ -1,39 +1,38 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
     public static class ReflectionUtility
     {
         #region Public Methods
 
-        public static void BuildSchema(Assembly assembly)
+        public static void BuildSchema(Assembly Assembly)
         {
-            List<Type> types = assembly.GetTypes().Where(t => t.BaseType == typeof(MongoMapper)).ToList();
+            List<Type> types = Assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
             foreach (Type type in types)
             {
                 Helper.RebuildClass(type, true);
             }
         }
 
-        public static void CopyObject<T>(T source, T destination)
+        public static void CopyObject<T>(T Source, T Destination)
         {
-            Type t = source.GetType();
+            Type t = Source.GetType();
 
             foreach (PropertyInfo property in t.GetProperties())
             {
-                property.SetValue(destination, property.GetValue(source, null), null);
+                property.SetValue(Destination, property.GetValue(Source, null), null);
             }
         }
 
-        public static string GetPropertyName<T>(Expression<Func<T, object>> exp)
+        public static string GetPropertyName<T>(Expression<Func<T, object>> Exp)
         {
-            var memberExpression = exp.Body as UnaryExpression;
+            var memberExpression = Exp.Body as UnaryExpression;
             if (memberExpression != null)
             {
                 var memberexpresion2 = memberExpression.Operand as MemberExpression;
@@ -44,7 +43,7 @@
             }
             else
             {
-                var memberexpresion2 = exp.Body as MemberExpression;
+                var memberexpresion2 = Exp.Body as MemberExpression;
                 if (memberexpresion2 != null)
                 {
                     return memberexpresion2.Member.Name;
@@ -54,21 +53,21 @@
             return string.Empty;
         }
 
-        public static object GetPropertyValue(object obj, string propertyName)
+        public static object GetPropertyValue(object Obj, string PropertyName)
         {
-            if ((propertyName == "MongoMapper_Id") && (obj is IMongoMapperIdeable))
+            if ((PropertyName == "MongoMapper_Id") && (Obj is IMongoMapperIdeable))
             {
-                return ((IMongoMapperIdeable)obj).MongoMapper_Id;
+                return ((IMongoMapperIdeable) Obj).MongoMapper_Id;
             }
 
-            Type t = obj.GetType();
-            PropertyInfo property = t.GetProperty(propertyName);
-            return property.GetValue(obj, null);
+            Type t = Obj.GetType();
+            PropertyInfo property = t.GetProperty(PropertyName);
+            return property.GetValue(Obj, null);
         }
 
-        public static T GetPropertyValue<T>(object obj, string propertyName)
+        public static T GetPropertyValue<T>(object Obj, string PropertyName)
         {
-            return (T)GetPropertyValue(obj, propertyName);
+            return (T) GetPropertyValue(Obj, PropertyName);
         }
 
         #endregion

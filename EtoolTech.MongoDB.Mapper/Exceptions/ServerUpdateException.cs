@@ -1,7 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Exceptions
-{
-    using System;
+﻿using System;
 
+namespace EtoolTech.MongoDB.Mapper.Exceptions
+{
     public class ServerUpdateException : Exception
     {
         #region Constants and Fields
@@ -14,7 +14,7 @@
 
         public ServerUpdateException(string message)
         {
-            this._message = message;
+            _message = message;
         }
 
         #endregion
@@ -23,10 +23,7 @@
 
         public override string Message
         {
-            get
-            {
-                return String.Format("Error Updatind Data: {0}", this._message);
-            }
+            get { return String.Format("Error Updatind Data: {0}", _message); }
         }
 
         #endregion

@@ -1,13 +1,12 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-
     public class PropertyValidator
     {
         #region Constants and Fields
@@ -23,15 +22,15 @@
 
         #region Public Methods
 
-        public static void Validate(object sender, Type t)
+        public static void Validate(object Sender, Type T)
         {
-            GetPropertyValidators(t);
+            GetPropertyValidators(T);
             IEnumerable<KeyValuePair<string, MethodInfo>> validatorList = from b in BufferPropertyValidatorMethods
-                                                                          where b.Key.StartsWith(t.Name + "|")
+                                                                          where b.Key.StartsWith(T.Name + "|")
                                                                           select b;
             foreach (var v in validatorList)
             {
-                ExecutePropertyValidator(sender, v.Value, v.Key.Split('|')[1]);
+                ExecutePropertyValidator(Sender, v.Value, v.Key.Split('|')[1]);
             }
         }
 
@@ -39,46 +38,47 @@
 
         #region Methods
 
-        private static void ExecutePropertyValidator(object sender, MethodInfo m, string propertyName)
+        private static void ExecutePropertyValidator(object Sender, MethodInfo Method, string PropertyName)
         {
             try
             {
-                m.Invoke(sender, new[] { ReflectionUtility.GetPropertyValue(sender, propertyName) });
+                Method.Invoke(Sender, new[] { ReflectionUtility.GetPropertyValue(Sender, PropertyName) });
             }
             catch (Exception ex)
             {
                 throw new ValidatePropertyException(
-                    propertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                    PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
         }
 
-        private static void GetPropertyValidators(Type t)
+        private static void GetPropertyValidators(Type T)
         {
-            if (ProcessedTypes.Contains(t.Name))
+            if (ProcessedTypes.Contains(T.Name))
             {
                 return;
             }
 
             lock (LockObject)
             {
-                if (!ProcessedTypes.Contains(t.Name))
+                if (!ProcessedTypes.Contains(T.Name))
                 {
-                    ProcessedTypes.Add(t.Name);
+                    ProcessedTypes.Add(T.Name);
 
                     List<MethodInfo> publicMethodInfos =
-                        t.GetMethods().Where(
-                            c => c.GetCustomAttributes(typeof(MongoPropertyValidator), false).FirstOrDefault() != null).
+                        T.GetMethods().Where(
+                            C => C.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault() != null)
+                            .
                             ToList();
                     foreach (MethodInfo methodInfo in publicMethodInfos)
                     {
                         var propValidatorAtt =
                             (MongoPropertyValidator)
-                            methodInfo.GetCustomAttributes(typeof(MongoPropertyValidator), false).FirstOrDefault();
+                            methodInfo.GetCustomAttributes(typeof (MongoPropertyValidator), false).FirstOrDefault();
                         if (propValidatorAtt != null)
                         {
-                            string className = t.Name;
-                            string fieldName = propValidatorAtt.PropertyName;
-                            string key = String.Format("{0}|{1}", className, fieldName);
+                            string className = T.Name;
+                            string FieldName = propValidatorAtt.PropertyName;
+                            string key = String.Format("{0}|{1}", className, FieldName);
                             if (!BufferPropertyValidatorMethods.ContainsKey(key))
                             {
                                 BufferPropertyValidatorMethods.Add(key, methodInfo);

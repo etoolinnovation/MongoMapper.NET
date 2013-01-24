@@ -1,12 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using MongoDB.Bson;
+using MongoDB.Driver;
+
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
-
-    using global::MongoDB.Bson;
-    using global::MongoDB.Driver;
-
     public interface IFinder
     {
         #region Public Methods
@@ -15,27 +14,27 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         List<T> AllAsList<T>();
 
-        MongoCursor<T> FindAsCursor<T>(IMongoQuery query);
+        MongoCursor<T> FindAsCursor<T>(IMongoQuery Query);
 
-        MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp);
+        MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> Exp);
 
-        List<T> FindAsList<T>(IMongoQuery query);
+        List<T> FindAsList<T>(IMongoQuery Query);
 
-        List<T> FindAsList<T>(Expression<Func<T, object>> exp);
+        List<T> FindAsList<T>(Expression<Func<T, object>> Exp);
 
-        BsonDocument FindBsonDocumentById<T>(long id);
+        BsonDocument FindBsonDocumentById<T>(long Id);
 
-        T FindById<T>(long id);
+        T FindById<T>(long Id);
 
-        object FindById(Type type, long id);
+        object FindById(Type Type, long Id);
 
-        T FindByKey<T>(params object[] values);
+        T FindByKey<T>(params object[] Values);
 
-        long FindIdByKey<T>(Dictionary<string, object> keyValues);
+        long FindIdByKey<T>(Dictionary<string, object> KeyValues);
 
-        long FindIdByKey(Type t, Dictionary<string, object> keyValues);
+        long FindIdByKey(Type T, Dictionary<string, object> KeyValues);
 
-        T FindObjectByKey<T>(Dictionary<string, object> keyValues);
+        T FindObjectByKey<T>(Dictionary<string, object> KeyValues);
 
         #endregion
     }

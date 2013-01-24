@@ -1,7 +1,7 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Attributes
 {
-    using System;
-
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class MongoGeo2DIndex : Attribute
     {

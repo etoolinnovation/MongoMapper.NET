@@ -1,7 +1,7 @@
+using System.Collections.Generic;
+
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    using System.Collections.Generic;
-
     public interface IMongoMapperRelationable
     {
         #region Public Methods
@@ -10,7 +10,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         void EnsureUpRelations();
 
-        List<T> GetRelation<T>(string relation);
+        List<T> GetRelation<T>(string Relation);
 
         #endregion
     }

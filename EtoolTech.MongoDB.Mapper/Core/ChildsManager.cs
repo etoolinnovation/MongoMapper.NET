@@ -1,14 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
     public class ChildsManager : IChildsManager
     {
         #region Constants and Fields
@@ -16,9 +15,8 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Dictionary<string, List<string>> FieldNamesBuffer =
             new Dictionary<string, List<string>>();
 
-        private readonly Object _lockObject = new Object();
-
         private static IChildsManager _instance;
+        private readonly Object _lockObject = new Object();
 
         #endregion
 
@@ -34,34 +32,31 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IChildsManager Instance
         {
-            get
-            {
-                return _instance ?? (_instance = new ChildsManager());
-            }
+            get { return _instance ?? (_instance = new ChildsManager()); }
         }
 
         #endregion
 
         #region Public Methods
 
-        public void GenerateChilsIds(string objName, IEnumerable<object> list)
+        public void GenerateChilsIds(string ObjName, IEnumerable<object> List)
         {
-            foreach (object o in list)
+            foreach (object o in List)
             {
-                var item = (IMongoMapperChildIdeable)o;
-                item._id = ConfigManager.UseChildIncrementalId(objName)
+                var item = (IMongoMapperChildIdeable) o;
+                item._id = ConfigManager.UseChildIncrementalId(ObjName)
                                ? MongoMapperIdGenerator.Instance.GenerateIncrementalId(o.GetType().Name)
                                : MongoMapperIdGenerator.Instance.GenerateId();
             }
         }
 
-        public void ManageChilds(object sender)
+        public void ManageChilds(object Sender)
         {
-            foreach (string pName in this.GeFieldNames(sender))
+            foreach (string pName in GeFieldNames(Sender))
             {
-                object data = ReflectionUtility.GetPropertyValue(sender, pName);
-                var childList = (IEnumerable<object>)data;
-                this.GenerateChilsIds(sender.GetType().Name, childList);
+                object data = ReflectionUtility.GetPropertyValue(Sender, pName);
+                var childList = (IEnumerable<object>) data;
+                GenerateChilsIds(Sender.GetType().Name, childList);
             }
         }
 
@@ -69,24 +64,24 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Methods
 
-        private IEnumerable<string> GeFieldNames(object sender)
+        private IEnumerable<string> GeFieldNames(object Sender)
         {
-            string objName = sender.GetType().Name;
+            string objName = Sender.GetType().Name;
 
             if (FieldNamesBuffer.ContainsKey(objName))
             {
                 return FieldNamesBuffer[objName];
             }
 
-            lock (this._lockObject)
+            lock (_lockObject)
             {
                 if (!FieldNamesBuffer.ContainsKey(objName))
                 {
                     FieldNamesBuffer.Add(objName, new List<string>());
 
                     List<PropertyInfo> pList =
-                        sender.GetType().GetProperties().Where(
-                            p => p.GetCustomAttributes(typeof(MongoChildCollection), false).FirstOrDefault() != null).
+                        Sender.GetType().GetProperties().Where(
+                            p => p.GetCustomAttributes(typeof (MongoChildCollection), false).FirstOrDefault() != null).
                             ToList();
 
                     foreach (PropertyInfo p in pList)

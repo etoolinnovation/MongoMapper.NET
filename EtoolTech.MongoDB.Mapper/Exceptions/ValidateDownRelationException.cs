@@ -1,7 +1,7 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Exceptions
 {
-    using System;
-
     [Serializable]
     public class ValidateDownRelationException : Exception
     {
@@ -19,7 +19,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public ValidateDownRelationException(string relation)
         {
-            this._relation = relation;
+            _relation = relation;
         }
 
         #endregion
@@ -28,10 +28,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public override string Message
         {
-            get
-            {
-                return "Error Validatin Relation " + this._relation;
-            }
+            get { return "Error Validatin Relation " + _relation; }
         }
 
         #endregion

@@ -1,34 +1,34 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    using System;
-
     public interface IEvents
     {
         #region Public Methods
 
         void AfterDeleteDocument(
-            object sender,
-            MongoMapper.OnAfterDeleteEventHandler onAfterDelete,
-            MongoMapper.OnAfterCompleteEventHandler onAfterComplete,
-            Type classType);
+            object Sender,
+            MongoMapper.OnAfterDeleteEventHandler OnAfterDelete,
+            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            Type ClassType);
 
         void AfterInsertDocument(
-            object sender,
-            MongoMapper.OnAfterInsertEventHandler onAfterInsert,
-            MongoMapper.OnAfterCompleteEventHandler onAfterComplete,
-            Type classType);
+            object Sender,
+            MongoMapper.OnAfterInsertEventHandler OnAfterInsert,
+            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            Type ClassType);
 
         void AfterUpdateDocument(
-            object sender,
-            MongoMapper.OnAfterModifyEventHandler onAfterModify,
-            MongoMapper.OnAfterCompleteEventHandler onAfterComplete,
-            Type classType);
+            object Sender,
+            MongoMapper.OnAfterModifyEventHandler OnAfterModify,
+            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            Type ClassType);
 
-        void BeforeDeleteDocument(object sender, MongoMapper.OnBeforeDeleteEventHandler onBeforeDelete, Type classType);
+        void BeforeDeleteDocument(object Sender, MongoMapper.OnBeforeDeleteEventHandler OnBeforeDelete, Type ClassType);
 
-        void BeforeInsertDocument(object sender, MongoMapper.OnBeforeInsertEventHandler onBeforeInsert, Type classType);
+        void BeforeInsertDocument(object Sender, MongoMapper.OnBeforeInsertEventHandler OnBeforeInsert, Type ClassType);
 
-        void BeforeUpdateDocument(object sender, MongoMapper.OnBeforeModifyEventHandler onBeforeModify, Type classType);
+        void BeforeUpdateDocument(object Sender, MongoMapper.OnBeforeModifyEventHandler OnBeforeModify, Type ClassType);
 
         #endregion
     }

@@ -1,13 +1,11 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::MongoDB.Bson.Serialization;
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class MongoMapperIdGenerator : IIdGenerator
     {
         #region Constants and Fields
@@ -20,33 +18,35 @@
 
         public static MongoMapperIdGenerator Instance
         {
-            get
-            {
-                return new MongoMapperIdGenerator();
-            }
+            get { return new MongoMapperIdGenerator(); }
         }
 
         #endregion
 
         #region Public Methods
 
-        public object GenerateId(object container, object document)
+        public object GenerateId(object Container, object Document)
         {
-            string objName = document.GetType().Name;
+            string objName = Document.GetType().Name;
             if (!ConfigManager.UseIncrementalId(objName))
             {
-                return this.GenerateId();
+                return GenerateId();
             }
 
-            return this.GenerateIncrementalId(objName);
+            return GenerateIncrementalId(objName);
+        }
+
+        public bool IsEmpty(object Id)
+        {
+            return (long) Id == default(long);
         }
 
         public long GenerateId()
         {
             var baseDate = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime now = DateTime.UtcNow;
-            var days = (ushort)(now - baseDate).TotalDays;
-            var milliseconds = (int)now.TimeOfDay.TotalMilliseconds;
+            var days = (ushort) (now - baseDate).TotalDays;
+            var milliseconds = (int) now.TimeOfDay.TotalMilliseconds;
             byte[] bytes = Guid.NewGuid().ToByteArray();
 
             Array.Copy(BitConverter.GetBytes(days), 0, bytes, 10, 2);
@@ -61,29 +61,24 @@
             return BitConverter.ToInt64(bytes, 0);
         }
 
-        public long GenerateIncrementalId(string objName)
+        public long GenerateIncrementalId(string ObjName)
         {
-            lock (this._lockObject)
+            lock (_lockObject)
             {
-                FindAndModifyResult result = this.FindAndModifyResult(objName);
+                FindAndModifyResult result = FindAndModifyResult(ObjName);
                 return result.ModifiedDocument["last"].AsInt64;
             }
-        }
-
-        public bool IsEmpty(object id)
-        {
-            return (long)id == default(long);
         }
 
         #endregion
 
         #region Methods
 
-        private FindAndModifyResult FindAndModifyResult(string objName)
+        private FindAndModifyResult FindAndModifyResult(string ObjName)
         {
             FindAndModifyResult result =
                 Helper.Db("Counters", true).GetCollection("Counters").FindAndModify(
-                    Query.EQ("document", objName), null, Update.Inc("last", (long)1), true, true);
+                    Query.EQ("document", ObjName), null, Update.Inc("last", (long) 1), true, true);
             return result;
         }
 

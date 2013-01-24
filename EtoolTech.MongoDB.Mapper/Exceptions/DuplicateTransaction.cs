@@ -2,7 +2,7 @@
 
 namespace EtoolTech.MongoDB.Mapper.Exceptions
 {
-    public class DuplicateTransaction:Exception
+    public class DuplicateTransaction : Exception
     {
     }
 }

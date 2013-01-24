@@ -1,7 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper
-{
-    using EtoolTech.MongoDB.Mapper.Interfaces;
+﻿using EtoolTech.MongoDB.Mapper.Interfaces;
 
+namespace EtoolTech.MongoDB.Mapper
+{
     public class CustomContext
     {
         #region Constants and Fields
@@ -18,45 +18,36 @@
 
         public static ICache CacheManager
         {
-            get
-            {
-                return _cacheManager;
-            }
+            get { return _cacheManager; }
         }
 
         public static IConfig Config
         {
-            get
-            {
-                return _config;
-            }
+            get { return _config; }
         }
 
         public static IRules Rules
         {
-            get
-            {
-                return _rulesManager;
-            }
+            get { return _rulesManager; }
         }
 
         #endregion
 
         #region Public Methods
 
-        public static void SetCacheManagerInterface(ICache cacheManager)
+        public static void SetCacheManagerInterface(ICache CustomCacheManager)
         {
-            _cacheManager = cacheManager;
+            _cacheManager = CustomCacheManager;
         }
 
-        public static void SetDatabaseConfigInterface(IConfig config)
+        public static void SetDatabaseConfigInterface(IConfig CustomConfig)
         {
-            _config = config;
+            _config = CustomConfig;
         }
 
-        public static void SetRulesManagerInterface(IRules rules)
+        public static void SetRulesManagerInterface(IRules CustomRules)
         {
-            _rulesManager = rules;
+            _rulesManager = CustomRules;
         }
 
         #endregion

@@ -12,30 +12,29 @@ namespace EtoolTech.MongoDB.Mapper
     {
         internal static IWriter Instance
         {
-            get
-            {
-                return new Writer();
-            }
+            get { return new Writer(); }
         }
 
-        public WriteConcernResult Insert(string name, Type type, object document)
-        {
+        #region IWriter Members
 
+        public WriteConcernResult Insert(string Name, Type Type, object Document)
+        {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
-                MongoMapperTransaction.AddToQueue(OperationType.Insert, type, document);
+                MongoMapperTransaction.AddToQueue(OperationType.Insert, Type, Document);
                 return new WriteConcernResult();
             }
 
-            var mongoMapperVersionable = document as IMongoMapperVersionable;
+            var mongoMapperVersionable = Document as IMongoMapperVersionable;
             if (mongoMapperVersionable != null)
             {
                 mongoMapperVersionable.MongoMapperDocumentVersion++;
             }
 
-            WriteConcernResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Insert(type, document);
+            WriteConcernResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Name)).Insert(Type, Document);
 
-            if (ConfigManager.SafeMode(type.Name))
+            if (ConfigManager.SafeMode(Type.Name))
             {
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
@@ -45,23 +44,24 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public WriteConcernResult Update(string name, Type type, object document)
+        public WriteConcernResult Update(string Name, Type Type, object Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
-                MongoMapperTransaction.AddToQueue(OperationType.Update, type, document);
+                MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);
                 return new WriteConcernResult();
             }
 
-            var mongoMapperVersionable = document as IMongoMapperVersionable;
+            var mongoMapperVersionable = Document as IMongoMapperVersionable;
             if (mongoMapperVersionable != null)
             {
                 mongoMapperVersionable.MongoMapperDocumentVersion++;
             }
 
-            WriteConcernResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(name)).Save(type, document);
+            WriteConcernResult result =
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Name)).Save(Type, Document);
 
-            if (ConfigManager.SafeMode(name))
+            if (ConfigManager.SafeMode(Name))
             {
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
@@ -71,30 +71,35 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public WriteConcernResult Delete(string name, Type type, object document)
-        {            
-
+        public WriteConcernResult Delete(string Name, Type Type, object Document)
+        {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
-                MongoMapperTransaction.AddToQueue(OperationType.Delete, type, document);
+                MongoMapperTransaction.AddToQueue(OperationType.Delete, Type, Document);
                 return new WriteConcernResult();
             }
 
-            
-            if ( ((MongoMapper)document).MongoMapper_Id == default(long))
+
+            if (((MongoMapper) Document).MongoMapper_Id == default(long))
             {
-                ((MongoMapper)document).MongoMapper_Id = Finder.Instance.FindIdByKey(type,
-                    Helper.GetPrimaryKey(type).ToDictionary(keyField => keyField, keyField => ReflectionUtility.GetPropertyValue(this, keyField))
+                ((MongoMapper) Document).MongoMapper_Id = Finder.Instance.FindIdByKey(Type,
+                                                                                      Helper.GetPrimaryKey(Type).
+                                                                                          ToDictionary(
+                                                                                              KeyField => KeyField,
+                                                                                              KeyField =>
+                                                                                              ReflectionUtility.
+                                                                                                  GetPropertyValue(
+                                                                                                      this, KeyField))
                     );
             }
 
-            IMongoQuery query = Query.EQ("_id", ((MongoMapper)document).MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", ((MongoMapper) Document).MongoMapper_Id);
 
             WriteConcernResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(type.Name)).Remove(
+                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Type.Name)).Remove(
                     query);
 
-            if (ConfigManager.SafeMode(type.Name))
+            if (ConfigManager.SafeMode(Type.Name))
             {
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
@@ -105,6 +110,6 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-    
+        #endregion
     }
 }

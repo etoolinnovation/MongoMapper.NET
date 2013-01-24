@@ -5,8 +5,8 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public interface IWriter
     {
-        WriteConcernResult Insert(string name, Type type, object document);
-        WriteConcernResult Update(string name, Type type, object document);       
-        WriteConcernResult Delete(string name, Type type, object document);
+        WriteConcernResult Insert(string Name, Type Type, object Document);
+        WriteConcernResult Update(string Name, Type Type, object Document);
+        WriteConcernResult Delete(string Name, Type Type, object Document);
     }
 }

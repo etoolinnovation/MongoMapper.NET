@@ -1,18 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class Relations : IRelations
     {
         #region Constants and Fields
@@ -23,11 +21,11 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Dictionary<string, List<string>> BufferUpRelations =
             new Dictionary<string, List<string>>();
 
+        private static IRelations _relations;
+
         private readonly Object _lockObjectDown = new Object();
 
         private readonly Object _lockObjectUp = new Object();
-
-        private static IRelations _relations;
 
         #endregion
 
@@ -43,26 +41,23 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IRelations Instance
         {
-            get
-            {
-                return _relations ?? (_relations = new Relations());
-            }
+            get { return _relations ?? (_relations = new Relations()); }
         }
 
         #endregion
 
         #region Public Methods
 
-        public void EnsureDownRelations(object sender, Type classType, IFinder finder)
+        public void EnsureDownRelations(object Sender, Type ClassType, IFinder Finder)
         {
-            foreach (string relation in this.GetDownRelations(classType))
+            foreach (string relation in GetDownRelations(ClassType))
             {
                 string[] values = relation.Split('|');
                 string fieldName = values[0];
                 string fkClassName = values[1];
                 string fkFieldName = values[2];
 
-                object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
+                object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
                 IMongoQuery query = MongoQuery.Eq(fkFieldName, value);
 
                 MongoCollection fkCol =
@@ -74,11 +69,11 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public void EnsureUpRelations(object sender, Type classType, IFinder finder)
+        public void EnsureUpRelations(object Sender, Type ClassType, IFinder Finder)
         {
             //upRelations.Add(fieldInfo.Name + "|" + upRelationAtt.ObjectName + "|" + upRelationAtt.FieldName + 
             //"|" + upRelationAtt.ParentFieldName + "|" + upRelationAtt.ParentPropertyName);
-            foreach (string upRelation in this.GetUpRelations(classType))
+            foreach (string upRelation in GetUpRelations(ClassType))
             {
                 string[] values = upRelation.Split('|');
                 string fieldName = values[0];
@@ -90,11 +85,11 @@ namespace EtoolTech.MongoDB.Mapper
                 IMongoQuery parentQuery = null;
                 if (!String.IsNullOrEmpty(fkParentfieldName) && !String.IsNullOrEmpty(fkParentPropertyName))
                 {
-                    object parentvalue = ReflectionUtility.GetPropertyValue(sender, fkParentPropertyName);
+                    object parentvalue = ReflectionUtility.GetPropertyValue(Sender, fkParentPropertyName);
                     parentQuery = MongoQuery.Eq(fkParentfieldName, parentvalue);
                 }
 
-                object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
+                object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
                 IMongoQuery query = MongoQuery.Eq(fkFieldName, value);
 
                 if (parentQuery != null)
@@ -111,31 +106,31 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public List<string> GetDownRelations(Type t)
+        public List<string> GetDownRelations(Type T)
         {
-            if (BufferDownRelations.ContainsKey(t.Name))
+            if (BufferDownRelations.ContainsKey(T.Name))
             {
-                return BufferDownRelations[t.Name];
+                return BufferDownRelations[T.Name];
             }
 
-            lock (this._lockObjectDown)
+            lock (_lockObjectDown)
             {
-                if (!BufferDownRelations.ContainsKey(t.Name))
+                if (!BufferDownRelations.ContainsKey(T.Name))
                 {
                     var downRelations = new List<string>();
                     List<PropertyInfo> publicFieldInfos =
-                        t.GetProperties().Where(
-                            c => c.GetCustomAttributes(typeof(MongoDownRelation), false).FirstOrDefault() != null).
+                        T.GetProperties().Where(
+                            c => c.GetCustomAttributes(typeof (MongoDownRelation), false).FirstOrDefault() != null).
                             ToList();
                     foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
-                        object[] downRelationAtt = fieldInfo.GetCustomAttributes(typeof(MongoDownRelation), false);
+                        object[] downRelationAtt = fieldInfo.GetCustomAttributes(typeof (MongoDownRelation), false);
 
                         foreach (object downRelation in downRelationAtt)
                         {
                             if (downRelation != null)
                             {
-                                var relation = (MongoDownRelation)downRelation;
+                                var relation = (MongoDownRelation) downRelation;
                                 downRelations.Add(
                                     String.Format(
                                         "{0}|{1}|{2}", fieldInfo.Name, relation.ObjectName, relation.FieldName));
@@ -148,26 +143,26 @@ namespace EtoolTech.MongoDB.Mapper
                         }
                     }
 
-                    BufferDownRelations.Add(t.Name, downRelations);
+                    BufferDownRelations.Add(T.Name, downRelations);
                 }
 
-                return BufferDownRelations[t.Name];
+                return BufferDownRelations[T.Name];
             }
         }
 
-        public List<T> GetRelation<T>(object sender, string relation, Type classType, IFinder finder)
+        public List<T> GetRelation<T>(object Sender, string Relation, Type ClassType, IFinder Finder)
         {
             //c.GetRelation<Person>("Person,Country");
-            string[] values = relation.Split(',');
+            string[] values = Relation.Split(',');
 
             string findString = String.Format("{0}|{1}", values[0], values[1]);
 
             string relationString =
-                this.GetUpRelations(classType).FirstOrDefault(upRelation => upRelation.Contains(findString));
+                GetUpRelations(ClassType).FirstOrDefault(UpRelation => UpRelation.Contains(findString));
             if (String.IsNullOrEmpty(relationString))
             {
                 relationString =
-                    this.GetDownRelations(classType).FirstOrDefault(downRelation => downRelation.EndsWith(findString));
+                    GetDownRelations(ClassType).FirstOrDefault(DownRelation => DownRelation.EndsWith(findString));
             }
 
             if (String.IsNullOrEmpty(relationString))
@@ -179,33 +174,34 @@ namespace EtoolTech.MongoDB.Mapper
             string fieldName = values[0];
             string fkClassName = values[1];
             string fkFieldName = values[2];
-            object value = ReflectionUtility.GetPropertyValue(sender, fieldName);
+            object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
             IMongoQuery query = MongoQuery.Eq(fkFieldName, value);
             return
                 CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName)).FindAs<T>(query).ToList();
         }
 
-        public List<string> GetUpRelations(Type t)
+        public List<string> GetUpRelations(Type T)
         {
-            if (BufferUpRelations.ContainsKey(t.Name))
+            if (BufferUpRelations.ContainsKey(T.Name))
             {
-                return BufferUpRelations[t.Name];
+                return BufferUpRelations[T.Name];
             }
 
-            lock (this._lockObjectUp)
+            lock (_lockObjectUp)
             {
-                if (!BufferUpRelations.ContainsKey(t.Name))
+                if (!BufferUpRelations.ContainsKey(T.Name))
                 {
                     var upRelations = new List<string>();
                     List<PropertyInfo> publicFieldInfos =
-                        t.GetProperties().Where(
-                            c => c.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault() != null).ToList(
-                                );
+                        T.GetProperties().Where(
+                            C => C.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault() != null).ToList
+                            (
+                            );
                     foreach (PropertyInfo fieldInfo in publicFieldInfos)
                     {
                         var upRelationAtt =
                             (MongoUpRelation)
-                            fieldInfo.GetCustomAttributes(typeof(MongoUpRelation), false).FirstOrDefault();
+                            fieldInfo.GetCustomAttributes(typeof (MongoUpRelation), false).FirstOrDefault();
 
                         if (upRelationAtt != null)
                         {
@@ -220,14 +216,14 @@ namespace EtoolTech.MongoDB.Mapper
 
                             if (!ConfigManager.Config.Context.Generated)
                             {
-                                CollectionsManager.GetCollection(t.Name).EnsureIndex(fieldInfo.Name);
+                                CollectionsManager.GetCollection(T.Name).EnsureIndex(fieldInfo.Name);
                             }
                         }
                     }
-                    BufferUpRelations.Add(t.Name, upRelations);
+                    BufferUpRelations.Add(T.Name, upRelations);
                 }
 
-                return BufferUpRelations[t.Name];
+                return BufferUpRelations[T.Name];
             }
         }
 

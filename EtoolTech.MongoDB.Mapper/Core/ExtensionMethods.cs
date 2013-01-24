@@ -1,64 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
-
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public static class ExtensionMethods
     {
         #region Public Methods
 
-        public static void Delete<T>(this T o) where T : MongoMapper
-        {         
-            ((IMongoMapperWriteable)o).Delete<T>();
-        }
-
-        public static void FillByKey<T>(this T o, params object[] values) where T : MongoMapper
-        {          
-            object result = Finder.Instance.FindByKey<T>(values);
-
-            ReflectionUtility.CopyObject(result, o);
-        }
-
-        public static void FindByMongoId<T>(this T o, long Id) where T : MongoMapper
+        public static void Delete<T>(this T Object) where T : MongoMapper
         {
-    
+            ((IMongoMapperWriteable)Object).Delete<T>();
+        }
+
+        public static void FillByKey<T>(this T Object, params object[] Values) where T : MongoMapper
+        {
+            object result = Finder.Instance.FindByKey<T>(Values);
+
+            ReflectionUtility.CopyObject(result, Object);
+        }
+
+        public static void FindByMongoId<T>(this T Object, long Id) where T : MongoMapper
+        {
             object result = Finder.Instance.FindById<T>(Id);
 
-            ReflectionUtility.CopyObject(result, o);
+            ReflectionUtility.CopyObject(result, Object);
         }
 
-        public static void MongoFind<T>(this List<T> list, IMongoQuery query = null) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List, IMongoQuery Query = null) where T : MongoMapper
         {
-            list.Clear();
-            list.AddRange(query == null ? Finder.Instance.AllAsList<T>() : Finder.Instance.FindAsList<T>(query));
+            List.Clear();
+            List.AddRange(Query == null ? Finder.Instance.AllAsList<T>() : Finder.Instance.FindAsList<T>(Query));
         }
 
-        public static void MongoFind<T>(this List<T> list, string fieldName, object value) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List, string FieldName, object Value) where T : MongoMapper
         {
-            list.Clear();
-            list.AddRange(Finder.Instance.FindAsList<T>(MongoQuery.Eq(fieldName, value)));
+            List.Clear();
+            List.AddRange(Finder.Instance.FindAsList<T>(MongoQuery.Eq(FieldName, Value)));
         }
 
-        public static void MongoFind<T>(this List<T> list, Expression<Func<T, object>> exp) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List, Expression<Func<T, object>> Exp) where T : MongoMapper
         {
-            list.Clear();
-            list.AddRange(Finder.Instance.FindAsList(exp));
+            List.Clear();
+            List.AddRange(Finder.Instance.FindAsList(Exp));
         }
 
-        public static int Save<T>(this T o) where T : MongoMapper
-        {   
-            return ((IMongoMapperWriteable)o).Save<T>();
+        public static int Save<T>(this T Object) where T : MongoMapper
+        {
+            return ((IMongoMapperWriteable)Object).Save<T>();
         }
 
-        public static void ServerUpdate<T>(this T o, UpdateBuilder update, bool refill = true) where T : MongoMapper
-        {         
-            ((IMongoMapperWriteable)o).ServerUpdate<T>(update, refill);
+        public static void ServerUpdate<T>(this T Object, UpdateBuilder Update, bool Refill = true) where T : MongoMapper
+        {
+            ((IMongoMapperWriteable)Object).ServerUpdate<T>(Update, Refill);
         }
 
         #endregion

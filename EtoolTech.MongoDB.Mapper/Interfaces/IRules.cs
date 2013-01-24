@@ -4,19 +4,19 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
     {
         #region Public Methods
 
-        void OnAfterComplete(object sender, string className);
+        void OnAfterComplete(object Sender, string ClassName);
 
-        void OnAfterDelete(object sender, string className);
+        void OnAfterDelete(object Sender, string ClassName);
 
-        void OnAfterInsert(object sender, string className);
+        void OnAfterInsert(object Sender, string ClassName);
 
-        void OnAfterModify(object sender, string className);
+        void OnAfterModify(object Sender, string ClassName);
 
-        void OnBeforeDelete(object sender, string className);
+        void OnBeforeDelete(object Sender, string ClassName);
 
-        void OnBeforeInsert(object sender, string className);
+        void OnBeforeInsert(object Sender, string ClassName);
 
-        void OnBeforeModify(object sender, string className);
+        void OnBeforeModify(object Sender, string ClassName);
 
         #endregion
     }

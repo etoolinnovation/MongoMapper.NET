@@ -1,282 +1,281 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Linq.Expressions;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Linq.Expressions;
-
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public static class MongoQuery
     {
         #region Public Methods
 
-        public static IMongoQuery Eq(string fieldName, object value)
+        public static IMongoQuery Eq(string FieldName, object Value)
         {
             IMongoQuery query = null;
-            Type type = value.GetType();
+            Type type = Value.GetType();
 
-            if (value is string)
+            if (Value is string)
             {
-                bool IsLike = false;
-                string txtValue = value.ToString();
+                bool isLike = false;
+                string txtValue = Value.ToString();
                 if (txtValue.StartsWith("%") && txtValue.EndsWith("%"))
                 {
-                    value = String.Format("/{0}/", txtValue);
-                    IsLike = true;
+                    Value = String.Format("/{0}/", txtValue);
+                    isLike = true;
                 }
                 else if (txtValue.StartsWith("%"))
                 {
-                    value = String.Format("/{0}^/", txtValue);
-                    IsLike = true;
+                    Value = String.Format("/{0}^/", txtValue);
+                    isLike = true;
                 }
                 else if (txtValue.EndsWith("%"))
                 {
-                    value = String.Format("/^{0}/", txtValue);
-                    IsLike = true;
+                    Value = String.Format("/^{0}/", txtValue);
+                    isLike = true;
                 }
 
-                if (IsLike)
+                if (isLike)
                 {
-                    query = RegEx(fieldName, value.ToString());
+                    query = RegEx(FieldName, Value.ToString());
                     return query;
                 }
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof (DateTime))
             {
-                query = Query.EQ(fieldName, (DateTime)value);
+                query = Query.EQ(FieldName, (DateTime) Value);
             }
-            else if (type == typeof(int))
+            else if (type == typeof (int))
             {
-                query = Query.EQ(fieldName, (int)value);
+                query = Query.EQ(FieldName, (int) Value);
             }
-            else if (type == typeof(string))
+            else if (type == typeof (string))
             {
-                query = Query.EQ(fieldName, (string)value);
+                query = Query.EQ(FieldName, (string) Value);
             }
-            else if (type == typeof(long))
+            else if (type == typeof (long))
             {
-                query = Query.EQ(fieldName, (long)value);
+                query = Query.EQ(FieldName, (long) Value);
             }
-            else if (type == typeof(bool))
+            else if (type == typeof (bool))
             {
-                query = Query.EQ(fieldName, (bool)value);
+                query = Query.EQ(FieldName, (bool) Value);
             }
-            else if (type == typeof(double))
+            else if (type == typeof (double))
             {
-                query = Query.EQ(fieldName, (double)value);
+                query = Query.EQ(FieldName, (double) Value);
             }
-            else if (type == typeof(Guid))
+            else if (type == typeof (Guid))
             {
-                query = Query.EQ(fieldName, (Guid)value);
+                query = Query.EQ(FieldName, (Guid) Value);
             }
 
             return query;
         }
 
-        public static IMongoQuery Eq<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Eq<T>(Expression<Func<T, object>> Field, object Value)
         {
-            return Eq(ReflectionUtility.GetPropertyName(field), value);
+            return Eq(ReflectionUtility.GetPropertyName(Field), Value);
         }
 
-        public static IMongoQuery Gt(string fieldName, object value)
+        public static IMongoQuery Gt(string FieldName, object Value)
         {
             IMongoQuery query = null;
-            Type type = value.GetType();
+            Type type = Value.GetType();
 
-            if (type == typeof(DateTime))
+            if (type == typeof (DateTime))
             {
-                query = Query.GT(fieldName, (DateTime)value);
+                query = Query.GT(FieldName, (DateTime) Value);
             }
-            else if (type == typeof(int))
+            else if (type == typeof (int))
             {
-                query = Query.GT(fieldName, (int)value);
+                query = Query.GT(FieldName, (int) Value);
             }
-            else if (type == typeof(string))
+            else if (type == typeof (string))
             {
-                query = Query.GT(fieldName, (string)value);
+                query = Query.GT(FieldName, (string) Value);
             }
-            else if (type == typeof(long))
+            else if (type == typeof (long))
             {
-                query = Query.GT(fieldName, (long)value);
+                query = Query.GT(FieldName, (long) Value);
             }
-            else if (type == typeof(bool))
+            else if (type == typeof (bool))
             {
-                query = Query.GT(fieldName, (bool)value);
+                query = Query.GT(FieldName, (bool) Value);
             }
-            else if (type == typeof(double))
+            else if (type == typeof (double))
             {
-                query = Query.GT(fieldName, (double)value);
+                query = Query.GT(FieldName, (double) Value);
             }
 
             return query;
         }
 
-        public static IMongoQuery Gt<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Gt<T>(Expression<Func<T, object>> Field, object Value)
         {
-            return Gt(ReflectionUtility.GetPropertyName(field), value);
+            return Gt(ReflectionUtility.GetPropertyName(Field), Value);
         }
 
-        public static IMongoQuery Gte(string fieldName, object value)
+        public static IMongoQuery Gte(string FieldName, object Value)
         {
             IMongoQuery query = null;
-            Type type = value.GetType();
+            Type type = Value.GetType();
 
-            if (type == typeof(DateTime))
+            if (type == typeof (DateTime))
             {
-                query = Query.GTE(fieldName, (DateTime)value);
+                query = Query.GTE(FieldName, (DateTime) Value);
             }
-            else if (type == typeof(int))
+            else if (type == typeof (int))
             {
-                query = Query.GTE(fieldName, (int)value);
+                query = Query.GTE(FieldName, (int) Value);
             }
-            else if (type == typeof(string))
+            else if (type == typeof (string))
             {
-                query = Query.GTE(fieldName, (string)value);
+                query = Query.GTE(FieldName, (string) Value);
             }
-            else if (type == typeof(long))
+            else if (type == typeof (long))
             {
-                query = Query.GTE(fieldName, (long)value);
+                query = Query.GTE(FieldName, (long) Value);
             }
-            else if (type == typeof(bool))
+            else if (type == typeof (bool))
             {
-                query = Query.GTE(fieldName, (bool)value);
+                query = Query.GTE(FieldName, (bool) Value);
             }
-            else if (type == typeof(double))
+            else if (type == typeof (double))
             {
-                query = Query.GTE(fieldName, (double)value);
+                query = Query.GTE(FieldName, (double) Value);
             }
 
             return query;
         }
 
-        public static IMongoQuery Gte<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Gte<T>(Expression<Func<T, object>> field, object Value)
         {
-            return Gte(ReflectionUtility.GetPropertyName(field), value);
+            return Gte(ReflectionUtility.GetPropertyName(field), Value);
         }
 
-        public static IMongoQuery Lt(string fieldName, object value)
+        public static IMongoQuery Lt(string FieldName, object Value)
         {
             IMongoQuery query = null;
-            Type type = value.GetType();
+            Type type = Value.GetType();
 
-            if (type == typeof(DateTime))
+            if (type == typeof (DateTime))
             {
-                query = Query.LT(fieldName, (DateTime)value);
+                query = Query.LT(FieldName, (DateTime) Value);
             }
-            else if (type == typeof(int))
+            else if (type == typeof (int))
             {
-                query = Query.LT(fieldName, (int)value);
+                query = Query.LT(FieldName, (int) Value);
             }
-            else if (type == typeof(string))
+            else if (type == typeof (string))
             {
-                query = Query.LT(fieldName, (string)value);
+                query = Query.LT(FieldName, (string) Value);
             }
-            else if (type == typeof(long))
+            else if (type == typeof (long))
             {
-                query = Query.LT(fieldName, (long)value);
+                query = Query.LT(FieldName, (long) Value);
             }
-            else if (type == typeof(bool))
+            else if (type == typeof (bool))
             {
-                query = Query.LT(fieldName, (bool)value);
+                query = Query.LT(FieldName, (bool) Value);
             }
-            else if (type == typeof(double))
+            else if (type == typeof (double))
             {
-                query = Query.LT(fieldName, (double)value);
+                query = Query.LT(FieldName, (double) Value);
             }
 
             return query;
         }
 
-        public static IMongoQuery Lt<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Lt<T>(Expression<Func<T, object>> field, object Value)
         {
-            return Eq(ReflectionUtility.GetPropertyName(field), value);
+            return Eq(ReflectionUtility.GetPropertyName(field), Value);
         }
 
-        public static IMongoQuery Lte(string fieldName, object value)
+        public static IMongoQuery Lte(string FieldName, object Value)
         {
             IMongoQuery query = null;
-            Type type = value.GetType();
+            Type type = Value.GetType();
 
-            if (type == typeof(DateTime))
+            if (type == typeof (DateTime))
             {
-                query = Query.LTE(fieldName, (DateTime)value);
+                query = Query.LTE(FieldName, (DateTime) Value);
             }
-            else if (type == typeof(int))
+            else if (type == typeof (int))
             {
-                query = Query.LTE(fieldName, (int)value);
+                query = Query.LTE(FieldName, (int) Value);
             }
-            else if (type == typeof(string))
+            else if (type == typeof (string))
             {
-                query = Query.LTE(fieldName, (string)value);
+                query = Query.LTE(FieldName, (string) Value);
             }
-            else if (type == typeof(long))
+            else if (type == typeof (long))
             {
-                query = Query.LTE(fieldName, (long)value);
+                query = Query.LTE(FieldName, (long) Value);
             }
-            else if (type == typeof(bool))
+            else if (type == typeof (bool))
             {
-                query = Query.LTE(fieldName, (bool)value);
+                query = Query.LTE(FieldName, (bool) Value);
             }
-            else if (type == typeof(double))
+            else if (type == typeof (double))
             {
-                query = Query.LTE(fieldName, (double)value);
+                query = Query.LTE(FieldName, (double) Value);
             }
 
             return query;
         }
 
-        public static IMongoQuery Lte<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Lte<T>(Expression<Func<T, object>> field, object Value)
         {
-            return Eq(ReflectionUtility.GetPropertyName(field), value);
+            return Eq(ReflectionUtility.GetPropertyName(field), Value);
         }
 
-        public static IMongoQuery Ne(string fieldName, object value)
+        public static IMongoQuery Ne(string FieldName, object Value)
         {
             IMongoQuery query = null;
-            Type type = value.GetType();
+            Type type = Value.GetType();
 
-            if (type == typeof(DateTime))
+            if (type == typeof (DateTime))
             {
-                query = Query.NE(fieldName, (DateTime)value);
+                query = Query.NE(FieldName, (DateTime) Value);
             }
-            else if (type == typeof(int))
+            else if (type == typeof (int))
             {
-                query = Query.NE(fieldName, (int)value);
+                query = Query.NE(FieldName, (int) Value);
             }
-            else if (type == typeof(string))
+            else if (type == typeof (string))
             {
-                query = Query.NE(fieldName, (string)value);
+                query = Query.NE(FieldName, (string) Value);
             }
-            else if (type == typeof(long))
+            else if (type == typeof (long))
             {
-                query = Query.NE(fieldName, (long)value);
+                query = Query.NE(FieldName, (long) Value);
             }
-            else if (type == typeof(bool))
+            else if (type == typeof (bool))
             {
-                query = Query.NE(fieldName, (bool)value);
+                query = Query.NE(FieldName, (bool) Value);
             }
-            else if (type == typeof(double))
+            else if (type == typeof (double))
             {
-                query = Query.NE(fieldName, (double)value);
+                query = Query.NE(FieldName, (double) Value);
             }
 
             return query;
         }
 
-        public static IMongoQuery Ne<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery Ne<T>(Expression<Func<T, object>> field, object Value)
         {
-            return Eq(ReflectionUtility.GetPropertyName(field), value);
+            return Eq(ReflectionUtility.GetPropertyName(field), Value);
         }
 
-        public static IMongoQuery RegEx(string fieldName, string expresion)
+        public static IMongoQuery RegEx(string FieldName, string expresion)
         {
-            return Query.Matches(fieldName, expresion);
+            return Query.Matches(FieldName, expresion);
         }
 
-        public static IMongoQuery RegEx<T>(Expression<Func<T, object>> field, object value)
+        public static IMongoQuery RegEx<T>(Expression<Func<T, object>> field, object Value)
         {
-            return RegEx(ReflectionUtility.GetPropertyName(field), value.ToString());
+            return RegEx(ReflectionUtility.GetPropertyName(field), Value.ToString());
         }
 
         #endregion

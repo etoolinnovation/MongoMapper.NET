@@ -1,12 +1,10 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Collections.Generic;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using MongoDB.Driver;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-
-    using global::MongoDB.Driver;
-
     public class CollectionsManager
     {
         #region Constants and Fields
@@ -14,9 +12,11 @@
         internal static readonly Dictionary<string, MongoCollectionName> CustomCollectionsName =
             new Dictionary<string, MongoCollectionName>();
 
-        private static readonly Dictionary<string, MongoCollection> Collections = new Dictionary<string, MongoCollection>();
+        private static readonly Dictionary<string, MongoCollection> Collections =
+            new Dictionary<string, MongoCollection>();
 
-        private static readonly Dictionary<string, MongoCollection> PrimaryCollections = new Dictionary<string, MongoCollection>();
+        private static readonly Dictionary<string, MongoCollection> PrimaryCollections =
+            new Dictionary<string, MongoCollection>();
 
         private static readonly Object LockObject = new Object();
 
@@ -24,58 +24,58 @@
 
         #region Public Methods
 
-        public static string GetCollectioName(string name)
+        public static string GetCollectioName(string Name)
         {
-            if (!name.EndsWith("_Collection"))
+            if (!Name.EndsWith("_Collection"))
             {
-                name = String.Format("{0}_Collection", name);
+                Name = String.Format("{0}_Collection", Name);
             }
 
-            if (CustomCollectionsName.ContainsKey(name))
+            if (CustomCollectionsName.ContainsKey(Name))
             {
-                return CustomCollectionsName[name].Name;
+                return CustomCollectionsName[Name].Name;
             }
 
-            return name;
+            return Name;
         }
 
-        public static MongoCollection GetCollection(string name)
+        public static MongoCollection GetCollection(string Name)
         {
-            name = GetCollectioName(name);
+            Name = GetCollectioName(Name);
 
-            if (Collections.ContainsKey(name))
+            if (Collections.ContainsKey(Name))
             {
-                return Collections[name];
+                return Collections[Name];
             }
 
             lock (LockObject)
             {
-                if (!Collections.ContainsKey(name))
+                if (!Collections.ContainsKey(Name))
                 {
-                    MongoCollection collection = Helper.Db(name).GetCollection(name);
-                    Collections.Add(name, collection);
+                    MongoCollection collection = Helper.Db(Name).GetCollection(Name);
+                    Collections.Add(Name, collection);
                 }
-                return Collections[name];
+                return Collections[Name];
             }
         }
 
-        public static MongoCollection GetPrimaryCollection(string name)
+        public static MongoCollection GetPrimaryCollection(string Name)
         {
-            name = GetCollectioName(name);
+            Name = GetCollectioName(Name);
 
-            if (PrimaryCollections.ContainsKey(name))
+            if (PrimaryCollections.ContainsKey(Name))
             {
-                return PrimaryCollections[name];
+                return PrimaryCollections[Name];
             }
 
             lock (LockObject)
             {
-                if (!PrimaryCollections.ContainsKey(name))
+                if (!PrimaryCollections.ContainsKey(Name))
                 {
-                    MongoCollection collection = Helper.Db(name, true).GetCollection(name);
-                    PrimaryCollections.Add(name, collection);
+                    MongoCollection collection = Helper.Db(Name, true).GetCollection(Name);
+                    PrimaryCollections.Add(Name, collection);
                 }
-                return Collections[name];
+                return Collections[Name];
             }
         }
 

@@ -1,9 +1,8 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
     public class Events : IEvents
     {
         #region Constants and Fields
@@ -24,10 +23,7 @@
 
         public static IEvents Instance
         {
-            get
-            {
-                return _events ?? (_events = new Events());
-            }
+            get { return _events ?? (_events = new Events()); }
         }
 
         #endregion
@@ -35,140 +31,140 @@
         #region Public Methods
 
         public void AfterDeleteDocument(
-            object sender,
-            MongoMapper.OnAfterDeleteEventHandler onAfterDelete,
-            MongoMapper.OnAfterCompleteEventHandler onAfterComplete,
-            Type classType)
+            object Sender,
+            MongoMapper.OnAfterDeleteEventHandler OnAfterDelete,
+            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            Type ClassType)
         {
-            if (onAfterDelete != null)
+            if (OnAfterDelete != null)
             {
-                onAfterDelete(sender, new EventArgs());
+                OnAfterDelete(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnAfterDelete(sender, classType.Name);
+                CustomContext.Rules.OnAfterDelete(Sender, ClassType.Name);
             }
 
-            if (onAfterComplete != null)
+            if (OnAfterComplete != null)
             {
-                onAfterComplete(sender, new EventArgs());
+                OnAfterComplete(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnAfterComplete(sender, classType.Name);
+                CustomContext.Rules.OnAfterComplete(Sender, ClassType.Name);
             }
 
             if (CustomContext.CacheManager != null)
             {
-                CustomContext.CacheManager.Delete(sender, classType.Name);
+                CustomContext.CacheManager.Delete(Sender, ClassType.Name);
             }
         }
 
         public void AfterInsertDocument(
-            object sender,
-            MongoMapper.OnAfterInsertEventHandler onAfterInsert,
-            MongoMapper.OnAfterCompleteEventHandler onAfterComplete,
-            Type classType)
+            object Sender,
+            MongoMapper.OnAfterInsertEventHandler OnAfterInsert,
+            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            Type ClassType)
         {
-            if (onAfterInsert != null)
+            if (OnAfterInsert != null)
             {
-                onAfterInsert(sender, new EventArgs());
+                OnAfterInsert(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnAfterInsert(sender, classType.Name);
+                CustomContext.Rules.OnAfterInsert(Sender, ClassType.Name);
             }
 
-            if (onAfterComplete != null)
+            if (OnAfterComplete != null)
             {
-                onAfterComplete(sender, new EventArgs());
+                OnAfterComplete(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnAfterComplete(sender, classType.Name);
+                CustomContext.Rules.OnAfterComplete(Sender, ClassType.Name);
             }
 
             if (CustomContext.CacheManager != null)
             {
-                CustomContext.CacheManager.Insert(sender, classType.Name);
+                CustomContext.CacheManager.Insert(Sender, ClassType.Name);
             }
         }
 
         public void AfterUpdateDocument(
-            object sender,
-            MongoMapper.OnAfterModifyEventHandler onAfterModify,
-            MongoMapper.OnAfterCompleteEventHandler onAfterComplete,
-            Type classType)
+            object Sender,
+            MongoMapper.OnAfterModifyEventHandler OnAfterModify,
+            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            Type ClassType)
         {
-            if (onAfterModify != null)
+            if (OnAfterModify != null)
             {
-                onAfterModify(sender, new EventArgs());
+                OnAfterModify(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnAfterModify(sender, classType.Name);
+                CustomContext.Rules.OnAfterModify(Sender, ClassType.Name);
             }
 
-            if (onAfterComplete != null)
+            if (OnAfterComplete != null)
             {
-                onAfterComplete(sender, new EventArgs());
+                OnAfterComplete(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnAfterComplete(sender, classType.Name);
+                CustomContext.Rules.OnAfterComplete(Sender, ClassType.Name);
             }
 
             if (CustomContext.CacheManager != null)
             {
-                CustomContext.CacheManager.Update(sender, classType.Name);
+                CustomContext.CacheManager.Update(Sender, ClassType.Name);
             }
         }
 
         public void BeforeDeleteDocument(
-            object sender, MongoMapper.OnBeforeDeleteEventHandler onBeforeDelete, Type classType)
+            object Sender, MongoMapper.OnBeforeDeleteEventHandler OnBeforeDelete, Type ClassType)
         {
-            if (onBeforeDelete != null)
+            if (OnBeforeDelete != null)
             {
-                onBeforeDelete(sender, new EventArgs());
+                OnBeforeDelete(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnBeforeDelete(sender, classType.Name);
+                CustomContext.Rules.OnBeforeDelete(Sender, ClassType.Name);
             }
         }
 
         public void BeforeInsertDocument(
-            object sender, MongoMapper.OnBeforeInsertEventHandler onBeforeInsert, Type classType)
+            object Sender, MongoMapper.OnBeforeInsertEventHandler OnBeforeInsert, Type ClassType)
         {
-            if (onBeforeInsert != null)
+            if (OnBeforeInsert != null)
             {
-                onBeforeInsert(sender, new EventArgs());
+                OnBeforeInsert(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnBeforeInsert(sender, classType.Name);
+                CustomContext.Rules.OnBeforeInsert(Sender, ClassType.Name);
             }
         }
 
         public void BeforeUpdateDocument(
-            object sender, MongoMapper.OnBeforeModifyEventHandler onBeforeModify, Type classType)
+            object Sender, MongoMapper.OnBeforeModifyEventHandler OnBeforeModify, Type ClassType)
         {
-            if (onBeforeModify != null)
+            if (OnBeforeModify != null)
             {
-                onBeforeModify(sender, new EventArgs());
+                OnBeforeModify(Sender, new EventArgs());
             }
 
             if (CustomContext.Rules != null)
             {
-                CustomContext.Rules.OnBeforeModify(sender, classType.Name);
+                CustomContext.Rules.OnBeforeModify(Sender, ClassType.Name);
             }
         }
 

@@ -1,7 +1,7 @@
+using System;
+
 namespace EtoolTech.MongoDB.Mapper.Exceptions
 {
-    using System;
-
     [Serializable]
     public class ValidatePropertyException : Exception
     {
@@ -17,8 +17,8 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public ValidatePropertyException(string propertyName, string message)
         {
-            this._message = message;
-            this._propertyName = propertyName;
+            _message = message;
+            _propertyName = propertyName;
         }
 
         #endregion
@@ -27,10 +27,7 @@ namespace EtoolTech.MongoDB.Mapper.Exceptions
 
         public override string Message
         {
-            get
-            {
-                return String.Format("Error Validating Property {0}: {1}", this._propertyName, this._message);
-            }
+            get { return String.Format("Error Validating Property {0}: {1}", _propertyName, _message); }
         }
 
         #endregion

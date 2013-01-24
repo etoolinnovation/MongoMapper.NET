@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace EtoolTech.MongoDB.Mapper.Interfaces
+﻿namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
     public interface IMongoMapperVersionable
     {
         long MongoMapperDocumentVersion { get; set; }
         bool IsLastVersion();
-        bool IsLastVersion(bool force);
+        bool IsLastVersion(bool Force);
         void FillFromLastVersion();
-        void FillFromLastVersion(bool force);
+        void FillFromLastVersion(bool Force);
     }
 }

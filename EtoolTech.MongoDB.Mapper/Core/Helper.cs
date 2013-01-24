@@ -1,17 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using EtoolTech.MongoDB.Mapper.Attributes;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
 namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-
-    using global::MongoDB.Bson.Serialization;
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class Helper
     {
         #region Constants and Fields
@@ -35,24 +33,24 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Object LockObjectPk = new Object();
 
         private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
-            { typeof(string), typeof(decimal), typeof(int), typeof(long), typeof(DateTime), typeof(bool) };
+            {typeof (string), typeof (decimal), typeof (int), typeof (long), typeof (DateTime), typeof (bool)};
 
         #endregion
 
         #region Public Methods
 
-        public static MongoDatabase Db(string objName)
+        public static MongoDatabase Db(string ObjName)
         {
-            return Db(objName, false);
+            return Db(ObjName, false);
         }
 
-        public static MongoDatabase Db(string objName, bool primary)
+        public static MongoDatabase Db(string ObjName, bool Primary)
         {
-            string databaseName = ConfigManager.DataBaseName(objName);
+            string databaseName = ConfigManager.DataBaseName(ObjName);
 
-            var settings = ConfigManager.GetClientSettings(objName);
+            MongoClientSettings settings = ConfigManager.GetClientSettings(ObjName);
 
-            if (primary) settings.ReadPreference = ReadPreference.Primary;
+            if (Primary) settings.ReadPreference = ReadPreference.Primary;
 
             var client = new MongoClient(settings);
 
@@ -62,84 +60,83 @@ namespace EtoolTech.MongoDB.Mapper
             return dataBase;
         }
 
-        public static IEnumerable<string> GetPrimaryKey(Type t)
+        public static IEnumerable<string> GetPrimaryKey(Type T)
         {
-            if (BufferPrimaryKey.ContainsKey(t.Name))
+            if (BufferPrimaryKey.ContainsKey(T.Name))
             {
-                return BufferPrimaryKey[t.Name];
+                return BufferPrimaryKey[T.Name];
             }
 
             lock (LockObjectPk)
             {
-                if (!BufferPrimaryKey.ContainsKey(t.Name))
+                if (!BufferPrimaryKey.ContainsKey(T.Name))
                 {
-                    var keyAtt = (MongoKey)t.GetCustomAttributes(typeof(MongoKey), false).FirstOrDefault();
+                    var keyAtt = (MongoKey) T.GetCustomAttributes(typeof (MongoKey), false).FirstOrDefault();
                     if (keyAtt != null)
                     {
                         if (String.IsNullOrEmpty(keyAtt.KeyFields))
                         {
                             keyAtt.KeyFields = "MongoMapper_Id";
                         }
-                        BufferPrimaryKey.Add(t.Name, keyAtt.KeyFields.Split(',').ToList());
+                        BufferPrimaryKey.Add(T.Name, keyAtt.KeyFields.Split(',').ToList());
                     }
                     else
                     {
-                        BufferPrimaryKey.Add(t.Name, new List<string> { "MongoMapper_Id" });
+                        BufferPrimaryKey.Add(T.Name, new List<string> {"MongoMapper_Id"});
                     }
                 }
 
-                return BufferPrimaryKey[t.Name];
+                return BufferPrimaryKey[T.Name];
             }
         }
 
-        public static void ValidateType(Type t)
+        public static void ValidateType(Type T)
         {
-            if (!SupportedTypesLits.Contains(t))
+            if (!SupportedTypesLits.Contains(T))
             {
-                throw new TypeNotSupportedException(t.Name);
+                throw new TypeNotSupportedException(T.Name);
             }
         }
-        
 
         #endregion
 
         #region Methods
 
-        internal static void RebuildClass(Type classType, bool repairCollection)
+        internal static void RebuildClass(Type ClassType, bool RepairCollection)
         {
-            if ((repairCollection || !ConfigManager.Config.Context.Generated)
-                && !Db(classType.Name).CollectionExists(CollectionsManager.GetCollectioName(classType.Name)))
+            if ((RepairCollection || !ConfigManager.Config.Context.Generated)
+                && !Db(ClassType.Name).CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
             {
-                Db(classType.Name).CreateCollection(CollectionsManager.GetCollectioName(classType.Name), null);
+                Db(ClassType.Name).CreateCollection(CollectionsManager.GetCollectioName(ClassType.Name), null);
             }
 
-            if (!CustomDiscriminatorTypes.Contains(classType.Name))
+            if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
             {
                 lock (LockObjectCustomDiscritminatorTypes)
                 {
-                    if (!CustomDiscriminatorTypes.Contains(classType.Name))
+                    if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
                     {
-                        RegisterCustomDiscriminatorTypes(classType);
-                        CustomDiscriminatorTypes.Add(classType.Name);
+                        RegisterCustomDiscriminatorTypes(ClassType);
+                        CustomDiscriminatorTypes.Add(ClassType.Name);
                     }
                 }
             }
 
-            if (!BufferIdIncrementables.ContainsKey(classType.Name))
+            if (!BufferIdIncrementables.ContainsKey(ClassType.Name))
             {
                 lock (LockObjectIdIncrementables)
                 {
-                    if (!BufferIdIncrementables.ContainsKey(classType.Name))
+                    if (!BufferIdIncrementables.ContainsKey(ClassType.Name))
                     {
                         object m =
-                            classType.GetCustomAttributes(typeof(MongoMapperIdIncrementable), false).FirstOrDefault();
+                            ClassType.GetCustomAttributes(typeof (MongoMapperIdIncrementable), false).FirstOrDefault();
                         if (m == null)
                         {
-                            BufferIdIncrementables.Add(classType.Name, null);
+                            BufferIdIncrementables.Add(ClassType.Name, null);
                         }
                         else
                         {
-                            BufferIdIncrementables.Add(classType.Name, (MongoMapperIdIncrementable)m);
+                            BufferIdIncrementables.Add(ClassType.Name, (MongoMapperIdIncrementable) m);
                         }
                     }
                 }
@@ -147,73 +144,75 @@ namespace EtoolTech.MongoDB.Mapper
 
             //TODO: MongoCollectionName
 
-            if (!ConfigManager.Config.Context.Generated || repairCollection)
+            if (!ConfigManager.Config.Context.Generated || RepairCollection)
             {
-                foreach (string index in GetIndexes(classType))
+                foreach (string index in GetIndexes(ClassType))
                 {
                     if (index.StartsWith("2D|"))
                     {
                         CollectionsManager.GetCollection(
-                            CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(IndexKeys.GeoSpatial(index.Split('|')[1]));                        
+                            CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
+                                IndexKeys.GeoSpatial(index.Split('|')[1]));
                     }
                     else
                     {
                         CollectionsManager.GetCollection(
-                            CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(index.Split(','));
+                            CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(index.Split(','));
                     }
                 }
 
-                string[] pk = GetPrimaryKey(classType).ToArray();
+                string[] pk = GetPrimaryKey(ClassType).ToArray();
                 if (pk.Count(k => k == "MongoMapper_Id") == 0)
                 {
-                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(
+                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
                         IndexKeys.Ascending(pk));
                 }
             }
         }
 
-        private static IEnumerable<string> GetIndexes(Type t)
+        private static IEnumerable<string> GetIndexes(Type T)
         {
-            if (BufferIndexes.ContainsKey(t.Name))
+            if (BufferIndexes.ContainsKey(T.Name))
             {
-                return BufferIndexes[t.Name];
+                return BufferIndexes[T.Name];
             }
 
             lock (LockObjectIndex)
             {
-                if (!BufferIndexes.ContainsKey(t.Name))
+                if (!BufferIndexes.ContainsKey(T.Name))
                 {
-                    BufferIndexes.Add(t.Name, new List<string>());
-                    object[] indexAtt = t.GetCustomAttributes(typeof(MongoIndex), false);
+                    BufferIndexes.Add(T.Name, new List<string>());
+                    object[] indexAtt = T.GetCustomAttributes(typeof (MongoIndex), false);
 
                     foreach (object index in indexAtt)
                     {
                         if (index != null)
                         {
-                            BufferIndexes[t.Name].Add(((MongoIndex)index).IndexFields);
+                            BufferIndexes[T.Name].Add(((MongoIndex) index).IndexFields);
                         }
                     }
 
-                    var geoindexAtt = (MongoGeo2DIndex)t.GetCustomAttributes(typeof(MongoGeo2DIndex), false).FirstOrDefault();
+                    var geoindexAtt =
+                        (MongoGeo2DIndex) T.GetCustomAttributes(typeof (MongoGeo2DIndex), false).FirstOrDefault();
                     if (geoindexAtt != null)
                     {
-                        BufferIndexes[t.Name].Add("2D|" + geoindexAtt.IndexField);
+                        BufferIndexes[T.Name].Add("2D|" + geoindexAtt.IndexField);
                     }
                 }
 
-                return BufferIndexes[t.Name];
+                return BufferIndexes[T.Name];
             }
         }
 
-        private static void RegisterCustomDiscriminatorTypes(Type classType)
+        private static void RegisterCustomDiscriminatorTypes(Type ClassType)
         {
-            object[] regTypes = classType.GetCustomAttributes(typeof(MongoCustomDiscriminatorType), false);
+            object[] regTypes = ClassType.GetCustomAttributes(typeof (MongoCustomDiscriminatorType), false);
 
             foreach (object regType in regTypes)
             {
                 if (regType != null)
                 {
-                    var mongoCustomDiscriminatorType = (MongoCustomDiscriminatorType)regType;
+                    var mongoCustomDiscriminatorType = (MongoCustomDiscriminatorType) regType;
                     BsonSerializer.RegisterDiscriminator(
                         mongoCustomDiscriminatorType.Type, mongoCustomDiscriminatorType.Type.Name);
                 }

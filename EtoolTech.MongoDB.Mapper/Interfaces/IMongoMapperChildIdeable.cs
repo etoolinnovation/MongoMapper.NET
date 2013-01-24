@@ -1,7 +1,7 @@
+using System.Xml.Serialization;
+
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    using System.Xml.Serialization;
-
     public interface IMongoMapperChildIdeable
     {
         #region Public Properties

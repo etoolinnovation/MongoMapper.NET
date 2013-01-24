@@ -1,7 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Configuration
-{
-    using System.Configuration;
+﻿using System.Configuration;
 
+namespace EtoolTech.MongoDB.Mapper.Configuration
+{
     public class MongoMapperConfiguration : ConfigurationSection
     {
         #region Constants and Fields
@@ -15,37 +15,25 @@
         [ConfigurationProperty("CollectionConfig")]
         public CollectionConfig CollectionConfig
         {
-            get
-            {
-                return (CollectionConfig)this["CollectionConfig"] ?? new CollectionConfig();
-            }
+            get { return (CollectionConfig) this["CollectionConfig"] ?? new CollectionConfig(); }
         }
 
         [ConfigurationProperty("Context")]
         public Context Context
         {
-            get
-            {
-                return (Context)this["Context"] ?? new Context();
-            }
+            get { return (Context) this["Context"] ?? new Context(); }
         }
 
         [ConfigurationProperty("Database")]
         public Database Database
         {
-            get
-            {
-                return (Database)this["Database"] ?? new Database();
-            }
+            get { return (Database) this["Database"] ?? new Database(); }
         }
 
         [ConfigurationProperty("Server")]
         public Server Server
         {
-            get
-            {
-                return (Server)this["Server"] ?? new Server();
-            }
+            get { return (Server) this["Server"] ?? new Server(); }
         }
 
         #endregion
@@ -54,7 +42,7 @@
 
         public static MongoMapperConfiguration GetConfig()
         {
-            return (MongoMapperConfiguration)ConfigurationManager.GetSection(ConfigSectionName)
+            return (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName)
                    ?? new MongoMapperConfiguration();
         }
 
@@ -68,55 +56,37 @@
         [ConfigurationProperty("BalancedReading", IsKey = false, IsRequired = false)]
         public bool BalancedReading
         {
-            get
-            {
-                return bool.Parse(this["BalancedReading"].ToString());
-            }
+            get { return bool.Parse(this["BalancedReading"].ToString()); }
         }
 
         [ConfigurationProperty("Host", IsKey = true, IsRequired = true)]
         public string Host
         {
-            get
-            {
-                return this["Host"] as string;
-            }
+            get { return this["Host"] as string; }
         }
 
         [ConfigurationProperty("MinReplicaServersToWrite", IsKey = false, IsRequired = false)]
         public int MinReplicaServersToWrite
         {
-            get
-            {
-                return int.Parse(this["MinReplicaServersToWrite"].ToString());
-            }
+            get { return int.Parse(this["MinReplicaServersToWrite"].ToString()); }
         }
 
         [ConfigurationProperty("PoolSize", IsKey = false, IsRequired = true)]
         public int PoolSize
         {
-            get
-            {
-                return int.Parse(this["PoolSize"].ToString());
-            }
+            get { return int.Parse(this["PoolSize"].ToString()); }
         }
 
         [ConfigurationProperty("ReplicaSetName", IsKey = false, IsRequired = false)]
         public string ReplicaSetName
         {
-            get
-            {
-                return this["ReplicaSetName"].ToString();
-            }
+            get { return this["ReplicaSetName"].ToString(); }
         }
 
         [ConfigurationProperty("WaitQueueTimeout", IsKey = false, IsRequired = true)]
         public int WaitQueueTimeout
         {
-            get
-            {
-                return int.Parse(this["WaitQueueTimeout"].ToString());
-            }
+            get { return int.Parse(this["WaitQueueTimeout"].ToString()); }
         }
 
         #endregion
@@ -129,28 +99,19 @@
         [ConfigurationProperty("Name", IsKey = false, IsRequired = true)]
         public string Name
         {
-            get
-            {
-                return this["Name"] as string;
-            }
+            get { return this["Name"] as string; }
         }
 
         [ConfigurationProperty("Password", IsKey = false, IsRequired = false)]
         public string Password
         {
-            get
-            {
-                return this["Password"] as string;
-            }
+            get { return this["Password"] as string; }
         }
 
         [ConfigurationProperty("User", IsKey = false, IsRequired = false)]
         public string User
         {
-            get
-            {
-                return this["User"] as string;
-            }
+            get { return this["User"] as string; }
         }
 
         #endregion
@@ -163,73 +124,49 @@
         [ConfigurationProperty("EnableOriginalObject", IsKey = false, IsRequired = false)]
         public bool EnableOriginalObject
         {
-            get
-            {
-                return bool.Parse(this["EnableOriginalObject"].ToString());
-            }
+            get { return bool.Parse(this["EnableOriginalObject"].ToString()); }
         }
 
         [ConfigurationProperty("ExceptionOnDuplicateKey", IsKey = false, IsRequired = false)]
         public bool ExceptionOnDuplicateKey
         {
-            get
-            {
-                return bool.Parse(this["ExceptionOnDuplicateKey"].ToString());
-            }
+            get { return bool.Parse(this["ExceptionOnDuplicateKey"].ToString()); }
         }
 
         [ConfigurationProperty("Journal", IsKey = false, IsRequired = false)]
         public bool Journal
         {
-            get
-            {
-                return bool.Parse(this["Journal"].ToString());
-            }
+            get { return bool.Parse(this["Journal"].ToString()); }
         }
 
         [ConfigurationProperty("Generated", IsKey = false, IsRequired = false)]
         public bool Generated
         {
-            get
-            {
-                return bool.Parse(this["Generated"].ToString());
-            }
+            get { return bool.Parse(this["Generated"].ToString()); }
         }
 
         [ConfigurationProperty("MaxDocumentSize", IsKey = false, IsRequired = true)]
         public int MaxDocumentSize
         {
-            get
-            {
-                return int.Parse(this["MaxDocumentSize"].ToString());
-            }
+            get { return int.Parse(this["MaxDocumentSize"].ToString()); }
         }
 
         [ConfigurationProperty("SafeMode", IsKey = false, IsRequired = false)]
         public bool SafeMode
         {
-            get
-            {
-                return bool.Parse(this["SafeMode"].ToString());
-            }
+            get { return bool.Parse(this["SafeMode"].ToString()); }
         }
 
         [ConfigurationProperty("UseChidlsIncrementalId", IsKey = false, IsRequired = false)]
         public bool UseChidlsIncrementalId
         {
-            get
-            {
-                return bool.Parse(this["UseChidlsIncrementalId"].ToString());
-            }
+            get { return bool.Parse(this["UseChidlsIncrementalId"].ToString()); }
         }
 
         [ConfigurationProperty("UseIncrementalId", IsKey = false, IsRequired = false)]
         public bool UseIncrementalId
         {
-            get
-            {
-                return bool.Parse(this["UseIncrementalId"].ToString());
-            }
+            get { return bool.Parse(this["UseIncrementalId"].ToString()); }
         }
 
         #endregion
@@ -240,14 +177,11 @@
         #region Public Properties
 
         [ConfigurationProperty("CollectionConfig", IsDefaultCollection = false)]
-        [ConfigurationCollection(typeof(CollectionElement), AddItemName = "add", ClearItemsName = "clear",
+        [ConfigurationCollection(typeof (CollectionElement), AddItemName = "add", ClearItemsName = "clear",
             RemoveItemName = "remove")]
         public CollectionElement Collections
         {
-            get
-            {
-                return (CollectionElement)base["CollectionConfig"];
-            }
+            get { return (CollectionElement) base["CollectionConfig"]; }
         }
 
         #endregion
@@ -261,7 +195,7 @@
 
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((CollectionElement)element).Name;
+            return ((CollectionElement) element).Name;
         }
 
         #endregion
@@ -274,37 +208,25 @@
         [ConfigurationProperty("Context", IsRequired = false)]
         public Context Context
         {
-            get
-            {
-                return this["Context"] as Context;
-            }
+            get { return this["Context"] as Context; }
         }
 
         [ConfigurationProperty("Database", IsRequired = false)]
         public Database Database
         {
-            get
-            {
-                return this["Database"] as Database;
-            }
+            get { return this["Database"] as Database; }
         }
 
         [ConfigurationProperty("Name", IsRequired = true)]
         public string Name
         {
-            get
-            {
-                return this["Name"] as string;
-            }
+            get { return this["Name"] as string; }
         }
 
         [ConfigurationProperty("Server", IsRequired = false)]
         public Server Server
         {
-            get
-            {
-                return this["Server"] as Server;
-            }
+            get { return this["Server"] as Server; }
         }
 
         #endregion

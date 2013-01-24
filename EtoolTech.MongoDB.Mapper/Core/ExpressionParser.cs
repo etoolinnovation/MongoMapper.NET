@@ -1,11 +1,9 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Linq.Expressions;
+using MongoDB.Driver;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Linq.Expressions;
-
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class ExpressionParser
     {
         #region Public Methods

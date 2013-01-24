@@ -4,11 +4,11 @@
     {
         #region Public Methods
 
-        void Delete(object obj, string className);
+        void Delete(object Obj, string ClassName);
 
-        void Insert(object obj, string className);
+        void Insert(object Obj, string ClassName);
 
-        void Update(object obj, string className);
+        void Update(object Obj, string ClassName);
 
         #endregion
     }

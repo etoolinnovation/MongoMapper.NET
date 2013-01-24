@@ -1,7 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Attributes
-{
-    using System;
+﻿using System;
 
+namespace EtoolTech.MongoDB.Mapper.Attributes
+{
     [AttributeUsage(AttributeTargets.Class)]
     public class MongoMapperIdIncrementable : Attribute
     {

@@ -1,18 +1,16 @@
-﻿namespace EtoolTech.MongoDB.Mapper
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+
+namespace EtoolTech.MongoDB.Mapper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-    using EtoolTech.MongoDB.Mapper.Interfaces;
-
-    using global::MongoDB.Bson;
-    using global::MongoDB.Driver;
-    using global::MongoDB.Driver.Builders;
-
     public class Finder : IFinder
     {
         #region Constructors and Destructors
@@ -27,10 +25,7 @@
 
         internal static IFinder Instance
         {
-            get
-            {
-                return new Finder();
-            }
+            get { return new Finder(); }
         }
 
         #endregion
@@ -39,15 +34,15 @@
 
         public MongoCursor<T> AllAsCursor<T>()
         {
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();
-            if (ConfigManager.EnableOriginalObject(typeof(T).Name))
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
+            if (ConfigManager.EnableOriginalObject(typeof (T).Name))
             {
                 result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
             }
 
             if (ConfigManager.Out != null)
             {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
                 ConfigManager.Out.WriteLine("{}");
                 ConfigManager.Out.WriteLine(result.Explain().ToJson());
                 ConfigManager.Out.WriteLine();
@@ -55,31 +50,31 @@
 
             return result;
         }
-      
+
 
         public List<T> AllAsList<T>()
         {
-            List<T> list = this.AllAsCursor<T>().ToList();          
+            List<T> list = AllAsCursor<T>().ToList();
             return list;
         }
 
-        public MongoCursor<T> FindAsCursor<T>(IMongoQuery query = null)
+        public MongoCursor<T> FindAsCursor<T>(IMongoQuery Query = null)
         {
-            if (query == null)
+            if (Query == null)
             {
                 return AllAsCursor<T>();
             }
 
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
-            
-            if (ConfigManager.EnableOriginalObject(typeof(T).Name))
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(Query);
+
+            if (ConfigManager.EnableOriginalObject(typeof (T).Name))
             {
                 result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
             }
 
             if (ConfigManager.Out != null)
             {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
                 ConfigManager.Out.WriteLine(result.Query.ToString());
                 ConfigManager.Out.WriteLine(result.Explain().ToJson());
                 ConfigManager.Out.WriteLine();
@@ -88,21 +83,21 @@
             return result;
         }
 
-        public MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
+        public MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> Exp)
         {
             var ep = new ExpressionParser();
-            IMongoQuery query = ep.ParseExpression(exp);
+            IMongoQuery query = ep.ParseExpression(Exp);
 
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (ConfigManager.EnableOriginalObject(typeof(T).Name))
+            if (ConfigManager.EnableOriginalObject(typeof (T).Name))
             {
                 result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
             }
 
             if (ConfigManager.Out != null)
             {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
                 ConfigManager.Out.WriteLine(result.Query.ToString());
                 ConfigManager.Out.WriteLine(result.Explain().ToJson());
                 ConfigManager.Out.WriteLine();
@@ -111,69 +106,69 @@
             return result;
         }
 
-        public List<T> FindAsList<T>(IMongoQuery query = null)
+        public List<T> FindAsList<T>(IMongoQuery Query = null)
         {
-            List<T> list = FindAsCursor<T>(query).ToList();          
+            List<T> list = FindAsCursor<T>(Query).ToList();
             return list;
         }
 
-        public List<T> FindAsList<T>(Expression<Func<T, object>> exp)
+        public List<T> FindAsList<T>(Expression<Func<T, object>> Exp)
         {
-            List<T> list = FindAsCursor(exp).ToList();          
+            List<T> list = FindAsCursor(Exp).ToList();
             return list;
         }
 
-        public BsonDocument FindBsonDocumentById<T>(long id)
+        public BsonDocument FindBsonDocumentById<T>(long Id)
         {
-            var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneByIdAs<T>(Id);
             return result.ToBsonDocument();
         }
 
-        public T FindById<T>(long id)
+        public T FindById<T>(long Id)
         {
-            var result = CollectionsManager.GetCollection(typeof(T).Name).FindOneByIdAs<T>(id);
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneByIdAs<T>(Id);
             SaveOriginal(result);
             return result;
         }
 
-        public object FindById(Type t, long id)
+        public object FindById(Type Type, long Id)
         {
-            object result = CollectionsManager.GetCollection(t.Name).FindOneByIdAs(t, id);
+            object result = CollectionsManager.GetCollection(Type.Name).FindOneByIdAs(Type, Id);
             SaveOriginal(result);
             return result;
         }
 
-        public T FindByKey<T>(params object[] values)
+        public T FindByKey<T>(params object[] Values)
         {
-            List<string> fields = Helper.GetPrimaryKey(typeof(T)).ToList();
+            List<string> fields = Helper.GetPrimaryKey(typeof (T)).ToList();
             var keyValues = new Dictionary<string, object>();
             for (int i = 0; i < fields.Count; i++)
             {
                 string field = fields[i].ToUpper() == "MongoMapper_id".ToUpper() ? "_id" : fields[i];
-                keyValues.Add(field, values[i]);
+                keyValues.Add(field, Values[i]);
             }
 
-            return this.FindObjectByKey<T>(keyValues);
+            return FindObjectByKey<T>(keyValues);
         }
 
-        public long FindIdByKey(Type t, Dictionary<string, object> keyValues)
+        public long FindIdByKey(Type T, Dictionary<string, object> KeyValues)
         {
             //Si la key es la interna y vieb
-            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is long
-                && (long)keyValues.First().Value == default(long))
+            if (KeyValues.Count == 1 && KeyValues.First().Key == "MongoMapper_Id" && KeyValues.First().Value is long
+                && (long) KeyValues.First().Value == default(long))
             {
                 return default(long);
             }
 
             IMongoQuery query =
-                Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
-            var result =
-                CollectionsManager.GetCollection(t.Name).FindAs(t, query).SetFields(Fields.Include("_id"));
+            MongoCursor result =
+                CollectionsManager.GetCollection(T.Name).FindAs(T, query).SetFields(Fields.Include("_id"));
 
             if (ConfigManager.Out != null)
             {
-                ConfigManager.Out.Write(String.Format("{0}: ", t.Name));
+                ConfigManager.Out.Write(String.Format("{0}: ", T.Name));
                 ConfigManager.Out.WriteLine(result.Query.ToString());
                 ConfigManager.Out.WriteLine(result.Explain().ToJson());
                 ConfigManager.Out.WriteLine();
@@ -184,28 +179,28 @@
                 return default(long);
             }
 
-            
-            return ((IMongoMapperIdeable)result.Cast<object>().First()).MongoMapper_Id;
-        }      
 
-        public long FindIdByKey<T>(Dictionary<string, object> keyValues)
+            return ((IMongoMapperIdeable) result.Cast<object>().First()).MongoMapper_Id;
+        }
+
+        public long FindIdByKey<T>(Dictionary<string, object> KeyValues)
         {
             //Si la key es la interna y vieb
-            if (keyValues.Count == 1 && keyValues.First().Key == "MongoMapper_Id" && keyValues.First().Value is long
-                && (long)keyValues.First().Value == default(long))
+            if (KeyValues.Count == 1 && KeyValues.First().Key == "MongoMapper_Id" && KeyValues.First().Value is long
+                && (long) KeyValues.First().Value == default(long))
             {
                 return default(long);
             }
 
             IMongoQuery query =
-                Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result =
-                CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
+                CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
 
             if (ConfigManager.Out != null)
             {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
                 ConfigManager.Out.WriteLine(result.Query.ToString());
                 ConfigManager.Out.WriteLine(result.Explain().ToJson());
                 ConfigManager.Out.WriteLine();
@@ -216,20 +211,20 @@
                 return default(long);
             }
 
-            return ((IMongoMapperIdeable)result.First()).MongoMapper_Id;
-        }      
+            return ((IMongoMapperIdeable) result.First()).MongoMapper_Id;
+        }
 
 
-        public T FindObjectByKey<T>(Dictionary<string, object> keyValues)
+        public T FindObjectByKey<T>(Dictionary<string, object> KeyValues)
         {
             IMongoQuery query =
-                Query.And(keyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
 
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
             if (ConfigManager.Out != null)
             {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof(T).Name));
+                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
                 ConfigManager.Out.WriteLine(result.Query.ToString());
                 ConfigManager.Out.WriteLine(result.Explain().ToJson());
                 ConfigManager.Out.WriteLine();
@@ -261,7 +256,7 @@
 
         private void Cursors_OnGetCurrent<T>(object sender, EventArgs e)
         {
-            SaveOriginal(((MongoCursor<T>.OnEnumeratorGetCurrentEventArgs)e).Document);
+            SaveOriginal(((MongoCursor<T>.OnEnumeratorGetCurrentEventArgs) e).Document);
         }
 
         #endregion
