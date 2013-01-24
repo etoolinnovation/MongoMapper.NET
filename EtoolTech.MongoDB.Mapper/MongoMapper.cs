@@ -100,6 +100,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return IsLastVersion(false);
         }
+
         public bool IsLastVersion(bool force)
         {
             if (!force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
@@ -116,6 +117,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             return ((IMongoMapperVersionable)result.Cast<object>().First()).MongoMapperDocumentVersion == this.MongoMapperDocumentVersion;
         }
+
         public void FillFromLastVersion()
         {
             FillFromLastVersion(false);

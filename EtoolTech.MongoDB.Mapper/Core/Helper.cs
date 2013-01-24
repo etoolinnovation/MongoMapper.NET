@@ -151,8 +151,16 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 foreach (string index in GetIndexes(classType))
                 {
-                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(
-                        index.Split(','));
+                    if (index.StartsWith("2D|"))
+                    {
+                        CollectionsManager.GetCollection(
+                            CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(IndexKeys.GeoSpatial(index.Split('|')[1]));                        
+                    }
+                    else
+                    {
+                        CollectionsManager.GetCollection(
+                            CollectionsManager.GetCollectioName(classType.Name)).EnsureIndex(index.Split(','));
+                    }
                 }
 
                 string[] pk = GetPrimaryKey(classType).ToArray();
@@ -184,6 +192,12 @@ namespace EtoolTech.MongoDB.Mapper
                         {
                             BufferIndexes[t.Name].Add(((MongoIndex)index).IndexFields);
                         }
+                    }
+
+                    var geoindexAtt = (MongoGeo2DIndex)t.GetCustomAttributes(typeof(MongoGeo2DIndex), false).FirstOrDefault();
+                    if (geoindexAtt != null)
+                    {
+                        BufferIndexes[t.Name].Add("2D|" + geoindexAtt.IndexField);
                     }
                 }
 
