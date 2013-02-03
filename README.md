@@ -1,6 +1,6 @@
 ## MongoMapper.NET
 
-A .NET Object Mapper for MongoDB over MongoDB C# Driver
+A .NET Document Mapper for MongoDB over MongoDB C# Driver
 
 
 
