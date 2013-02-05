@@ -106,7 +106,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public bool IsLastVersion(bool Force)
         {
-            if (!Force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return true;
+            if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(this._classType.Name).ReplicaSetName)) return true;
 
             if (MongoMapper_Id == default(long))
             {
@@ -129,7 +129,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void FillFromLastVersion(bool Force)
         {
-            if (!Force && String.IsNullOrEmpty(MongoMapperConfiguration.GetConfig().Server.ReplicaSetName)) return;
+            if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(this._classType.Name).ReplicaSetName)) return;
 
             if (MongoMapper_Id == default(long))
             {
@@ -308,13 +308,12 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
                     FindAndModify(query, null, Update, Refill, true);
 
-            if (ConfigManager.SafeMode(_classType.Name))
-            {
+           
                 if (!String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new ServerUpdateException(result.ErrorMessage);
                 }
-            }
+          
 
             if (Refill)
             {
@@ -399,13 +398,12 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result = CollectionsManager.GetCollection(
                 CollectionsManager.GetCollectioName(typeof (T).Name)).Remove(query);
 
-            if (ConfigManager.SafeMode(typeof (T).Name))
-            {
+          
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new DeleteDocumentException(result.ErrorMessage);
                 }
-            }
+           
         }
 
         private bool OriginalIsEmpty(bool force = false)

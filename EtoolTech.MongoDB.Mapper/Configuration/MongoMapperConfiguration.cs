@@ -52,42 +52,13 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     public class Server : ConfigurationElement
     {
         #region Public Properties
-
-        [ConfigurationProperty("BalancedReading", IsKey = false, IsRequired = false)]
-        public bool BalancedReading
+      
+        [ConfigurationProperty("Url", IsKey = true, IsRequired = true)]
+        public string Url
         {
-            get { return bool.Parse(this["BalancedReading"].ToString()); }
+            get { return this["Url"] as string; }
         }
-
-        [ConfigurationProperty("Host", IsKey = true, IsRequired = true)]
-        public string Host
-        {
-            get { return this["Host"] as string; }
-        }
-
-        [ConfigurationProperty("MinReplicaServersToWrite", IsKey = false, IsRequired = false)]
-        public int MinReplicaServersToWrite
-        {
-            get { return int.Parse(this["MinReplicaServersToWrite"].ToString()); }
-        }
-
-        [ConfigurationProperty("PoolSize", IsKey = false, IsRequired = true)]
-        public int PoolSize
-        {
-            get { return int.Parse(this["PoolSize"].ToString()); }
-        }
-
-        [ConfigurationProperty("ReplicaSetName", IsKey = false, IsRequired = false)]
-        public string ReplicaSetName
-        {
-            get { return this["ReplicaSetName"].ToString(); }
-        }
-
-        [ConfigurationProperty("WaitQueueTimeout", IsKey = false, IsRequired = true)]
-        public int WaitQueueTimeout
-        {
-            get { return int.Parse(this["WaitQueueTimeout"].ToString()); }
-        }
+  
 
         #endregion
     }
@@ -100,19 +71,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         public string Name
         {
             get { return this["Name"] as string; }
-        }
-
-        [ConfigurationProperty("Password", IsKey = false, IsRequired = false)]
-        public string Password
-        {
-            get { return this["Password"] as string; }
-        }
-
-        [ConfigurationProperty("User", IsKey = false, IsRequired = false)]
-        public string User
-        {
-            get { return this["User"] as string; }
-        }
+        }    
 
         #endregion
     }
@@ -132,12 +91,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         {
             get { return bool.Parse(this["ExceptionOnDuplicateKey"].ToString()); }
         }
-
-        [ConfigurationProperty("Journal", IsKey = false, IsRequired = false)]
-        public bool Journal
-        {
-            get { return bool.Parse(this["Journal"].ToString()); }
-        }
+     
 
         [ConfigurationProperty("Generated", IsKey = false, IsRequired = false)]
         public bool Generated
@@ -150,13 +104,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         {
             get { return int.Parse(this["MaxDocumentSize"].ToString()); }
         }
-
-        [ConfigurationProperty("SafeMode", IsKey = false, IsRequired = false)]
-        public bool SafeMode
-        {
-            get { return bool.Parse(this["SafeMode"].ToString()); }
-        }
-
+   
         [ConfigurationProperty("UseChidlsIncrementalId", IsKey = false, IsRequired = false)]
         public bool UseChidlsIncrementalId
         {

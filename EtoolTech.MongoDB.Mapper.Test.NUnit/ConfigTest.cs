@@ -18,17 +18,17 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             ConfigManager.OverrideUrlString(string.Empty);
 
-            var conf = ConfigManager.GetClientSettings("TestConf1");
+            //var conf = ConfigManager.GetClientSettings("TestConf1");
 
-            Assert.AreEqual(3, conf.Servers.Count());
-            Assert.AreEqual("host1:27017", conf.Servers.ToList()[0].ToString());
-            Assert.AreEqual("host2:27017", conf.Servers.ToList()[1].ToString());
-            Assert.AreEqual("host3:1234", conf.Servers.ToList()[2].ToString());
+            //Assert.AreEqual(3, conf.Servers.Count());
+            //Assert.AreEqual("host1:27017", conf.Servers.ToList()[0].ToString());
+            //Assert.AreEqual("host2:27017", conf.Servers.ToList()[1].ToString());
+            //Assert.AreEqual("host3:1234", conf.Servers.ToList()[2].ToString());
 
-            Assert.AreEqual(ReadPreference.PrimaryPreferred, conf.ReadPreference);
-            Assert.AreEqual(1, conf.MaxConnectionPoolSize);
-            Assert.AreEqual(TimeSpan.FromSeconds(2), conf.WaitQueueTimeout);
-            Assert.AreEqual(true, conf.WriteConcern.Journal);
+            //Assert.AreEqual(ReadPreference.PrimaryPreferred, conf.ReadPreference);
+            //Assert.AreEqual(1, conf.MaxConnectionPoolSize);
+            //Assert.AreEqual(TimeSpan.FromSeconds(2), conf.WaitQueueTimeout);
+            //Assert.AreEqual(true, conf.WriteConcern.Journal);
 
         
             //Assert.AreEqual(

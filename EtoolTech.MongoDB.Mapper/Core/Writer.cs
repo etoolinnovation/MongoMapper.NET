@@ -34,13 +34,12 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Name)).Insert(Type, Document);
 
-            if (ConfigManager.SafeMode(Type.Name))
-            {
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+       
+           if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new Exception(result.ErrorMessage);
                 }
-            }
+     
             return result;
         }
 
@@ -61,13 +60,11 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Name)).Save(Type, Document);
 
-            if (ConfigManager.SafeMode(Name))
-            {
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new Exception(result.ErrorMessage);
                 }
-            }
+
             return result;
         }
 
@@ -99,13 +96,12 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Type.Name)).Remove(
                     query);
 
-            if (ConfigManager.SafeMode(Type.Name))
-            {
+          
                 if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
                 {
                     throw new DeleteDocumentException(result.ErrorMessage);
                 }
-            }
+           
 
             return result;
         }
