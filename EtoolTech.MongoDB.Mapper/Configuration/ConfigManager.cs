@@ -19,7 +19,11 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         private static readonly Object LockObject = new Object();
 
+        private static readonly Object LockSettingsObject = new Object();
+
         private static bool _setupLoaded;
+
+     
 
         #endregion
 
@@ -110,10 +114,16 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 urlString = _urlString;
             }
 
-            var builder = new MongoUrlBuilder(urlString);
-            MongoUrl url = builder.ToMongoUrl();
-            SettingsByObject.Add(ObjName,MongoClientSettings.FromUrl(url));
-            return SettingsByObject[ObjName];     
+            lock (LockSettingsObject)
+            {
+                if (!SettingsByObject.ContainsKey(ObjName))
+                {
+                    var url = new MongoUrl(urlString);
+                    SettingsByObject.Add(ObjName, MongoClientSettings.FromUrl(url));
+                }               
+            }
+
+            return SettingsByObject[ObjName];
         }
 
 
