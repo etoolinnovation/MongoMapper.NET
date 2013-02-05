@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Driver.Linq;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -90,14 +91,14 @@ namespace EtoolTech.MongoDB.Mapper
 
         [BsonId(IdGenerator = typeof (MongoMapperIdGenerator))]
         [XmlIgnore]
-        public long MongoMapper_Id { get; set; }
+        public long m_id { get; set; }
 
         #endregion
 
         #region IMongoMapperVersionable Members
 
         [XmlIgnore]
-        public long MongoMapperDocumentVersion { get; set; }
+        public long m_dv { get; set; }
 
         public bool IsLastVersion()
         {
@@ -108,18 +109,18 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(this._classType.Name).ReplicaSetName)) return true;
 
-            if (MongoMapper_Id == default(long))
+            if (m_id == default(long))
             {
-                MongoMapper_Id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
+                m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", m_id);
 
             MongoCursor result =
                 CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query).SetFields(
-                    Fields.Include("MongoMapperDocumentVersion"));
+                    Fields.Include("m_dv"));
 
-            return ((IMongoMapperVersionable) result.Cast<object>().First()).MongoMapperDocumentVersion ==
-                   MongoMapperDocumentVersion;
+            return ((IMongoMapperVersionable) result.Cast<object>().First()).m_dv ==
+                   m_dv;
         }
 
         public void FillFromLastVersion()
@@ -131,11 +132,11 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(this._classType.Name).ReplicaSetName)) return;
 
-            if (MongoMapper_Id == default(long))
+            if (m_id == default(long))
             {
-                MongoMapper_Id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
+                m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", m_id);
 
             MongoCursor result = CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query);
 
@@ -172,7 +173,7 @@ namespace EtoolTech.MongoDB.Mapper
                 throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
             }
 
-            if (MongoMapper_Id == default(long) || OriginalObject == null || OriginalObject.Length == 0)
+            if (m_id == default(long) || OriginalObject == null || OriginalObject.Length == 0)
             {
                 return (Activator.CreateInstance<T>());
             }
@@ -192,7 +193,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void SaveOriginal(bool Force = false)
         {
-            if (OriginalIsEmpty(Force) && MongoMapper_Id != default(long) &&
+            if (OriginalIsEmpty(Force) && m_id != default(long) &&
                 ConfigManager.EnableOriginalObject(_classType.Name))
             {
                 OriginalObject = ObjectSerializer.ToByteArray(this);
@@ -264,7 +265,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             ChildsManager.ManageChilds(this);
 
-            if (MongoMapper_Id == default(long))
+            if (m_id == default(long))
             {
                 long id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
                 if (id == default(long))
@@ -286,7 +287,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
             else
             {
-                UpdateDocument(MongoMapper_Id);
+                UpdateDocument(m_id);
                 result = 1;
             }
 
@@ -298,11 +299,11 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void ServerUpdate(UpdateBuilder Update, bool Refill = true)
         {
-            if (MongoMapper_Id == default(long))
+            if (m_id == default(long))
             {
-                MongoMapper_Id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
+                m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", m_id);
 
             FindAndModifyResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
@@ -327,7 +328,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
-            MongoMapper_Id = Id;
+            m_id = Id;
 
             Writer.Instance.Update(_classType.Name, _classType, this);
 
@@ -355,12 +356,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return Finder.Instance.FindAsCursor<T>(MongoQuery.Eq(fieldName, value));
         }
-
-        public static MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> exp)
-        {
-            return Finder.Instance.FindAsCursor(exp);
-        }
-
+      
         public static List<T> FindAsList<T>(IMongoQuery query)
         {
             return Finder.Instance.FindAsList<T>(query);

@@ -18,17 +18,17 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             var c = new Country { Code = "NL", Name = "Holanda" };
             c.Save();
-            Assert.AreEqual(1,c.MongoMapperDocumentVersion);
+            Assert.AreEqual(1,c.m_dv);
             countries.MongoFind();
             Assert.AreEqual(1,countries.Count);
 
             c.Save();
-            Assert.AreEqual(2, c.MongoMapperDocumentVersion);
+            Assert.AreEqual(2, c.m_dv);
             countries.MongoFind();
             Assert.AreEqual(1, countries.Count);
 
             c.Save();
-            Assert.AreEqual(3, c.MongoMapperDocumentVersion);
+            Assert.AreEqual(3, c.m_dv);
             countries.MongoFind();
             Assert.AreEqual(1, countries.Count);
 
@@ -46,7 +46,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(true, c.IsLastVersion());
             
-            c.MongoMapperDocumentVersion = 99;
+            c.m_dv = 99;
             Assert.AreEqual(false, c.IsLastVersion(true));
 
         }
@@ -62,9 +62,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(true, c.IsLastVersion());
             
-            c.MongoMapperDocumentVersion = 99;
+            c.m_dv = 99;
             c.FillFromLastVersion(true);
-            Assert.AreEqual(1, c.MongoMapperDocumentVersion);
+            Assert.AreEqual(1, c.m_dv);
 
         }
     }

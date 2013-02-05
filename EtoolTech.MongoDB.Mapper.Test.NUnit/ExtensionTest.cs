@@ -109,7 +109,7 @@
 
             p.Save();
 
-            long id = p.MongoMapper_Id;
+            long id = p.m_id;
 
             p = new Person();
             p.FillByKey(id);

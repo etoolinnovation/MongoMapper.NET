@@ -9,7 +9,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         [BsonId(IdGenerator = typeof (MongoMapperIdGenerator))]
         [XmlIgnore]
-        long MongoMapper_Id { get; set; }
+        long m_id { get; set; }
 
         #endregion
     }

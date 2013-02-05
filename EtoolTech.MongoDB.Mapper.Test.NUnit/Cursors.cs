@@ -18,7 +18,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 var c = new Country { Code = string.Format("ES_{0}", i.ToString()), Name = "España" };
                 c.Save();
-                Assert.AreEqual(c.MongoMapper_Id, i + 1);
+                Assert.AreEqual(c.m_id, i + 1);
             }
 
             MongoCursor<Country> countries = MongoMapper.FindAsCursor<Country>();

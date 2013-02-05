@@ -91,7 +91,7 @@
             {
                 var c = new Country { Code = "ES_" + i.ToString(), Name = "España" };
                 c.Save();
-                Assert.AreEqual(c.MongoMapper_Id, i + 1);
+                Assert.AreEqual(c.m_id, i + 1);
             }
         }
 

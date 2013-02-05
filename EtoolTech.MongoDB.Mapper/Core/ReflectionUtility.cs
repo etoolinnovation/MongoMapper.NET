@@ -55,9 +55,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static object GetPropertyValue(object Obj, string PropertyName)
         {
-            if ((PropertyName == "MongoMapper_Id") && (Obj is IMongoMapperIdeable))
+            if ((PropertyName == "m_id") && (Obj is IMongoMapperIdeable))
             {
-                return ((IMongoMapperIdeable) Obj).MongoMapper_Id;
+                return ((IMongoMapperIdeable) Obj).m_id;
             }
 
             Type t = Obj.GetType();

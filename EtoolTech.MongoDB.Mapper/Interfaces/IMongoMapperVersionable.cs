@@ -2,7 +2,7 @@
 {
     public interface IMongoMapperVersionable
     {
-        long MongoMapperDocumentVersion { get; set; }
+        long m_dv { get; set; }
         bool IsLastVersion();
         bool IsLastVersion(bool Force);
         void FillFromLastVersion();

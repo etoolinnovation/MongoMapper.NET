@@ -144,7 +144,7 @@ namespace EtoolTech.MongoDB.Mapper
             var keyValues = new Dictionary<string, object>();
             for (int i = 0; i < fields.Count; i++)
             {
-                string field = fields[i].ToUpper() == "MongoMapper_id".ToUpper() ? "_id" : fields[i];
+                string field = fields[i].ToUpper() == "m_id".ToUpper() ? "_id" : fields[i];
                 keyValues.Add(field, Values[i]);
             }
 
@@ -154,7 +154,7 @@ namespace EtoolTech.MongoDB.Mapper
         public long FindIdByKey(Type T, Dictionary<string, object> KeyValues)
         {
             //Si la key es la interna y vieb
-            if (KeyValues.Count == 1 && KeyValues.First().Key == "MongoMapper_Id" && KeyValues.First().Value is long
+            if (KeyValues.Count == 1 && KeyValues.First().Key == "m_id" && KeyValues.First().Value is long
                 && (long) KeyValues.First().Value == default(long))
             {
                 return default(long);
@@ -180,13 +180,13 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
 
-            return ((IMongoMapperIdeable) result.Cast<object>().First()).MongoMapper_Id;
+            return ((IMongoMapperIdeable) result.Cast<object>().First()).m_id;
         }
 
         public long FindIdByKey<T>(Dictionary<string, object> KeyValues)
         {
             //Si la key es la interna y vieb
-            if (KeyValues.Count == 1 && KeyValues.First().Key == "MongoMapper_Id" && KeyValues.First().Value is long
+            if (KeyValues.Count == 1 && KeyValues.First().Key == "m_id" && KeyValues.First().Value is long
                 && (long) KeyValues.First().Value == default(long))
             {
                 return default(long);
@@ -211,7 +211,7 @@ namespace EtoolTech.MongoDB.Mapper
                 return default(long);
             }
 
-            return ((IMongoMapperIdeable) result.First()).MongoMapper_Id;
+            return ((IMongoMapperIdeable) result.First()).m_id;
         }
 
 

@@ -76,13 +76,13 @@ namespace EtoolTech.MongoDB.Mapper
                     {
                         if (String.IsNullOrEmpty(keyAtt.KeyFields))
                         {
-                            keyAtt.KeyFields = "MongoMapper_Id";
+                            keyAtt.KeyFields = "m_id";
                         }
                         BufferPrimaryKey.Add(T.Name, keyAtt.KeyFields.Split(',').ToList());
                     }
                     else
                     {
-                        BufferPrimaryKey.Add(T.Name, new List<string> {"MongoMapper_Id"});
+                        BufferPrimaryKey.Add(T.Name, new List<string> {"m_id"});
                     }
                 }
 
@@ -162,7 +162,7 @@ namespace EtoolTech.MongoDB.Mapper
                 }
 
                 string[] pk = GetPrimaryKey(ClassType).ToArray();
-                if (pk.Count(k => k == "MongoMapper_Id") == 0)
+                if (pk.Count(k => k == "m_id") == 0)
                 {
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
                         IndexKeys.Ascending(pk));

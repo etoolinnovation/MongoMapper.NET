@@ -28,7 +28,7 @@ namespace EtoolTech.MongoDB.Mapper
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
             if (mongoMapperVersionable != null)
             {
-                mongoMapperVersionable.MongoMapperDocumentVersion++;
+                mongoMapperVersionable.m_dv++;
             }
 
             WriteConcernResult result =
@@ -54,7 +54,7 @@ namespace EtoolTech.MongoDB.Mapper
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
             if (mongoMapperVersionable != null)
             {
-                mongoMapperVersionable.MongoMapperDocumentVersion++;
+                mongoMapperVersionable.m_dv++;
             }
 
             WriteConcernResult result =
@@ -77,9 +77,9 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
 
-            if (((MongoMapper) Document).MongoMapper_Id == default(long))
+            if (((MongoMapper) Document).m_id == default(long))
             {
-                ((MongoMapper) Document).MongoMapper_Id = Finder.Instance.FindIdByKey(Type,
+                ((MongoMapper) Document).m_id = Finder.Instance.FindIdByKey(Type,
                                                                                       Helper.GetPrimaryKey(Type).
                                                                                           ToDictionary(
                                                                                               KeyField => KeyField,
@@ -90,7 +90,7 @@ namespace EtoolTech.MongoDB.Mapper
                     );
             }
 
-            IMongoQuery query = Query.EQ("_id", ((MongoMapper) Document).MongoMapper_Id);
+            IMongoQuery query = Query.EQ("_id", ((MongoMapper) Document).m_id);
 
             WriteConcernResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Type.Name)).Remove(

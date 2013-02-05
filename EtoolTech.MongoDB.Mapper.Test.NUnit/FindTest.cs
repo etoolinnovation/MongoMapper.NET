@@ -139,11 +139,11 @@
 
             global::System.Collections.Generic.List<Person> plist = MongoMapper.AllAsList<Person>();
 
-            var p2 = MongoMapper.FindByKey<Person>(plist[0].MongoMapper_Id);
+            var p2 = MongoMapper.FindByKey<Person>(plist[0].m_id);
             p2.Name = "FindBYKey Name";
             p2.Save();
 
-            plist = MongoMapper.FindAsList<Person>("_id", p2.MongoMapper_Id);
+            plist = MongoMapper.FindAsList<Person>("_id", p2.m_id);
 
             Assert.AreEqual(plist.Count, 1);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");
