@@ -32,7 +32,7 @@
         {
             Assert.AreEqual(10, MongoMapper.FindAsCursor<Country>().Size());
             Country c = MongoMapper.FindAsCursor<Country>().First();
-            c.Delete<Country>();
+            c.Delete();
         }
 
         public void Count2()
@@ -50,7 +50,7 @@
                 i =>
                     {
                         var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
-                        c.Save<Country>();
+                        c.Save();
                     });
         }
 

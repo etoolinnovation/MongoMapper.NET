@@ -11,10 +11,7 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        public static void Delete<T>(this T Object) where T : MongoMapper
-        {
-            ((IMongoMapperWriteable)Object).Delete<T>();
-        }
+     
 
         public static void FillByKey<T>(this T Object, params object[] Values) where T : MongoMapper
         {
@@ -48,15 +45,7 @@ namespace EtoolTech.MongoDB.Mapper
             List.AddRange(Finder.Instance.FindAsList(Exp));
         }
 
-        public static int Save<T>(this T Object) where T : MongoMapper
-        {
-            return ((IMongoMapperWriteable)Object).Save<T>();
-        }
-
-        public static void ServerUpdate<T>(this T Object, UpdateBuilder Update, bool Refill = true) where T : MongoMapper
-        {
-            ((IMongoMapperWriteable)Object).ServerUpdate<T>(Update, Refill);
-        }
+      
 
         #endregion
     }

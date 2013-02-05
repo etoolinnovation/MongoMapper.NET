@@ -85,7 +85,7 @@
 
             //Insert de Paises
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
 
             var country = new Country();
             country.FillByKey("ES");
@@ -107,7 +107,7 @@
             p.Childs.Add(
                 new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
-            p.Save<Person>();
+            p.Save();
 
             long id = p.MongoMapper_Id;
 
@@ -248,7 +248,7 @@
 
             //Insert de Paises
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
 
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -279,11 +279,11 @@
 
             //Insert de Paises
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
             c = new Country { Code = "UK", Name = "Reino Unido" };
-            c.Save<Country>();
+            c.Save();
             c = new Country { Code = "US", Name = "Estados Unidos" };
-            c.Save<Country>();
+            c.Save();
 
             Stopwatch timer = Stopwatch.StartNew();
 

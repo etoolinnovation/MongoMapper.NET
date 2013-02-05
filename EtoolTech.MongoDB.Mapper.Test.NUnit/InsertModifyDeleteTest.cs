@@ -37,14 +37,14 @@
             Helper.DropAllCollections();
 
             var c = new Country { Code = "NL", Name = "Holanda" };
-            c.Save<Country>();
+            c.Save();
 
             global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "NL");
             Assert.AreEqual(Countries.Count, 1);
 
             foreach (Country country in Countries)
             {
-                country.Delete<Country>();
+                country.Delete();
             }
 
             //TODO: Pruebas Replica Set
@@ -63,22 +63,22 @@
             var c = new Country { Code = "es", Name = "España" };
             try
             {
-                c.Save<Country>();
+                c.Save();
             }
             catch (Exception ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException));
                 c.Code = "ES";
-                c.Save<Country>();
+                c.Save();
             }
 
             c = new Country { Code = "UK", Name = "Reino Unido" };
-            c.Save<Country>();
+            c.Save();
 
             c = new Country { Code = "UK", Name = "Reino Unido" };
             try
             {
-                c.Save<Country>();
+                c.Save();
             }
             catch (Exception ex)
             {
@@ -86,7 +86,7 @@
             }
 
             c = new Country { Code = "US", Name = "Estados Unidos" };
-            c.Save<Country>();
+            c.Save();
 
             global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
@@ -116,7 +116,7 @@
             p.Childs.Add(
                 new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -131,7 +131,7 @@
             p.Childs.Add(
                 new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
 
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -143,7 +143,7 @@
                     BankBalance = decimal.Parse("500,00")
                 };
 
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -157,7 +157,7 @@
 
             p.Childs.Add(
                 new Child { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -169,7 +169,7 @@
                     BankBalance = decimal.Parse("100,00")
                 };
 
-            p.Save<Person>();
+            p.Save();
 
             var persons = new global::System.Collections.Generic.List<Person>();
             persons.MongoFind();
@@ -185,7 +185,7 @@
             for (int i = 0; i < 100; i++)
             {
                 var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
-                c.Save<Country>();
+                c.Save();
 
                 Assert.AreEqual(i + 1, MongoMapper.FindAsCursor<Country>().Size());
             }
@@ -204,7 +204,7 @@
                 i =>
                     {
                         var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
-                        c.Save<Country>();
+                        c.Save();
                     });
 
             Assert.AreEqual(1000, MongoMapper.FindAsCursor<Country>().Size());
@@ -217,8 +217,8 @@
 
             //Insert de Paises
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
-            c.ServerUpdate<Country>(Update.Set("Name", "España 22"));
+            c.Save();
+            c.ServerUpdate(Update.Set("Name", "España 22"));
 
             Assert.AreEqual(c.Name, "España 22");
 
@@ -235,9 +235,9 @@
 
             p.Childs.Add(
                 new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
-            p.Save<Person>();
+            p.Save();
 
-            p.ServerUpdate<Person>(
+            p.ServerUpdate(
                 Update.PushWrapped(
                     "Childs",
                     new Child
@@ -253,11 +253,11 @@
             Helper.DropAllCollections();
 
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
 
             var c2 = MongoMapper.FindByKey<Country>("ES");
             c2.Name = "España Up";
-            c2.Save<Country>();
+            c2.Save();
 
             var c3 = MongoMapper.FindByKey<Country>("ES");
 
@@ -275,7 +275,7 @@
             for (int i = 0; i < 100; i++)
             {
                 var c = new Country { Code = i.ToString(), Name = String.Format("Nombre {0}", i) };
-                c.Save<Country>();
+                c.Save();
 
                 Assert.AreEqual(i + 1, MongoMapper.FindAsCursor<Country>().Size());
             }

@@ -32,7 +32,7 @@
 
             var c = new Country { Code = "FR", Name = "España" };
             c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };
-            c.Save<Country>();
+            c.Save();
 
             var c3 = MongoMapper.FindByKey<Country>("FR");
 

@@ -64,7 +64,7 @@
             ConfigManager.Out = Console.Out;
 
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
 
             //Insert de personas
             var p = new Person
@@ -82,7 +82,7 @@
             p.Childs.Add(
                 new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
 
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -97,7 +97,7 @@
             p.Childs.Add(
                 new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
 
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -109,7 +109,7 @@
                     BankBalance = decimal.Parse("500,00")
                 };
 
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -123,7 +123,7 @@
 
             p.Childs.Add(
                 new Child { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
-            p.Save<Person>();
+            p.Save();
 
             p = new Person
                 {
@@ -135,13 +135,13 @@
                     BankBalance = decimal.Parse("100,00")
                 };
 
-            p.Save<Person>();
+            p.Save();
 
             global::System.Collections.Generic.List<Person> plist = MongoMapper.AllAsList<Person>();
 
             var p2 = MongoMapper.FindByKey<Person>(plist[0].MongoMapper_Id);
             p2.Name = "FindBYKey Name";
-            p2.Save<Person>();
+            p2.Save();
 
             plist = MongoMapper.FindAsList<Person>("_id", p2.MongoMapper_Id);
 

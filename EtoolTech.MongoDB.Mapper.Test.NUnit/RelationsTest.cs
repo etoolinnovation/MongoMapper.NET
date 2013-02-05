@@ -35,9 +35,9 @@
             Helper.DropAllCollections();
 
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
             c = new Country { Code = "UK", Name = "Reino Unido" };
-            c.Save<Country>();
+            c.Save();
 
             var p = new Person
                 {
@@ -56,19 +56,19 @@
 
             try
             {
-                p.Save<Person>();
+                p.Save();
             }
             catch (Exception ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateUpRelationException));
                 p.Country = "ES";
-                p.Save<Person>();
+                p.Save();
             }
 
             c = MongoMapper.FindByKey<Country>("ES");
             try
             {
-                c.Delete<Country>();
+                c.Delete();
             }
             catch (Exception ex)
             {
@@ -77,9 +77,9 @@
                 foreach (Person p2 in Persons)
                 {
                     p2.Country = "UK";
-                    p2.Save<Person>();
+                    p2.Save();
                 }
-                c.Delete<Person>();
+                c.Delete();
             }
 
             c = MongoMapper.FindByKey<Country>("UK");

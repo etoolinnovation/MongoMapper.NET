@@ -6,15 +6,15 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
     {
         #region Public Methods
 
-        void Delete<T>();
+        void Delete();
 
-        void DeleteDocument<T>();
+        void DeleteDocument();
 
         void InsertDocument();
 
-        int Save<T>();
+        int Save();
 
-        void ServerUpdate<T>(UpdateBuilder Update, bool Refill = true);
+        void ServerUpdate(UpdateBuilder Update, bool Refill = true);
 
         void UpdateDocument(long Id);
 

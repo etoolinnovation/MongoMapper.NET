@@ -227,18 +227,18 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region IMongoMapperWriteable Members
 
-        public void Delete<T>()
+        public void Delete()
         {
             Events.BeforeDeleteDocument(this, OnBeforeDelete, _classType);
 
             EnsureDownRelations();
 
-            DeleteDocument<T>();
+            DeleteDocument();
 
             Events.AfterDeleteDocument(this, OnAfterDelete, OnAfterComplete, _classType);
         }
 
-        public void DeleteDocument<T>()
+        public void DeleteDocument()
         {
             Writer.Instance.Delete(_classType.Name, _classType, this);
         }
@@ -254,7 +254,7 @@ namespace EtoolTech.MongoDB.Mapper
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
 
-        public int Save<T>()
+        public int Save()
         {
             int result = -1;
 
@@ -266,7 +266,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (MongoMapper_Id == default(long))
             {
-                long id = Finder.Instance.FindIdByKey<T>(GetPrimaryKeyValues());
+                long id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
                 if (id == default(long))
                 {
                     InsertDocument();
@@ -296,11 +296,11 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public void ServerUpdate<T>(UpdateBuilder Update, bool Refill = true)
+        public void ServerUpdate(UpdateBuilder Update, bool Refill = true)
         {
             if (MongoMapper_Id == default(long))
             {
-                MongoMapper_Id = Finder.Instance.FindIdByKey<T>(GetPrimaryKeyValues());
+                MongoMapper_Id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
             }
             IMongoQuery query = Query.EQ("_id", MongoMapper_Id);
 
@@ -317,7 +317,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (Refill)
             {
-                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(typeof (T)), this);
+                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(_classType),this);
             }
         }
 

@@ -33,7 +33,7 @@
         {
             (new InsertModifyDeleteTest()).TestInsert();
             Person p = MongoMapper.AllAsList<Person>().First();
-            p.Save<Person>();
+            p.Save();
             p.Name = "hola 25";
 
             var p2 = p.GetOriginalObject<Person>();
@@ -78,7 +78,7 @@
             Helper.DropAllCollections();
 
             var c = new Country { Code = "ES", Name = "España" };
-            c.Save<Country>();
+            c.Save();
 
             var p = new Person
                 {
@@ -94,7 +94,7 @@
                 new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
             p.Childs.Add(
                 new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
-            p.Save<Person>();
+            p.Save();
 
             p.Name = "Juan Sin Miedo";
 

@@ -39,19 +39,19 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             using (var t = new MongoMapperTransaction())
             {
                 var c = new Country { Code = "NL", Name = "Holanda" };
-                c.Save<Country>();
+                c.Save();
                 var countries1 = new List<Country>();
                 countries1.MongoFind();
                 Assert.AreEqual(0, countries1.Count);
 
                 var c2 = new Country { Code = "ES", Name = "España" };
-                c2.Save<Country>();
+                c2.Save();
                 var countries2 = new List<Country>();
                 countries2.MongoFind();
                 Assert.AreEqual(0, countries2.Count);
 
                 var c3 = new Country { Code = "US", Name = "USA" };
-                c3.Save<Country>();
+                c3.Save();
                 var countries3 = new List<Country>();
                 countries3.MongoFind();
                 Assert.AreEqual(0, countries3.Count);
@@ -78,19 +78,19 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             using (var t = new MongoMapperTransaction())
             {
                 var c = new Country { Code = "NL", Name = "Holanda" };
-                c.Save<Country>();
+                c.Save();
                 var countries1 = new List<Country>();
                 countries1.MongoFind();
                 Assert.AreEqual(0, countries1.Count);
 
                 var c2 = new Country { Code = "ES", Name = "España" };
-                c2.Save<Country>();
+                c2.Save();
                 var countries2 = new List<Country>();
                 countries2.MongoFind();
                 Assert.AreEqual(0, countries2.Count);
 
                 var c3 = new Country { Code = "US", Name = "USA" };
-                c3.Save<Country>();
+                c3.Save();
                 var countries3 = new List<Country>();
                 countries3.MongoFind();
                 Assert.AreEqual(0, countries3.Count);
@@ -121,7 +121,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 try
                 {
                     var c = new Country { Code = "NL", Name = "Holanda" };
-                    c.Save<Country>();
+                    c.Save();
                     var countries1 = new List<Country>();
                     
                     countries1.MongoFind();
@@ -129,7 +129,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             
                     //Lanzara excepcion porque us esta en minusculas
                     var c3 = new Country { Code = "us", Name = "USA" };
-                    c3.Save<Country>();
+                    c3.Save();
 
                     var countries3 = new List<Country>();
                     countries3.MongoFind();
