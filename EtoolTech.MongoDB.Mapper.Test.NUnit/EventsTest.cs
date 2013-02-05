@@ -1,9 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using NUnit.Framework;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::NUnit.Framework;
-
     [TestFixture]
     public class EventsTest
     {
@@ -22,23 +20,19 @@
         //{
         //    this._mongoTestServer.Dispose();
         //}
-        
-        #region Public Methods
 
         [Test]
         public void TestEvents()
         {
             Helper.DropAllCollections();
 
-            var c = new Country { Code = "FR", Name = "España" };
-            c.OnBeforeInsert += (s, e) => { ((Country)s).Name = "Francia"; };
+            var c = new Country {Code = "FR", Name = "España"};
+            c.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Francia"; };
             c.Save();
 
             var c3 = MongoMapper.FindByKey<Country>("FR");
 
             Assert.AreEqual(c3.Name, "Francia");
         }
-
-        #endregion
     }
 }

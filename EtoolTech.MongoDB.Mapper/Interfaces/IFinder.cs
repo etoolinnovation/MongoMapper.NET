@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -16,11 +15,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         MongoCursor<T> FindAsCursor<T>(IMongoQuery Query);
 
-        MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> Exp);
-
         List<T> FindAsList<T>(IMongoQuery Query);
-
-        List<T> FindAsList<T>(Expression<Func<T, object>> Exp);
 
         BsonDocument FindBsonDocumentById<T>(long Id);
 

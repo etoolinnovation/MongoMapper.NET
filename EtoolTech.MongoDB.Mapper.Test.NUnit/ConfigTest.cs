@@ -1,24 +1,19 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using MongoDB.Driver;
+using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::NUnit.Framework;
-
     [TestFixture]
     public class ConfigTest
     {
-        #region Public Methods
-
         [Test]
         public void TestReadConfig()
         {
             ConfigManager.OverrideUrlString(string.Empty);
 
-            var conf = ConfigManager.GetClientSettings("TestConf1");
+            MongoClientSettings conf = ConfigManager.GetClientSettings("TestConf1");
 
             Assert.AreEqual(3, conf.Servers.Count());
             Assert.AreEqual("host1:27017", conf.Servers.ToList()[0].ToString());
@@ -28,7 +23,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(ConfigManager.DataBaseName("TestConf1"), "Conf1");
 
             Assert.AreEqual(ReadPreference.PrimaryPreferred, conf.ReadPreference);
-            Assert.AreEqual(conf.WriteConcern.W ,WriteConcern.WValue.Parse("2"));
+            Assert.AreEqual(conf.WriteConcern.W, WriteConcern.WValue.Parse("2"));
             //Assert.AreEqual(1, conf.MaxConnectionPoolSize);
             //Assert.AreEqual(TimeSpan.FromSeconds(2), conf.WaitQueueTimeout);
             //Assert.AreEqual(true, conf.WriteConcern.Journal);
@@ -64,7 +59,5 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             "mongodb://user:pass@fake.com:27017/Test?maxpoolsize=100;waitQueueTimeout=2000ms;safe=true;journal=false");			
        */
         }
-
-        #endregion
     }
 }

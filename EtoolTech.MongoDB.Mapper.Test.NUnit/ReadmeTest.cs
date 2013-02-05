@@ -1,14 +1,12 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using System;
+using System.Collections.Generic;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Driver.Builders;
+using NUnit.Framework;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Exceptions;
-
-    using global::MongoDB.Driver.Builders;
-
-    using global::NUnit.Framework;
-
     [TestFixture]
     public class ReadmeTest
     {
@@ -27,8 +25,6 @@
         //{
         //    this._mongoTestServer.Dispose();
         //}
-        
-        #region Public Methods
 
         [Test]
         public void Test()
@@ -37,29 +33,29 @@
 
             ConfigManager.Out = Console.Out;
 
-            var c = new Country { Code = "es", Name = "España" };
+            var c = new Country {Code = "es", Name = "España"};
             try
             {
                 c.Save();
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidatePropertyException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
                 c.Save();
             }
 
-            c = new Country { Code = "UK", Name = "Reino Unido" };
+            c = new Country {Code = "UK", Name = "Reino Unido"};
             c.Save();
 
-            c = new Country { Code = "UK", Name = "Reino Unido" };
+            c = new Country {Code = "UK", Name = "Reino Unido"};
             try
             {
                 c.Save();
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(DuplicateKeyException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
 
             using (var t = new MongoMapperTransaction())
@@ -78,7 +74,7 @@
             if (!c3.IsLastVersion())
                 c3.FillFromLastVersion();
 
-            var countries = new global::System.Collections.Generic.List<Country>();
+            var countries = new List<Country>();
             countries.MongoFind();
             Assert.AreEqual(countries.Count, 3);
 
@@ -97,7 +93,7 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+                new Child {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
 
             try
             {
@@ -105,7 +101,7 @@
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof(ValidateUpRelationException));
+                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateUpRelationException));
                 p.Country = "ES";
                 p.Save();
             }
@@ -113,13 +109,11 @@
             p.ServerUpdate(
                 Update.PushWrapped(
                     "Childs",
-                    new Child { ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" }));
+                    new Child {ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"}));
 
-            var persons = new global::System.Collections.Generic.List<Person>();
+            var persons = new List<Person>();
             persons.MongoFind("Childs.Age", 2);
             Assert.AreEqual(persons.Count, 1);
         }
-
-        #endregion
     }
 }

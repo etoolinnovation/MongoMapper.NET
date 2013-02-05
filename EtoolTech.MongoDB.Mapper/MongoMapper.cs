@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
@@ -10,7 +9,6 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-using MongoDB.Driver.Linq;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -107,7 +105,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public bool IsLastVersion(bool Force)
         {
-            if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(this._classType.Name).ReplicaSetName)) return true;
+            if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(_classType.Name).ReplicaSetName))
+                return true;
 
             if (m_id == default(long))
             {
@@ -119,8 +118,7 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query).SetFields(
                     Fields.Include("m_dv"));
 
-            return ((IMongoMapperVersionable) result.Cast<object>().First()).m_dv ==
-                   m_dv;
+            return ((IMongoMapperVersionable) result.Cast<object>().First()).m_dv == m_dv;
         }
 
         public void FillFromLastVersion()
@@ -130,7 +128,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void FillFromLastVersion(bool Force)
         {
-            if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(this._classType.Name).ReplicaSetName)) return;
+            if (!Force && String.IsNullOrEmpty(ConfigManager.GetClientSettings(_classType.Name).ReplicaSetName)) return;
 
             if (m_id == default(long))
             {
@@ -309,16 +307,16 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
                     FindAndModify(query, null, Update, Refill, true);
 
-           
-                if (!String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new ServerUpdateException(result.ErrorMessage);
-                }
-          
+
+            if (!String.IsNullOrEmpty(result.ErrorMessage))
+            {
+                throw new ServerUpdateException(result.ErrorMessage);
+            }
+
 
             if (Refill)
             {
-                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(_classType),this);
+                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(_classType), this);
             }
         }
 
@@ -356,7 +354,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return Finder.Instance.FindAsCursor<T>(MongoQuery.Eq(fieldName, value));
         }
-      
+
         public static List<T> FindAsList<T>(IMongoQuery query)
         {
             return Finder.Instance.FindAsList<T>(query);
@@ -365,11 +363,6 @@ namespace EtoolTech.MongoDB.Mapper
         public static List<T> FindAsList<T>(string fieldName, object value)
         {
             return Finder.Instance.FindAsList<T>(MongoQuery.Eq(fieldName, value));
-        }
-
-        public static List<T> FindAsList<T>(Expression<Func<T, object>> exp)
-        {
-            return Finder.Instance.FindAsList(exp);
         }
 
         public static T FindByKey<T>(params object[] values)
@@ -394,12 +387,11 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result = CollectionsManager.GetCollection(
                 CollectionsManager.GetCollectioName(typeof (T).Name)).Remove(query);
 
-          
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new DeleteDocumentException(result.ErrorMessage);
-                }
-           
+
+            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            {
+                throw new DeleteDocumentException(result.ErrorMessage);
+            }
         }
 
         private bool OriginalIsEmpty(bool force = false)

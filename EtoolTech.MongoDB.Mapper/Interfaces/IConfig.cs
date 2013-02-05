@@ -3,7 +3,7 @@
     public interface IConfig
     {
         #region Public Properties
-      
+
         string Database { get; }
 
         bool EnableOriginalObject { get; }
@@ -17,7 +17,6 @@
         bool UseChildIncrementalId { get; }
 
         bool UseIncrementalId { get; }
-
 
         #endregion
     }

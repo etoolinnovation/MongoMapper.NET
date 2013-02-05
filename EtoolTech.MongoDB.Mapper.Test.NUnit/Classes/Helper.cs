@@ -1,7 +1,7 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
-{
-    using EtoolTech.MongoDB.Mapper.Configuration;
+﻿using EtoolTech.MongoDB.Mapper.Configuration;
 
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+{
     public class Helper
     {
         #region Public Methods

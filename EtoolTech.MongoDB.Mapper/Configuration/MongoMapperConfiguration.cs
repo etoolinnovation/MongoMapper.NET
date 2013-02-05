@@ -52,13 +52,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     public class Server : ConfigurationElement
     {
         #region Public Properties
-      
+
         [ConfigurationProperty("Url", IsKey = true, IsRequired = true)]
         public string Url
         {
             get { return this["Url"] as string; }
         }
-  
 
         #endregion
     }
@@ -71,7 +70,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         public string Name
         {
             get { return this["Name"] as string; }
-        }    
+        }
 
         #endregion
     }
@@ -91,7 +90,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         {
             get { return bool.Parse(this["ExceptionOnDuplicateKey"].ToString()); }
         }
-     
+
 
         [ConfigurationProperty("Generated", IsKey = false, IsRequired = false)]
         public bool Generated
@@ -104,7 +103,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         {
             get { return int.Parse(this["MaxDocumentSize"].ToString()); }
         }
-   
+
         [ConfigurationProperty("UseChidlsIncrementalId", IsKey = false, IsRequired = false)]
         public bool UseChidlsIncrementalId
         {

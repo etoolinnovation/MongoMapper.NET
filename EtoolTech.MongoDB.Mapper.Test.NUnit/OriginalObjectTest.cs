@@ -1,12 +1,9 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using System;
+using System.Linq;
+using NUnit.Framework;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-    using System.Linq;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::NUnit.Framework;
-
     [TestFixture]
     public class OriginalObjectTest
     {
@@ -25,8 +22,6 @@
         //{
         //    this._mongoTestServer.Dispose();
         //}
-        
-        #region Public Methods
 
         [Test]
         public void TestOriginalObject()
@@ -41,6 +36,25 @@
         }
 
         [Test]
+        public void TestOriginalObjectCustom()
+        {
+            (new InsertModifyDeleteTest()).TestInsert();
+            Person p = MongoMapper.AllAsList<Person>().First();
+            p.Name = "hola 25";
+
+            var p2 = p.GetOriginalObject<Person>();
+            Assert.AreEqual("Pepito Perez", p2.Name);
+            p.Save();
+
+            p.Name = "Andres";
+            p.SaveOriginal(true);
+            p.Name = "Pepe";
+
+            p2 = p.GetOriginalObject<Person>();
+            Assert.AreEqual("Andres", p2.Name);
+        }
+
+        [Test]
         public void TestOriginalObjectWithOutSave()
         {
             (new InsertModifyDeleteTest()).TestInsert();
@@ -51,33 +65,13 @@
             Assert.AreEqual("Pepito Perez", p2.Name);
         }
 
-		[Test]
-        public void TestOriginalObjectCustom()
-        {
-            (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapper.AllAsList<Person>().First();
-            p.Name = "hola 25";
-
-            var p2 = p.GetOriginalObject<Person>();
-            Assert.AreEqual("Pepito Perez", p2.Name);
-			p.Save();
-
-			p.Name = "Andres";
-			p.SaveOriginal(true);
-			p.Name = "Pepe";
-
-			p2 = p.GetOriginalObject<Person>();
-            Assert.AreEqual("Andres", p2.Name);
-
-        }
-
 
         [Test]
         public void TestOriginalValue()
         {
             Helper.DropAllCollections();
 
-            var c = new Country { Code = "ES", Name = "España" };
+            var c = new Country {Code = "ES", Name = "España"};
             c.Save();
 
             var p = new Person
@@ -91,9 +85,9 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+                new Child {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
             p.Childs.Add(
-                new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+                new Child {ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"});
             p.Save();
 
             p.Name = "Juan Sin Miedo";
@@ -102,8 +96,5 @@
 
             Assert.AreEqual(originalName.ToString(), "Pepito Perez");
         }
-
-        #endregion
     }
-
 }

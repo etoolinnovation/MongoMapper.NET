@@ -1,14 +1,12 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using EtoolTech.MongoDB.Mapper.Configuration;
+using MongoDB.Driver.Builders;
+using NUnit.Framework;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-    using System.Linq;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::MongoDB.Driver.Builders;
-
-    using global::NUnit.Framework;
-
     [TestFixture]
     public class FindTest
     {
@@ -27,8 +25,6 @@
         //{
         //    this._mongoTestServer.Dispose();
         //}
-        
-        #region Public Methods
 
         [Test]
         public void TestFindAnddOr()
@@ -38,12 +34,12 @@
 
             ConfigManager.Out = Console.Out;
 
-            global::System.Collections.Generic.List<Country> Countries =
+            List<Country> Countries =
                 MongoMapper.FindAsList<Country>(
                     Query.Or(MongoQuery.Eq((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
-            global::System.Collections.Generic.List<Person> Persons =
+            List<Person> Persons =
                 MongoMapper.FindAsList<Person>(
                     Query.And(MongoQuery.Eq(((Person p) => p.Age), 25), Query.EQ("Country", "ES")));
             Assert.AreEqual(Persons.Count, 2);
@@ -63,7 +59,7 @@
 
             ConfigManager.Out = Console.Out;
 
-            var c = new Country { Code = "ES", Name = "España" };
+            var c = new Country {Code = "ES", Name = "España"};
             c.Save();
 
             //Insert de personas
@@ -78,9 +74,9 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+                new Child {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
             p.Childs.Add(
-                new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+                new Child {ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"});
 
             p.Save();
 
@@ -95,7 +91,7 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
+                new Child {ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez"});
 
             p.Save();
 
@@ -122,7 +118,7 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano" });
+                new Child {ID = 1, Age = 2, BirthDate = DateTime.Now.AddDays(2).AddYears(-2), Name = "Toni Serrano"});
             p.Save();
 
             p = new Person
@@ -137,7 +133,7 @@
 
             p.Save();
 
-            global::System.Collections.Generic.List<Person> plist = MongoMapper.AllAsList<Person>();
+            List<Person> plist = MongoMapper.AllAsList<Person>();
 
             var p2 = MongoMapper.FindByKey<Person>(plist[0].m_id);
             p2.Name = "FindBYKey Name";
@@ -159,7 +155,7 @@
             //A MongoCursor object cannot be modified once it has been frozen
             ConfigManager.Out = null;
 
-            global::System.Collections.Generic.List<Country> Countries = MongoMapper.FindAsCursor<Country>().ToList();
+            List<Country> Countries = MongoMapper.FindAsCursor<Country>().ToList();
             Assert.AreEqual(Countries.Count, 3);
 
             Countries = MongoMapper.FindAsCursor<Country>().SetSkip(2).ToList();
@@ -173,7 +169,5 @@
             Assert.AreEqual(Countries.Count, 1);
             Assert.AreEqual(Countries.First().Name, null);
         }
-
-        #endregion
     }
 }

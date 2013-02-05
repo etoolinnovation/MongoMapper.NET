@@ -1,10 +1,5 @@
 ﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using global::NUnit.Framework;
-
     //[TestFixture]
     //public class MongoTestServerTest
     //{

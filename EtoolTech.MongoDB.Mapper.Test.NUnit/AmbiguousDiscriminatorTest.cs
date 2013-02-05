@@ -1,7 +1,12 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit1
-{
-    using EtoolTech.MongoDB.Mapper.Test.NUnit;
+﻿using System.Collections.Generic;
+using System.Linq;
+using EtoolTech.MongoDB.Mapper.Test.NUnit;
+using EtoolTech.MongoDB.Mapper.Test.NUnit1;
+using MongoDB.Driver;
+using NUnit.Framework;
 
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit1
+{
     public class MyClass : IMyInterface
     {
         #region Public Properties
@@ -16,8 +21,6 @@
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit2
 {
-    using EtoolTech.MongoDB.Mapper.Test.NUnit;
-
     public class MyClass : IMyInterface
     {
         #region Public Properties
@@ -32,15 +35,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit2
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System.Linq;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-    using EtoolTech.MongoDB.Mapper.Test.NUnit1;
-
-    using global::MongoDB.Driver;
-
-    using global::NUnit.Framework;
-
     public interface IMyInterface
     {
         #region Public Properties
@@ -70,7 +64,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         //{           
         //    this._mongoTestServer.Dispose();
         //}
-        #region Public Methods
 
         [Test]
         //Este test solo funcionara con el driver modificado
@@ -80,16 +73,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             col.RemoveAll();
 
-            var class1 = new MyClass { _id = 1, Data = 1 };
-            var class2 = new NUnit2.MyClass { _id = 2, Data = 2 };
+            var class1 = new MyClass {_id = 1, Data = 1};
+            var class2 = new NUnit2.MyClass {_id = 2, Data = 2};
 
             col.Insert(class1);
             col.Insert(class2);
 
-            global::System.Collections.Generic.List<IMyInterface> list = col.FindAll().ToList();
-			Assert.AreEqual(list.Count,2);
+            List<IMyInterface> list = col.FindAll().ToList();
+            Assert.AreEqual(list.Count, 2);
         }
-
-        #endregion
     }
 }

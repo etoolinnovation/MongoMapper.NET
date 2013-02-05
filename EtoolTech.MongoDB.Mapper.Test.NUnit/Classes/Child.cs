@@ -1,9 +1,8 @@
+using System;
+using EtoolTech.MongoDB.Mapper.Attributes;
+
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-
     [Serializable]
     public class Child : MongoMapperChild
     {

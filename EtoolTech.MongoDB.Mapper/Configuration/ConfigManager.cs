@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
@@ -15,15 +14,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         private static readonly Dictionary<string, CollectionElement> ConfigByObject =
             new Dictionary<string, CollectionElement>();
 
-        private static readonly Dictionary<string,MongoClientSettings> SettingsByObject  = new Dictionary<string, MongoClientSettings>();
+        private static readonly Dictionary<string, MongoClientSettings> SettingsByObject =
+            new Dictionary<string, MongoClientSettings>();
 
         private static readonly Object LockObject = new Object();
 
         private static readonly Object LockSettingsObject = new Object();
 
         private static bool _setupLoaded;
-
-     
 
         #endregion
 
@@ -44,7 +42,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         #region Public Methods
 
         private static string _urlString = String.Empty;
-    
+
         public static string DataBaseName(string ObjName)
         {
             if (CustomContext.Config != null)
@@ -96,7 +94,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.ExceptionOnDuplicateKey;
         }
 
-      
 
         public static void OverrideUrlString(string UrlString)
         {
@@ -107,8 +104,8 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         public static MongoClientSettings GetClientSettings(string ObjName)
         {
             if (SettingsByObject.ContainsKey(ObjName)) return SettingsByObject[ObjName];
-            
-            string urlString = ConfigManager.Url(ObjName);
+
+            string urlString = Url(ObjName);
             if (!string.IsNullOrEmpty(_urlString))
             {
                 urlString = _urlString;
@@ -120,7 +117,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 {
                     var url = new MongoUrl(urlString);
                     SettingsByObject.Add(ObjName, MongoClientSettings.FromUrl(url));
-                }               
+                }
             }
 
             return SettingsByObject[ObjName];
@@ -161,7 +158,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return Config.Context.MaxDocumentSize;
         }
 
-  
 
         public static bool UseChildIncrementalId(string ObjName)
         {
@@ -206,8 +202,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             return Config.Context.UseIncrementalId;
         }
-
-     
 
         #endregion
 

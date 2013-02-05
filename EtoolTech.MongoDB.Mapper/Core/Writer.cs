@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver;
@@ -34,12 +33,12 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Name)).Insert(Type, Document);
 
-       
-           if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new Exception(result.ErrorMessage);
-                }
-     
+
+            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            {
+                throw new Exception(result.ErrorMessage);
+            }
+
             return result;
         }
 
@@ -60,10 +59,10 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result =
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Name)).Save(Type, Document);
 
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new Exception(result.ErrorMessage);
-                }
+            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            {
+                throw new Exception(result.ErrorMessage);
+            }
 
             return result;
         }
@@ -80,13 +79,13 @@ namespace EtoolTech.MongoDB.Mapper
             if (((MongoMapper) Document).m_id == default(long))
             {
                 ((MongoMapper) Document).m_id = Finder.Instance.FindIdByKey(Type,
-                                                                                      Helper.GetPrimaryKey(Type).
-                                                                                          ToDictionary(
-                                                                                              KeyField => KeyField,
-                                                                                              KeyField =>
-                                                                                              ReflectionUtility.
-                                                                                                  GetPropertyValue(
-                                                                                                      this, KeyField))
+                                                                            Helper.GetPrimaryKey(Type).
+                                                                                ToDictionary(
+                                                                                    KeyField => KeyField,
+                                                                                    KeyField =>
+                                                                                    ReflectionUtility.
+                                                                                        GetPropertyValue(
+                                                                                            this, KeyField))
                     );
             }
 
@@ -96,12 +95,12 @@ namespace EtoolTech.MongoDB.Mapper
                 CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(Type.Name)).Remove(
                     query);
 
-          
-                if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    throw new DeleteDocumentException(result.ErrorMessage);
-                }
-           
+
+            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            {
+                throw new DeleteDocumentException(result.ErrorMessage);
+            }
+
 
             return result;
         }

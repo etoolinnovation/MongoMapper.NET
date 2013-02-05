@@ -1,10 +1,9 @@
+using System;
+using System.Collections.Generic;
+using EtoolTech.MongoDB.Mapper.Attributes;
+
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-    using System.Collections.Generic;
-
-    using EtoolTech.MongoDB.Mapper.Attributes;
-
     [Serializable]
     [MongoKey(KeyFields = "")]
     [MongoIndex(IndexFields = "ID,Country")]
@@ -16,7 +15,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         public Person()
         {
-            this.Childs = new List<Child>();
+            Childs = new List<Child>();
         }
 
         #endregion

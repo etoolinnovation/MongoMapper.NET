@@ -1,11 +1,9 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::NUnit.Framework;
-
     [TestFixture]
     public class IncrementalIdTest
     {
@@ -25,14 +23,12 @@
         //    this._mongoTestServer.Dispose();
         //}
 
-        #region Public Methods
-
         [Test]
         public void TestChildIncrementalId()
         {
             Helper.DropAllCollections();
 
-            var c = new Country { Code = "ES", Name = "España" };
+            var c = new Country {Code = "ES", Name = "España"};
             c.Save();
 
             //Insert de personas
@@ -47,9 +43,9 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez" });
+                new Child {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
             p.Childs.Add(
-                new Child { ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez" });
+                new Child {ID = 2, Age = 7, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"});
 
             p.Save();
 
@@ -64,11 +60,11 @@
                 };
 
             p.Childs.Add(
-                new Child { ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez" });
+                new Child {ID = 1, Age = 5, BirthDate = DateTime.Now.AddDays(7).AddYears(-5), Name = "Toni Sanchez"});
 
             p.Save();
 
-            var Persons = new global::System.Collections.Generic.List<Person>();
+            var Persons = new List<Person>();
             Persons.MongoFind();
 
             long index = 1;
@@ -89,12 +85,10 @@
 
             for (int i = 0; i < 100; i++)
             {
-                var c = new Country { Code = "ES_" + i.ToString(), Name = "España" };
+                var c = new Country {Code = "ES_" + i.ToString(), Name = "España"};
                 c.Save();
                 Assert.AreEqual(c.m_id, i + 1);
             }
         }
-
-        #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
@@ -83,38 +82,9 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public MongoCursor<T> FindAsCursor<T>(Expression<Func<T, object>> Exp)
-        {
-            var ep = new ExpressionParser();
-            IMongoQuery query = ep.ParseExpression(Exp);
-
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
-
-            if (ConfigManager.EnableOriginalObject(typeof (T).Name))
-            {
-                result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
-            }
-
-            if (ConfigManager.Out != null)
-            {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
-                ConfigManager.Out.WriteLine(result.Query.ToString());
-                ConfigManager.Out.WriteLine(result.Explain().ToJson());
-                ConfigManager.Out.WriteLine();
-            }
-
-            return result;
-        }
-
         public List<T> FindAsList<T>(IMongoQuery Query = null)
         {
             List<T> list = FindAsCursor<T>(Query).ToList();
-            return list;
-        }
-
-        public List<T> FindAsList<T>(Expression<Func<T, object>> Exp)
-        {
-            List<T> list = FindAsCursor(Exp).ToList();
             return list;
         }
 

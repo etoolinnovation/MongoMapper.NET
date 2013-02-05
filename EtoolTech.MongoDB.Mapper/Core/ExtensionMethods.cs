@@ -1,17 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
     public static class ExtensionMethods
     {
         #region Public Methods
-
-     
 
         public static void FillByKey<T>(this T Object, params object[] Values) where T : MongoMapper
         {
@@ -38,14 +32,6 @@ namespace EtoolTech.MongoDB.Mapper
             List.Clear();
             List.AddRange(Finder.Instance.FindAsList<T>(MongoQuery.Eq(FieldName, Value)));
         }
-
-        public static void MongoFind<T>(this List<T> List, Expression<Func<T, object>> Exp) where T : MongoMapper
-        {
-            List.Clear();
-            List.AddRange(Finder.Instance.FindAsList(Exp));
-        }
-
-      
 
         #endregion
     }

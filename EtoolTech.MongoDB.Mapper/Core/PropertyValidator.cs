@@ -42,7 +42,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             try
             {
-                Method.Invoke(Sender, new[] { ReflectionUtility.GetPropertyValue(Sender, PropertyName) });
+                Method.Invoke(Sender, new[] {ReflectionUtility.GetPropertyValue(Sender, PropertyName)});
             }
             catch (Exception ex)
             {

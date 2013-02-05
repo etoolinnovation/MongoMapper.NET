@@ -1,12 +1,9 @@
-﻿namespace EtoolTech.MongoDB.Mapper.Test.NUnit
+﻿using System;
+using System.Diagnostics;
+using NUnit.Framework;
+
+namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
-    using System;
-    using System.Diagnostics;
-
-    using EtoolTech.MongoDB.Mapper.Configuration;
-
-    using global::NUnit.Framework;
-
     public class TestReflectionUtility
     {
         #region Public Properties
@@ -44,8 +41,6 @@
         //{
         //    this._mongoTestServer.Dispose();
         //}
-        
-        #region Public Methods
 
         public static void TestObjectVsTypedNewGetPropertyValue()
         {
@@ -74,7 +69,13 @@
 
         public void BuildSchema()
         {
-            ReflectionUtility.BuildSchema(this.GetType().Assembly);
+            ReflectionUtility.BuildSchema(GetType().Assembly);
+        }
+
+        [Test]
+        public void TestGenerateSchema()
+        {
+            ReflectionUtility.BuildSchema(GetType().Assembly);
         }
 
         [Test]
@@ -112,13 +113,5 @@
             Assert.AreEqual(new DateTime(1972, 12, 5), ReflectionUtility.GetPropertyValue<DateTime>(test, "Date"));
             Assert.AreEqual(true, ReflectionUtility.GetPropertyValue<bool>(test, "Bool"));
         }
-
-        [Test]
-        public void TestGenerateSchema()
-        {
-            ReflectionUtility.BuildSchema(this.GetType().Assembly);
-        }
-
-        #endregion
     }
 }
