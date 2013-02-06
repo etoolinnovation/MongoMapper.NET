@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Configuration;
@@ -17,7 +18,8 @@ namespace EtoolTech.MongoDB.Mapper
                                         IMongoMapperRelationable,
                                         IMongoMapperWriteable,
                                         IMongoMapperIdeable,
-                                        IMongoMapperVersionable
+                                        IMongoMapperVersionable,
+                                        ISupportInitialize
     {
         #region Constants and Fields
 
@@ -408,6 +410,20 @@ namespace EtoolTech.MongoDB.Mapper
         {
             return Helper.GetPrimaryKey(_classType).ToDictionary(
                 KeyField => KeyField, KeyField => ReflectionUtility.GetPropertyValue(this, KeyField));
+        }
+
+        #endregion
+
+        #region ISupportInitialize Members
+
+        public void BeginInit()
+        {
+        }
+
+        public void EndInit()
+        {
+            var mongoMapperOriginable = this as IMongoMapperOriginable;
+            (mongoMapperOriginable).SaveOriginal(false);
         }
 
         #endregion

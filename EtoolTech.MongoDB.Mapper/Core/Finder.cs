@@ -33,11 +33,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public MongoCursor<T> AllAsCursor<T>()
         {
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();
-            if (ConfigManager.EnableOriginalObject(typeof (T).Name))
-            {
-                result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
-            }
+            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();          
 
             if (ConfigManager.Out != null)
             {
@@ -66,11 +62,6 @@ namespace EtoolTech.MongoDB.Mapper
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(Query);
 
-            if (ConfigManager.EnableOriginalObject(typeof (T).Name))
-            {
-                result.OnEnumeratorGetCurrent += Cursors_OnGetCurrent<T>;
-            }
-
             if (ConfigManager.Out != null)
             {
                 ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
@@ -97,14 +88,12 @@ namespace EtoolTech.MongoDB.Mapper
         public T FindById<T>(long Id)
         {
             var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneByIdAs<T>(Id);
-            SaveOriginal(result);
             return result;
         }
 
         public object FindById(Type Type, long Id)
         {
             object result = CollectionsManager.GetCollection(Type.Name).FindOneByIdAs(Type, Id);
-            SaveOriginal(result);
             return result;
         }
 
@@ -204,31 +193,12 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 throw new FindByKeyNotFoundException();
             }
-            T o = result.First();
-            SaveOriginal(o);
+            T o = result.First();            
             return o;
         }
 
         #endregion
 
-        #region Methods
-
-        private static void SaveOriginal<T>(T result)
-        {
-            if (!ConfigManager.EnableOriginalObject(result.GetType().Name)) return;
-
-            var mongoMapperOriginable = result as IMongoMapperOriginable;
-            if (mongoMapperOriginable != null)
-            {
-                (mongoMapperOriginable).SaveOriginal(false);
-            }
-        }
-
-        private void Cursors_OnGetCurrent<T>(object sender, EventArgs e)
-        {
-            SaveOriginal(((MongoCursor<T>.OnEnumeratorGetCurrentEventArgs) e).Document);
-        }
-
-        #endregion
+     
     }
 }
