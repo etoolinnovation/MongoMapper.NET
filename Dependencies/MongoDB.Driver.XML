@@ -5191,6 +5191,16 @@
             Gets the document.
             </summary>
         </member>
+        <member name="T:MongoDB.Driver.WriteConcernResult">
+            <summary>
+            Represents the results of an operation performed with WriteConcern enabled.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.SafeModeResult">
+            <summary>
+            Represents the results of an operation performed with WriteConcern enabled.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.GetLastErrorResult">
             <summary>
             Represents the results of a GetLastError command.
@@ -5337,90 +5347,6 @@
             Gets the tags.
             </summary>
         </member>
-        <member name="T:MongoDB.Driver.MapReduceResult">
-            <summary>
-            Represents the result of a map/reduce command.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.#ctor">
-            <summary>
-            Initializes a new instance of the MapReduceResult class.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs``1">
-            <summary>
-            Gets the inline results as TDocuments.
-            </summary>
-            <typeparam name="TDocument">The type of the documents.</typeparam>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs(System.Type)">
-            <summary>
-            Gets the inline results as TDocuments.
-            </summary>
-            <param name="documentType">The type of the documents.</param>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetResults">
-            <summary>
-            Gets the results (either inline or fetched from the output collection).
-            </summary>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs``1">
-            <summary>
-            Gets the results as TDocuments (either inline or fetched from the output collection).
-            </summary>
-            <typeparam name="TDocument">The type of the documents.</typeparam>
-            <returns>The documents.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs(System.Type)">
-            <summary>
-            Gets the results as TDocuments (either inline or fetched from the output collection).
-            </summary>
-            <param name="documentType">The type of the documents.</param>
-            <returns>The documents.</returns>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.CollectionName">
-            <summary>
-            Gets the output collection name (null if none).
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.DatabaseName">
-            <summary>
-            Gets the output database name (null if none).
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.Duration">
-            <summary>
-            Gets the duration.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.EmitCount">
-            <summary>
-            Gets the emit count.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.OutputCount">
-            <summary>
-            Gets the output count.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.InlineResults">
-            <summary>
-            Gets the inline results.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MapReduceResult.InputCount">
-            <summary>
-            Gets the input count.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.SafeModeResult">
-            <summary>
-            Represents the results of an operation performed with WriteConcern enabled.
-            </summary>
-        </member>
         <member name="T:MongoDB.Driver.ValidateCollectionResult">
             <summary>
             Represents the results of a validate collection command.
@@ -5556,17 +5482,12 @@
             Gets the prev extent.
             </summary>
         </member>
-        <member name="T:MongoDB.Driver.WriteConcernResult">
-            <summary>
-            Represents the results of an operation performed with WriteConcern enabled.
-            </summary>
-        </member>
         <member name="T:MongoDB.Driver.Communication.Security.Authenticator">
             <summary>
             Authenticates credentials against MongoDB.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Authenticator.#ctor(MongoDB.Driver.Internal.MongoConnection,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoCredentials})">
+        <member name="M:MongoDB.Driver.Communication.Security.Authenticator.#ctor(MongoDB.Driver.Internal.MongoConnection,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoCredential})">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Authenticator"/> class.
             </summary>
@@ -5608,20 +5529,20 @@
             Authenticates a MongoConnection.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.IAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.IAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
-            Authenticates the specified connection with the given credentials.
+            Authenticates the specified connection with the given credential.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.IAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.IAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can use the specified credentials.
+            Determines whether this instance can use the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can use the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can use the specified credential; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="P:MongoDB.Driver.Communication.Security.IAuthenticationMethod.Name">
@@ -5661,21 +5582,21 @@
             Represents a sasl mechanism.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.ISaslMechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.ISaslMechanism.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can authenticate with the specified credentials.
+            Determines whether this instance can authenticate with the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can authenticate with the specified credential; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.ISaslMechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.ISaslMechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
             Initializes the mechanism.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>The initial step.</returns>
         </member>
         <member name="P:MongoDB.Driver.Communication.Security.ISaslMechanism.Name">
@@ -5683,22 +5604,22 @@
             Gets the name of the mechanism.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can authenticate with the specified credentials.
+            Determines whether this instance can authenticate with the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can authenticate with the specified credential; otherwise, <c>false</c>.
             </returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
             Initializes the mechanism.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>The initial step.</returns>
         </member>
         <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.CramMD5Mechanism.Name">
@@ -5711,22 +5632,22 @@
             A mechanism for DIGEST-MD5.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can authenticate with the specified credentials.
+            Determines whether this instance can authenticate with the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can authenticate with the specified credential; otherwise, <c>false</c>.
             </returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
             Initializes the mechanism.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>The initial step.</returns>
         </member>
         <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.DigestMD5Mechanism.Name">
@@ -5994,23 +5915,23 @@
         </member>
         <member name="T:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod">
             <summary>
-            Authenticates credentials using the MONGO-CR protocol.
+            Authenticates a credential using the MONGO-CR protocol.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
             Authenticates the connection against the given database.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.MongoCRAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can use the specified credentials.
+            Determines whether this instance can use the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can use the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can use the specified credential; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.GsaslGssapiImplementation">
@@ -6037,22 +5958,22 @@
             A mechanism implementing the GSS API specification.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can authenticate with the specified credentials.
+            Determines whether this instance can authenticate with the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can authenticate with the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can authenticate with the specified credential; otherwise, <c>false</c>.
             </returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.Initialize(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
             Initializes the mechanism.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>The initial step.</returns>
         </member>
         <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.GssapiMechanism.Name">
@@ -6181,7 +6102,7 @@
         </member>
         <member name="T:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod">
             <summary>
-            Authenticates credentials using the SASL protocol.
+            Authenticates a credential using the SASL protocol.
             </summary>
         </member>
         <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.#ctor(MongoDB.Driver.Communication.Security.ISaslMechanism)">
@@ -6190,20 +6111,20 @@
             </summary>
             <param name="mechanism">The mechanism.</param>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.Authenticate(MongoDB.Driver.Internal.MongoConnection,MongoDB.Driver.MongoCredential)">
             <summary>
             Authenticates the connection against the given database.
             </summary>
             <param name="connection">The connection.</param>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.CanUse(MongoDB.Driver.MongoCredential)">
             <summary>
-            Determines whether this instance can use the specified credentials.
+            Determines whether this instance can use the specified credential.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <returns>
-              <c>true</c> if this instance can use the specified credentials; otherwise, <c>false</c>.
+              <c>true</c> if this instance can use the specified credential; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="P:MongoDB.Driver.Communication.Security.SaslAuthenticationMethod.Name">
@@ -6463,11 +6384,11 @@
             Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext"/> class.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.Initialize(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials,System.String,System.Byte[],System.Byte[]@)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityContext.Initialize(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential,System.String,System.Byte[],System.Byte[]@)">
             <summary>
             Initializes the context.
             </summary>
-            <param name="credentials">The credentials.</param>
+            <param name="credential">The credential.</param>
             <param name="servicePrincipalName">Name of the service principal.</param>
             <param name="input">The input.</param>
             <param name="output">The output.</param>
@@ -6523,26 +6444,26 @@
               <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
               </PermissionSet>
         </member>
-        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials">
+        <member name="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential">
             <summary>
-            A wrapper around the SspiHandle structure specificly used as a credentials handle.
+            A wrapper around the SspiHandle structure specificly used as a credential handle.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.#ctor">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials"/> class.
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential"/> class.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.Acquire(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiPackage,System.String,MongoDB.Driver.MongoIdentityEvidence)">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential.Acquire(MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SspiPackage,System.String,MongoDB.Driver.MongoIdentityEvidence)">
             <summary>
-            Acquires the credentials handle.
+            Acquires the credential handle.
             </summary>
             <param name="package">The package.</param>
             <param name="username">The username.</param>
             <param name="evidence">The evidence.</param>
             <returns>A security credential.</returns>
         </member>
-        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.ReleaseHandle">
+        <member name="M:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential.ReleaseHandle">
             <summary>
             When overridden in a derived class, executes the code required to free the handle.
             </summary>
@@ -6550,7 +6471,7 @@
             true if the handle is released successfully; otherwise, in the event of a catastrophic failure, false. In this case, it generates a releaseHandleFailed MDA Managed Debugging Assistant.
             </returns>
         </member>
-        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredentials.IsInvalid">
+        <member name="P:MongoDB.Driver.Communication.Security.Mechanisms.Sspi.SecurityCredential.IsInvalid">
             <summary>
             When overridden in a derived class, gets a value indicating whether the handle value is invalid.
             </summary>
@@ -6908,6 +6829,26 @@
             Creates a new instance of MongoClientSettings. Usually you would use a connection string instead.
             </summary>
         </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.op_Equality(MongoDB.Driver.MongoClientSettings,MongoDB.Driver.MongoClientSettings)">
+            <summary>
+            Determines whether two <see cref="T:MongoDB.Driver.MongoClientSettings"/> instances are equal.
+            </summary>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.op_Inequality(MongoDB.Driver.MongoClientSettings,MongoDB.Driver.MongoClientSettings)">
+            <summary>
+            Determines whether two <see cref="T:MongoDB.Driver.MongoClientSettings"/> instances are not equal.
+            </summary>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is not equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoClientSettings.FromConnectionStringBuilder(MongoDB.Driver.MongoConnectionStringBuilder)">
             <summary>
             Gets a MongoClientSettings object intialized with values from a connection string builder.
@@ -6928,12 +6869,23 @@
             </summary>
             <returns>A clone of the settings.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoClientSettings.Equals(MongoDB.Driver.MongoClientSettings)">
+            <summary>
+            Determines whether the specified <see cref="T:MongoDB.Driver.MongoClientSettings"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:MongoDB.Driver.MongoClientSettings"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:MongoDB.Driver.MongoClientSettings"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoClientSettings.Equals(System.Object)">
             <summary>
-            Compares two MongoClientSettings instances.
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
             </summary>
-            <param name="obj">The other instance.</param>
-            <returns>True if the two instances are equal.</returns>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:MongoDB.Driver.MongoClientSettings.Freeze">
             <summary>
@@ -6969,9 +6921,9 @@
             Gets or sets the connect timeout.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoClientSettings.CredentialsStore">
+        <member name="P:MongoDB.Driver.MongoClientSettings.Credentials">
             <summary>
-            Gets or sets the credentials store.
+            Gets or sets the credentials.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoClientSettings.GuidRepresentation">
@@ -7038,6 +6990,11 @@
         <member name="P:MongoDB.Driver.MongoClientSettings.SocketTimeout">
             <summary>
             Gets or sets the socket timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoClientSettings.SslSettings">
+            <summary>
+            Gets or sets the SSL settings.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoClientSettings.UseSsl">
@@ -7205,83 +7162,80 @@
             </summary>
             <returns>A clone of the settings.</returns>
         </member>
-        <member name="T:MongoDB.Driver.MongoCredentialsStore">
+        <member name="T:MongoDB.Driver.MongoCredentialStore">
             <summary>
-            Represents a credentials store that contains credentials for different databases.
+            Represents a list of credentials and the rules about how credentials can be used together.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.#ctor">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.#ctor(System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoCredential})">
             <summary>
-            Creates a new instance of the MongoCredentialsStore class.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.Add(MongoDB.Driver.MongoCredentials)">
-            <summary>
-            Adds the specified credentials.
+            Creates a new instance of the MongoCredentialStore class.
             </summary>
             <param name="credentials">The credentials.</param>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.Clone">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.op_Equality(MongoDB.Driver.MongoCredentialStore,MongoDB.Driver.MongoCredentialStore)">
             <summary>
-            Creates a clone of the credentials store.
+            Determines whether two <see cref="T:MongoDB.Driver.MongoCredentialStore"/> instances are equal.
             </summary>
-            <returns>A clone of the credentials store.</returns>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.Equals(MongoDB.Driver.MongoCredentialsStore)">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.op_Inequality(MongoDB.Driver.MongoCredentialStore,MongoDB.Driver.MongoCredentialStore)">
             <summary>
-            Compares this credentials store to another credentials store.
+            Determines whether two <see cref="T:MongoDB.Driver.MongoCredentialStore"/> instances are not equal.
             </summary>
-            <param name="rhs">The other credentials store.</param>
-            <returns>True if the two credentials stores are equal.</returns>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is not equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.Equals(System.Object)">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.Equals(MongoDB.Driver.MongoCredentialStore)">
             <summary>
-            Compares this credentials store to another credentials store.
+            Determines whether the specified <see cref="T:MongoDB.Driver.MongoCredentialStore"/> is equal to this instance.
             </summary>
-            <param name="obj">The other credentials store.</param>
-            <returns>True if the two credentials stores are equal.</returns>
+            <param name="obj">The <see cref="T:MongoDB.Driver.MongoCredentialStore"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:MongoDB.Driver.MongoCredentialStore"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.Freeze">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.Equals(System.Object)">
             <summary>
-            Freezes the credentials store.
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
             </summary>
-            <returns>The frozen credentials store.</returns>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.GetEnumerator">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.GetEnumerator">
             <summary>
             Gets the enumerator.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.GetHashCode">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.GetHashCode">
             <summary>
-            Gets the hashcode for the credentials store.
+            Gets the hashcode for the credential store.
             </summary>
             <returns>The hashcode.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.ToString">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.ToString">
             <summary>
-            Returns a string representation of the credentials store.
+            Returns a string representation of the credential store.
             </summary>
-            <returns>A string representation of the credentials store.</returns>
+            <returns>A string representation of the credential store.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentialsStore.System#Collections#IEnumerable#GetEnumerator">
+        <member name="M:MongoDB.Driver.MongoCredentialStore.System#Collections#IEnumerable#GetEnumerator">
             <summary>
             Returns an enumerator that iterates through a collection.
             </summary>
             <returns>
             An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
             </returns>
-        </member>
-        <member name="P:MongoDB.Driver.MongoCredentialsStore.Count">
-            <summary>
-            Gets the number of credentials in the store.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoCredentialsStore.IsFrozen">
-            <summary>
-            Gets whether the credentials store has been frozen to prevent further changes.
-            </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoDatabaseSettings">
             <summary>
@@ -7507,19 +7461,19 @@
         </member>
         <member name="M:MongoDB.Driver.MongoIdentity.op_Equality(MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentity)">
             <summary>
-            Compares two MongoCredentials.
+            Compares two MongoIdentity values.
             </summary>
-            <param name="lhs">The first MongoCredentials.</param>
-            <param name="rhs">The other MongoCredentials.</param>
-            <returns>True if the two MongoCredentials are equal (or both null).</returns>
+            <param name="lhs">The first MongoIdentity.</param>
+            <param name="rhs">The other MongoIdentity.</param>
+            <returns>True if the two MongoIdentity values are equal (or both null).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoIdentity.op_Inequality(MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentity)">
             <summary>
-            Compares two MongoCredentials.
+            Compares two MongoIdentity values.
             </summary>
-            <param name="lhs">The first MongoCredentials.</param>
-            <param name="rhs">The other MongoCredentials.</param>
-            <returns>True if the two MongoCredentials are not equal (or one is null and the other is not).</returns>
+            <param name="lhs">The first MongoIdentity.</param>
+            <param name="rhs">The other MongoIdentity.</param>
+            <returns>True if the two MongoIdentity values are not equal (or one is null and the other is not).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoIdentity.Equals(System.Object)">
             <summary>
@@ -7582,19 +7536,19 @@
         </member>
         <member name="M:MongoDB.Driver.MongoIdentityEvidence.op_Equality(MongoDB.Driver.MongoIdentityEvidence,MongoDB.Driver.MongoIdentityEvidence)">
             <summary>
-            Compares two MongoCredentials.
+            Compares two MongoIdentityEvidences.
             </summary>
-            <param name="lhs">The first MongoCredentials.</param>
-            <param name="rhs">The other MongoCredentials.</param>
-            <returns>True if the two MongoCredentials are equal (or both null).</returns>
+            <param name="lhs">The first MongoIdentityEvidence.</param>
+            <param name="rhs">The other MongoIdentityEvidence.</param>
+            <returns>True if the two MongoIdentityEvidences are equal (or both null).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoIdentityEvidence.op_Inequality(MongoDB.Driver.MongoIdentityEvidence,MongoDB.Driver.MongoIdentityEvidence)">
             <summary>
-            Compares two MongoCredentials.
+            Compares two MongoIdentityEvidences.
             </summary>
-            <param name="lhs">The first MongoCredentials.</param>
-            <param name="rhs">The other MongoCredentials.</param>
-            <returns>True if the two MongoCredentials are not equal (or one is null and the other is not).</returns>
+            <param name="lhs">The first MongoIdentityEvidence.</param>
+            <param name="rhs">The other MongoIdentityEvidence.</param>
+            <returns>True if the two MongoIdentityEvidences are not equal (or one is null and the other is not).</returns>
         </member>
         <member name="M:MongoDB.Driver.MongoIdentityEvidence.Equals(System.Object)">
             <summary>
@@ -7873,31 +7827,25 @@
             Creates a new instance of MongoServerSettings. Usually you would use a connection string instead.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoServerSettings.#ctor(MongoDB.Driver.ConnectionMode,System.TimeSpan,MongoDB.Driver.MongoCredentialsStore,MongoDB.Driver.MongoCredentials,MongoDB.Bson.GuidRepresentation,System.Boolean,System.TimeSpan,System.TimeSpan,System.Int32,System.Int32,MongoDB.Driver.ReadPreference,System.String,MongoDB.Driver.SafeMode,System.TimeSpan,System.Collections.Generic.IEnumerable{MongoDB.Driver.MongoServerAddress},System.TimeSpan,System.Boolean,System.Boolean,System.Int32,System.TimeSpan)">
+        <member name="M:MongoDB.Driver.MongoServerSettings.op_Equality(MongoDB.Driver.MongoServerSettings,MongoDB.Driver.MongoServerSettings)">
             <summary>
-            Creates a new instance of MongoServerSettings. Usually you would use a connection string instead.
+            Determines whether two <see cref="T:MongoDB.Driver.MongoServerSettings"/> instances are equal.
             </summary>
-            <param name="connectionMode">The connection mode (Direct or ReplicaSet).</param>
-            <param name="connectTimeout">The connect timeout.</param>
-            <param name="credentialsStore">The credentials store.</param>
-            <param name="defaultCredentials">The default credentials.</param>
-            <param name="guidRepresentation">The representation for Guids.</param>
-            <param name="ipv6">Whether to use IPv6.</param>
-            <param name="maxConnectionIdleTime">The max connection idle time.</param>
-            <param name="maxConnectionLifeTime">The max connection life time.</param>
-            <param name="maxConnectionPoolSize">The max connection pool size.</param>
-            <param name="minConnectionPoolSize">The min connection pool size.</param>
-            <param name="readPreference">The default read preference.</param>
-            <param name="replicaSetName">The name of the replica set.</param>
-            <param name="safeMode">The safe mode.</param>
-            <param name="secondaryAcceptableLatency">The secondary acceptable latency.</param>
-            <param name="servers">The server addresses (normally one unless it is the seed list for connecting to a replica set).</param>
-            <param name="socketTimeout">The socket timeout.</param>
-            <param name="useSsl">Whether to use SSL.</param>
-            <param name="verifySslCertificate">Whether to verify an SSL certificate.</param>
-            <param name="waitQueueSize">The wait queue size.</param>
-            <param name="waitQueueTimeout">The wait queue timeout.</param>
-            <exception cref="T:System.ArgumentNullException"></exception>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoServerSettings.op_Inequality(MongoDB.Driver.MongoServerSettings,MongoDB.Driver.MongoServerSettings)">
+            <summary>
+            Determines whether two <see cref="T:MongoDB.Driver.MongoServerSettings"/> instances are not equal.
+            </summary>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is not equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.FromClientSettings(MongoDB.Driver.MongoClientSettings)">
             <summary>
@@ -7926,12 +7874,23 @@
             </summary>
             <returns>A clone of the settings.</returns>
         </member>
+        <member name="M:MongoDB.Driver.MongoServerSettings.Equals(MongoDB.Driver.MongoServerSettings)">
+            <summary>
+            Determines whether the specified <see cref="T:MongoDB.Driver.MongoServerSettings"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:MongoDB.Driver.MongoServerSettings"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:MongoDB.Driver.MongoServerSettings"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.Equals(System.Object)">
             <summary>
-            Compares two MongoServerSettings instances.
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
             </summary>
-            <param name="obj">The other instance.</param>
-            <returns>True if the two instances are equal.</returns>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:MongoDB.Driver.MongoServerSettings.Freeze">
             <summary>
@@ -7972,9 +7931,9 @@
             Gets or sets the connect timeout.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoServerSettings.CredentialsStore">
+        <member name="P:MongoDB.Driver.MongoServerSettings.Credentials">
             <summary>
-            Gets or sets the credentials store.
+            Gets or sets the credentials.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoServerSettings.GuidRepresentation">
@@ -8051,6 +8010,11 @@
         <member name="P:MongoDB.Driver.MongoServerSettings.SocketTimeout">
             <summary>
             Gets or sets the socket timeout.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MongoServerSettings.SslSettings">
+            <summary>
+            Gets or sets the SSL settings.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoServerSettings.UseSsl">
@@ -8330,8 +8294,6 @@
             <param name="username">The username.</param>
             <param name="password">The password.</param>
             <param name="isReadOnly">Whether the user has read-only access.</param>
-            <exception cref="T:System.ArgumentNullException">credentials</exception>
-            <exception cref="T:System.ArgumentException">Credentials must have password evidence to create a user.</exception>
         </member>
         <member name="M:MongoDB.Driver.MongoUser.#ctor(System.String,System.String,System.Boolean)">
             <summary>
@@ -8395,7 +8357,7 @@
         </member>
         <member name="M:MongoDB.Driver.MongoUser.ToString">
             <summary>
-            Returns a string representation of the credentials.
+            Returns a string representation of the user.
             </summary>
             <returns>A string representation of the user.</returns>
         </member>
@@ -8749,7 +8711,7 @@
         </member>
         <member name="M:MongoDB.Driver.ReplicaSetTag.ToString">
             <summary>
-            Returns a string representation of the credentials.
+            Returns a string representation of the replica set tags.
             </summary>
             <returns>A string representation of the user.</returns>
         </member>
@@ -8908,6 +8870,100 @@
         <member name="P:MongoDB.Driver.Setting`1.HasBeenSet">
             <summary>
             Gets whether the setting has been set.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.SslSettings">
+            <summary>
+            Represents the settings for using SSL.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.op_Equality(MongoDB.Driver.SslSettings,MongoDB.Driver.SslSettings)">
+            <summary>
+            Determines whether two <see cref="T:MongoDB.Driver.SslSettings"/> instances are equal.
+            </summary>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.op_Inequality(MongoDB.Driver.SslSettings,MongoDB.Driver.SslSettings)">
+            <summary>
+            Determines whether two <see cref="T:MongoDB.Driver.SslSettings"/> instances are not equal.
+            </summary>
+            <param name="lhs">The LHS.</param>
+            <param name="rhs">The RHS.</param>
+            <returns>
+              <c>true</c> if the left hand side is not equal to the right hand side; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.Clone">
+            <summary>
+            Clones an SslSettings.
+            </summary>
+            <returns>The cloned SslSettings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.Equals(MongoDB.Driver.SslSettings)">
+            <summary>
+            Determines whether the specified <see cref="T:MongoDB.Driver.SslSettings"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:MongoDB.Driver.SslSettings"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:MongoDB.Driver.SslSettings"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.Freeze">
+            <summary>
+            Freezes the settings.
+            </summary>
+            <returns>The frozen settings.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:MongoDB.Driver.SslSettings.ToString">
+            <summary>
+            Returns a string representation of the settings.
+            </summary>
+            <returns>A string representation of the settings.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.SslSettings.CheckCertificateRevocation">
+            <summary>
+            Gets or sets whether to check for certificate revocation.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SslSettings.ClientCertificates">
+            <summary>
+            Gets or sets the client certificates.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SslSettings.ClientCertificateSelectionCallback">
+            <summary>
+            Gets or sets the client certificate selection callback.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SslSettings.EnabledSslProtocols">
+            <summary>
+            Gets or sets the enabled SSL protocols.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.SslSettings.ServerCertificateValidationCallback">
+            <summary>
+            Gets or sets the server certificate validation callback.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.SystemProfileInfo">
@@ -12649,6 +12705,21 @@
             <param name="values">The values to locate in the sequence.</param>
             <returns>True if the sequence contains any of the specified values.</returns>
         </member>
+        <member name="M:MongoDB.Driver.Linq.LinqToMongo.Explain``1(System.Linq.IQueryable{``0})">
+            <summary>
+            Returns an explanation of how the query was executed (instead of the results).
+            </summary>
+            <param name="source">The LINQ query to explain.</param>
+            <returns>An explanation of thow the query was executed.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Linq.LinqToMongo.Explain``1(System.Linq.IQueryable{``0},System.Boolean)">
+            <summary>
+            Returns an explanation of how the query was executed (instead of the results).
+            </summary>
+            <param name="source">The LINQ query to explain</param>
+            <param name="verbose">Whether the explanation should contain more details.</param>
+            <returns>An explanation of thow the query was executed.</returns>
+        </member>
         <member name="M:MongoDB.Driver.Linq.LinqToMongo.In``1(``0,System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Determines whether a specified value is contained in a sequence.
@@ -12664,6 +12735,24 @@
             </summary>
             <param name="query">The low level query.</param>
             <returns>Throws an InvalidOperationException if called.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Linq.LinqToMongo.WithIndex``1(System.Linq.IQueryable{``0},System.String)">
+            <summary>
+            Sets an index hint on the query that's being built.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">The query being built.</param>
+            <param name="indexName">The name of the index to use.</param>
+            <returns>New query where the expression includes a WithIndex method call.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Linq.LinqToMongo.WithIndex``1(System.Linq.IQueryable{``0},MongoDB.Bson.BsonDocument)">
+            <summary>
+            Sets an index hint on the query that's being built.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">The query being built.</param>
+            <param name="indexHint">Hint for what index to use.</param>
+            <returns>New query where the expression includes a WithIndex method call.</returns>
         </member>
         <member name="T:MongoDB.Driver.Linq.DeserializationProjector`1">
             <summary>
@@ -13095,6 +13184,11 @@
         <member name="P:MongoDB.Driver.Linq.SelectQuery.Take">
             <summary>
             Gets the Expression that defines how many documents to take (or null if not specified);
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.Linq.SelectQuery.IndexHint">
+            <summary>
+            Gets the BsonValue (string or document) that defines which index to use (or null if not specified);
             </summary>
         </member>
         <member name="P:MongoDB.Driver.Linq.SelectQuery.Where">
@@ -15370,129 +15464,208 @@
             <param name="keyword">The keyword.</param>
             <returns>The value of the setting.</returns>
         </member>
-        <member name="T:MongoDB.Driver.MongoCredentials">
+        <member name="T:MongoDB.Driver.MongoCredential">
             <summary>
-            Credentials to access a MongoDB database.
+            Credential to access a MongoDB database.
             </summary>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.#ctor(MongoDB.Driver.MongoAuthenticationProtocol,MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentityEvidence)">
+        <member name="M:MongoDB.Driver.MongoCredential.#ctor(MongoDB.Driver.MongoAuthenticationProtocol,MongoDB.Driver.MongoIdentity,MongoDB.Driver.MongoIdentityEvidence)">
             <summary>
-            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoCredentials"/> class.
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.MongoCredential"/> class.
             </summary>
             <param name="authenticationProtocol">Protocol to authenticate with.</param>
             <param name="identity">The identity.</param>
             <param name="evidence">The evidence.</param>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.op_Equality(MongoDB.Driver.MongoCredentials,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.MongoCredential.op_Equality(MongoDB.Driver.MongoCredential,MongoDB.Driver.MongoCredential)">
             <summary>
             Compares two MongoCredentials.
             </summary>
-            <param name="lhs">The first MongoCredentials.</param>
-            <param name="rhs">The other MongoCredentials.</param>
+            <param name="lhs">The first MongoCredential.</param>
+            <param name="rhs">The other MongoCredential.</param>
             <returns>True if the two MongoCredentials are equal (or both null).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.op_Inequality(MongoDB.Driver.MongoCredentials,MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.MongoCredential.op_Inequality(MongoDB.Driver.MongoCredential,MongoDB.Driver.MongoCredential)">
             <summary>
             Compares two MongoCredentials.
             </summary>
-            <param name="lhs">The first MongoCredentials.</param>
-            <param name="rhs">The other MongoCredentials.</param>
+            <param name="lhs">The first MongoCredential.</param>
+            <param name="rhs">The other MongoCredential.</param>
             <returns>True if the two MongoCredentials are not equal (or one is null and the other is not).</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.CreateGssapiCredentials">
+        <member name="M:MongoDB.Driver.MongoCredential.CreateGssapiCredential">
             <summary>
-            Creates GSSAPI credentials.
+            Creates a GSSAPI credential.
             </summary>
-            <returns>Credentials for GSSAPI.</returns>
+            <returns>A credential for GSSAPI.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.CreateGssapiCredentials(System.String,System.String)">
+        <member name="M:MongoDB.Driver.MongoCredential.CreateGssapiCredential(System.String,System.String)">
             <summary>
-            Creates GSSAPI credentials.
-            </summary>
-            <param name="username">The username.</param>
-            <param name="password">The password.</param>
-            <returns>Credentials for GSSAPI.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.CreateGssapiCredentials(System.String,System.Security.SecureString)">
-            <summary>
-            Creates GSSAPI credentials.
+            Creates a GSSAPI credential.
             </summary>
             <param name="username">The username.</param>
             <param name="password">The password.</param>
-            <returns>Credentials for GSSAPI.</returns>
+            <returns>A credential for GSSAPI.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.CreateStrongestCredentials(System.String,System.String,System.String)">
+        <member name="M:MongoDB.Driver.MongoCredential.CreateGssapiCredential(System.String,System.Security.SecureString)">
             <summary>
-            Creates credentials used in negotiated authentication.
+            Creates a GSSAPI credential.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <returns>A credential for GSSAPI.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MongoCredential.CreateStrongestCredential(System.String,System.String,System.String)">
+            <summary>
+            Creates a credential used in negotiated authentication.
             </summary>
             <param name="databaseName">Name of the database.</param>
             <param name="username">The username.</param>
             <param name="password">The password.</param>
             <returns></returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.CreateStrongestCredentials(System.String,System.String,System.Security.SecureString)">
+        <member name="M:MongoDB.Driver.MongoCredential.CreateStrongestCredential(System.String,System.String,System.Security.SecureString)">
             <summary>
-            Creates credentials used in negotiated authentication.
+            Creates a credential used in negotiated authentication.
             </summary>
             <param name="databaseName">Name of the database.</param>
             <param name="username">The username.</param>
             <param name="password">The password.</param>
             <returns></returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.Equals(MongoDB.Driver.MongoCredentials)">
+        <member name="M:MongoDB.Driver.MongoCredential.Equals(MongoDB.Driver.MongoCredential)">
             <summary>
-            Compares this MongoCredentials to another MongoCredentials.
+            Compares this MongoCredential to another MongoCredential.
             </summary>
-            <param name="rhs">The other credentials.</param>
+            <param name="rhs">The other credential.</param>
             <returns>True if the two credentials are equal.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.Equals(System.Object)">
+        <member name="M:MongoDB.Driver.MongoCredential.Equals(System.Object)">
             <summary>
-            Compares this MongoCredentials to another MongoCredentials.
+            Compares this MongoCredential to another MongoCredential.
             </summary>
-            <param name="obj">The other credentials.</param>
+            <param name="obj">The other credential.</param>
             <returns>True if the two credentials are equal.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.GetHashCode">
+        <member name="M:MongoDB.Driver.MongoCredential.GetHashCode">
             <summary>
-            Gets the hashcode for the credentials.
+            Gets the hashcode for the credential.
             </summary>
             <returns>The hashcode.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoCredentials.ToString">
+        <member name="M:MongoDB.Driver.MongoCredential.ToString">
             <summary>
-            Returns a string representation of the credentials.
+            Returns a string representation of the credential.
             </summary>
-            <returns>A string representation of the credentials.</returns>
+            <returns>A string representation of the credential.</returns>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.AuthenticationProtocol">
+        <member name="P:MongoDB.Driver.MongoCredential.AuthenticationProtocol">
             <summary>
             Gets the protocol to authenticate with.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Evidence">
+        <member name="P:MongoDB.Driver.MongoCredential.Evidence">
             <summary>
             Gets the evidence.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Identity">
+        <member name="P:MongoDB.Driver.MongoCredential.Identity">
             <summary>
             Gets the identity.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Password">
+        <member name="P:MongoDB.Driver.MongoCredential.Password">
             <summary>
             Gets the password.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Source">
+        <member name="P:MongoDB.Driver.MongoCredential.Source">
             <summary>
             Gets the source.
             </summary>
         </member>
-        <member name="P:MongoDB.Driver.MongoCredentials.Username">
+        <member name="P:MongoDB.Driver.MongoCredential.Username">
             <summary>
             Gets the username.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.MapReduceResult">
+            <summary>
+            Represents the result of a map/reduce command.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.#ctor">
+            <summary>
+            Initializes a new instance of the MapReduceResult class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs``1">
+            <summary>
+            Gets the inline results as TDocuments.
+            </summary>
+            <typeparam name="TDocument">The type of the documents.</typeparam>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetInlineResultsAs(System.Type)">
+            <summary>
+            Gets the inline results as TDocuments.
+            </summary>
+            <param name="documentType">The type of the documents.</param>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetResults">
+            <summary>
+            Gets the results (either inline or fetched from the output collection).
+            </summary>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs``1">
+            <summary>
+            Gets the results as TDocuments (either inline or fetched from the output collection).
+            </summary>
+            <typeparam name="TDocument">The type of the documents.</typeparam>
+            <returns>The documents.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.MapReduceResult.GetResultsAs(System.Type)">
+            <summary>
+            Gets the results as TDocuments (either inline or fetched from the output collection).
+            </summary>
+            <param name="documentType">The type of the documents.</param>
+            <returns>The documents.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.CollectionName">
+            <summary>
+            Gets the output collection name (null if none).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.DatabaseName">
+            <summary>
+            Gets the output database name (null if none).
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.Duration">
+            <summary>
+            Gets the duration.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.EmitCount">
+            <summary>
+            Gets the emit count.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.OutputCount">
+            <summary>
+            Gets the output count.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.InlineResults">
+            <summary>
+            Gets the inline results.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.MapReduceResult.InputCount">
+            <summary>
+            Gets the input count.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoServer">

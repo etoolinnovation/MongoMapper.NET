@@ -2,11 +2,12 @@
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Test.NUnit;
 using EtoolTech.MongoDB.Mapper.Test.NUnit1;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit1
-{
+{   
     public class MyClass : IMyInterface
     {
         #region Public Properties
@@ -20,7 +21,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit1
 }
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit2
-{
+{    
     public class MyClass : IMyInterface
     {
         #region Public Properties
@@ -34,7 +35,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit2
 }
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
-{
+{      
     public interface IMyInterface
     {
         #region Public Properties
