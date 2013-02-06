@@ -160,6 +160,9 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
+        [BsonExtraElements]
+        public IDictionary<string, object> ExtraElements { get; set; }
+
         #endregion
 
         #region Public Methods
