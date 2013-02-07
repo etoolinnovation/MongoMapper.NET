@@ -168,6 +168,23 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
+        public void ObjectInit(object Sender, MongoMapper.OnObjectInitEventHandler OnObjectInit, Type ClassType)
+        {
+            if (OnObjectInit != null)
+            {
+                OnObjectInit(Sender, new EventArgs());
+            }
+        }
+
+        public void ObjectComplete(object Sender, MongoMapper.OnObjectCompleteEventHandler OnObjectComplete, Type ClassType)
+        {
+            if (OnObjectComplete != null)
+            {
+                OnObjectComplete(Sender, new EventArgs());
+            }
+
+        }
+
         #endregion
     }
 }

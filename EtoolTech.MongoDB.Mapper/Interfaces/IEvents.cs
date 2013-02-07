@@ -30,6 +30,10 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         void BeforeUpdateDocument(object Sender, MongoMapper.OnBeforeModifyEventHandler OnBeforeModify, Type ClassType);
 
+        void ObjectInit(object Sender, MongoMapper.OnObjectInitEventHandler OnObjectInit, Type ClassType);
+
+        void ObjectComplete(object Sender, MongoMapper.OnObjectCompleteEventHandler OnObjectComplete, Type ClassType);
+
         #endregion
     }
 }

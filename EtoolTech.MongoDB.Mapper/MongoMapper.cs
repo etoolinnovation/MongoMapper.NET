@@ -65,6 +65,10 @@ namespace EtoolTech.MongoDB.Mapper
 
         public delegate void OnBeforeModifyEventHandler(object sender, EventArgs e);
 
+        public delegate void OnObjectInitEventHandler(object sender, EventArgs e);
+
+        public delegate void OnObjectCompleteEventHandler(object sender, EventArgs e);
+
         #endregion
 
         #region Public Events
@@ -82,6 +86,10 @@ namespace EtoolTech.MongoDB.Mapper
         public event OnBeforeInsertEventHandler OnBeforeInsert;
 
         public event OnBeforeModifyEventHandler OnBeforeModify;
+
+        public event OnObjectInitEventHandler OnObjectInit;
+
+        public event OnObjectCompleteEventHandler OnObjectComplete;
 
         #endregion
 
@@ -421,12 +429,15 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void BeginInit()
         {
+            Events.ObjectInit(this, OnObjectInit, _classType);
         }
 
         public void EndInit()
         {
             var mongoMapperOriginable = this as IMongoMapperOriginable;
             (mongoMapperOriginable).SaveOriginal(false);
+
+            Events.ObjectComplete(this, OnObjectComplete, _classType);
         }
 
         #endregion
