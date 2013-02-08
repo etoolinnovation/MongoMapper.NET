@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using NUnit.Framework;
 
@@ -74,11 +75,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             if (!c3.IsLastVersion())
                 c3.FillFromLastVersion();
 
-            var countries = new List<Country>();
-            countries.MongoFind();
+            var countries = new MongoMapperCollection<Country>();
+            countries.Find();
             Assert.AreEqual(countries.Count, 3);
 
-            countries.MongoFind(
+            countries.Find(
                 Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
 

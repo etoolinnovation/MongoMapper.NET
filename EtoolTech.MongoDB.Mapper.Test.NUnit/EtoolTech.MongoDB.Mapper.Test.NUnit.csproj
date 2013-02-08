@@ -53,6 +53,7 @@
     <Compile Include="EventsTest.cs" />
     <Compile Include="ExtensionTest.cs" />
     <Compile Include="IncrementalIdTest.cs" />
+    <Compile Include="MongoCollectionTest.cs" />
     <Compile Include="MongoTestServerTest.cs" />
     <Compile Include="MongoTestServer\MongoTestInstance.cs" />
     <Compile Include="MongoTestServer\MongoTestServer.cs" />
