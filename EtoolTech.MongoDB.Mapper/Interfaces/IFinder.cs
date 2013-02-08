@@ -8,15 +8,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
     public interface IFinder
     {
         #region Public Methods
-
-        MongoCursor<T> AllAsCursor<T>();
-
-        List<T> AllAsList<T>();
-
-        MongoCursor<T> FindAsCursor<T>(IMongoQuery Query);
-
-        List<T> FindAsList<T>(IMongoQuery Query);
-
+     
         BsonDocument FindBsonDocumentById<T>(long Id);
 
         T FindById<T>(long Id);

@@ -24,13 +24,17 @@ namespace EtoolTech.MongoDB.Mapper
         public static void MongoFind<T>(this List<T> List, IMongoQuery Query = null) where T : MongoMapper
         {
             List.Clear();
-            List.AddRange(Query == null ? Finder.Instance.AllAsList<T>() : Finder.Instance.FindAsList<T>(Query));
+            var col = new MongoMapperCollection<T>();
+            col.Find(Query);
+            List.AddRange(col.ToList());
         }
 
         public static void MongoFind<T>(this List<T> List, string FieldName, object Value) where T : MongoMapper
         {
             List.Clear();
-            List.AddRange(Finder.Instance.FindAsList<T>(MongoQuery.Eq(FieldName, Value)));
+            var col = new MongoMapperCollection<T>();
+            col.Find(MongoQuery.Eq(FieldName, Value));
+            List.AddRange(col.ToList());
         }
 
         #endregion

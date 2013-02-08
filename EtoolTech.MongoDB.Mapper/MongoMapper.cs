@@ -348,35 +348,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         #endregion
 
-        public static MongoCursor<T> AllAsCursor<T>()
-        {
-            return Finder.Instance.AllAsCursor<T>();
-        }
-
-        public static List<T> AllAsList<T>()
-        {
-            return Finder.Instance.AllAsList<T>();
-        }
-
-        public static MongoCursor<T> FindAsCursor<T>(IMongoQuery query = null)
-        {
-            return Finder.Instance.FindAsCursor<T>(query);
-        }
-
-        public static MongoCursor<T> FindAsCursor<T>(string fieldName, object value)
-        {
-            return Finder.Instance.FindAsCursor<T>(MongoQuery.Eq(fieldName, value));
-        }
-
-        public static List<T> FindAsList<T>(IMongoQuery query)
-        {
-            return Finder.Instance.FindAsList<T>(query);
-        }
-
-        public static List<T> FindAsList<T>(string fieldName, object value)
-        {
-            return Finder.Instance.FindAsList<T>(MongoQuery.Eq(fieldName, value));
-        }
+   
 
         public static T FindByKey<T>(params object[] values)
         {

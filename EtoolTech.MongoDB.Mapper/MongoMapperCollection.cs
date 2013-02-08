@@ -23,7 +23,7 @@ namespace EtoolTech.MongoDB.Mapper
             Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();          
             return Cursor;
         }
-
+    
         public long Count 
         {
             get { return Cursor.Size(); }

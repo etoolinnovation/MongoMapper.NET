@@ -31,53 +31,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Methods
 
-        public MongoCursor<T> AllAsCursor<T>()
-        {
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAllAs<T>();          
-
-            if (ConfigManager.Out != null)
-            {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
-                ConfigManager.Out.WriteLine("{}");
-                ConfigManager.Out.WriteLine(result.Explain().ToJson());
-                ConfigManager.Out.WriteLine();
-            }
-
-            return result;
-        }
-
-
-        public List<T> AllAsList<T>()
-        {
-            List<T> list = AllAsCursor<T>().ToList();
-            return list;
-        }
-
-        public MongoCursor<T> FindAsCursor<T>(IMongoQuery Query = null)
-        {
-            if (Query == null)
-            {
-                return AllAsCursor<T>();
-            }
-
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(Query);
-
-            if (ConfigManager.Out != null)
-            {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
-                ConfigManager.Out.WriteLine(result.Query.ToString());
-                ConfigManager.Out.WriteLine(result.Explain().ToJson());
-                ConfigManager.Out.WriteLine();
-            }
-
-            return result;
-        }
-
-        public List<T> FindAsList<T>(IMongoQuery Query = null)
-        {
-            List<T> list = FindAsCursor<T>(Query).ToList();
-            return list;
-        }
+      
 
         public BsonDocument FindBsonDocumentById<T>(long Id)
         {
