@@ -30,7 +30,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(3, col.Total);
 
             col = new MongoMapperCollection<Country>();
-            col.Find().SetLimit(3);
+            col.Find().SetLimit(3).SetSortOrder("Name");
 
             Assert.AreEqual(3, col.Count);
 
@@ -39,6 +39,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual("NL",col.First().Code);
             Assert.AreEqual("NL", col.Last().Code);
+
+            foreach (Country country in col)
+            {
+                
+            }
 
         }
     }
