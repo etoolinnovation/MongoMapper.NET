@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using EtoolTech.MongoDB.Mapper.Configuration;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper
