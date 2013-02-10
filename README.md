@@ -95,12 +95,13 @@ A .NET Document Mapper for MongoDB over MongoDB C# Driver
 
         if (!c3.IsLastVersion()) c3.FillFromLastVersion();
 				
-		List<Country> countries = new List<Country>();
-		countries.MongoFind();
-		Assert.AreEqual(countries.Count, 3);
+	            var countries = new MongoMapperCollection<Country>();
+            countries.Find();
+            Assert.AreEqual(countries.Count, 3);
 
-		countries.MongoFind(Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
-		Assert.AreEqual(countries.Count, 2);
+            countries.Find(
+                Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+            Assert.AreEqual(countries.Count, 2);
 		
 		Person p = new Person
 		{
@@ -156,5 +157,6 @@ A .NET Document Mapper for MongoDB over MongoDB C# Driver
 * [20/03/2012] (http://bit.ly/GAIbez)
 * [18/07/2012] (http://bit.ly/M9gqOp)
 * [29/10/2012] (http://bit.ly/VyLjyT)
+* [10/02/2013] (http://j.mp/Xm0KLa)
 
 
