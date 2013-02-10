@@ -11,14 +11,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         public void Count()
         {
-            Assert.AreEqual(10, MongoMapper.FindAsCursor<Country>().Size());
-            Country c = MongoMapper.FindAsCursor<Country>().First();
+            Assert.AreEqual(10,(new MongoMapperCollection<Country>()).Find().Size());
+            Country c = (new MongoMapperCollection<Country>()).Find().First();
             c.Delete();
         }
 
         public void Count2()
         {
-            Assert.AreEqual(9, MongoMapper.FindAsCursor<Country>().Size());
+            Assert.AreEqual(9, (new MongoMapperCollection<Country>()).Find().Size());
         }
 
         public void Insert()

@@ -34,13 +34,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             ConfigManager.Out = Console.Out;
 
-            List<Country> Countries =
-                MongoMapper.FindAsList<Country>(
+            var Countries = MongoMapperCollection<Country>.Instance;
+            var Persons = MongoMapperCollection<Person>.Instance;
+
+            Countries.Find(
                     Query.Or(MongoQuery.Eq((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
-            List<Person> Persons =
-                MongoMapper.FindAsList<Person>(
+            Persons.Find(
                     Query.And(MongoQuery.Eq(((Person p) => p.Age), 25), Query.EQ("Country", "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
@@ -133,13 +134,16 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             p.Save();
 
-            List<Person> plist = MongoMapper.AllAsList<Person>();
+            List<Person> plist = MongoMapperCollection<Person>.Instance.Find().ToList();
 
             var p2 = MongoMapper.FindByKey<Person>(plist[0].m_id);
             p2.Name = "FindBYKey Name";
             p2.Save();
 
-            plist = MongoMapper.FindAsList<Person>("_id", p2.m_id);
+            
+            var Persons = MongoMapperCollection<Person>.Instance;
+
+            plist = Persons.Find("_id", p2.m_id).ToList();
 
             Assert.AreEqual(plist.Count, 1);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");
@@ -155,17 +159,19 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //A MongoCursor object cannot be modified once it has been frozen
             ConfigManager.Out = null;
 
-            List<Country> Countries = MongoMapper.FindAsCursor<Country>().ToList();
+
+            var Countries = MongoMapperCollection<Country>.Instance;
+
+            Countries.Find();
             Assert.AreEqual(Countries.Count, 3);
 
-            Countries = MongoMapper.FindAsCursor<Country>().SetSkip(2).ToList();
+            Countries.Find().SetSkip(2);
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries = MongoMapper.FindAsCursor<Country>().SetLimit(1).ToList();
+            Countries.Find().SetLimit(1);
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries =
-                MongoMapper.FindAsCursor<Country>(Query.EQ("Code", "ES")).SetFields(Fields.Include("Code")).ToList();
+            Countries.Find(Query.EQ("Code", "ES")).SetFields(Fields.Include("Code"));
             Assert.AreEqual(Countries.Count, 1);
             Assert.AreEqual(Countries.First().Name, null);
         }

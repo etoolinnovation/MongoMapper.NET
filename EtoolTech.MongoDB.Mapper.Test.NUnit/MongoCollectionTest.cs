@@ -10,10 +10,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     public class MongoCollectionTest
     {
         [Test]
-        public void Tester()
+        public void Test()
         {
             Helper.DropAllCollections();
-
             
             var country = new Country { Code = "NL", Name = "Holanda" };
             country.Save();
@@ -27,7 +26,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Console.WriteLine(col.Cursor.Explain().ToJson());
 
-            Assert.AreEqual(1,col.Count);
+            Assert.AreEqual(1, col.Count);
+            Assert.AreEqual(3, col.Total);
 
             col = new MongoMapperCollection<Country>();
             col.Find().SetLimit(3);
@@ -35,11 +35,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(3, col.Count);
 
             Assert.AreEqual("NL",col.First().Code);
+            col.Find(Query<Country>.EQ(C => C.Code, "NL"));
 
-            foreach (Country c in col)
-            {
-                Console.Write(c.Code);
-            }
+            Assert.AreEqual("NL",col.First().Code);
+            Assert.AreEqual("NL", col.Last().Code);
+
         }
     }
 }

@@ -34,8 +34,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var c = new Country {Code = "NL", Name = "Holanda"};
             c.Save();
 
-            List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "NL");
-            Assert.AreEqual(Countries.Count, 1);
+            var Countries = new MongoMapperCollection<Country>();
+            Countries.Find("Code", "NL");
+            Assert.AreEqual(1,Countries.Count);
 
             foreach (Country country in Countries)
             {
@@ -45,7 +46,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //TODO: Pruebas Replica Set
             //System.Threading.Thread.Sleep(5000);
 
-            Countries = MongoMapper.FindAsList<Country>("Code", "NL");
+            Countries.Find("Code", "NL");
             Assert.AreEqual(0, Countries.Count);
         }
 
@@ -83,16 +84,18 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c = new Country {Code = "US", Name = "Estados Unidos"};
             c.Save();
 
-            List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "ES");
+            var Countries = new MongoMapperCollection<Country>();
+
+            Countries.Find("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries = MongoMapper.FindAsList<Country>("Code", "UK");
+            Countries.Find("Code", "UK");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries = MongoMapper.FindAsList<Country>("Code", "US");
+            Countries.Find("Code", "US");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries = MongoMapper.AllAsList<Country>();
+            Countries.Find();
             Assert.AreEqual(Countries.Count, 3);
 
             //Insert de personas
@@ -182,10 +185,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                 c.Save();
 
-                Assert.AreEqual(i + 1, MongoMapper.FindAsCursor<Country>().Size());
+                Assert.AreEqual(i + 1,MongoMapperCollection<Country>.Instance.Find().Size());
             }
 
-            Assert.AreEqual(100, MongoMapper.FindAsCursor<Country>().Size());
+            Assert.AreEqual(100, MongoMapperCollection<Country>.Instance.Find().Size());
         }
 
         [Test]
@@ -202,7 +205,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                         c.Save();
                     });
 
-            Assert.AreEqual(1000, MongoMapper.FindAsCursor<Country>().Size());
+            Assert.AreEqual(1000, MongoMapperCollection<Country>.Instance.Find().Size());
         }
 
         [Test]
@@ -215,12 +218,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                 c.Save();
 
-                Assert.AreEqual(i + 1, MongoMapper.FindAsCursor<Country>().Size());
+                Assert.AreEqual(i + 1, MongoMapperCollection<Country>.Instance.Find().Size());
             }
 
             MongoMapper.ServerDelete<Country>(Query.EQ("Code", "0"));
 
-            Assert.AreEqual(99, MongoMapper.FindAsCursor<Country>().Size());
+            Assert.AreEqual(99, MongoMapperCollection<Country>.Instance.Find().Size());
         }
 
         [Test]
@@ -276,7 +279,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(c3.Name, "España Up");
 
-            List<Country> Countries = MongoMapper.FindAsList<Country>("Code", "ES");
+            var Countries = MongoMapperCollection<Country>.Instance;
+            Countries.Find("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
         }
     }

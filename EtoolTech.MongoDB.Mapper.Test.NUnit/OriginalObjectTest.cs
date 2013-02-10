@@ -27,7 +27,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObject()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapper.AllAsList<Person>().First();
+            Person p = MongoMapperCollection<Person>.Instance.Find().First();
             p.Save();
             p.Name = "hola 25";
 
@@ -39,7 +39,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObjectCustom()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapper.AllAsList<Person>().First();
+            Person p = MongoMapperCollection<Person>.Instance.Find().First();
             p.Name = "hola 25";
 
             var p2 = p.GetOriginalObject<Person>();
@@ -58,7 +58,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObjectWithOutSave()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapper.AllAsList<Person>().First();
+            Person p = MongoMapperCollection<Person>.Instance.Find().First();
             p.Name = "hola 25";
 
             var p2 = p.GetOriginalObject<Person>();

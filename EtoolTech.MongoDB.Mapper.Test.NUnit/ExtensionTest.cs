@@ -85,8 +85,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             for (int i = 0; i < 1000000; i++)
             {
-                MongoMapper.FindAsList<Country>(
+                MongoMapperCollection<Country> mongoCol = new MongoMapperCollection<Country>();
+                mongoCol.Find(
                     Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+                mongoCol.ToList();
             }
 
             timer.Stop();
