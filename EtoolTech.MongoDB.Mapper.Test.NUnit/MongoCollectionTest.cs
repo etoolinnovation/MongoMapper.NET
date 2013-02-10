@@ -33,8 +33,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             col.Find().SetLimit(3).SetSortOrder("Name");
 
             Assert.AreEqual(3, col.Count);
+            Assert.AreEqual("ES",col.First().Code);
 
-            Assert.AreEqual("NL",col.First().Code);
             col.Find(Query<Country>.EQ(C => C.Code, "NL"));
 
             Assert.AreEqual("NL",col.First().Code);

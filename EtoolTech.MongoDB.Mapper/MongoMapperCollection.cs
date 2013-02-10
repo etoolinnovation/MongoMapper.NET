@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-    public class MongoMapperCollection<T> : IEnumerable<T> where T : MongoMapper
+    public class MongoMapperCollection<T> : IMongoMapperCollection<T>
     {
         public MongoCursor<T> Cursor { get; private set; }
 
