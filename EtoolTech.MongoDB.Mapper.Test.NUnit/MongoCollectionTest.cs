@@ -40,7 +40,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual("NL",col.First().Code);
             Assert.AreEqual("NL", col.Last().Code);
 
-            foreach (Country country in col)
+            foreach (Country c in col)
             {
                 
             }
