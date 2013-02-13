@@ -136,7 +136,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             List<Person> plist = MongoMapperCollection<Person>.Instance.Find().ToList();
 
-            var p2 = MongoMapper.FindByKey<Person>(plist[0].m_id);
+            var p2 = new Person();
+            p2.FillByKey(plist[0].m_id);
             p2.Name = "FindBYKey Name";
             p2.Save();
 
