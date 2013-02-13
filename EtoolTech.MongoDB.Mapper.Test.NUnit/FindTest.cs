@@ -34,7 +34,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             ConfigManager.Out = Console.Out;
 
-            var Countries = MongoMapperCollection<Country>.Instance;
+            var Countries = CountryCollection.Instance;
             var Persons = MongoMapperCollection<Person>.Instance;
 
             Countries.Find(
@@ -160,7 +160,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             ConfigManager.Out = null;
 
 
-            var Countries = MongoMapperCollection<Country>.Instance;
+            var Countries = CountryCollection.Instance;
 
             Countries.Find();
             Assert.AreEqual(Countries.Count, 3);

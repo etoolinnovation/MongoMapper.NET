@@ -34,7 +34,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var c = new Country {Code = "NL", Name = "Holanda"};
             c.Save();
 
-            var Countries = new MongoMapperCollection<Country>();
+            var Countries = new CountryCollection();
             Countries.Find("Code", "NL");
             Assert.AreEqual(1,Countries.Count);
 
@@ -84,7 +84,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c = new Country {Code = "US", Name = "Estados Unidos"};
             c.Save();
 
-            var Countries = new MongoMapperCollection<Country>();
+            var Countries = new CountryCollection();
 
             Countries.Find("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
@@ -185,10 +185,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                 c.Save();
 
-                Assert.AreEqual(i + 1,MongoMapperCollection<Country>.Instance.Find().Size());
+                Assert.AreEqual(i + 1,CountryCollection.Instance.Find().Size());
             }
 
-            Assert.AreEqual(100, MongoMapperCollection<Country>.Instance.Find().Size());
+            Assert.AreEqual(100, CountryCollection.Instance.Find().Size());
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                         c.Save();
                     });
 
-            Assert.AreEqual(1000, MongoMapperCollection<Country>.Instance.Find().Size());
+            Assert.AreEqual(1000, CountryCollection.Instance.Find().Size());
         }
 
         [Test]
@@ -218,12 +218,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                 c.Save();
 
-                Assert.AreEqual(i + 1, MongoMapperCollection<Country>.Instance.Find().Size());
+                Assert.AreEqual(i + 1, CountryCollection.Instance.Find().Size());
             }
 
             MongoMapper.ServerDelete<Country>(Query.EQ("Code", "0"));
 
-            Assert.AreEqual(99, MongoMapperCollection<Country>.Instance.Find().Size());
+            Assert.AreEqual(99, CountryCollection.Instance.Find().Size());
         }
 
         [Test]
@@ -279,7 +279,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(c3.Name, "España Up");
 
-            var Countries = MongoMapperCollection<Country>.Instance;
+            var Countries = CountryCollection.Instance;
             Countries.Find("Code", "ES");
             Assert.AreEqual(Countries.Count, 1);
         }
