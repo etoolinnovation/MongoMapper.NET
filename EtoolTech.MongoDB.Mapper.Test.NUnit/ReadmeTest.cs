@@ -75,12 +75,16 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             if (!c3.IsLastVersion())
                 c3.FillFromLastVersion();
 
-            var countries = new MongoMapperCollection<Country>();
+            var countries = new CountryCollection();
             countries.Find();
             Assert.AreEqual(countries.Count, 3);
 
+            countries.Find().SetLimit(2).SetSortOrder("Code");
+            Assert.AreEqual(countries.Count, 2);
+            Assert.AreEqual(countries.Total, 3);
+
             countries.Find(
-                Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+                Query.Or(Query<Country>.EQ(co => co.Code, "ES"), Query<Country>.EQ(co => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
 
             var p = new Person
