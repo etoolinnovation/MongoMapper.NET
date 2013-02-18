@@ -165,7 +165,7 @@ namespace EtoolTech.MongoDB.Mapper
                 if (pk.Count(k => k == "m_id") == 0)
                 {
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
-                        IndexKeys.Ascending(pk));
+                        IndexKeys.Ascending(pk), IndexOptions.SetUnique(true));
                 }
             }
         }
