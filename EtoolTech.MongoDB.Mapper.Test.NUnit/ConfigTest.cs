@@ -65,6 +65,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             ConfigManager.DatabasePrefix = "Prefix";
             Assert.AreEqual(ConfigManager.DataBaseName("TestConf1"), "Prefix_Conf1");
+            ConfigManager.DatabasePrefix = "";
         }
     }
 }

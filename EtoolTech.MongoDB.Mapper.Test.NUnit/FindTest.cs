@@ -38,11 +38,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var Persons = MongoMapperCollection<Person>.Instance;
 
             Countries.Find(
-                    Query.Or(MongoQuery.Eq((Country c) => c.Code, "ES"), Query.EQ("Code", "UK")));
+                    Query.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), Query.EQ("Code", "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
             Persons.Find(
-                    Query.And(MongoQuery.Eq(((Person p) => p.Age), 25), Query.EQ("Country", "ES")));
+                    Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), Query.EQ("Country", "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
             foreach (Person p in Persons)

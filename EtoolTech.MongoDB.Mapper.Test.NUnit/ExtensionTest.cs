@@ -75,7 +75,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 var countries = new List<Country>();
                 countries.MongoFind(
-                    Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+                    Query.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
             }
             timer.Stop();
             Console.WriteLine(string.Format("Elapsed para ExtensionMethod: {0}", timer.Elapsed));
@@ -87,7 +87,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 CountryCollection mongoCol = new CountryCollection();
                 mongoCol.Find(
-                    Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+                    Query.Or(MongoQuery<Country>.Eq(co=>co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
                 mongoCol.ToList();
             }
 
@@ -113,12 +113,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             countries.MongoFind();
             Assert.AreEqual(countries.Count, 3);
 
-            countries.MongoFind(MongoQuery.Eq((Country co) => co.Code, "ES"));
+            countries.MongoFind(MongoQuery<Country>.Eq(co => co.Code, "ES"));
             Assert.AreEqual(countries.Count, 1);
             Assert.AreEqual(countries[0].Code, "ES");
 
             countries.MongoFind(
-                Query.Or(MongoQuery.Eq((Country co) => co.Code, "ES"), MongoQuery.Eq((Country co) => co.Code, "UK")));
+                Query.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
         }
 
