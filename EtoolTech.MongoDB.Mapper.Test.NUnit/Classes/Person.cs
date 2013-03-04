@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
@@ -22,8 +23,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         #region Public Properties
 
+        [BsonElement("a")]
         public int Age { get; set; }
 
+        [BsonElement("bb")]
+        [BsonDefaultValue(0.00)]
         public decimal BankBalance { get; set; }
 
         public DateTime BirthDate { get; set; }
@@ -32,10 +36,15 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public List<Child> Childs { get; set; }
 
         [MongoUpRelation(ObjectName = "Country", FieldName = "Code")]
+        [BsonElement("c")]
         public string Country { get; set; }
 
+        [BsonElement("m")]
+        [BsonDefaultValue(false)]
+        [BsonIgnoreIfDefault]
         public bool Married { get; set; }
 
+        [BsonElement("n")]
         public string Name { get; set; }
 
         #endregion

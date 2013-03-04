@@ -42,7 +42,21 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(Countries.Count, 2);
 
             Persons.Find(
-                    Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), Query.EQ("Country", "ES")));
+                    Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
+            Assert.AreEqual(Persons.Count, 2);
+
+            Persons = new MongoMapperCollection<Person>();
+          
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%Perez%"));
+            Assert.AreEqual(2, Persons.Count);
+
+
+            //TODO: Deberia devolver los que no tienen valor
+            //Persons.Find(Query<Person>.EQ(p => p.Married, false));
+            //Assert.AreEqual(3, Persons.Count);
+
+            Persons.Find(
+                  Query.And(Query<Person>.EQ(p => p.Age, 25), Query<Person>.EQ(p => p.Country, "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
             foreach (Person p in Persons)
@@ -144,7 +158,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             
             var Persons = MongoMapperCollection<Person>.Instance;
 
-            plist = Persons.Find("_id", p2.m_id).ToList();
+            plist = Persons.Find(x=>x.m_id, p2.m_id).ToList();
 
             Assert.AreEqual(plist.Count, 1);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");

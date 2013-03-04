@@ -35,7 +35,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.Save();
 
             var Countries = new CountryCollection();
-            Countries.Find("Code", "NL");
+            Countries.Find(x=>x.Code, "NL");
             Assert.AreEqual(1,Countries.Count);
 
             foreach (Country country in Countries)
@@ -46,7 +46,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //TODO: Pruebas Replica Set
             //System.Threading.Thread.Sleep(5000);
 
-            Countries.Find("Code", "NL");
+            Countries.Find(x=>x.Code, "NL");
             Assert.AreEqual(0, Countries.Count);
         }
 
@@ -86,13 +86,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             var Countries = new CountryCollection();
 
-            Countries.Find("Code", "ES");
+            Countries.Find(x=>x.Code, "ES");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.Find("Code", "UK");
+            Countries.Find(x=>x.Code, "UK");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.Find("Code", "US");
+            Countries.Find(x=>x.Code, "US");
             Assert.AreEqual(Countries.Count, 1);
 
             Countries.Find();
@@ -280,7 +280,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(c3.Name, "España Up");
 
             var Countries = CountryCollection.Instance;
-            Countries.Find("Code", "ES");
+            Countries.Find(x=>x.Code, "ES");
             Assert.AreEqual(Countries.Count, 1);
         }
     }

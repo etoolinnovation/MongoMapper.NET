@@ -214,13 +214,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.Save();
 
             var Countries = new List<Country>();
-            Countries.MongoFind("Code", "ES");
+            Countries.MongoFind(C=>C.Code, "ES");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.MongoFind("Code", "UK");
+            Countries.MongoFind(C=>C.Code, "UK");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.MongoFind("Code", "US");
+            Countries.MongoFind(C=>C.Code, "US");
             Assert.AreEqual(Countries.Count, 1);
 
             Countries.MongoFind();

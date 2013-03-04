@@ -117,8 +117,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                     new Child {ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"}));
 
             var persons = new List<Person>();
+
+            persons.MongoFind();
+            
             persons.MongoFind("Childs.Age", 2);
-            Assert.AreEqual(persons.Count, 1);
+            Assert.AreEqual(1, persons.Count);
         }
     }
 }

@@ -9,49 +9,102 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        
-        public static IMongoQuery Eq(Expression<Func<T, object>> Field, object Value)
+        public static IMongoQuery Eq(Expression<Func<T, string>> Field, object Value)
         {
-            return MongoQuery.Eq(ReflectionUtility.GetPropertyName(Field), Value);
+            IMongoQuery query = null;
+
+            bool isLike = false;
+            string txtValue = Value.ToString();
+            if (txtValue.StartsWith("%") && txtValue.EndsWith("%"))
+            {
+                Value = String.Format("/{0}/", txtValue);
+                isLike = true;
+            }
+            else if (txtValue.StartsWith("%"))
+            {
+                Value = String.Format("/{0}^/", txtValue);
+                isLike = true;
+            }
+            else if (txtValue.EndsWith("%"))
+            {
+                Value = String.Format("/^{0}/", txtValue);
+                isLike = true;
+            }
+
+            if (isLike)
+            {                
+                query = Query<T>.Matches(Field, Value.ToString().Replace("%", ""));
+                return query;
+            }
+            query = Query<T>.EQ(Field, (string)Value);
+            return query;
         }
 
-        
+        public static IMongoQuery Eq(Expression<Func<T, object>> Field, object Value)
+        {            
+            IMongoQuery query = null;
+            Type type = Value.GetType();
+            
+            if (type == typeof(DateTime))
+            {
+                query = Query<T>.EQ(Field, (DateTime)Value);
+            }
+            else if (type == typeof(int))
+            {
+                query = Query<T>.EQ(Field, (int)Value);
+            }
+            else if (type == typeof(string))
+            {
+                query = Query<T>.EQ(Field, (string)Value);
+            }
+            else if (type == typeof(long))
+            {
+                query = Query<T>.EQ(Field, (long)Value);
+            }
+            else if (type == typeof(bool))
+            {
+                query = Query<T>.EQ(Field, (bool)Value);
+            }
+            else if (type == typeof(double))
+            {
+                query = Query<T>.EQ(Field, (double)Value);
+            }
+            else if (type == typeof(Guid))
+            {
+                query = Query<T>.EQ(Field, (Guid)Value);
+            }
 
+            return query;
+        }
+    
         public static IMongoQuery Gt(Expression<Func<T, object>> Field, object Value)
         {
-            return MongoQuery.Gt(ReflectionUtility.GetPropertyName(Field), Value);
+            return MongoQuery.Gt(typeof(T).Name, ReflectionUtility.GetPropertyName(Field), Value);
         }
-
         
-
         public static IMongoQuery Gte(Expression<Func<T, object>> field, object Value)
         {
-            return MongoQuery.Gte(ReflectionUtility.GetPropertyName(field), Value);
+            return MongoQuery.Gte(typeof(T).Name, ReflectionUtility.GetPropertyName(field), Value);
         }
-
         
         public static IMongoQuery Lt(Expression<Func<T, object>> field, object Value)
         {
-            return MongoQuery.Eq(ReflectionUtility.GetPropertyName(field), Value);
+            return MongoQuery.Lt(typeof(T).Name, ReflectionUtility.GetPropertyName(field), Value);
         }
-
         
         public static IMongoQuery Lte(Expression<Func<T, object>> field, object Value)
         {
-            return MongoQuery.Eq(ReflectionUtility.GetPropertyName(field), Value);
+            return MongoQuery.Lte(typeof(T).Name, ReflectionUtility.GetPropertyName(field), Value);
         }
-
         
         public static IMongoQuery Ne(Expression<Func<T, object>> field, object Value)
         {
-            return MongoQuery.Eq(ReflectionUtility.GetPropertyName(field), Value);
+            return MongoQuery.Ne(typeof(T).Name, ReflectionUtility.GetPropertyName(field), Value);
         }
-
         
-
         public static IMongoQuery RegEx(Expression<Func<T, object>> field, object Value)
         {
-            return MongoQuery.RegEx(ReflectionUtility.GetPropertyName(field), Value.ToString());
+            return MongoQuery.RegEx(typeof(T).Name, ReflectionUtility.GetPropertyName(field), Value.ToString());
         }
 
         #endregion
@@ -61,12 +114,12 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        public static IMongoQuery Eq(string FieldName, object Value)
+        internal static IMongoQuery Eq(string FieldName, object Value)
         {
             IMongoQuery query = null;
             Type type = Value.GetType();
 
-            if (Value is string)
+            if (type == typeof(string))
             {
                 bool isLike = false;
                 string txtValue = Value.ToString();
@@ -88,7 +141,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 if (isLike)
                 {
-                    query = RegEx(FieldName, Value.ToString());
+                    query = Query.Matches(FieldName, Value.ToString().Replace("%", ""));
                     return query;
                 }
             }
@@ -124,10 +177,10 @@ namespace EtoolTech.MongoDB.Mapper
 
             return query;
         }
+      
 
-    
-        public static IMongoQuery Gt(string FieldName, object Value)
-        {
+        public static IMongoQuery Gt(string ObjName, string FieldName, object Value)
+        {                        
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -159,9 +212,11 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-    
-        public static IMongoQuery Gte(string FieldName, object Value)
+
+        public static IMongoQuery Gte(string ObjName, string FieldName, object Value)
         {
+            
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -193,10 +248,12 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-    
 
-        public static IMongoQuery Lt(string FieldName, object Value)
+
+        public static IMongoQuery Lt(string ObjName, string FieldName, object Value)
         {
+            
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -228,10 +285,12 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-      
 
-        public static IMongoQuery Lte(string FieldName, object Value)
+
+        public static IMongoQuery Lte(string ObjName, string FieldName, object Value)
         {
+            
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -263,10 +322,13 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-       
 
-        public static IMongoQuery Ne(string FieldName, object Value)
+
+        public static IMongoQuery Ne(string ObjName, string FieldName, object Value)
         {
+
+            
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -298,10 +360,10 @@ namespace EtoolTech.MongoDB.Mapper
             return query;
         }
 
-  
 
-        public static IMongoQuery RegEx(string FieldName, string expresion)
-        {
+
+        public static IMongoQuery RegEx(string ObjName, string FieldName, string expresion)
+        {            
             return Query.Matches(FieldName, expresion);
         }
 

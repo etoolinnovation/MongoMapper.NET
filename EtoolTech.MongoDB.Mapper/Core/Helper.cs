@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -19,8 +22,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
-        private static readonly Dictionary<string, List<string>> BufferPrimaryKey =
-            new Dictionary<string, List<string>>();
+        private static readonly Dictionary<string, List<string>> BufferPrimaryKey = new Dictionary<string, List<string>>();
+
+        internal static readonly Dictionary<string, Dictionary<string,object>> BufferDefaultValues = new Dictionary<string, Dictionary<string, object>>();        
 
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
@@ -32,10 +36,16 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Object LockObjectPk = new Object();
 
+        private static readonly Object LockObjectDefaults = new Object();
+
+        private static readonly Object LockObjectCustomFieldNames = new Object();
+
         private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
             {typeof (string), typeof (decimal), typeof (int), typeof (long), typeof (DateTime), typeof (bool)};
 
         #endregion
+
+      
 
         #region Public Methods
 
@@ -102,6 +112,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Methods
 
+        //TODO: Guardar los BsonElement(Name)
         internal static void RebuildClass(Type ClassType, bool RepairCollection)
         {
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
@@ -141,6 +152,8 @@ namespace EtoolTech.MongoDB.Mapper
                     }
                 }
             }
+       
+
 
             //TODO: MongoCollectionName
 
