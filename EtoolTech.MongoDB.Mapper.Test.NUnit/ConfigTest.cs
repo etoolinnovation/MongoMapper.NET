@@ -59,5 +59,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             "mongodb://user:pass@fake.com:27017/Test?maxpoolsize=100;waitQueueTimeout=2000ms;safe=true;journal=false");			
        */
         }
+
+        [Test]
+        public void TestDatabasePrefix()
+        {
+            ConfigManager.DatabasePrefix = "Prefix";
+            Assert.AreEqual(ConfigManager.DataBaseName("TestConf1"), "Prefix_Conf1");
+            ConfigManager.DatabasePrefix = "";
+        }
     }
 }

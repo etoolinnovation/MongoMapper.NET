@@ -11,6 +11,8 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         public static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
+        public static string DatabasePrefix { get; set; }
+
         private static readonly Dictionary<string, CollectionElement> ConfigByObject =
             new Dictionary<string, CollectionElement>();
 
@@ -54,10 +56,10 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             if (cfg != null)
             {
-                return cfg.Database.Name;
+                return String.IsNullOrEmpty(DatabasePrefix) ? cfg.Database.Name : string.Format("{0}_{1}", DatabasePrefix, cfg.Database.Name);
             }
 
-            return Config.Database.Name;
+            return String.IsNullOrEmpty(DatabasePrefix) ? Config.Database.Name : string.Format("{0}_{1}", DatabasePrefix, Config.Database.Name);            
         }
 
         public static bool EnableOriginalObject(string ObjName)
