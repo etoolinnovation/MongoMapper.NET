@@ -93,20 +93,28 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
             if (type == typeof(DateTime))
-            {
+            {                
                 query = Query.EQ(FieldName, (DateTime)Value);
+                if (defaultValue != null && (DateTime)defaultValue == (DateTime)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
             }
             else if (type == typeof(int))
             {
                 query = Query.EQ(FieldName, (int)Value);
+                if (defaultValue != null && (int)defaultValue == (int)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
             }
             else if (type == typeof(string))
             {
                 query = Query.EQ(FieldName, (string)Value);
+                if (defaultValue != null && (string)defaultValue == (string)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
             }
             else if (type == typeof(long))
             {
                 query = Query.EQ(FieldName, (long)Value);
+                if (defaultValue != null && (long)defaultValue == (long)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
             }
             else if (type == typeof(bool))
             {
@@ -118,10 +126,14 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(double))
             {
                 query = Query.EQ(FieldName, (double)Value);
+                if (defaultValue != null && (double)defaultValue == (double)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
             }
             else if (type == typeof(Guid))
             {
                 query = Query.EQ(FieldName, (Guid)Value);
+                if (defaultValue != null && (Guid)defaultValue == (Guid)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
             }
 
             return query;
