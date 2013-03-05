@@ -81,18 +81,18 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test]
         public void TestGetPropertyName()
         {
-            string Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.String);
-            Assert.AreEqual(Name, "String");
-            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Int);
-            Assert.AreEqual(Name, "Int");
-            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Long);
-            Assert.AreEqual(Name, "Long");
-            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Decimal);
-            Assert.AreEqual(Name, "Decimal");
-            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Date);
-            Assert.AreEqual(Name, "Date");
-            Name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Bool);
-            Assert.AreEqual(Name, "Bool");
+            string name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.String);
+            Assert.AreEqual(name, "String");
+            name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Int);
+            Assert.AreEqual(name, "Int");
+            name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Long);
+            Assert.AreEqual(name, "Long");
+            name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Decimal);
+            Assert.AreEqual(name, "Decimal");
+            name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Date);
+            Assert.AreEqual(name, "Date");
+            name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.Bool);
+            Assert.AreEqual(name, "Bool");
         }
 
         [Test]

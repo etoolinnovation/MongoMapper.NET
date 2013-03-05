@@ -45,9 +45,7 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type> {typeof (string), typeof (decimal), typeof (int), typeof (long), typeof (DateTime), typeof (bool)};
 
         #endregion
-
       
-
         #region Public Methods
 
         public static MongoDatabase Db(string ObjName)
