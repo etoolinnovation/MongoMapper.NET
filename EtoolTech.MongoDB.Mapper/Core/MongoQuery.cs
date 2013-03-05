@@ -56,7 +56,7 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        internal static IMongoQuery Eq(string ObjName, string FieldName, object Value)
+        public static IMongoQuery Eq(string ObjName, string FieldName, object Value)
         {
 
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
