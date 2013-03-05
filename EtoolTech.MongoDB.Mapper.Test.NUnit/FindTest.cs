@@ -52,8 +52,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
 
             //TODO: Deberia devolver los que no tienen valor
-            //Persons.Find(Query<Person>.EQ(p => p.Married, false));
-            //Assert.AreEqual(3, Persons.Count);
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Married, false));
+            Assert.AreEqual(3, Persons.Count);
 
             Persons.Find(
                   Query.And(Query<Person>.EQ(p => p.Age, 25), Query<Person>.EQ(p => p.Country, "ES")));
@@ -160,7 +160,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             plist = Persons.Find(x=>x.m_id, p2.m_id).ToList();
 
-            Assert.AreEqual(plist.Count, 1);
+            Assert.AreEqual(1, plist.Count);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");
         }
 

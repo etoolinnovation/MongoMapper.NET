@@ -268,8 +268,18 @@ namespace EtoolTech.MongoDB.Mapper
 
         #endregion
 
+
+        public static object GetFieldDefaultValue(string ObjName, string FieldName)
+        {
+            if (BufferDefaultValues.ContainsKey(ObjName) && BufferDefaultValues[ObjName].ContainsKey(FieldName))
+                return BufferDefaultValues[ObjName][FieldName];
+
+            return null;
+        }
+
         public static string ConvertFieldName(string ObjName, string FieldName)
         {
+            if (FieldName == "m_id") return "_id";
             if (BufferCustomFieldNames.ContainsKey(ObjName) && BufferCustomFieldNames[ObjName].ContainsKey(FieldName))
                 return BufferCustomFieldNames[ObjName][FieldName];
 

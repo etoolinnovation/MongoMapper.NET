@@ -53,6 +53,29 @@ namespace EtoolTech.MongoDB.Mapper
             return string.Empty;
         }
 
+        public static string GetPropertyName<T>(Expression<Func<T, string>> Exp)
+        {
+            var memberExpression = Exp.Body as UnaryExpression;
+            if (memberExpression != null)
+            {
+                var memberexpresion2 = memberExpression.Operand as MemberExpression;
+                if (memberexpresion2 != null)
+                {
+                    return memberexpresion2.Member.Name;
+                }
+            }
+            else
+            {
+                var memberexpresion2 = Exp.Body as MemberExpression;
+                if (memberexpresion2 != null)
+                {
+                    return memberexpresion2.Member.Name;
+                }
+            }
+
+            return string.Empty;
+        }
+
         public static object GetPropertyValue(object Obj, string PropertyName)
         {
             if ((PropertyName == "m_id") && (Obj is IMongoMapperIdeable))

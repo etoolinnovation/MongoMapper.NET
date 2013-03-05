@@ -11,70 +11,12 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IMongoQuery Eq(Expression<Func<T, string>> Field, object Value)
         {
-            IMongoQuery query = null;
-
-            bool isLike = false;
-            string txtValue = Value.ToString();
-            if (txtValue.StartsWith("%") && txtValue.EndsWith("%"))
-            {
-                Value = String.Format("/{0}/", txtValue);
-                isLike = true;
-            }
-            else if (txtValue.StartsWith("%"))
-            {
-                Value = String.Format("/{0}^/", txtValue);
-                isLike = true;
-            }
-            else if (txtValue.EndsWith("%"))
-            {
-                Value = String.Format("/^{0}/", txtValue);
-                isLike = true;
-            }
-
-            if (isLike)
-            {                
-                query = Query<T>.Matches(Field, Value.ToString().Replace("%", ""));
-                return query;
-            }
-            query = Query<T>.EQ(Field, (string)Value);
-            return query;
+            return MongoQuery.Eq(typeof(T).Name, ReflectionUtility.GetPropertyName(Field), Value);
         }
 
         public static IMongoQuery Eq(Expression<Func<T, object>> Field, object Value)
-        {            
-            IMongoQuery query = null;
-            Type type = Value.GetType();
-            
-            if (type == typeof(DateTime))
-            {
-                query = Query<T>.EQ(Field, (DateTime)Value);
-            }
-            else if (type == typeof(int))
-            {
-                query = Query<T>.EQ(Field, (int)Value);
-            }
-            else if (type == typeof(string))
-            {
-                query = Query<T>.EQ(Field, (string)Value);
-            }
-            else if (type == typeof(long))
-            {
-                query = Query<T>.EQ(Field, (long)Value);
-            }
-            else if (type == typeof(bool))
-            {
-                query = Query<T>.EQ(Field, (bool)Value);
-            }
-            else if (type == typeof(double))
-            {
-                query = Query<T>.EQ(Field, (double)Value);
-            }
-            else if (type == typeof(Guid))
-            {
-                query = Query<T>.EQ(Field, (Guid)Value);
-            }
-
-            return query;
+        {
+            return MongoQuery.Eq(typeof(T).Name, ReflectionUtility.GetPropertyName(Field), Value);
         }
     
         public static IMongoQuery Gt(Expression<Func<T, object>> Field, object Value)
@@ -117,6 +59,7 @@ namespace EtoolTech.MongoDB.Mapper
         internal static IMongoQuery Eq(string ObjName, string FieldName, object Value)
         {
 
+            object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
@@ -167,7 +110,10 @@ namespace EtoolTech.MongoDB.Mapper
             }
             else if (type == typeof(bool))
             {
-                query = Query.EQ(FieldName, (bool)Value);
+                query = Query.EQ(FieldName, (bool)Value);               
+                if (defaultValue != null && (bool)defaultValue == (bool)Value)
+                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+
             }
             else if (type == typeof(double))
             {
