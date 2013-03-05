@@ -163,9 +163,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         public static bool UseChildIncrementalId(string ObjName)
         {
-            if (Helper.BufferIdIncrementables[ObjName] != null)
+            if (MongoMapperHelper.BufferIdIncrementables[ObjName] != null)
             {
-                return Helper.BufferIdIncrementables[ObjName].ChildsIncremenalId;
+                return MongoMapperHelper.BufferIdIncrementables[ObjName].ChildsIncremenalId;
             }
 
             if (CustomContext.Config != null)
@@ -185,9 +185,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         public static bool UseIncrementalId(string ObjName)
         {
-            if (Helper.BufferIdIncrementables[ObjName] != null)
+            if (MongoMapperHelper.BufferIdIncrementables[ObjName] != null)
             {
-                return Helper.BufferIdIncrementables[ObjName].IncremenalId;
+                return MongoMapperHelper.BufferIdIncrementables[ObjName].IncremenalId;
             }
 
             if (CustomContext.Config != null)

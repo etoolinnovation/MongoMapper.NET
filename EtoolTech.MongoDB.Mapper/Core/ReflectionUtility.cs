@@ -16,7 +16,7 @@ namespace EtoolTech.MongoDB.Mapper
             List<Type> types = Assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
             foreach (Type type in types)
             {
-                Helper.RebuildClass(type, true);
+                MongoMapperHelper.RebuildClass(type, true);
             }
         }
 

@@ -221,7 +221,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 Assert.AreEqual(i + 1, CountryCollection.Instance.Find().Size());
             }
 
-            MongoMapper.ServerDelete<Country>(Query.EQ("Code", "0"));
+            MongoMapper.ServerDelete<Country>(MongoQuery<Country>.Eq(c=>c.Code, "0"));
 
             Assert.AreEqual(99, CountryCollection.Instance.Find().Size());
         }
@@ -234,7 +234,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Insert de Paises
             var c = new Country {Code = "ES", Name = "España"};
             c.Save();
-            c.ServerUpdate(Update.Set("Name", "España 22"));
+            c.ServerUpdate(Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
 
             Assert.AreEqual(c.Name, "España 22");
 
@@ -255,7 +255,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             p.ServerUpdate(
                 Update.PushWrapped(
-                    "Childs",
+                    MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child
                         {ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez"}));
 

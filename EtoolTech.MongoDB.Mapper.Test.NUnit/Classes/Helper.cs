@@ -10,11 +10,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
 
-            foreach (string colName in Mapper.Helper.Db("XXX").GetCollectionNames())
+            foreach (string colName in Mapper.MongoMapperHelper.Db("XXX").GetCollectionNames())
             {
                 if (!colName.ToUpper().Contains("SYSTEM"))
                 {
-                    Mapper.Helper.Db("XXX").GetCollection(colName).Drop();
+                    Mapper.MongoMapperHelper.Db("XXX").GetCollection(colName).Drop();
                 }
             }
 
@@ -22,11 +22,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 if (collection.Name != "TestConf1")
                 {
-                    foreach (string colName in Mapper.Helper.Db(collection.Name).GetCollectionNames())
+                    foreach (string colName in Mapper.MongoMapperHelper.Db(collection.Name).GetCollectionNames())
                     {
                         if (!colName.ToUpper().Contains("SYSTEM"))
                         {
-                            Mapper.Helper.Db(collection.Name).GetCollection(colName).Drop();
+                            Mapper.MongoMapperHelper.Db(collection.Name).GetCollection(colName).Drop();
                         }
                     }
                 }

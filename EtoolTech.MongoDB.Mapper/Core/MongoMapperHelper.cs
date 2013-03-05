@@ -13,7 +13,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-    public class Helper
+    public class MongoMapperHelper
     {
         #region Constants and Fields
 
@@ -24,7 +24,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Dictionary<string, List<string>> BufferPrimaryKey = new Dictionary<string, List<string>>();
 
-        internal static readonly Dictionary<string, Dictionary<string,object>> BufferDefaultValues = new Dictionary<string, Dictionary<string, object>>();        
+        internal static readonly Dictionary<string, Dictionary<string, object>> BufferDefaultValues = new Dictionary<string, Dictionary<string, object>>();
+
+        internal static readonly Dictionary<string, Dictionary<string, string>> BufferCustomFieldNames = new Dictionary<string, Dictionary<string, string>>(); 
 
         private static readonly HashSet<string> CustomDiscriminatorTypes = new HashSet<string>();
 
@@ -40,8 +42,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Object LockObjectCustomFieldNames = new Object();
 
-        private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type>
-            {typeof (string), typeof (decimal), typeof (int), typeof (long), typeof (DateTime), typeof (bool)};
+        private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type> {typeof (string), typeof (decimal), typeof (int), typeof (long), typeof (DateTime), typeof (bool)};
 
         #endregion
 
@@ -112,7 +113,6 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Methods
 
-        //TODO: Guardar los BsonElement(Name)
         internal static void RebuildClass(Type ClassType, bool RepairCollection)
         {
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
@@ -152,7 +152,43 @@ namespace EtoolTech.MongoDB.Mapper
                     }
                 }
             }
-       
+
+            if (!BufferDefaultValues.ContainsKey(ClassType.Name))
+            {
+                lock (LockObjectDefaults)
+                {
+                    if (!BufferDefaultValues.ContainsKey(ClassType.Name))
+                    {
+                        BufferDefaultValues.Add(ClassType.Name,new Dictionary<string, object>());
+                        var properties = ClassType.GetProperties().Where(p => p.GetCustomAttributes(typeof(BsonDefaultValueAttribute), true).Count() != 0);
+                        foreach (PropertyInfo propertyInfo in properties)
+                        {
+                            var att = (BsonDefaultValueAttribute)propertyInfo.GetCustomAttributes(typeof(BsonDefaultValueAttribute), true).FirstOrDefault();
+                            if (att != null)
+                                BufferDefaultValues[ClassType.Name].Add(propertyInfo.Name,att.DefaultValue);
+                        }
+                    }
+                }
+            }
+
+
+            if (!BufferCustomFieldNames.ContainsKey(ClassType.Name))
+            {
+                lock (LockObjectCustomFieldNames)
+                {
+                    if (!BufferCustomFieldNames.ContainsKey(ClassType.Name))
+                    {
+                        BufferCustomFieldNames.Add(ClassType.Name, new Dictionary<string, string>());
+                        var properties = ClassType.GetProperties().Where(p => p.GetCustomAttributes(typeof(BsonElementAttribute), true).Count() != 0);
+                        foreach (PropertyInfo propertyInfo in properties)
+                        {
+                            var att = (BsonElementAttribute)propertyInfo.GetCustomAttributes(typeof(BsonElementAttribute), true).FirstOrDefault();
+                            if (att != null)
+                                BufferCustomFieldNames[ClassType.Name].Add(propertyInfo.Name, att.ElementName);
+                        }
+                    }
+                }
+            }
 
 
             //TODO: MongoCollectionName
@@ -165,12 +201,12 @@ namespace EtoolTech.MongoDB.Mapper
                     {
                         CollectionsManager.GetCollection(
                             CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
-                                IndexKeys.GeoSpatial(index.Split('|')[1]));
+                                IndexKeys.GeoSpatial(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split('|')[1])));
                     }
                     else
                     {
                         CollectionsManager.GetCollection(
-                            CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(index.Split(','));
+                            CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split(',').ToList()).ToArray());
                     }
                 }
 
@@ -178,7 +214,7 @@ namespace EtoolTech.MongoDB.Mapper
                 if (pk.Count(k => k == "m_id") == 0)
                 {
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
-                        IndexKeys.Ascending(pk), IndexOptions.SetUnique(true));
+                        IndexKeys.Ascending(MongoMapperHelper.ConvertFieldName(ClassType.Name,pk.ToList()).ToArray()), IndexOptions.SetUnique(true));
                 }
             }
         }
@@ -233,5 +269,18 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         #endregion
+
+        public static string ConvertFieldName(string ObjName, string FieldName)
+        {
+            if (BufferCustomFieldNames.ContainsKey(ObjName) && BufferCustomFieldNames[ObjName].ContainsKey(FieldName))
+                return BufferCustomFieldNames[ObjName][FieldName];
+
+            return FieldName;
+        }
+
+        public static List<string> ConvertFieldName(string ObjName, List<string> FieldNames)
+        {
+            return FieldNames.Select(field => ConvertFieldName(ObjName, field)).ToList();
+        }
     }
 }

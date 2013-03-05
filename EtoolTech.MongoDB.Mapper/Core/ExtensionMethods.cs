@@ -43,7 +43,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
-            col.Find(MongoQuery.Eq(FieldName, Value));
+            col.Find(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
             List.AddRange(col.ToList());
         }
 

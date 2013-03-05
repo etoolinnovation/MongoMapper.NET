@@ -53,7 +53,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public T FindByKey<T>(params object[] Values)
         {
-            List<string> fields = Helper.GetPrimaryKey(typeof (T)).ToList();
+            List<string> fields = MongoMapperHelper.GetPrimaryKey(typeof (T)).ToList();
             var keyValues = new Dictionary<string, object>();
             for (int i = 0; i < fields.Count; i++)
             {
@@ -74,7 +74,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
             IMongoQuery query =
-                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(T.Name, keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor result =
                 CollectionsManager.GetCollection(T.Name).FindAs(T, query).SetFields(Fields.Include("_id"));
@@ -106,7 +106,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
             IMongoQuery query =
-                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(typeof(T).Name,keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result =
                 CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
@@ -131,7 +131,7 @@ namespace EtoolTech.MongoDB.Mapper
         public T FindObjectByKey<T>(Dictionary<string, object> KeyValues)
         {
             IMongoQuery query =
-                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(typeof(T).Name, keyValue.Key, keyValue.Value)).ToArray());
 
             MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 

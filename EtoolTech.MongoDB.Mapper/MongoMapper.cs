@@ -44,7 +44,7 @@ namespace EtoolTech.MongoDB.Mapper
         protected MongoMapper()
         {
             _classType = GetType();
-            Helper.RebuildClass(_classType, false);
+            MongoMapperHelper.RebuildClass(_classType, false);
         }
 
         #endregion
@@ -309,7 +309,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public void ServerUpdate(UpdateBuilder Update, bool Refill = true)
-        {
+        {                                    
             if (m_id == default(long))
             {
                 m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
@@ -391,7 +391,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         private Dictionary<string, object> GetPrimaryKeyValues()
         {
-            return Helper.GetPrimaryKey(_classType).ToDictionary(
+            return MongoMapperHelper.GetPrimaryKey(_classType).ToDictionary(
                 KeyField => KeyField, KeyField => ReflectionUtility.GetPropertyValue(this, KeyField));
         }
 

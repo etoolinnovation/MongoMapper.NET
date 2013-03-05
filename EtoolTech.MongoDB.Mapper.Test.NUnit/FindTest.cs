@@ -38,7 +38,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var Persons = MongoMapperCollection<Person>.Instance;
 
             Countries.Find(
-                    Query.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), Query.EQ("Code", "UK")));
+                    Query.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), Query<Country>.EQ(c=>c.Code, "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
             Persons.Find(
@@ -186,7 +186,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Countries.Find().SetLimit(1);
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.Find(Query.EQ("Code", "ES")).SetFields(Fields.Include("Code"));
+            Countries.Find(Query<Country>.EQ(c=>c.Code, "ES")).SetFields(Fields.Include(MongoMapperHelper.ConvertFieldName("Country","Code")));
             Assert.AreEqual(Countries.Count, 1);
             Assert.AreEqual(Countries.First().Name, null);
         }

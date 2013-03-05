@@ -92,7 +92,7 @@
     <Compile Include="Exceptions\TypeNotSupportedException.cs" />
     <Compile Include="Exceptions\ValidateUpRelationException.cs" />
     <Compile Include="Core\Finder.cs" />
-    <Compile Include="Core\Helper.cs" />
+    <Compile Include="Core\MongoMapperHelper.cs" />
     <Compile Include="Attributes\MongoKey.cs" />
     <Compile Include="Interfaces\IEvents.cs" />
     <Compile Include="Interfaces\IMongoMapperIdeable.cs" />

@@ -79,7 +79,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (((MongoMapper) Document).m_id == default(long))
             {
                 ((MongoMapper) Document).m_id = Finder.Instance.FindIdByKey(Type,
-                                                                            Helper.GetPrimaryKey(Type).
+                                                                            MongoMapperHelper.GetPrimaryKey(Type).
                                                                                 ToDictionary(
                                                                                     KeyField => KeyField,
                                                                                     KeyField =>

@@ -113,7 +113,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             p.ServerUpdate(
                 Update.PushWrapped(
-                    "Childs",
+                    MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child {ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"}));
 
             var persons = new List<Person>();

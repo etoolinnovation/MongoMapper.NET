@@ -114,8 +114,11 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        internal static IMongoQuery Eq(string FieldName, object Value)
+        internal static IMongoQuery Eq(string ObjName, string FieldName, object Value)
         {
+
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -180,7 +183,10 @@ namespace EtoolTech.MongoDB.Mapper
       
 
         public static IMongoQuery Gt(string ObjName, string FieldName, object Value)
-        {                        
+        {
+
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -215,8 +221,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IMongoQuery Gte(string ObjName, string FieldName, object Value)
         {
-            
 
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
             IMongoQuery query = null;
             Type type = Value.GetType();
 
@@ -252,7 +258,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IMongoQuery Lt(string ObjName, string FieldName, object Value)
         {
-            
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
             Type type = Value.GetType();
@@ -289,7 +295,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IMongoQuery Lte(string ObjName, string FieldName, object Value)
         {
-            
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
             Type type = Value.GetType();
@@ -327,7 +333,7 @@ namespace EtoolTech.MongoDB.Mapper
         public static IMongoQuery Ne(string ObjName, string FieldName, object Value)
         {
 
-            
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
             Type type = Value.GetType();
@@ -363,7 +369,8 @@ namespace EtoolTech.MongoDB.Mapper
 
 
         public static IMongoQuery RegEx(string ObjName, string FieldName, string expresion)
-        {            
+        {
+            FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
             return Query.Matches(FieldName, expresion);
         }
 

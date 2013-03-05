@@ -27,7 +27,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public MongoCursor<T> Find(string FieldName, object Value)
         {
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery.Eq(FieldName, Value));
+            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
             return Cursor;
         }
 
