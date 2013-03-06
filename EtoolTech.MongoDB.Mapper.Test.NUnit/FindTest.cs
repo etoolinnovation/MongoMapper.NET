@@ -38,11 +38,25 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var Persons = MongoMapperCollection<Person>.Instance;
 
             Countries.Find(
-                    Query.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), Query.EQ("Code", "UK")));
+                    Query.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), Query<Country>.EQ(c=>c.Code, "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
             Persons.Find(
-                    Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), Query.EQ("Country", "ES")));
+                    Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
+            Assert.AreEqual(Persons.Count, 2);
+
+            Persons = new MongoMapperCollection<Person>();
+          
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%Perez%"));
+            Assert.AreEqual(2, Persons.Count);
+
+
+            //TODO: Deberia devolver los que no tienen valor
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Married, false));
+            Assert.AreEqual(3, Persons.Count);
+
+            Persons.Find(
+                  Query.And(Query<Person>.EQ(p => p.Age, 25), Query<Person>.EQ(p => p.Country, "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
             foreach (Person p in Persons)
@@ -144,9 +158,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             
             var Persons = MongoMapperCollection<Person>.Instance;
 
-            plist = Persons.Find("_id", p2.m_id).ToList();
+            plist = Persons.Find(x=>x.m_id, p2.m_id).ToList();
 
-            Assert.AreEqual(plist.Count, 1);
+            Assert.AreEqual(1, plist.Count);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");
         }
 
@@ -172,7 +186,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Countries.Find().SetLimit(1);
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.Find(Query.EQ("Code", "ES")).SetFields(Fields.Include("Code"));
+            Countries.Find(Query<Country>.EQ(c=>c.Code, "ES")).SetFields(Fields.Include(MongoMapperHelper.ConvertFieldName("Country","Code")));
             Assert.AreEqual(Countries.Count, 1);
             Assert.AreEqual(Countries.First().Name, null);
         }

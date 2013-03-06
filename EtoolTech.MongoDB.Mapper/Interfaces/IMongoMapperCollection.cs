@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -9,7 +11,7 @@ namespace EtoolTech.MongoDB.Mapper
         long Total { get; }
         long Count { get; }
         MongoCursor<T> Find(IMongoQuery Query);
-        MongoCursor<T> Find(string FieldName, object Value);
+        MongoCursor<T> Find(Expression<Func<T, object>> Field, object Value);
         MongoCursor<T> Find();
         List<T> ToList();
         T First();

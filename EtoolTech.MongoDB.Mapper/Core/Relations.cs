@@ -58,7 +58,7 @@ namespace EtoolTech.MongoDB.Mapper
                 string fkFieldName = values[2];
 
                 object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-                IMongoQuery query = MongoQuery.Eq(fkFieldName, value);
+                IMongoQuery query = MongoQuery.Eq(fkClassName, fkFieldName, value);
 
                 MongoCollection fkCol =
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(fkClassName));
@@ -86,11 +86,11 @@ namespace EtoolTech.MongoDB.Mapper
                 if (!String.IsNullOrEmpty(fkParentfieldName) && !String.IsNullOrEmpty(fkParentPropertyName))
                 {
                     object parentvalue = ReflectionUtility.GetPropertyValue(Sender, fkParentPropertyName);
-                    parentQuery = MongoQuery.Eq(fkParentfieldName, parentvalue);
+                    parentQuery = MongoQuery.Eq(fkClassName, fkParentfieldName, parentvalue);
                 }
 
                 object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-                IMongoQuery query = MongoQuery.Eq(fkFieldName, value);
+                IMongoQuery query = MongoQuery.Eq(fkClassName, fkFieldName, value);
 
                 if (parentQuery != null)
                 {
@@ -137,7 +137,7 @@ namespace EtoolTech.MongoDB.Mapper
                                 if (!ConfigManager.Config.Context.Generated)
                                 {
                                     CollectionsManager.GetCollection(relation.ObjectName).EnsureIndex(
-                                        relation.FieldName);
+                                        MongoMapperHelper.ConvertFieldName(relation.ObjectName,relation.FieldName));
                                 }
                             }
                         }
@@ -175,7 +175,7 @@ namespace EtoolTech.MongoDB.Mapper
             string fkClassName = values[1];
             string fkFieldName = values[2];
             object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-            IMongoQuery query = MongoQuery.Eq(fkFieldName, value);
+            IMongoQuery query = MongoQuery.Eq(typeof(T).Name, fkFieldName, value);
             return
                 CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName)).FindAs<T>(query).ToList();
         }
@@ -216,7 +216,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                             if (!ConfigManager.Config.Context.Generated)
                             {
-                                CollectionsManager.GetCollection(T.Name).EnsureIndex(fieldInfo.Name);
+                                CollectionsManager.GetCollection(T.Name).EnsureIndex(MongoMapperHelper.ConvertFieldName(T.Name,fieldInfo.Name));
                             }
                         }
                     }

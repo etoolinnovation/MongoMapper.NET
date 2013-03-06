@@ -52,7 +52,7 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (!Collections.ContainsKey(Name))
                 {
-                    MongoCollection collection = Helper.Db(Name).GetCollection(Name);
+                    MongoCollection collection = MongoMapperHelper.Db(Name).GetCollection(Name);
                     Collections.Add(Name, collection);
                 }
                 return Collections[Name];
@@ -72,7 +72,7 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 if (!PrimaryCollections.ContainsKey(Name))
                 {
-                    MongoCollection collection = Helper.Db(Name, true).GetCollection(Name);
+                    MongoCollection collection = MongoMapperHelper.Db(Name, true).GetCollection(Name);
                     PrimaryCollections.Add(Name, collection);
                 }
                 return Collections[Name];

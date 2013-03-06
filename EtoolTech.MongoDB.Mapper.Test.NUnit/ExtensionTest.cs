@@ -214,13 +214,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.Save();
 
             var Countries = new List<Country>();
-            Countries.MongoFind("Code", "ES");
+            Countries.MongoFind(C=>C.Code, "ES");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.MongoFind("Code", "UK");
+            Countries.MongoFind(C=>C.Code, "UK");
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.MongoFind("Code", "US");
+            Countries.MongoFind(C=>C.Code, "US");
             Assert.AreEqual(Countries.Count, 1);
 
             Countries.MongoFind();
@@ -327,7 +327,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Insert de Paises
             var c = new Country {Code = "ES", Name = "España"};
             c.Save();
-            c.ServerUpdate(Update.Set("Name", "España 22"));
+            c.ServerUpdate(Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
 
             Assert.AreEqual(c.Name, "España 22");
 
@@ -348,7 +348,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             p.ServerUpdate(
                 Update.PushWrapped(
-                    "Childs",
+                    MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child
                         {ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez"}));
 

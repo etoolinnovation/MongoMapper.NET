@@ -16,7 +16,7 @@ namespace EtoolTech.MongoDB.Mapper
             List<Type> types = Assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
             foreach (Type type in types)
             {
-                Helper.RebuildClass(type, true);
+                MongoMapperHelper.RebuildClass(type, true);
             }
         }
 
@@ -31,6 +31,29 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public static string GetPropertyName<T>(Expression<Func<T, object>> Exp)
+        {
+            var memberExpression = Exp.Body as UnaryExpression;
+            if (memberExpression != null)
+            {
+                var memberexpresion2 = memberExpression.Operand as MemberExpression;
+                if (memberexpresion2 != null)
+                {
+                    return memberexpresion2.Member.Name;
+                }
+            }
+            else
+            {
+                var memberexpresion2 = Exp.Body as MemberExpression;
+                if (memberexpresion2 != null)
+                {
+                    return memberexpresion2.Member.Name;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public static string GetPropertyName<T>(Expression<Func<T, string>> Exp)
         {
             var memberExpression = Exp.Body as UnaryExpression;
             if (memberExpression != null)

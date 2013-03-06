@@ -1,5 +1,6 @@
 using System;
 using EtoolTech.MongoDB.Mapper.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
@@ -11,10 +12,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         #region Public Properties
 
         [MongoDownRelation(ObjectName = "Person", FieldName = "Country")]
+        [BsonElement("c")]
         public string Code { get; set; }
 
+        [BsonElement("n")]
         public string Name { get; set; }
 
+        [BsonElement("p")]
         public long[] Pos { get; set; }
 
         #endregion

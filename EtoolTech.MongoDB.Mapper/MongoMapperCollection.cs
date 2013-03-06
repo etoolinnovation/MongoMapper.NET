@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -17,9 +19,15 @@ namespace EtoolTech.MongoDB.Mapper
             return Cursor;
         }
 
+        public MongoCursor<T> Find(Expression<Func<T, object>> Field, object Value)
+        {
+            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery<T>.Eq(Field, Value));
+            return Cursor;
+        }
+
         public MongoCursor<T> Find(string FieldName, object Value)
         {
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery.Eq(FieldName,Value));
+            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
             return Cursor;
         }
 
