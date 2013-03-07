@@ -11,21 +11,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [TestFixture]
     public class ReadmeTest
     {
-        //private MongoTestServer _mongoTestServer;
-
-        //[TestFixtureSetUp]
-        //public void Init()
-        //{
-        //    MongoTestServer.SetMongodPtah(@"mongod\");
-        //    this._mongoTestServer = MongoTestServer.Start(27017);
-        //    ConfigManager.OverrideUrlString(this._mongoTestServer.ConnectionString);
-        //}
-
-        //[TestFixtureTearDown]
-        //public void Dispose()
-        //{
-        //    this._mongoTestServer.Dispose();
-        //}
 
         [Test]
         public void Test()
@@ -79,7 +64,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             countries.Find();
             Assert.AreEqual(countries.Count, 3);
 
-            countries.Find().SetLimit(2).SetSortOrder("Code");
+            countries.Find().SetLimit(2).SetSortOrder(SortBy<Country>.Ascending(C => C.Name));
             Assert.AreEqual(countries.Count, 2);
             Assert.AreEqual(countries.Total, 3);
 

@@ -31,7 +31,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(3, col.Total);
 
             col = new CountryCollection();
-            col.Find().SetLimit(3).SetSortOrder(MongoMapperHelper.ConvertFieldName("Country","Name"));
+            col.Find().SetLimit(3).SetSortOrder(SortBy<Country>.Ascending(C=>C.Name));              
 
             Assert.AreEqual(3, col.Count);
             Assert.AreEqual("ES", col.First().Code);
