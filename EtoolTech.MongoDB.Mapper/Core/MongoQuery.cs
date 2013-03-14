@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -76,7 +77,7 @@ namespace EtoolTech.MongoDB.Mapper
                 }
                 else if (txtValue.StartsWith("%"))
                 {
-                    Value = String.Format("/{0}^/", txtValue);
+                    Value = String.Format("/{0}$/", txtValue);
                     isLike = true;
                 }
                 else if (txtValue.EndsWith("%"))
@@ -87,7 +88,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 if (isLike)
                 {
-                    query = Query.Matches(FieldName, Value.ToString().Replace("%", ""));
+                    query = Query.Matches(FieldName, new BsonRegularExpression(Value.ToString().Replace("%", "")));
                     return query;
                 }
             }
@@ -213,7 +214,6 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
 
-
         public static IMongoQuery Lt(string ObjName, string FieldName, object Value)
         {
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
@@ -248,7 +248,6 @@ namespace EtoolTech.MongoDB.Mapper
 
             return query;
         }
-
 
 
         public static IMongoQuery Lte(string ObjName, string FieldName, object Value)
@@ -287,7 +286,6 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
 
-
         public static IMongoQuery Ne(string ObjName, string FieldName, object Value)
         {
 
@@ -323,7 +321,6 @@ namespace EtoolTech.MongoDB.Mapper
 
             return query;
         }
-
 
 
         public static IMongoQuery RegEx(string ObjName, string FieldName, string expresion)

@@ -10,22 +10,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [TestFixture]
     public class FindTest
     {
-        //private MongoTestServer _mongoTestServer;
-
-        //[TestFixtureSetUp]
-        //public void Init()
-        //{
-        //    MongoTestServer.SetMongodPtah(@"mongod\");
-        //    this._mongoTestServer = MongoTestServer.Start(27017);
-        //    ConfigManager.OverrideUrlString(this._mongoTestServer.ConnectionString);
-        //}
-
-        //[TestFixtureTearDown]
-        //public void Dispose()
-        //{
-        //    this._mongoTestServer.Dispose();
-        //}
-
+      
         [Test]
         public void TestFindAnddOr()
         {
@@ -49,6 +34,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
           
             Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%Perez%"));
             Assert.AreEqual(2, Persons.Count);
+
+
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "J%"));
+            Assert.AreEqual(2, Persons.Count);
+
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%z"));
+            Assert.AreEqual(3, Persons.Count);
 
 
             //TODO: Deberia devolver los que no tienen valor

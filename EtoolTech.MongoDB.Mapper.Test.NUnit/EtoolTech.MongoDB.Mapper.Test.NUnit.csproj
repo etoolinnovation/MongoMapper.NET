@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgregationTest.cs" />
-    <Compile Include="AmbiguousDiscriminatorTest.cs" />
     <Compile Include="Classes\CountryCollection.cs" />
     <Compile Include="InsertModifyDeleteTest.cs" />
     <Compile Include="ConfigTest.cs" />
@@ -55,7 +54,6 @@
     <Compile Include="ExtensionTest.cs" />
     <Compile Include="IncrementalIdTest.cs" />
     <Compile Include="MongoMapperCollectionTest.cs" />
-    <Compile Include="MongoTestServerTest.cs" />
     <Compile Include="MongoTestServer\MongoTestInstance.cs" />
     <Compile Include="MongoTestServer\MongoTestServer.cs" />
     <Compile Include="OriginalObjectTest.cs" />
@@ -81,11 +79,6 @@
       <Project>{9189E04F-8BC5-4219-B706-F986444474A0}</Project>
       <Name>EtoolTech.MongoDB.Mapper</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="mongod\mongod.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>

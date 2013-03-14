@@ -26,22 +26,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [TestFixture]
     public class ReflectionUtilityTest
     {
-        //private MongoTestServer _mongoTestServer;
-
-        //[TestFixtureSetUp]
-        //public void Init()
-        //{
-        //    MongoTestServer.SetMongodPtah(@"mongod\");
-        //    this._mongoTestServer = MongoTestServer.Start(27017);
-        //    ConfigManager.OverrideUrlString(this._mongoTestServer.ConnectionString);
-        //}
-
-        //[TestFixtureTearDown]
-        //public void Dispose()
-        //{
-        //    this._mongoTestServer.Dispose();
-        //}
-
+       
         public static void TestObjectVsTypedNewGetPropertyValue()
         {
             var test = new TestReflectionUtility();
