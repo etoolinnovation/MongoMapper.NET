@@ -51,6 +51,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(2, Persons.Count);
 
 
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "J%"));
+            Assert.AreEqual(2, Persons.Count);
+
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%z"));
+            Assert.AreEqual(3, Persons.Count);
+
+
             //TODO: Deberia devolver los que no tienen valor
             Persons.Find(MongoQuery<Person>.Eq(p => p.Married, false));
             Assert.AreEqual(3, Persons.Count);
