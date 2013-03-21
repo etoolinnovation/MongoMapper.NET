@@ -88,7 +88,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 if (isLike)
                 {
-                    query = Query.Matches(FieldName, new BsonRegularExpression(Value.ToString().Replace("%", "")));
+                    query = Query.Matches(FieldName, new BsonRegularExpression(string.Format("{0}i", Value.ToString().Replace("%", ""))));
                     return query;
                 }
             }
