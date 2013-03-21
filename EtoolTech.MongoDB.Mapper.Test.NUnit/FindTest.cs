@@ -32,14 +32,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Persons = new MongoMapperCollection<Person>();
           
-            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%Perez%"));
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%perez%"));
             Assert.AreEqual(2, Persons.Count);
 
 
-            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "J%"));
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "j%"));
             Assert.AreEqual(2, Persons.Count);
 
-            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%z"));
+            Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%Z"));
             Assert.AreEqual(3, Persons.Count);
 
 
