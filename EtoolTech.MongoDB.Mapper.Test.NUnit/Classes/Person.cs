@@ -24,11 +24,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         #region Public Properties
 
         [BsonElement("a")]
+        [BsonDefaultValue(25)]
+        [BsonIgnoreIfDefault]
         public int Age { get; set; }
 
         [BsonElement("bb")]
-        [BsonDefaultValue(0.00)]
-        [BsonIgnoreIfDefault]
         public decimal BankBalance { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
