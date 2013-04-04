@@ -42,20 +42,37 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%Z"));
             Assert.AreEqual(3, Persons.Count);
 
-
-            //TODO: Deberia devolver los que no tienen valor
+            
             Persons.Find(MongoQuery<Person>.Eq(p => p.Married, false));
             Assert.AreEqual(3, Persons.Count);
 
-            Persons.Find(
-                  Query.And(Query<Person>.EQ(p => p.Age, 25), Query<Person>.EQ(p => p.Country, "ES")));
-            Assert.AreEqual(Persons.Count, 2);
+            Persons.Find(Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
+            Assert.AreEqual(2, Persons.Count);
+
 
             foreach (Person p in Persons)
             {
                 Assert.AreEqual(p.Age, 25);
                 Assert.AreEqual(p.Country, "ES");
             }
+
+            Persons.Find(Query.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "US")));
+            Assert.AreEqual(0, Persons.Count);
+
+            Persons.Find(MongoQuery<Person>.Gt(p => p.Age, 25));
+            Assert.AreEqual(2, Persons.Count);
+
+
+            Persons.Find(MongoQuery<Person>.Gte(p => p.Age, 25));
+            Assert.AreEqual(4, Persons.Count);
+
+            Persons.Find(MongoQuery<Person>.Lt(p => p.Age, 25));
+            Assert.AreEqual(1, Persons.Count);
+
+            Persons.Find(MongoQuery<Person>.Lte(p => p.Age, 25));
+            Assert.AreEqual(3, Persons.Count);
+
+
         }
 
         [Test]

@@ -97,44 +97,44 @@ namespace EtoolTech.MongoDB.Mapper
             {                
                 query = Query.EQ(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue == (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
             else if (type == typeof(int))
             {
                 query = Query.EQ(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue == (int)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
             else if (type == typeof(string))
             {
                 query = Query.EQ(FieldName, (string)Value);
                 if (defaultValue != null && (string)defaultValue == (string)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
             else if (type == typeof(long))
             {
                 query = Query.EQ(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue == (long)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
             else if (type == typeof(bool))
             {
                 query = Query.EQ(FieldName, (bool)Value);               
                 if (defaultValue != null && (bool)defaultValue == (bool)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
 
             }
             else if (type == typeof(double))
             {
                 query = Query.EQ(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue == (double)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
             else if (type == typeof(Guid))
             {
                 query = Query.EQ(FieldName, (Guid)Value);
                 if (defaultValue != null && (Guid)defaultValue == (Guid)Value)
-                    query = Query.Or(query, Query.NotExists(MongoMapperHelper.ConvertFieldName(ObjName, FieldName)));
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
 
             return query;
@@ -144,6 +144,7 @@ namespace EtoolTech.MongoDB.Mapper
         public static IMongoQuery Gt(string ObjName, string FieldName, object Value)
         {
 
+            object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
@@ -152,26 +153,34 @@ namespace EtoolTech.MongoDB.Mapper
             if (type == typeof(DateTime))
             {
                 query = Query.GT(FieldName, (DateTime)Value);
+                if (defaultValue != null && (DateTime)defaultValue > (DateTime)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));                
             }
             else if (type == typeof(int))
             {
                 query = Query.GT(FieldName, (int)Value);
+                if (defaultValue != null && (int)defaultValue > (int)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(string))
             {
                 query = Query.GT(FieldName, (string)Value);
             }
             else if (type == typeof(long))
-            {
+            {                
                 query = Query.GT(FieldName, (long)Value);
+                if (defaultValue != null && (long)defaultValue > (long)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(bool))
             {
                 query = Query.GT(FieldName, (bool)Value);
             }
             else if (type == typeof(double))
-            {
+            {                
                 query = Query.GT(FieldName, (double)Value);
+                if (defaultValue != null && (double)defaultValue > (double)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
 
             return query;
@@ -181,17 +190,24 @@ namespace EtoolTech.MongoDB.Mapper
         public static IMongoQuery Gte(string ObjName, string FieldName, object Value)
         {
 
+            object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
+
             IMongoQuery query = null;
             Type type = Value.GetType();
 
             if (type == typeof(DateTime))
             {
                 query = Query.GTE(FieldName, (DateTime)Value);
+                if (defaultValue != null && (DateTime)defaultValue >= (DateTime)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(int))
             {
                 query = Query.GTE(FieldName, (int)Value);
+                if (defaultValue != null && (int)defaultValue >= (int)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(string))
             {
@@ -200,6 +216,9 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(long))
             {
                 query = Query.GTE(FieldName, (long)Value);
+                if (defaultValue != null && (long)defaultValue >= (long)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(bool))
             {
@@ -208,6 +227,8 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(double))
             {
                 query = Query.GTE(FieldName, (double)Value);
+                if (defaultValue != null && (double)defaultValue >= (double)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
 
             return query;
@@ -216,6 +237,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IMongoQuery Lt(string ObjName, string FieldName, object Value)
         {
+            object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
@@ -224,10 +246,15 @@ namespace EtoolTech.MongoDB.Mapper
             if (type == typeof(DateTime))
             {
                 query = Query.LT(FieldName, (DateTime)Value);
+                if (defaultValue != null && (DateTime)defaultValue < (DateTime)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(int))
             {
                 query = Query.LT(FieldName, (int)Value);
+                if (defaultValue != null && (int)defaultValue < (int)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(string))
             {
@@ -236,6 +263,8 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(long))
             {
                 query = Query.LT(FieldName, (long)Value);
+                if (defaultValue != null && (long)defaultValue < (long)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(bool))
             {
@@ -244,6 +273,8 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(double))
             {
                 query = Query.LT(FieldName, (double)Value);
+                if (defaultValue != null && (double)defaultValue < (double)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
 
             return query;
@@ -252,6 +283,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static IMongoQuery Lte(string ObjName, string FieldName, object Value)
         {
+            object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
@@ -260,10 +292,15 @@ namespace EtoolTech.MongoDB.Mapper
             if (type == typeof(DateTime))
             {
                 query = Query.LTE(FieldName, (DateTime)Value);
+                if (defaultValue != null && (DateTime)defaultValue <= (DateTime)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(int))
             {
                 query = Query.LTE(FieldName, (int)Value);
+                if (defaultValue != null && (int)defaultValue <= (int)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(string))
             {
@@ -272,6 +309,9 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(long))
             {
                 query = Query.LTE(FieldName, (long)Value);
+                if (defaultValue != null && (long)defaultValue <= (long)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(bool))
             {
@@ -280,6 +320,9 @@ namespace EtoolTech.MongoDB.Mapper
             else if (type == typeof(double))
             {
                 query = Query.LTE(FieldName, (double)Value);
+                if (defaultValue != null && (double)defaultValue <= (double)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
 
             return query;
@@ -289,6 +332,7 @@ namespace EtoolTech.MongoDB.Mapper
         public static IMongoQuery Ne(string ObjName, string FieldName, object Value)
         {
 
+            object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
             IMongoQuery query = null;
@@ -297,26 +341,43 @@ namespace EtoolTech.MongoDB.Mapper
             if (type == typeof(DateTime))
             {
                 query = Query.NE(FieldName, (DateTime)Value);
+                if (defaultValue != null && (DateTime)defaultValue != (DateTime)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
             }
             else if (type == typeof(int))
             {
                 query = Query.NE(FieldName, (int)Value);
+                if (defaultValue != null && (int)defaultValue != (int)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(string))
             {
                 query = Query.NE(FieldName, (string)Value);
+                if (defaultValue != null && (string)defaultValue != (string)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(long))
             {
                 query = Query.NE(FieldName, (long)Value);
+                if (defaultValue != null && (long)defaultValue != (long)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(bool))
             {
                 query = Query.NE(FieldName, (bool)Value);
+                if (defaultValue != null && (bool)defaultValue != (bool)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
             else if (type == typeof(double))
             {
                 query = Query.NE(FieldName, (double)Value);
+                if (defaultValue != null && (double)defaultValue != (double)Value)
+                    query = Query.Or(query, Query.NotExists(FieldName));    
+
             }
 
             return query;

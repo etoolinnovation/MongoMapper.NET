@@ -149,7 +149,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                     BirthDate = DateTime.Now.AddDays(21).AddYears(-21),
                     Married = false,
                     Country = "US",
-                    BankBalance = decimal.Parse("100,00")
+                    BankBalance = decimal.Parse("10000,00")
                 };
 
             p.Save();
