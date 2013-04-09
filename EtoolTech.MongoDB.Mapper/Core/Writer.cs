@@ -21,7 +21,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Insert, Type, Document);
-                return new WriteConcernResult();
+                return new WriteConcernResult(null);
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -47,7 +47,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);
-                return new WriteConcernResult();
+                return new WriteConcernResult(null);
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -72,7 +72,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Delete, Type, Document);
-                return new WriteConcernResult();
+                return new WriteConcernResult(null);
             }
 
 
