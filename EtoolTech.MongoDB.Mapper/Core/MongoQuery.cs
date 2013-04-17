@@ -66,6 +66,8 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = Value.GetType();
 
+            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof (int);
+
             if (type == typeof(string))
             {
                 bool isLike = false;
@@ -150,6 +152,8 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = Value.GetType();
 
+            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
+
             if (type == typeof(DateTime))
             {
                 query = Query.GT(FieldName, (DateTime)Value);
@@ -195,6 +199,8 @@ namespace EtoolTech.MongoDB.Mapper
 
             IMongoQuery query = null;
             Type type = Value.GetType();
+
+            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
@@ -243,6 +249,8 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = Value.GetType();
 
+            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
+
             if (type == typeof(DateTime))
             {
                 query = Query.LT(FieldName, (DateTime)Value);
@@ -288,6 +296,8 @@ namespace EtoolTech.MongoDB.Mapper
 
             IMongoQuery query = null;
             Type type = Value.GetType();
+
+            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
@@ -337,6 +347,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             IMongoQuery query = null;
             Type type = Value.GetType();
+            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
