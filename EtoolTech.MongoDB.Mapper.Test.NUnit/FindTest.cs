@@ -31,6 +31,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(Persons.Count, 2);
 
             Persons = new MongoMapperCollection<Person>();
+            Persons.Find(
+                    Query.And(MongoQuery<Person>.Eq(p => p.Age, 35), MongoQuery<Person>.Eq(p => p.Country, "%")));
+            Assert.AreEqual(1, Persons.Count);
+
+            Persons = new MongoMapperCollection<Person>();
           
             Persons.Find(MongoQuery<Person>.Eq(p => p.Name, "%perez%"));
             Assert.AreEqual(2, Persons.Count);

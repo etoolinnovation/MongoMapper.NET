@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Driver.Wrappers;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -66,12 +69,27 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query = null;
             Type type = Value.GetType();
 
-            if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof (int);
+            if (type.BaseType != null && type.BaseType.Name == "Enum")
+            {
+                type = typeof (int);
+                if ((int)Value < 0)
+                {
+                    var document = BsonSerializer.Deserialize<BsonDocument>("{}");
+                    return new QueryDocument(document);
+                }
+            }
 
             if (type == typeof(string))
             {
                 bool isLike = false;
                 string txtValue = Value.ToString();
+
+                if (txtValue.Trim() == "%")
+                {
+                    var document = BsonSerializer.Deserialize<BsonDocument>("{}");
+                    return new QueryDocument(document);
+                }
+
                 if (txtValue.StartsWith("%") && txtValue.EndsWith("%"))
                 {
                     Value = String.Format("/{0}/", txtValue);
