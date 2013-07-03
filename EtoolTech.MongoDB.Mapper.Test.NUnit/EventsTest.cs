@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Text;
+using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
@@ -18,6 +19,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var c3 = MongoMapper.FindByKey<Country>("FR");
 
             Assert.AreEqual(c3.Name, "Francia");
+        }
+
+
+        public void TextTest()
+        {
+            byte[] bytes = Encoding.GetEncoding("UTF-8").GetBytes("1Ñ");
+            string s = System.Text.Encoding.UTF8.GetString(bytes);
         }
     }
 }
