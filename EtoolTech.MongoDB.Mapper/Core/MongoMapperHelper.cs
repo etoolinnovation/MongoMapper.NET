@@ -199,12 +199,12 @@ namespace EtoolTech.MongoDB.Mapper
                     {
                         CollectionsManager.GetCollection(
                             CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
-                                IndexKeys.GeoSpatial(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split('|')[1])));
+                                IndexKeys.GeoSpatial(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split('|')[1]).Trim()));
                     }
                     else
                     {
                         CollectionsManager.GetCollection(
-                            CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split(',').ToList()).ToArray());
+                            CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(indexField => indexField.Trim()).ToArray());
                     }
                 }
 
@@ -212,7 +212,7 @@ namespace EtoolTech.MongoDB.Mapper
                 if (pk.Count(k => k == "m_id") == 0)
                 {
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
-                        IndexKeys.Ascending(MongoMapperHelper.ConvertFieldName(ClassType.Name,pk.ToList()).ToArray()), IndexOptions.SetUnique(true));
+                        IndexKeys.Ascending(MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(pkField => pkField.Trim()).ToArray()), IndexOptions.SetUnique(true));
                 }
             }
         }
