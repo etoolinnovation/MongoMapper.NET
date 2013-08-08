@@ -11439,12 +11439,17 @@
             Represents a serializer for enumerable values.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.#ctor">
+        <member name="T:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase">
             <summary>
-            Initializes a new instance of the EnumerableSerializer class.
+            Represents a base serializer for enumerable values.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.#ctor(MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+            <summary>
+            Initializes a new instance of the EnumerableSerializerBase class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
             <summary>
             Deserializes an object from a BsonReader.
             </summary>
@@ -11454,13 +11459,13 @@
             <param name="options">The serialization options.</param>
             <returns>An object.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.GetItemSerializationInfo">
             <summary>
             Gets the serialization info for individual items of an enumerable type.
             </summary>
             <returns>The serialization info for the items.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
             <summary>
             Serializes an object to a BsonWriter.
             </summary>
@@ -11468,6 +11473,79 @@
             <param name="nominalType">The nominal type.</param>
             <param name="value">The object.</param>
             <param name="options">The serialization options.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.AddItem(System.Object,System.Object)">
+            <summary>
+            Adds the item.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.CreateInstance(System.Type)">
+            <summary>
+            Creates the instance.
+            </summary>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.EnumerateItemsInSerializationOrder(System.Object)">
+            <summary>
+            Enumerates the items.
+            </summary>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase.GetDiscriminator(System.Type,System.Type)">
+            <summary>
+            Gets the discriminator.
+            </summary>
+            <param name="nominalType">Type nominal type.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The discriminator (or null if no discriminator is needed).</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.#ctor">
+            <summary>
+            Initializes a new instance of the EnumerableSerializer class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.AddItem(System.Object,System.Object)">
+            <summary>
+            Adds the item.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.CreateInstance(System.Type)">
+            <summary>
+            Creates the instance.
+            </summary>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
+            <exception cref="T:MongoDB.Bson.BsonSerializationException">
+            </exception>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.EnumerateItemsInSerializationOrder(System.Object)">
+            <summary>
+            Enumerates the items.
+            </summary>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
         </member>
         <member name="P:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer.Instance">
             <summary>
@@ -11480,12 +11558,18 @@
             </summary>
             <typeparam name="T">The type of the elements.</typeparam>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.#ctor">
+        <member name="T:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1">
+            <summary>
+            Represents a serializer for enumerable values.
+            </summary>
+            <typeparam name="T">The type of the elements.</typeparam>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.#ctor(MongoDB.Bson.Serialization.IBsonSerializationOptions)">
             <summary>
             Initializes a new instance of the EnumerableSerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
             <summary>
             Deserializes an object from a BsonReader.
             </summary>
@@ -11495,13 +11579,13 @@
             <param name="options">The serialization options.</param>
             <returns>An object.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.GetItemSerializationInfo">
             <summary>
             Gets the serialization info for individual items of an enumerable type.
             </summary>
             <returns>The serialization info for the items.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
             <summary>
             Serializes an object to a BsonWriter.
             </summary>
@@ -11509,6 +11593,86 @@
             <param name="nominalType">The nominal type.</param>
             <param name="value">The object.</param>
             <param name="options">The serialization options.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.AddItem(System.Object,`0)">
+            <summary>
+            Adds the item.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.CreateInstance(System.Type)">
+            <summary>
+            Creates the instance.
+            </summary>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.EnumerateItemsInSerializationOrder(System.Object)">
+            <summary>
+            Enumerates the items.
+            </summary>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.GetDiscriminator(System.Type,System.Type)">
+            <summary>
+            Gets the discriminator.
+            </summary>
+            <param name="nominalType">Type nominal type.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The discriminator (or null if no discriminator is needed).</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializerBase`1.VerifyTypes(System.Type,System.Type)">
+            <summary>
+            Verifies the types.
+            </summary>
+            <param name="nominalType">Type nominal type.</param>
+            <param name="actualType">The actual type.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.#ctor">
+            <summary>
+            Initializes a new instance of the EnumerableSerializer class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.AddItem(System.Object,`0)">
+            <summary>
+            Adds the item.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.CreateInstance(System.Type)">
+            <summary>
+            Creates the instance.
+            </summary>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
+            <exception cref="T:MongoDB.Bson.BsonSerializationException">
+            </exception>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.EnumerateItemsInSerializationOrder(System.Object)">
+            <summary>
+            Enumerates the items.
+            </summary>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.EnumerableSerializer`1.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.GuidSerializer">
             <summary>
@@ -13028,6 +13192,11 @@
             </summary>
             <param name="obj">The object.</param>
         </member>
+        <member name="M:MongoDB.Bson.Serialization.BsonMemberMap.Freeze">
+            <summary>
+            Freezes this instance.
+            </summary>
+        </member>
         <member name="M:MongoDB.Bson.Serialization.BsonMemberMap.GetSerializer(System.Type)">
             <summary>
             Gets the serializer.
@@ -13039,6 +13208,13 @@
             <summary>
             Resets the member map back to its initial state.
             </summary>
+            <returns>The member map.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.BsonMemberMap.SetDefaultValue(System.Func{System.Object})">
+            <summary>
+            Sets the default value creator.
+            </summary>
+            <param name="defaultValueCreator">The default value creator (note: the supplied delegate must be thread safe).</param>
             <returns>The member map.</returns>
         </member>
         <member name="M:MongoDB.Bson.Serialization.BsonMemberMap.SetDefaultValue(System.Object)">
@@ -17141,30 +17317,41 @@
             Initializes a new instance of the ArraySerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.AddItem(System.Object,`0)">
             <summary>
-            Deserializes an object from a BsonReader.
+            Adds the item.
             </summary>
-            <param name="bsonReader">The BsonReader.</param>
-            <param name="nominalType">The nominal type of the object.</param>
-            <param name="actualType">The actual type of the object.</param>
-            <param name="options">The serialization options.</param>
-            <returns>An object.</returns>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.CreateInstance(System.Type)">
             <summary>
-            Gets the serialization info for individual items of an enumerable type.
+            Creates the instance.
             </summary>
-            <returns>The serialization info for the items.</returns>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.EnumerateItemsInSerializationOrder(System.Object)">
             <summary>
-            Serializes an object to a BsonWriter.
+            Enumerates the items.
             </summary>
-            <param name="bsonWriter">The BsonWriter.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="value">The object.</param>
-            <param name="options">The serialization options.</param>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ArraySerializer`1.VerifyTypes(System.Type,System.Type)">
+            <summary>
+            Verifies the types.
+            </summary>
+            <param name="nominalType">Type nominal type.</param>
+            <param name="actualType">The actual type.</param>
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.BsonIBsonSerializableSerializer">
             <summary>
@@ -17248,30 +17435,34 @@
             Initializes a new instance of the QueueSerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.AddItem(System.Object,System.Object)">
             <summary>
-            Deserializes an object from a BsonReader.
+            Adds the item.
             </summary>
-            <param name="bsonReader">The BsonReader.</param>
-            <param name="nominalType">The nominal type of the object.</param>
-            <param name="actualType">The actual type of the object.</param>
-            <param name="options">The serialization options.</param>
-            <returns>An object.</returns>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.CreateInstance(System.Type)">
             <summary>
-            Gets the serialization info for individual items of an enumerable type.
+            Creates the instance.
             </summary>
-            <returns>The serialization info for the items.</returns>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.EnumerateItemsInSerializationOrder(System.Object)">
             <summary>
-            Serializes an object to a BsonWriter.
+            Enumerates the items.
             </summary>
-            <param name="bsonWriter">The BsonWriter.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="value">The object.</param>
-            <param name="options">The serialization options.</param>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
         </member>
         <member name="P:MongoDB.Bson.Serialization.Serializers.QueueSerializer.Instance">
             <summary>
@@ -17289,30 +17480,34 @@
             Initializes a new instance of the QueueSerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.AddItem(System.Object,`0)">
             <summary>
-            Deserializes an object from a BsonReader.
+            Adds the item.
             </summary>
-            <param name="bsonReader">The BsonReader.</param>
-            <param name="nominalType">The nominal type of the object.</param>
-            <param name="actualType">The actual type of the object.</param>
-            <param name="options">The serialization options.</param>
-            <returns>An object.</returns>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.CreateInstance(System.Type)">
             <summary>
-            Gets the serialization info for individual items of an enumerable type.
+            Creates the instance.
             </summary>
-            <returns>The serialization info for the items.</returns>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.EnumerateItemsInSerializationOrder(System.Object)">
             <summary>
-            Serializes an object to a BsonWriter.
+            Enumerates the items.
             </summary>
-            <param name="bsonWriter">The BsonWriter.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="value">The object.</param>
-            <param name="options">The serialization options.</param>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.QueueSerializer`1.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.RawBsonArraySerializer">
             <summary>
@@ -17373,30 +17568,43 @@
             Initializes a new instance of the ReadOnlyCollectionSerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.AddItem(System.Object,`0)">
             <summary>
-            Deserializes an object from a BsonReader.
+            Adds the item.
             </summary>
-            <param name="bsonReader">The BsonReader.</param>
-            <param name="nominalType">The nominal type of the object.</param>
-            <param name="actualType">The actual type of the object.</param>
-            <param name="options">The serialization options.</param>
-            <returns>An object.</returns>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.CreateInstance(System.Type)">
             <summary>
-            Gets the serialization info for individual items of an enumerable type.
+            Creates the instance.
             </summary>
-            <returns>The serialization info for the items.</returns>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.EnumerateItemsInSerializationOrder(System.Object)">
             <summary>
-            Serializes an object to a BsonWriter.
+            Enumerates the items.
             </summary>
-            <param name="bsonWriter">The BsonWriter.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="value">The object.</param>
-            <param name="options">The serialization options.</param>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
+            <exception cref="T:MongoDB.Bson.BsonSerializationException"></exception>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1.GetDiscriminator(System.Type,System.Type)">
+            <summary>
+            Gets the discriminator.
+            </summary>
+            <param name="nominalType">Type nominal type.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The discriminator (or null if no discriminator is needed).</returns>
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.SByteSerializer">
             <summary>
@@ -17476,30 +17684,34 @@
             Initializes a new instance of the StackSerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.AddItem(System.Object,System.Object)">
             <summary>
-            Deserializes an object from a BsonReader.
+            Adds the item.
             </summary>
-            <param name="bsonReader">The BsonReader.</param>
-            <param name="nominalType">The nominal type of the object.</param>
-            <param name="actualType">The actual type of the object.</param>
-            <param name="options">The serialization options.</param>
-            <returns>An object.</returns>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.CreateInstance(System.Type)">
             <summary>
-            Gets the serialization info for individual items of an enumerable type.
+            Creates the instance.
             </summary>
-            <returns>The serialization info for the items.</returns>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.EnumerateItemsInSerializationOrder(System.Object)">
             <summary>
-            Serializes an object to a BsonWriter.
+            Enumerates the items.
             </summary>
-            <param name="bsonWriter">The BsonWriter.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="value">The object.</param>
-            <param name="options">The serialization options.</param>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
         </member>
         <member name="P:MongoDB.Bson.Serialization.Serializers.StackSerializer.Instance">
             <summary>
@@ -17517,30 +17729,34 @@
             Initializes a new instance of the StackSerializer class.
             </summary>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.AddItem(System.Object,`0)">
             <summary>
-            Deserializes an object from a BsonReader.
+            Adds the item.
             </summary>
-            <param name="bsonReader">The BsonReader.</param>
-            <param name="nominalType">The nominal type of the object.</param>
-            <param name="actualType">The actual type of the object.</param>
-            <param name="options">The serialization options.</param>
-            <returns>An object.</returns>
+            <param name="instance">The instance.</param>
+            <param name="item">The item.</param>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.GetItemSerializationInfo">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.CreateInstance(System.Type)">
             <summary>
-            Gets the serialization info for individual items of an enumerable type.
+            Creates the instance.
             </summary>
-            <returns>The serialization info for the items.</returns>
+            <param name="actualType">The actual type.</param>
+            <returns>The instance.</returns>
         </member>
-        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.EnumerateItemsInSerializationOrder(System.Object)">
             <summary>
-            Serializes an object to a BsonWriter.
+            Enumerates the items.
             </summary>
-            <param name="bsonWriter">The BsonWriter.</param>
-            <param name="nominalType">The nominal type.</param>
-            <param name="value">The object.</param>
-            <param name="options">The serialization options.</param>
+            <param name="instance">The instance.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.StackSerializer`1.FinalizeResult(System.Object,System.Type)">
+            <summary>
+            Finalizes the result.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="actualType">The actual type.</param>
+            <returns>The result.</returns>
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.StringSerializer">
             <summary>

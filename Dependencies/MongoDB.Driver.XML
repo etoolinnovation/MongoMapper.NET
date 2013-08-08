@@ -4202,6 +4202,23 @@
             <param name="nominalType">The nominal type.</param>
             <param name="options">The serialization options.</param>
         </member>
+        <member name="T:MongoDB.Driver.CanCommandBeSentToSecondary">
+            <summary>
+            Represents a container for the CanCommandBeSentToSecondary delegate.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.CanCommandBeSentToSecondary.DefaultImplementation(MongoDB.Bson.BsonDocument)">
+            <summary>
+            Default implementation of the CanCommandBeSentToSecondary delegate.
+            </summary>
+            <param name="document">The command.</param>
+            <returns>True if the command can be sent to a secondary member of a replica set.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.CanCommandBeSentToSecondary.Delegate">
+            <summary>
+            Gets or sets the CanCommandBeSentToSecondary delegate.
+            </summary>
+        </member>
         <member name="T:MongoDB.Driver.AggregateResult">
             <summary>
             Represents the results of a Aggregate command.
@@ -5324,6 +5341,31 @@
         <member name="P:MongoDB.Driver.ValidateCollectionResult.ExtentDetails.XPrev">
             <summary>
             Gets the prev extent.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Internal.MongoServerProxyType">
+            <summary>
+            Represents the type of an IMongoServerProxy.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Internal.MongoServerProxyType.Unknown">
+            <summary>
+            The type of the proxy is not yet known.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Internal.MongoServerProxyType.Direct">
+            <summary>
+            A proxy to a single node.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Internal.MongoServerProxyType.ReplicaSet">
+            <summary>
+            A proxy to a replica set.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Driver.Internal.MongoServerProxyType.Sharded">
+            <summary>
+            A proxy to a sharded router.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.Communication.Security.Authenticator">
@@ -9745,6 +9787,16 @@
             </summary>
             <param name="state">The state.</param>
         </member>
+        <member name="M:MongoDB.Driver.MongoServerInstance.UnsetPrimary">
+            <summary>
+            Unset the primary flag on this instance but retain all other information
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.MongoServerInstance.UnsetPrimarySecondary">
+            <summary>
+            Unset the primary flag on this instance but retain all other information
+            </summary>
+        </member>
         <member name="M:MongoDB.Driver.MongoServerInstance.SetState(MongoDB.Driver.MongoServerState,MongoDB.Driver.MongoServerInstance.ServerInformation)">
             <remarks>This method must be called outside of a lock.</remarks>
         </member>
@@ -10414,6 +10466,23 @@
             <summary>
             Gets or sets whether the user is a read-only user.
             </summary>
+        </member>
+        <member name="T:MongoDB.Driver.Operations.IConnectionProvider">
+            <summary>
+            Represents a source of connections.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Driver.Operations.IConnectionProvider.AcquireConnection">
+            <summary>
+            Acquires a connection.
+            </summary>
+            <returns>A connection.</returns>
+        </member>
+        <member name="M:MongoDB.Driver.Operations.IConnectionProvider.ReleaseConnection(MongoDB.Driver.Internal.MongoConnection)">
+            <summary>
+            Releases a connection.
+            </summary>
+            <param name="connection">The connection.</param>
         </member>
         <member name="T:MongoDB.Driver.PasswordEvidence">
             <summary>
@@ -13233,6 +13302,11 @@
             Gets the instances.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.Internal.IMongoServerProxy.ProxyType">
+            <summary>
+            Gets the type of the proxy.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.Internal.IMongoServerProxy.State">
             <summary>
             Gets the state.
@@ -13326,6 +13400,12 @@
             </summary>
             <param name="instance">The instance.</param>
         </member>
+        <member name="M:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.ProcessDisconnectedInstanceStateChange(MongoDB.Driver.MongoServerInstance)">
+            <summary>
+            Processes the disconnected instance state change.
+            </summary>
+            <param name="instance">The instance.</param>
+        </member>
         <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.BuildInfo">
             <summary>
             Gets the build info.
@@ -13339,6 +13419,11 @@
         <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.Instances">
             <summary>
             Gets the instances.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.ProxyType">
+            <summary>
+            Gets the type of the proxy.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.Internal.MultipleInstanceMongoServerProxy.State">
@@ -13395,6 +13480,11 @@
             <returns>
               <c>true</c> if the instance is valid; otherwise, <c>false</c>.
             </returns>
+        </member>
+        <member name="P:MongoDB.Driver.Internal.ShardedMongoServerProxy.ProxyType">
+            <summary>
+            Gets the type of the proxy.
+            </summary>
         </member>
         <member name="T:MongoDB.Driver.Internal.DirectMongoServerProxy">
             <summary>
@@ -13459,6 +13549,11 @@
             Gets the instances.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.Internal.DirectMongoServerProxy.ProxyType">
+            <summary>
+            Gets the type of the proxy.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.Internal.DirectMongoServerProxy.State">
             <summary>
             Gets the state.
@@ -13485,16 +13580,11 @@
             </summary>
             <returns>The list of all instances.</returns>
         </member>
-        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetPrimary">
-            <summary>
-            Gets the primary instance.
-            </summary>
-            <returns>The primary instance (or null if there is none).</returns>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetPrimaryAndSecondaries">
+        <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetPrimaryAndSecondaries(MongoDB.Driver.MongoServerInstance)">
             <summary>
             Gets a list of primary and secondary instances.
             </summary>
+            <param name="primary">The current primary.</param>
             <returns>The list of primary and secondary instances.</returns>
         </member>
         <member name="M:MongoDB.Driver.Internal.ConnectedInstanceCollection.GetSecondaries">
@@ -13582,88 +13672,19 @@
             Gets the instances.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.Internal.DiscoveringMongoServerProxy.ProxyType">
+            <summary>
+            Gets the type of the proxy.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.Internal.DiscoveringMongoServerProxy.ReplicaSetName">
+            <summary>
+            Gets the name of the replica set (null if not connected to a replica set).
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.Internal.DiscoveringMongoServerProxy.State">
             <summary>
             Gets the state.
-            </summary>
-        </member>
-        <member name="T:MongoDB.Driver.Internal.IndexCache">
-            <summary>
-            Represents a cache of the names of indexes that are known to exist on a given server.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.#ctor">
-            <summary>
-            Initializes a new instance of the IndexCache class.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Add(MongoDB.Driver.MongoCollection,System.String)">
-            <summary>
-            Adds the name of an index to the cache.
-            </summary>
-            <param name="collection">The collection that contains the index.</param>
-            <param name="indexName">The name of the index.</param>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Contains(MongoDB.Driver.MongoCollection,System.String)">
-            <summary>
-            Tests whether the cache contains the name of an index.
-            </summary>
-            <param name="collection">The collection that contains the index.</param>
-            <param name="indexName">The name of the index.</param>
-            <returns>True if the cache contains the named index.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Remove(MongoDB.Driver.MongoCollection,System.String)">
-            <summary>
-            Removes the name of an index from the cache.
-            </summary>
-            <param name="collection">The collection that contains the index.</param>
-            <param name="indexName">The name of the index.</param>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Reset">
-            <summary>
-            Resets the cache.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Reset(MongoDB.Driver.MongoCollection)">
-            <summary>
-            Resets part of the cache by removing all indexes for a collection.
-            </summary>
-            <param name="collection">The collection.</param>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Reset(MongoDB.Driver.MongoDatabase)">
-            <summary>
-            Resets part of the cache by removing all indexes for a database.
-            </summary>
-            <param name="database">The database.</param>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Reset(System.String)">
-            <summary>
-            Resets part of the cache by removing all indexes for a database.
-            </summary>
-            <param name="databaseName">The name of the database.</param>
-        </member>
-        <member name="M:MongoDB.Driver.Internal.IndexCache.Reset(System.String,System.String)">
-            <summary>
-            Resets part of the cache by removing all indexes for a collection.
-            </summary>
-            <param name="databaseName">The name of the database containing the collection.</param>
-            <param name="collectionName">The name of the collection.</param>
-        </member>
-        <member name="T:MongoDB.Driver.CanCommandBeSentToSecondary">
-            <summary>
-            Represents a container for the CanCommandBeSentToSecondary delegate.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Driver.CanCommandBeSentToSecondary.DefaultImplementation(MongoDB.Bson.BsonDocument)">
-            <summary>
-            Default implementation of the CanCommandBeSentToSecondary delegate.
-            </summary>
-            <param name="document">The command.</param>
-            <returns>True if the command can be sent to a secondary member of a replica set.</returns>
-        </member>
-        <member name="P:MongoDB.Driver.CanCommandBeSentToSecondary.Delegate">
-            <summary>
-            Gets or sets the CanCommandBeSentToSecondary delegate.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.MongoCursorEnumerator`1">
@@ -14001,6 +14022,12 @@
             </summary>
             <param name="instance">The instance.</param>
         </member>
+        <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.ProcessDisconnectedInstanceStateChange(MongoDB.Driver.MongoServerInstance)">
+            <summary>
+            Processes the disconnected instance state change.
+            </summary>
+            <param name="instance">The instance.</param>
+        </member>
         <member name="M:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.GetMatchingInstance(System.Collections.Generic.List{MongoDB.Driver.Internal.ConnectedInstanceCollection.InstanceWithPingTime},MongoDB.Driver.ReadPreference,System.TimeSpan)">
             <summary>
             Gets a randomly selected matching instance.
@@ -14009,6 +14036,19 @@
             <param name="readPreference">The read preference that must be matched.</param>
             <param name="secondaryAcceptableLatency">The maximum acceptable secondary latency.</param>
             <returns>A randomly selected matching instance.</returns>
+        </member>
+        <member name="P:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.Primary">
+            <summary>
+            Gets the primary.
+            </summary>
+            <value>
+            The primary.
+            </value>
+        </member>
+        <member name="P:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.ProxyType">
+            <summary>
+            Gets the type of the proxy.
+            </summary>
         </member>
         <member name="P:MongoDB.Driver.Internal.ReplicaSetMongoServerProxy.ReplicaSetName">
             <summary>
@@ -15486,6 +15526,14 @@
             <param name="database">The database containing the GridFS collections.</param>
             <param name="settings">The GridFS settings.</param>
         </member>
+        <member name="M:MongoDB.Driver.GridFS.MongoGridFS.#ctor(MongoDB.Driver.MongoServer,System.String,MongoDB.Driver.GridFS.MongoGridFSSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.GridFS.MongoGridFS"/> class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="databaseName">The name of the database.</param>
+            <param name="settings">The settings.</param>
+        </member>
         <member name="M:MongoDB.Driver.GridFS.MongoGridFS.AppendText(System.String)">
             <summary>
             Appends UTF-8 encoded text to an existing GridFS file.
@@ -15860,9 +15908,19 @@
             Gets the database containing the GridFS collections.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFS.DatabaseName">
+            <summary>
+            Gets the database containing the GridFS collections.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFS.Files">
             <summary>
             Gets the files collection.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFS.Server">
+            <summary>
+            Gets the server containing the GridFS collections.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFS.Settings">
@@ -15895,6 +15953,46 @@
             Initializes a new instance of the GridFSFileInfo class.
             </summary>
             <param name="gridFS">The GridFS file system that contains the GridFS file.</param>
+            <param name="remoteFileName">The remote file name.</param>
+            <param name="createOptions">The create options.</param>
+        </member>
+        <member name="M:MongoDB.Driver.GridFS.MongoGridFSFileInfo.#ctor(MongoDB.Driver.MongoServer,MongoDB.Driver.MongoServerInstance,System.String,MongoDB.Driver.GridFS.MongoGridFSSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.GridFS.MongoGridFSFileInfo"/> class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="serverInstance">The server instance.</param>
+            <param name="databaseName">Name of the database.</param>
+            <param name="gridFSSettings">The GridFS settings.</param>
+        </member>
+        <member name="M:MongoDB.Driver.GridFS.MongoGridFSFileInfo.#ctor(MongoDB.Driver.MongoServer,MongoDB.Driver.MongoServerInstance,System.String,MongoDB.Driver.GridFS.MongoGridFSSettings,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.GridFS.MongoGridFSFileInfo"/> class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="serverInstance">The server instance.</param>
+            <param name="databaseName">Name of the database.</param>
+            <param name="gridFSSettings">The GridFS settings.</param>
+            <param name="remoteFileName">The remote file name.</param>
+        </member>
+        <member name="M:MongoDB.Driver.GridFS.MongoGridFSFileInfo.#ctor(MongoDB.Driver.MongoServer,MongoDB.Driver.MongoServerInstance,System.String,MongoDB.Driver.GridFS.MongoGridFSSettings,MongoDB.Bson.BsonDocument)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.GridFS.MongoGridFSFileInfo"/> class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="serverInstance">The server instance.</param>
+            <param name="databaseName">Name of the database.</param>
+            <param name="gridFSSettings">The GridFS settings.</param>
+            <param name="fileInfo">The fileInfo.</param>
+        </member>
+        <member name="M:MongoDB.Driver.GridFS.MongoGridFSFileInfo.#ctor(MongoDB.Driver.MongoServer,MongoDB.Driver.MongoServerInstance,System.String,MongoDB.Driver.GridFS.MongoGridFSSettings,System.String,MongoDB.Driver.GridFS.MongoGridFSCreateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.GridFS.MongoGridFSFileInfo"/> class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="serverInstance">The server instance.</param>
+            <param name="databaseName">Name of the database.</param>
+            <param name="gridFSSettings">The GridFS settings.</param>
             <param name="remoteFileName">The remote file name.</param>
             <param name="createOptions">The create options.</param>
         </member>
@@ -16039,6 +16137,11 @@
             Gets the content type.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.DatabaseName">
+            <summary>
+            Gets the database name.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.Exists">
             <summary>
             Gets whether the GridFS file exists.
@@ -16047,6 +16150,11 @@
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.GridFS">
             <summary>
             Gets the GridFS file system that contains this GridFS file.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.GridFSSettings">
+            <summary>
+            Gets the GridFS settings.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.Id">
@@ -16072,6 +16180,16 @@
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.Name">
             <summary>
             Gets the remote file name.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.Server">
+            <summary>
+            Gets the server.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.ServerInstance">
+            <summary>
+            Gets the server instance;
             </summary>
         </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSFileInfo.UploadDate">
@@ -16177,9 +16295,24 @@
             Gets the files collection name.
             </summary>
         </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.GuidRepresentation">
+            <summary>
+            Gets or sets the GuidRepresentation.
+            </summary>
+        </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.IsFrozen">
             <summary>
             Gets whether the settings are frozen.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.ReadEncoding">
+            <summary>
+            Gets or sets the read encoding.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.ReadPreference">
+            <summary>
+            Gets or sets the ReadPreference.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.Root">
@@ -16205,6 +16338,11 @@
         <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.WriteConcern">
             <summary>
             Gets or sets the WriteConcern.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Driver.GridFS.MongoGridFSSettings.WriteEncoding">
+            <summary>
+            Gets or sets the write encoding.
             </summary>
         </member>
         <member name="T:MongoDB.Driver.GridFS.MongoGridFSStream">
@@ -17004,13 +17142,6 @@
             </summary>
             <param name="writeConcern">The write concern to use for this Insert.</param>
             <returns>A WriteConcernResult (or null if WriteConcern is disabled).</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoCollection.ResetIndexCache">
-            <summary>
-            Removes all entries for this collection in the index cache used by EnsureIndex. Call this method
-            when you know (or suspect) that a process other than this one may have dropped one or
-            more indexes.
-            </summary>
         </member>
         <member name="M:MongoDB.Driver.MongoCollection.Save``1(``0)">
             <summary>
@@ -17987,13 +18118,6 @@
             <param name="serverInstance">The server instance this request should be tied to.</param>
             <returns>A helper object that implements IDisposable and calls <see cref="M:MongoDB.Driver.MongoServer.RequestDone"/> from the Dispose method.</returns>
         </member>
-        <member name="M:MongoDB.Driver.MongoServer.ResetIndexCache">
-            <summary>
-            Removes all entries in the index cache used by EnsureIndex. Call this method
-            when you know (or suspect) that a process other than this one may have dropped one or
-            more indexes.
-            </summary>
-        </member>
         <member name="M:MongoDB.Driver.MongoServer.Shutdown">
             <summary>
             Shuts down the server.
@@ -18027,11 +18151,6 @@
         <member name="P:MongoDB.Driver.MongoServer.ConnectionAttempt">
             <summary>
             Gets the most recent connection attempt number.
-            </summary>
-        </member>
-        <member name="P:MongoDB.Driver.MongoServer.IndexCache">
-            <summary>
-            Gets the index cache (used by EnsureIndex) for this server.
             </summary>
         </member>
         <member name="P:MongoDB.Driver.MongoServer.Instance">
@@ -19009,13 +19128,6 @@
             </summary>
             <param name="readPreference">The read preference.</param>
             <returns>A helper object that implements IDisposable and calls <see cref="M:MongoDB.Driver.MongoDatabase.RequestDone"/> from the Dispose method.</returns>
-        </member>
-        <member name="M:MongoDB.Driver.MongoDatabase.ResetIndexCache">
-            <summary>
-            Removes all entries for this database in the index cache used by EnsureIndex. Call this method
-            when you know (or suspect) that a process other than this one may have dropped one or
-            more indexes.
-            </summary>
         </member>
         <member name="M:MongoDB.Driver.MongoDatabase.RunCommand(MongoDB.Driver.IMongoCommand)">
             <summary>
