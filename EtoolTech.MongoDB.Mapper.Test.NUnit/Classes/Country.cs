@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -20,6 +21,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         [BsonElement("p")]
         public long[] Pos { get; set; }
+
+        public List<double[]> Area { get; set; }
 
         #endregion
 

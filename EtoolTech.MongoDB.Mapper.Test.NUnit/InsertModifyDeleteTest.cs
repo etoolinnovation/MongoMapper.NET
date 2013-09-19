@@ -54,6 +54,15 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             }
 
             c = new Country {Code = "UK", Name = "Reino Unido"};
+            c.Area = new List<double[]>();
+            c.Area.Add(new double[] { 45, 67 });
+            c.Area.Add(new double[] { 45, 67 });
+            c.Area.Add(new double[] { 45, 67 });
+            c.Area.Add(new double[] { 45, 67 });
+            c.Area.Add(new double[] { 45, 67 });
+            c.Area.Add(new double[] { 45, 67 });
+            c.Area.Add(new double[] { 45, 67 });
+            
             c.Save();
 
             c = new Country {Code = "UK", Name = "Reino Unido"};
