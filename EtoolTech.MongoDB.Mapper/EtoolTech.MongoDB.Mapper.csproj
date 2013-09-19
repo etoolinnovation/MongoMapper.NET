@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\MongoGeo2SSphereIndex.cs" />
     <Compile Include="Attributes\MongoGeo2DIndex.cs" />
     <Compile Include="Attributes\MongoCollectionName.cs" />
     <Compile Include="Attributes\MongoCustomDiscriminatorType.cs" />
