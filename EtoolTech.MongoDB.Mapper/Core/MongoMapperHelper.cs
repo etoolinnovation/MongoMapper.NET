@@ -272,9 +272,9 @@ namespace EtoolTech.MongoDB.Mapper
 
                     var geoSphereIndexAtt =
                      (MongoGeo2DSphereIndex)T.GetCustomAttributes(typeof(MongoGeo2DSphereIndex), false).FirstOrDefault();
-                    if (geoindexAtt != null)
+                    if (geoSphereIndexAtt != null)
                     {
-                        BufferIndexes[T.Name].Add("2DSphere|" + geoindexAtt.IndexField);
+                        BufferIndexes[T.Name].Add("2DSphere|" + geoSphereIndexAtt.IndexField);
                     }
                 }
 

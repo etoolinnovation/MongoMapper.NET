@@ -8,6 +8,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [Serializable]
     [MongoKey(KeyFields = "Code")]    
     [MongoCollectionName(Name="Paises")]
+    [MongoGeo2DIndex(IndexField="Pos")]
+    [MongoGeo2DSphereIndex(IndexField="Area")]
     public class Country : MongoMapper
     {
         #region Public Properties
@@ -22,7 +24,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [BsonElement("p")]
         public long[] Pos { get; set; }
 
-        public List<double[]> Area { get; set; }
+        public GeoArea Area { get; set; }
 
         #endregion
 
@@ -38,5 +40,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         }
 
         #endregion
+    }
+
+    [Serializable]
+    public class GeoArea
+    {
+        public string type { get; set; }
+        public double[][][] coordinates { get; set; }
     }
 }
