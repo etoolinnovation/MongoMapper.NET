@@ -177,7 +177,7 @@ namespace EtoolTech.MongoDB.Mapper
             object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
             IMongoQuery query = MongoQuery.Eq(typeof(T).Name, fkFieldName, value);
             return
-                CollectionsManager.GetCollection(String.Format("{0}_Collection", fkClassName)).FindAs<T>(query).ToList();
+                CollectionsManager.GetCollection(fkClassName).FindAs<T>(query).ToList();
         }
 
         public List<string> GetUpRelations(Type T)
