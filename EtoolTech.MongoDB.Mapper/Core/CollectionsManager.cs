@@ -26,15 +26,15 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static string GetCollectioName(string Name)
         {
+            if (CustomCollectionsName.ContainsKey(Name))
+            {
+                Name = CustomCollectionsName[Name].Name;
+            }
+            
             if (!Name.EndsWith("_Collection"))
             {
                 Name = String.Format("{0}_Collection", Name);
-            }
-
-            if (CustomCollectionsName.ContainsKey(Name))
-            {
-                return CustomCollectionsName[Name].Name;
-            }
+            }         
 
             return Name;
         }
