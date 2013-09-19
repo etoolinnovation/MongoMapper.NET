@@ -12,6 +12,22 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [MongoGeo2DSphereIndex(IndexField="Area")]
     public class Country : MongoMapper
     {
+        public Country()
+        {
+            //Paris
+            var ParisArea = new GeoArea();
+            ParisArea.type = "Polygon";
+            var coordinates = new List<double[]>();
+            coordinates.Add(new double[] { 48.979766324449706, 2.098388671875 });
+            coordinates.Add(new double[] { 48.972555195463336, 2.5982666015625 });
+            coordinates.Add(new double[] { 48.683254235765325, 2.603759765625 });
+            coordinates.Add(new double[] { 48.66874533279169, 2.120361328125 });
+            coordinates.Add(new double[] { 48.979766324449706, 2.098388671875 });
+            ParisArea.coordinates = new[] { coordinates.ToArray() };
+
+            this.Area = ParisArea;
+        }
+        
         #region Public Properties
 
         [MongoDownRelation(ObjectName = "Person", FieldName = "Country")]
