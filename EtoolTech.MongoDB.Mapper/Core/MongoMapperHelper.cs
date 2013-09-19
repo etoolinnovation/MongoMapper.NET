@@ -42,6 +42,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Object LockObjectCustomFieldNames = new Object();
 
+        private static readonly Object LockObjectCustomCollectionNames = new Object();
+
         private static readonly HashSet<Type> SupportedTypesLits = new HashSet<Type> {typeof (string), typeof (decimal), typeof (int), typeof (long), typeof (DateTime), typeof (bool)};
 
         #endregion
@@ -113,6 +115,24 @@ namespace EtoolTech.MongoDB.Mapper
 
         internal static void RebuildClass(Type ClassType, bool RepairCollection)
         {
+            
+            //MongoCollectionName
+            if (!CollectionsManager.CustomCollectionsName.ContainsKey(ClassType.Name))
+            {
+                lock(LockObjectCustomFieldNames)
+                {
+                     if (!CollectionsManager.CustomCollectionsName.ContainsKey(ClassType.Name))
+                     {
+                            var colNameAtt = (MongoCollectionName) ClassType.GetCustomAttributes(typeof (MongoCollectionName), false).FirstOrDefault();
+                            if (colNameAtt != null)
+                            {
+                                CollectionsManager.CustomCollectionsName.Add(ClassType.Name,colNameAtt);
+                            }
+                     }
+                }
+            }
+            
+            
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
                 && !Db(ClassType.Name).CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
             {
@@ -188,9 +208,7 @@ namespace EtoolTech.MongoDB.Mapper
                 }
             }
 
-
-            //TODO: MongoCollectionName
-
+     
             if (!ConfigManager.Config.Context.Generated || RepairCollection)
             {
                 foreach (string index in GetIndexes(ClassType))
