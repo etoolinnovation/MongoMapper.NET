@@ -43,22 +43,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.core">
-      <HintPath>..\packages\NUnitTestAdapter.0.97\lib\nunit.core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.core.interfaces">
-      <HintPath>..\packages\NUnitTestAdapter.0.97\lib\nunit.core.interfaces.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.util">
-      <HintPath>..\packages\NUnitTestAdapter.0.97\lib\nunit.util.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NUnit.VisualStudio.TestAdapter">
-      <HintPath>..\packages\NUnitTestAdapter.0.97\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -85,6 +69,7 @@
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
+    <Compile Include="Core\GeoHelper.cs" />
     <Compile Include="Interfaces\IMongoMapperCollection.cs" />
     <Compile Include="Interfaces\IMongoMapperVersionable.cs" />
     <Compile Include="Interfaces\IWriter.cs" />

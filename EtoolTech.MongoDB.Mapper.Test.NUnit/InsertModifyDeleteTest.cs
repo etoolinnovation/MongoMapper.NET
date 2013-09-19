@@ -40,8 +40,20 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             Helper.DropAllCollections();
 
+
+            //Paris
+            var ParisArea = new GeoArea();
+            ParisArea.type = "Polygon";            
+            var coordinates = new List<double[]>();
+            coordinates.Add(new double[] { 48.979766324449706, 2.098388671875 });
+            coordinates.Add(new double[] { 48.972555195463336, 2.5982666015625 });
+            coordinates.Add(new double[] { 48.683254235765325, 2.603759765625 });
+            coordinates.Add(new double[] { 48.66874533279169, 2.120361328125 });
+            coordinates.Add(new double[] { 48.979766324449706, 2.098388671875 });
+            ParisArea.coordinates = new [] {coordinates.ToArray()};
+
             //Insert de Paises
-            var c = new Country {Code = "es", Name = "España"};
+            var c = new Country {Code = "es", Name = "España", Area = ParisArea};
             try
             {
                 c.Save();
@@ -53,10 +65,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 c.Save();
             }
 
-            c = new Country {Code = "UK", Name = "Reino Unido"};
+            c = new Country { Code = "UK", Name = "Reino Unido", Area = ParisArea};
             c.Save();
 
-            c = new Country {Code = "UK", Name = "Reino Unido"};
+            c = new Country { Code = "UK", Name = "Reino Unido", Area = ParisArea };
             try
             {
                 c.Save();
@@ -66,7 +78,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
 
-            c = new Country {Code = "US", Name = "Estados Unidos"};
+            c = new Country { Code = "US", Name = "Estados Unidos", Area = ParisArea };
             c.Save();
 
             var Countries = new CountryCollection();
