@@ -9749,6 +9749,11 @@
             Checks whether the server is alive (throws an exception if not).
             </summary>
         </member>
+        <member name="M:MongoDB.Driver.MongoServerInstance.RefreshStateAsSoonAsPossible">
+            <summary>
+            Refreshes the state as soon as possible.
+            </summary>
+        </member>
         <member name="M:MongoDB.Driver.MongoServerInstance.VerifyState">
             <summary>
             Verifies the state of the server instance.
@@ -16472,11 +16477,6 @@
         <member name="F:MongoDB.Driver.MongoServerState.ConnectedToSubset">
             <summary>
             Connected to a subset of the replica set members.
-            </summary>
-        </member>
-        <member name="F:MongoDB.Driver.MongoServerState.Unknown">
-            <summary>
-            The state is temporarily unknown.
             </summary>
         </member>
         <member name="F:MongoDB.Driver.MongoServerState.Disconnecting">
