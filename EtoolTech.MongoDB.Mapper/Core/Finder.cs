@@ -133,22 +133,14 @@ namespace EtoolTech.MongoDB.Mapper
             IMongoQuery query =
                 Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(typeof(T).Name, keyValue.Key, keyValue.Value)).ToArray());
 
-            MongoCursor<T> result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);          
 
-            if (ConfigManager.Out != null)
-            {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
-                ConfigManager.Out.WriteLine(result.Query.ToString());
-                ConfigManager.Out.WriteLine(result.Explain().ToJson());
-                ConfigManager.Out.WriteLine();
-            }
-
-            if (result.Size() == 0)
+            if (result == null)
             {
                 throw new FindByKeyNotFoundException();
             }
-            T o = result.First();            
-            return o;
+                      
+            return result;
         }
 
         #endregion

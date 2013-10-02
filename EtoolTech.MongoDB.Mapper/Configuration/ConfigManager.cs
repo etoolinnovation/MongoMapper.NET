@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
@@ -18,6 +20,10 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         private static readonly Dictionary<string, MongoClientSettings> SettingsByObject =
             new Dictionary<string, MongoClientSettings>();
+
+        private static readonly Dictionary<string, string> UrlByObject =
+            new Dictionary<string, string>();
+
 
         private static readonly Object LockObject = new Object();
 
@@ -117,8 +123,20 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             {
                 if (!SettingsByObject.ContainsKey(ObjName))
                 {
-                    var url = new MongoUrl(urlString);
-                    SettingsByObject.Add(ObjName, MongoClientSettings.FromUrl(url));
+                    MongoClientSettings clientSettings = null;
+
+                    if (UrlByObject.ContainsValue(urlString))
+                    {
+                        clientSettings = SettingsByObject[UrlByObject.First(o => o.Value == urlString).Key];
+                    }
+                    else
+                    {
+                        var url = new MongoUrl(urlString);
+                        clientSettings = MongoClientSettings.FromUrl(url);
+                    }
+
+                    UrlByObject.Add(ObjName,urlString);
+                    SettingsByObject.Add(ObjName, clientSettings);
                 }
             }
 
