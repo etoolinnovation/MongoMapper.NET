@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Configuration;
+using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Driver.Builders;
 using NUnit.Framework;
 
@@ -176,6 +177,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(1, plist.Count);
             Assert.AreEqual(plist[0].Name, "FindBYKey Name");
+
+            c = new Country();
+
+            //Assert.Throws(typeof(FindByKeyNotFoundException), c.FillByKey("XXXXXX"));
+            
         }
 
         [Test]
