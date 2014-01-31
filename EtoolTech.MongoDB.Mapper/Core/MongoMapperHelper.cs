@@ -22,6 +22,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly Dictionary<string, List<string>> BufferIndexes = new Dictionary<string, List<string>>();
 
+        private static readonly Dictionary<string, string> BufferTTLIndex = new Dictionary<string, string>();
+
         private static readonly Dictionary<string, List<string>> BufferPrimaryKey = new Dictionary<string, List<string>>();
 
         internal static readonly Dictionary<string, Dictionary<string, object>> BufferDefaultValues = new Dictionary<string, Dictionary<string, object>>();
@@ -35,6 +37,8 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Object LockObjectIdIncrementables = new Object();
 
         private static readonly Object LockObjectIndex = new Object();
+
+        private static readonly Object LockObjectTTL = new Object();
 
         private static readonly Object LockObjectPk = new Object();
 
@@ -98,6 +102,32 @@ namespace EtoolTech.MongoDB.Mapper
                 }
 
                 return BufferPrimaryKey[T.Name];
+            }
+        }
+
+        public static string GetTTLIndex(Type T)
+        {
+            if (BufferTTLIndex.ContainsKey(T.Name))
+            {
+                return BufferTTLIndex[T.Name];
+            }
+
+            lock (LockObjectTTL)
+            {
+                if (!BufferTTLIndex.ContainsKey(T.Name))
+                {
+                    var keyAtt = (MongoTTLIndex)T.GetCustomAttributes(typeof(MongoTTLIndex), false).FirstOrDefault();
+                    if (keyAtt != null)
+                    {                       
+                        BufferTTLIndex.Add(T.Name, keyAtt.IndexField + "," + keyAtt.Seconds);
+                    }
+                    else
+                    {
+                        BufferTTLIndex.Add(T.Name, string.Empty);
+                    }
+                }
+
+                return BufferTTLIndex[T.Name];
             }
         }
 
@@ -219,7 +249,7 @@ namespace EtoolTech.MongoDB.Mapper
                             CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
                                 IndexKeys.GeoSpatial(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split('|')[1]).Trim()));                        
                     }
-                    if (index.StartsWith("2DSphere|"))
+                    else if (index.StartsWith("2DSphere|"))
                     {
                         CollectionsManager.GetCollection(
                                                  CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
@@ -237,6 +267,17 @@ namespace EtoolTech.MongoDB.Mapper
                 {
                     CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
                         IndexKeys.Ascending(MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(pkField => pkField.Trim()).ToArray()), IndexOptions.SetUnique(true));
+                }
+
+                string ttlIndex = GetTTLIndex(ClassType);
+                if (ttlIndex != string.Empty)
+                {
+                    var tmpIndex = ttlIndex.Split(',');
+                    var keys = IndexKeys.Ascending(tmpIndex[0].Trim());
+                    var options = IndexOptions.SetTimeToLive(TimeSpan.FromSeconds(int.Parse(tmpIndex[1].Trim())));
+                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name))
+                        .EnsureIndex(keys, options);
+
                 }
             }
         }

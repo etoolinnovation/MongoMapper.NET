@@ -62,6 +62,7 @@
     <Compile Include="Attributes\MongoCustomDiscriminatorType.cs" />
     <Compile Include="Attributes\MongoChildCollection.cs" />
     <Compile Include="Attributes\MongoDownRelation.cs" />
+    <Compile Include="Attributes\MongoTTLIndex.cs" />
     <Compile Include="Attributes\MongoIndex.cs" />
     <Compile Include="Attributes\MongoMapperIdIncrementable.cs" />
     <Compile Include="Attributes\MongoPropertyValidator.cs" />
