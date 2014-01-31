@@ -249,7 +249,7 @@ namespace EtoolTech.MongoDB.Mapper
                             CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
                                 IndexKeys.GeoSpatial(MongoMapperHelper.ConvertFieldName(ClassType.Name,index.Split('|')[1]).Trim()));                        
                     }
-                    if (index.StartsWith("2DSphere|"))
+                    else if (index.StartsWith("2DSphere|"))
                     {
                         CollectionsManager.GetCollection(
                                                  CollectionsManager.GetCollectioName(ClassType.Name)).EnsureIndex(
