@@ -7584,6 +7584,64 @@
             Gets an instance of the BsonBooleanSerializer class.
             </summary>
         </member>
+        <member name="T:MongoDB.Bson.Serialization.Serializers.BsonValueCSharpNullSerializer">
+            <summary>
+            Represents a serializer for BsonValue members of a BsonClassMap.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Bson.Serialization.IBsonDocumentSerializer">
+            <summary>
+            Contract for composite serializers that contain a number of named serializers.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.IBsonDocumentSerializer.GetMemberSerializationInfo(System.String)">
+            <summary>
+            Gets the serialization info for a member.
+            </summary>
+            <param name="memberName">The member name.</param>
+            <returns>The serialization info for the member.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.BsonValueCSharpNullSerializer.Deserialize(MongoDB.Bson.IO.BsonReader,System.Type,System.Type,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+            <summary>
+            Deserializes an object from a BsonReader.
+            </summary>
+            <param name="bsonReader">The BsonReader.</param>
+            <param name="nominalType">The nominal type of the object.</param>
+            <param name="actualType">The actual type of the object.</param>
+            <param name="options">The serialization options.</param>
+            <returns>An object.</returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.BsonValueCSharpNullSerializer.GetMemberSerializationInfo(System.String)">
+            <summary>
+            Gets the serialization info for a member.
+            </summary>
+            <param name="memberName">The member name.</param>
+            <returns>
+            The serialization info for the member.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.BsonValueCSharpNullSerializer.GetItemSerializationInfo">
+            <summary>
+            Gets the serialization info for individual items of the array.
+            </summary>
+            <returns>
+            The serialization info for the items.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.BsonValueCSharpNullSerializer.Serialize(MongoDB.Bson.IO.BsonWriter,System.Type,System.Object,MongoDB.Bson.Serialization.IBsonSerializationOptions)">
+            <summary>
+            Serializes an object to a BsonWriter.
+            </summary>
+            <param name="bsonWriter">The BsonWriter.</param>
+            <param name="nominalType">The nominal type.</param>
+            <param name="value">The object.</param>
+            <param name="options">The serialization options.</param>
+        </member>
+        <member name="P:MongoDB.Bson.Serialization.Serializers.BsonValueCSharpNullSerializer.Instance">
+            <summary>
+            Gets an instance of the BsonBooleanSerializer class.
+            </summary>
+        </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.BsonDateTimeSerializer">
             <summary>
             Represents a serializer for BsonDateTimes.
@@ -7623,18 +7681,6 @@
             Represents a serializer for TClass (a subclass of BsonDocumentBackedClass).
             </summary>
             <typeparam name="TClass">The subclass of BsonDocumentBackedClass.</typeparam>
-        </member>
-        <member name="T:MongoDB.Bson.Serialization.IBsonDocumentSerializer">
-            <summary>
-            Contract for composite serializers that contain a number of named serializers.
-            </summary>
-        </member>
-        <member name="M:MongoDB.Bson.Serialization.IBsonDocumentSerializer.GetMemberSerializationInfo(System.String)">
-            <summary>
-            Gets the serialization info for a member.
-            </summary>
-            <param name="memberName">The member name.</param>
-            <returns>The serialization info for the member.</returns>
         </member>
         <member name="M:MongoDB.Bson.Serialization.BsonDocumentBackedClassSerializer`1.#ctor">
             <summary>
@@ -17800,6 +17846,11 @@
             <param name="value">The object.</param>
             <param name="options">The serialization options.</param>
         </member>
+        <member name="P:MongoDB.Bson.Serialization.Serializers.RawBsonArraySerializer.Instance">
+            <summary>
+            Gets an instance of the RawBsonArraySerializer class.
+            </summary>
+        </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.RawBsonDocumentSerializer">
             <summary>
             Represents a serializer for RawBsonDocuments.
@@ -17823,6 +17874,11 @@
             <param name="nominalType">The nominal type.</param>
             <param name="value">The object.</param>
             <param name="options">The serialization options.</param>
+        </member>
+        <member name="P:MongoDB.Bson.Serialization.Serializers.RawBsonDocumentSerializer.Instance">
+            <summary>
+            Gets an instance of the RawBsonDocumentSerializer class.
+            </summary>
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.ReadOnlyCollectionSerializer`1">
             <summary>
