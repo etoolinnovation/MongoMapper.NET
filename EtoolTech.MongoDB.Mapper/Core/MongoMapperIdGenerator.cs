@@ -76,9 +76,17 @@ namespace EtoolTech.MongoDB.Mapper
 
         private FindAndModifyResult FindAndModifyResult(string ObjName)
         {
-            FindAndModifyResult result =
-                MongoMapperHelper.Db("Counters", true).GetCollection("Counters").FindAndModify(
-                    Query.EQ("document", ObjName), null, Update.Inc("last", (long) 1), true, true);
+
+            var args = new FindAndModifyArgs()
+            {
+                Query = Query.EQ("document", ObjName),
+                SortBy = null,
+                Update = Update.Inc("last", (long)1),
+                VersionReturned = FindAndModifyDocumentVersion.Modified,
+                Upsert = true
+            };
+            
+            FindAndModifyResult result =MongoMapperHelper.Db("Counters", true).GetCollection("Counters").FindAndModify(args);
             return result;
         }
 
