@@ -316,9 +316,15 @@ namespace EtoolTech.MongoDB.Mapper
             }
             IMongoQuery query = Query.EQ("_id", m_id);
 
-            FindAndModifyResult result =
-                CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).
-                    FindAndModify(query, null, Update, Refill, true);
+            var args = new FindAndModifyArgs()
+            {
+                Query = query,
+                SortBy = null,
+                Update = Update,
+                VersionReturned = Refill ? FindAndModifyDocumentVersion.Modified : FindAndModifyDocumentVersion.Original
+            };
+
+            FindAndModifyResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndModify(args);
 
 
             if (!String.IsNullOrEmpty(result.ErrorMessage))

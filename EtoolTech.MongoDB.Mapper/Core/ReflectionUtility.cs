@@ -13,7 +13,19 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static void BuildSchema(Assembly Assembly)
         {
-            List<Type> types = Assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
+            BuildSchema(Assembly, String.Empty);
+        }
+
+
+        public static void BuildSchema(Assembly Assembly, string ClassName)
+        {
+            List<Type> types = null;
+
+            if (String.IsNullOrEmpty(ClassName))
+                types = Assembly.GetTypes().Where(t => t.BaseType == typeof (MongoMapper)).ToList();
+            else
+                types = Assembly.GetTypes().Where(t => t.BaseType == typeof(MongoMapper) && t.Name == ClassName).ToList();
+
             foreach (Type type in types)
             {
                 MongoMapperHelper.RebuildClass(type, true);
