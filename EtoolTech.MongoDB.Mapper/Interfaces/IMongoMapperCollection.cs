@@ -15,7 +15,6 @@ namespace EtoolTech.MongoDB.Mapper
         MongoCursor<T> Find();
         List<T> ToList();
         T First();
-        T Last();
-        IEnumerator<T> GetEnumerator();
+        T Last();        
     }
 }

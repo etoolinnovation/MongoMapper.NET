@@ -136,7 +136,7 @@ namespace EtoolTech.MongoDB.Mapper
                                         "{0}|{1}|{2}", fieldInfo.Name, relation.ObjectName, relation.FieldName));
                                 if (!ConfigManager.Config.Context.Generated)
                                 {
-                                    CollectionsManager.GetCollection(relation.ObjectName).EnsureIndex(
+									CollectionsManager.GetCollection(relation.ObjectName).CreateIndex(
                                         MongoMapperHelper.ConvertFieldName(relation.ObjectName,relation.FieldName));
                                 }
                             }
@@ -216,7 +216,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                             if (!ConfigManager.Config.Context.Generated)
                             {
-                                CollectionsManager.GetCollection(T.Name).EnsureIndex(MongoMapperHelper.ConvertFieldName(T.Name,fieldInfo.Name));
+								CollectionsManager.GetCollection(T.Name).CreateIndex(MongoMapperHelper.ConvertFieldName(T.Name,fieldInfo.Name));
                             }
                         }
                     }
