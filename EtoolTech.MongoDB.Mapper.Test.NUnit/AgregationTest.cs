@@ -44,12 +44,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 				};
 				p.Save();
 			}
-				
+
 			var operations = new []{
 				new BsonDocument {
 					{
 						//$Country es $c
-						"$group", new BsonDocument{ { "_id" , "$c" } ,
+						"$group", new BsonDocument{ { "_id" , "$" + MongoMapperHelper.ConvertFieldName("Person","Country") } ,
 							{"Total" , new BsonDocument{ {"$sum",1} } },
 						}
 					}
