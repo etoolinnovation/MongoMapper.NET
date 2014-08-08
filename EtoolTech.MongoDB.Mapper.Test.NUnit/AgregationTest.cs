@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using MongoDB.Bson;
 using EtoolTech.MongoDB.Mapper;
+using System;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
@@ -10,6 +11,40 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 		[Test]
 		public void TestGroupSum()
 		{
+			Helper.DropAllCollections();
+
+			var c = new Country {Code = "NL", Name = "Holanda"};
+			c.Save();
+
+			c = new Country {Code = "ES", Name = "SPAIN"};
+			c.Save();
+
+			for (int i = 0; i < 10; i++) {
+				var p = new Person
+				{
+					Name = i.ToString(),
+					Age = i,
+					BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+					Married = true,
+					Country = "ES",
+					BankBalance = decimal.Parse("3500,00")
+				};
+				p.Save();
+			}
+
+			for (int i = 0; i < 5; i++) {
+				var p = new Person
+				{
+					Name = i.ToString(),
+					Age = i,
+					BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
+					Married = true,
+					Country = "NL",
+					BankBalance = decimal.Parse("3500,00")
+				};
+				p.Save();
+			}
+				
 			var operations = new []{
 				new BsonDocument {
 					{
@@ -20,11 +55,17 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 				}
 			};
 
-			var mongoresult = MongoMapper.Aggregate<Country>(operations);
+			var mongoresult = MongoMapper.Aggregate<Person>(operations);
+
 
 			foreach (var document in mongoresult)
 			{
-				//TODO: document["_id"].ToString(), long.Parse(document["Total"].ToString()) });
+				if (document ["_id"].ToString () == "ES")
+					Assert.AreEqual (10, int.Parse (document ["Total"].ToString ()));
+				else if (document ["_id"].ToString () == "NL")
+					Assert.AreEqual (5, int.Parse (document ["Total"].ToString ()));
+				else
+					throw new InconclusiveException ("");
 			}
 
 
