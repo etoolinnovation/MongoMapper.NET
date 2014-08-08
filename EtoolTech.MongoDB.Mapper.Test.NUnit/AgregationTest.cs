@@ -48,7 +48,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 			var operations = new []{
 				new BsonDocument {
 					{
-						"$group", new BsonDocument{ { "_id" , "$Country" } ,
+						//$Country es $c
+						"$group", new BsonDocument{ { "_id" , "$c" } ,
 							{"Total" , new BsonDocument{ {"$sum",1} } },
 						}
 					}
