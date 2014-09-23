@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -35,6 +37,29 @@ namespace EtoolTech.MongoDB.Mapper
         {
             Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();          
             return Cursor;
+        }
+
+
+        public T Pop(IMongoQuery CustomQuery, IMongoSortBy SortBy)
+        {
+            var col = CollectionsManager.GetCollection(typeof(T).Name);
+
+            var args = new FindAndRemoveArgs {SortBy = SortBy, Query = CustomQuery};
+
+            var result = col.FindAndRemove(args);
+
+            if (result.Ok)
+            {
+                return result.GetModifiedDocumentAs<T>();
+            }
+
+            return default(T);
+
+        }
+
+        public T Pop()
+        {
+            return Pop(Query.Null, SortBy.Ascending("$natural"));
         }
 
         public long Total
