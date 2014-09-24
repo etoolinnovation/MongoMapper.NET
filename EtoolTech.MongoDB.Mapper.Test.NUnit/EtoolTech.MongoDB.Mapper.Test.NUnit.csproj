@@ -58,6 +58,7 @@
     <Compile Include="MongoTestServer\MongoTestInstance.cs" />
     <Compile Include="MongoTestServer\MongoTestServer.cs" />
     <Compile Include="OriginalObjectTest.cs" />
+    <Compile Include="PopTest.cs" />
     <Compile Include="ReadmeTest.cs" />
     <Compile Include="ReflectionUtilityTest.cs" />
     <Compile Include="RelationsTest.cs" />

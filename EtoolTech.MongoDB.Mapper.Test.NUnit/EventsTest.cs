@@ -21,11 +21,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(c3.Name, "Francia");
         }
 
-
+		[Test]
         public void TextTest()
         {
             byte[] bytes = Encoding.GetEncoding("UTF-8").GetBytes("1Ñ");
             string s = System.Text.Encoding.UTF8.GetString(bytes);
+			Assert.AreEqual ("1Ñ", s);
         }
     }
 }

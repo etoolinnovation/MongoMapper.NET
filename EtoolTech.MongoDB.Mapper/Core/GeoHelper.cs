@@ -22,8 +22,7 @@ namespace EtoolTech.MongoDB.Mapper.Core
         {
             List<double[]> result = new List<double[]>();
             foreach (var c in Poligon.Coordinates.Exterior.Positions)
-            { 
-               var c2 = c;
+            {                
                var loc = new double[] { c.Longitude, c.Latitude };
                result.Add(loc);
             }
