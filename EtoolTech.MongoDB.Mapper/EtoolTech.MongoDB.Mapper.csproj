@@ -68,6 +68,12 @@
     <Compile Include="Attributes\MongoPropertyValidator.cs" />
     <Compile Include="Attributes\MongoUpRelation.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
+    <Compile Include="Configuration\ICollectionConfig.cs" />
+    <Compile Include="Configuration\ICollectionElement.cs" />
+    <Compile Include="Configuration\IContext.cs" />
+    <Compile Include="Configuration\IDatabase.cs" />
+    <Compile Include="Configuration\IMongoMapperConfiguration.cs" />
+    <Compile Include="Configuration\IServer.cs" />
     <Compile Include="Core\CollectionsManager.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
     <Compile Include="Core\GeoHelper.cs" />

@@ -18,8 +18,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 }
             }
 
-            foreach (CollectionElement collection in config.CollectionConfig)
+            foreach (var collectionElement in config.CollectionConfig)
             {
+                var collection = (CollectionElement) collectionElement;
                 if (collection.Name != "TestConf1")
                 {
                     foreach (string colName in Mapper.MongoMapperHelper.Db(collection.Name).GetCollectionNames())

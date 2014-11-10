@@ -244,8 +244,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 {
                     if (!_setupLoaded)
                     {
-                        foreach (CollectionElement collection in Config.CollectionConfig)
+                        foreach (var collectionElement in Config.CollectionConfig)
                         {
+                            var collection = (CollectionElement) collectionElement;
                             ConfigByObject.Add(collection.Name, collection);
                         }
                         _setupLoaded = true;
