@@ -6,7 +6,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
 
         MongoMapperConfigurationContext Context { get; set; }
-        MongoMapperConfirgurationDababase Database { get; set; }
+        MongoMapperConfigurationDababase Database { get; set; }
         string Name { get; set; }
         MongoMapperConfigurationServer Server { get; set; }
     }

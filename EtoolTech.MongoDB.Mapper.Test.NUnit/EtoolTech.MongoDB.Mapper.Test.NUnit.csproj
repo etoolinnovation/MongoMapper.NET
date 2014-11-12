@@ -75,6 +75,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="MongoMapperConfiguration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EtoolTech.MongoDB.Mapper\EtoolTech.MongoDB.Mapper.csproj">

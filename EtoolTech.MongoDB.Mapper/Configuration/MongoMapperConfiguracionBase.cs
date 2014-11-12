@@ -7,8 +7,10 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     public class MongoMapperConfiguracionBase: IMongoMapperConfiguration
     {
+        public object _id { get; set; }
+        public string Key { get; set; }
         public MongoMapperConfigurationContext Context { get; set; }
-        public MongoMapperConfirgurationDababase Database { get; set; }
+        public MongoMapperConfigurationDababase Database { get; set; }
         public MongoMapperConfigurationServer Server { get; set; }
         public List<MongoMapperConfigurationElement> CustomCollectionConfig { get; set; }
     }
@@ -24,7 +26,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     }
 
 
-    public class MongoMapperConfirgurationDababase : IDatabase
+    public class MongoMapperConfigurationDababase : IDatabase
     {
         public string Name { get; set; }
     }
@@ -38,7 +40,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     public class MongoMapperConfigurationElement : ICollectionElement
     {
         public MongoMapperConfigurationContext Context { get; set; }
-        public MongoMapperConfirgurationDababase Database { get; set; }
+        public MongoMapperConfigurationDababase Database { get; set; }
         public string Name { get;  set; }
         public MongoMapperConfigurationServer Server { get; set; }
     }
