@@ -1,4 +1,6 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
 {
@@ -40,10 +42,53 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         #region Public Methods
 
-        public static MongoMapperConfiguration GetConfig()
+        public static IMongoMapperConfiguration GetConfig()
         {
-            return (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName)
-                   ?? new MongoMapperConfiguration();
+            var fileConfig = (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName);
+            
+            var config = new MongoMapperConfiguracionBase
+            {
+                Context =
+                    new MongoMapperConfigurationContext
+                    {
+                        EnableOriginalObject = fileConfig.Context.EnableOriginalObject,
+                        ExceptionOnDuplicateKey = fileConfig.Context.ExceptionOnDuplicateKey,
+                        Generated = fileConfig.Context.Generated,
+                        MaxDocumentSize = fileConfig.Context.MaxDocumentSize,
+                        UseChidlsIncrementalId = fileConfig.Context.UseChidlsIncrementalId,
+                        UseIncrementalId = fileConfig.Context.UseIncrementalId
+                    },
+                Database = new MongoMapperConfirgurationDababase {Name = fileConfig.Database.Name},
+                Server = new MongoMapperConfigurationServer {Url = fileConfig.Server.Url},
+                CustomCollectionConfig = new List<MongoMapperConfigurationElement>()
+            };
+
+            foreach (CollectionElement element in fileConfig.CollectionConfig)
+            {
+                var configElement = new MongoMapperConfigurationElement
+                {
+                    Name = element.Name,
+                    Context =
+                        new MongoMapperConfigurationContext
+                        {
+                            EnableOriginalObject = element.Context.EnableOriginalObject,
+                            ExceptionOnDuplicateKey = element.Context.ExceptionOnDuplicateKey,
+                            Generated = element.Context.Generated,
+                            MaxDocumentSize = element.Context.MaxDocumentSize,
+                            UseChidlsIncrementalId = element.Context.UseChidlsIncrementalId,
+                            UseIncrementalId = element.Context.UseIncrementalId
+                        },
+                    Database = new MongoMapperConfirgurationDababase {Name = element.Database.Name},
+                    Server = new MongoMapperConfigurationServer {Url = element.Server.Url}
+                };
+
+
+                config.CustomCollectionConfig.Add(configElement);
+
+            }
+
+            return config;
+
         }
 
         #endregion

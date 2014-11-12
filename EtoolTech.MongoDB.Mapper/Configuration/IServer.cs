@@ -4,6 +4,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     public interface IServer
     {        
-        string Url { get; }
+        string Url { get; set; }
     }
 }

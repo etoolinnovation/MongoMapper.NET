@@ -8,7 +8,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         public static void DropAllCollections()
         {
-            MongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
+            IMongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
 
             foreach (string colName in Mapper.MongoMapperHelper.Db("XXX").GetCollectionNames())
             {
@@ -18,9 +18,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 }
             }
 
-            foreach (var collectionElement in config.CollectionConfig)
+            foreach (var collectionElement in config.CustomCollectionConfig)
             {
-                var collection = (CollectionElement) collectionElement;
+                var collection = (MongoMapperConfigurationElement)collectionElement;
                 if (collection.Name != "TestConf1")
                 {
                     foreach (string colName in Mapper.MongoMapperHelper.Db(collection.Name).GetCollectionNames())

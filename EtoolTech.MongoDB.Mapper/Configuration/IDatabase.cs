@@ -4,6 +4,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 {
     public interface IDatabase
     {
-        string Name { get; }
+        string Name { get; set; }
     }
 }
