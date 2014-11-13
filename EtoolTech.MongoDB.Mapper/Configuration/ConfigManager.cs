@@ -11,12 +11,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         #region Constants and Fields
 
-        public static readonly MongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
+        public static readonly IMongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
 
         public static string DatabasePrefix { get; set; }
 
-        private static readonly Dictionary<string, CollectionElement> ConfigByObject =
-            new Dictionary<string, CollectionElement>();
+        private static readonly Dictionary<string, MongoMapperConfigurationElement> ConfigByObject =
+            new Dictionary<string, MongoMapperConfigurationElement>();
 
         private static readonly Dictionary<string, MongoClientSettings> SettingsByObject =
             new Dictionary<string, MongoClientSettings>();
@@ -58,7 +58,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.Database;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -75,7 +75,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.EnableOriginalObject;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -92,7 +92,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.ExceptionOnDuplicateKey;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -151,7 +151,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.Url;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -168,7 +168,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.MaxDocumentSize;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -191,7 +191,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.UseChildIncrementalId;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -213,7 +213,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 return CustomContext.Config.UseIncrementalId;
             }
 
-            CollectionElement cfg = FindByObjName(ObjName);
+            MongoMapperConfigurationElement cfg = FindByObjName(ObjName);
 
             if (cfg != null)
             {
@@ -236,7 +236,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             return ObjName;
         }
 
-        private static CollectionElement FindByObjName(string ObjName)
+        private static MongoMapperConfigurationElement FindByObjName(string ObjName)
         {
             if (!_setupLoaded)
             {
@@ -244,8 +244,9 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                 {
                     if (!_setupLoaded)
                     {
-                        foreach (CollectionElement collection in Config.CollectionConfig)
+                        foreach (var collectionElement in Config.CustomCollectionConfig)
                         {
+                            var collection = collectionElement;
                             ConfigByObject.Add(collection.Name, collection);
                         }
                         _setupLoaded = true;

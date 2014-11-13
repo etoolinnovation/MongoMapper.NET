@@ -1,0 +1,54 @@
+﻿{
+    "_id" : ObjectId("546320b1e411cfbc02a76f91"),
+    "Key" : "1",
+    "Context" : {
+        "EnableOriginalObject" : true,
+        "ExceptionOnDuplicateKey" : true,
+        "Generated" : true,
+        "MaxDocumentSize" : 8,
+        "UseChidlsIncrementalId" : false,
+        "UseIncrementalId" : true
+    },
+    "Database" : {
+        "Name" : "TestDotNET"
+    },
+    "Server" : {
+        "Url" : "mongodb://127.0.0.1"
+    },
+    "CustomCollectionConfig" : [ 
+        {
+            "Context" : {
+                "EnableOriginalObject" : true,
+                "ExceptionOnDuplicateKey" : true,
+                "Generated" : true,
+                "MaxDocumentSize" : 8,
+                "UseChidlsIncrementalId" : true,
+                "UseIncrementalId" : false
+            },
+            "Database" : {
+                "Name" : "Conf1"
+            },
+            "Name" : "TestConf1",
+            "Server" : {
+                "Url" : "mongodb://host1:27017,host2:27017,host3:1234/?readPreference=primaryPreferred;w=2"
+            }
+        }, 
+        {
+            "Context" : {
+                "EnableOriginalObject" : true,
+                "ExceptionOnDuplicateKey" : true,
+                "Generated" : true,
+                "MaxDocumentSize" : 8,
+                "UseChidlsIncrementalId" : false,
+                "UseIncrementalId" : true
+            },
+            "Database" : {
+                "Name" : "TestDotNETPerson"
+            },
+            "Name" : "Person",
+            "Server" : {
+                "Url" : "mongodb://127.0.0.1"
+            }
+        }
+    ]
+}
