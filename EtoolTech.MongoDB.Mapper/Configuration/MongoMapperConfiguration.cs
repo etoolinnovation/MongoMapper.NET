@@ -1,4 +1,10 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
 {
@@ -40,10 +46,85 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         #region Public Methods
 
-        public static MongoMapperConfiguration GetConfig()
+        public static void SetDbConfig(IMongoMapperConfiguration Configuration)
         {
-            return (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName)
-                   ?? new MongoMapperConfiguration();
+            string dbConfigKey = System.Configuration.ConfigurationManager.AppSettings["MongoMapperDbConfig"];
+
+            if (!String.IsNullOrEmpty(dbConfigKey))
+            {
+                string[] values = dbConfigKey.Split('|');
+                var client = new MongoClient(values[0]);
+                var server = client.GetServer();
+                var db = server.GetDatabase(values[1]);
+                db.GetCollection<MongoMapperConfiguracionBase>(values[2]).Insert((MongoMapperConfiguracionBase) Configuration);
+            }
+            
+        }
+
+        public static IMongoMapperConfiguration GetConfig()
+        {
+
+            string dbConfigKey = System.Configuration.ConfigurationManager.AppSettings["MongoMapperDbConfig"];
+
+            if (!String.IsNullOrEmpty(dbConfigKey))
+            {
+                string[] values = dbConfigKey.Split('|');
+                var client = new MongoClient(values[0]);
+                var server = client.GetServer();
+                var db = server.GetDatabase(values[1]);
+                var config = db.GetCollection<MongoMapperConfiguracionBase>(values[2]).FindOneAs<MongoMapperConfiguracionBase>(Query.EQ("Key", values[3]));
+
+                return config;
+            }
+            else
+            {
+
+                var fileConfig = (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName);
+
+                var config = new MongoMapperConfiguracionBase
+                {
+                    Context =
+                        new MongoMapperConfigurationContext
+                        {
+                            EnableOriginalObject = fileConfig.Context.EnableOriginalObject,
+                            ExceptionOnDuplicateKey = fileConfig.Context.ExceptionOnDuplicateKey,
+                            Generated = fileConfig.Context.Generated,
+                            MaxDocumentSize = fileConfig.Context.MaxDocumentSize,
+                            UseChidlsIncrementalId = fileConfig.Context.UseChidlsIncrementalId,
+                            UseIncrementalId = fileConfig.Context.UseIncrementalId
+                        },
+                    Database = new MongoMapperConfigurationDababase {Name = fileConfig.Database.Name},
+                    Server = new MongoMapperConfigurationServer {Url = fileConfig.Server.Url},
+                    CustomCollectionConfig = new List<MongoMapperConfigurationElement>()
+                };
+
+                foreach (CollectionElement element in fileConfig.CollectionConfig)
+                {
+                    var configElement = new MongoMapperConfigurationElement
+                    {
+                        Name = element.Name,
+                        Context =
+                            new MongoMapperConfigurationContext
+                            {
+                                EnableOriginalObject = element.Context.EnableOriginalObject,
+                                ExceptionOnDuplicateKey = element.Context.ExceptionOnDuplicateKey,
+                                Generated = element.Context.Generated,
+                                MaxDocumentSize = element.Context.MaxDocumentSize,
+                                UseChidlsIncrementalId = element.Context.UseChidlsIncrementalId,
+                                UseIncrementalId = element.Context.UseIncrementalId
+                            },
+                        Database = new MongoMapperConfigurationDababase {Name = element.Database.Name},
+                        Server = new MongoMapperConfigurationServer {Url = element.Server.Url}
+                    };
+
+
+                    config.CustomCollectionConfig.Add(configElement);
+
+                }
+                
+                return config;
+            }
+
         }
 
         #endregion

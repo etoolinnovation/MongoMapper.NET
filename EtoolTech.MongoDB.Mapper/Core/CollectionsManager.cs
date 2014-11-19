@@ -28,7 +28,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (CustomCollectionsName.ContainsKey(Name))
             {
-                Name = CustomCollectionsName[Name].Name;
+                return CustomCollectionsName[Name].Name;
             }
             
             if (!Name.EndsWith("_Collection"))
