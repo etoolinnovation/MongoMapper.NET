@@ -164,9 +164,9 @@ namespace EtoolTech.MongoDB.Mapper
             
             
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
-                && !Db(ClassType.Name).CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
+                && !Db(ClassType.Name).CollectionExists(ClassType.Name))
             {
-                Db(ClassType.Name).CreateCollection(CollectionsManager.GetCollectioName(ClassType.Name), null);
+                Db(ClassType.Name).CreateCollection((ClassType.Name), null);
             }
 
             if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
@@ -246,25 +246,25 @@ namespace EtoolTech.MongoDB.Mapper
                     if (index.StartsWith("2D|"))
                     {
 						CollectionsManager.GetCollection (
-							CollectionsManager.GetCollectioName (ClassType.Name)).CreateIndex(IndexKeys.GeoSpatial (MongoMapperHelper.ConvertFieldName (ClassType.Name, index.Split ('|') [1]).Trim ()));
+							ClassType.Name).CreateIndex(IndexKeys.GeoSpatial (MongoMapperHelper.ConvertFieldName (ClassType.Name, index.Split ('|') [1]).Trim ()));
                     }
                     else if (index.StartsWith("2DSphere|"))
                     {
                         CollectionsManager.GetCollection(
-							CollectionsManager.GetCollectioName(ClassType.Name)).CreateIndex(
+							ClassType.Name).CreateIndex(
                                                      IndexKeys.GeoSpatialSpherical(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim()));    
                     }
                     else
                     {
                         CollectionsManager.GetCollection(
-							CollectionsManager.GetCollectioName(ClassType.Name)).CreateIndex(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(indexField => indexField.Trim()).ToArray());
+							ClassType.Name).CreateIndex(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(indexField => indexField.Trim()).ToArray());
                     }
                 }
 
                 string[] pk = GetPrimaryKey(ClassType).ToArray();
                 if (pk.Count(k => k == "m_id") == 0)
                 {
-					CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name)).CreateIndex(
+					CollectionsManager.GetCollection(ClassType.Name).CreateIndex(
                         IndexKeys.Ascending(MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(pkField => pkField.Trim()).ToArray()), IndexOptions.SetUnique(true));
                 }
 
@@ -274,7 +274,7 @@ namespace EtoolTech.MongoDB.Mapper
                     var tmpIndex = ttlIndex.Split(',');
                     var keys = IndexKeys.Ascending(tmpIndex[0].Trim());
                     var options = IndexOptions.SetTimeToLive(TimeSpan.FromSeconds(int.Parse(tmpIndex[1].Trim())));
-                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(ClassType.Name))
+                    CollectionsManager.GetCollection(ClassType.Name)
 						.CreateIndex(keys, options);
 
                 }

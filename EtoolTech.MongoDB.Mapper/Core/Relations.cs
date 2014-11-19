@@ -61,7 +61,7 @@ namespace EtoolTech.MongoDB.Mapper
                 IMongoQuery query = MongoQuery.Eq(fkClassName, fkFieldName, value);
 
                 MongoCollection fkCol =
-                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(fkClassName));
+                    CollectionsManager.GetCollection(fkClassName);
                 if (fkCol.Count(query) != 0)
                 {
                     throw new ValidateDownRelationException(String.Format("{0}, Value:{1}", relation, value));
@@ -98,7 +98,7 @@ namespace EtoolTech.MongoDB.Mapper
                 }
 
                 MongoCollection fkCol =
-                    CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(fkClassName));
+                    CollectionsManager.GetCollection(fkClassName);
                 if (fkCol.Count(query) == 0)
                 {
                     throw new ValidateUpRelationException(String.Format("{0}, Value:{1}", upRelation, value));
