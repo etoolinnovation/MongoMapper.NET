@@ -24,7 +24,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Methods
 
-        public static string GetCollectioName(string Name)
+        private static string GetCollectioName(string Name)
         {
             if (CustomCollectionsName.ContainsKey(Name))
             {

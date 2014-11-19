@@ -324,7 +324,7 @@ namespace EtoolTech.MongoDB.Mapper
                 VersionReturned = Refill ? FindAndModifyDocumentVersion.Modified : FindAndModifyDocumentVersion.Original
             };
 
-            FindAndModifyResult result = CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(_classType.Name)).FindAndModify(args);
+            FindAndModifyResult result = CollectionsManager.GetCollection(_classType.Name).FindAndModify(args);
 
 
             if (!String.IsNullOrEmpty(result.ErrorMessage))
@@ -363,7 +363,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static MongoCollection GetCollection<T>()
         {
-            return CollectionsManager.GetCollection(CollectionsManager.GetCollectioName(typeof (T).Name));
+            return CollectionsManager.GetCollection(typeof (T).Name);
         }
 
 		public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] operations)
@@ -373,14 +373,12 @@ namespace EtoolTech.MongoDB.Mapper
 			ars.OutputMode = AggregateOutputMode.Cursor;
 
 			return
-                CollectionsManager.GetCollection(
-                    CollectionsManager.GetCollectioName(typeof (T).Name)).Aggregate(ars);
+                CollectionsManager.GetCollection((typeof (T).Name)).Aggregate(ars);
         }
 
         public static void ServerDelete<T>(IMongoQuery query)
         {
-            WriteConcernResult result = CollectionsManager.GetCollection(
-                CollectionsManager.GetCollectioName(typeof (T).Name)).Remove(query);
+            WriteConcernResult result = CollectionsManager.GetCollection(typeof (T).Name).Remove(query);
 
 
             if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
