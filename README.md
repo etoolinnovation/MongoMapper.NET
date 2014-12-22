@@ -170,5 +170,6 @@ A .NET Document Mapper for MongoDB over MongoDB C# Driver
 * [29/10/2012] (http://bit.ly/VyLjyT)
 * [10/02/2013] (http://j.mp/Xm0KLa)
 * [22/08/2013] (http://j.mp/13IyrQQ)
+* [22/12/2014] (http://www.emiliotorrens.com/2014/12/22/mongomapper-net-1-1/)
 
 
