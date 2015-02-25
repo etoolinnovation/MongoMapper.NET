@@ -366,14 +366,16 @@ namespace EtoolTech.MongoDB.Mapper
             return CollectionsManager.GetCollection(typeof (T).Name);
         }
 
-		public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] operations)
+		public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] Operations)
         {
-			AggregateArgs ars = new AggregateArgs ();
-			ars.Pipeline = operations;
-			ars.OutputMode = AggregateOutputMode.Cursor;
+			var ars = new AggregateArgs {Pipeline = Operations, OutputMode = AggregateOutputMode.Cursor};
+		    return CollectionsManager.GetCollection((typeof (T).Name)).Aggregate(ars);
+        }
 
-			return
-                CollectionsManager.GetCollection((typeof (T).Name)).Aggregate(ars);
+        public static IEnumerable<BsonDocument> Aggregate<T>(params string[] JsonStringOperations)
+        {            
+            var operations = JsonStringOperations.Select(ObjectSerializer.JsonStringToBsonDocument).ToList();
+            return Aggregate<T>(operations.ToArray());         
         }
 
         public static void ServerDelete<T>(IMongoQuery query)

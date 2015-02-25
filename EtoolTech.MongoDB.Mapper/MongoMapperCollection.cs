@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -18,6 +19,14 @@ namespace EtoolTech.MongoDB.Mapper
         public MongoCursor<T> Find(IMongoQuery Query)
         {
             Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query);
+            return Cursor;
+        }
+
+        public MongoCursor<T> Find(string JsonQuery)
+        {
+            var document = ObjectSerializer.JsonStringToBsonDocument(JsonQuery);
+            var query = new QueryDocument(document);
+            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
             return Cursor;
         }
 
@@ -38,7 +47,7 @@ namespace EtoolTech.MongoDB.Mapper
             Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();          
             return Cursor;
         }
-
+   
 
         public T Pop(IMongoQuery CustomQuery, IMongoSortBy SortBy)
         {
