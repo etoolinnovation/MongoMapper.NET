@@ -1,12 +1,25 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using MongoDB.Bson;
 
 namespace EtoolTech.MongoDB.Mapper
 {
     internal static class ObjectSerializer
     {
         #region Methods
+
+        public static string BsonDocumentToJsonString(BsonDocument Document)
+        {
+            return Document.ToJson();
+        }
+
+
+        public static BsonDocument JsonStringToBsonDocument(string JsonString)
+        {
+            BsonDocument document = BsonDocument.Parse(JsonString);
+            return document;
+        }
 
         internal static byte[] ToByteArray(Object Obj)
         {
