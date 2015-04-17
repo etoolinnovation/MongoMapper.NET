@@ -98,7 +98,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public IEnumerator<T> GetEnumerator()
         {                        
-            return new MongoCursorEnumerator<T>(Cursor);
+            return Cursor.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

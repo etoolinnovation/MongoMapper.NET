@@ -2,6 +2,7 @@
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -21,7 +22,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Insert, Type, Document);
-                return new WriteConcernResult(null);
+                return new WriteConcernResult(new BsonDocument());
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -33,9 +34,9 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result = CollectionsManager.GetCollection(Name).Insert(Type, Document);
 
 
-            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            if (result != null && result.HasLastErrorMessage)
             {
-                throw new Exception(result.ErrorMessage);
+                throw new Exception(result.LastErrorMessage);
             }
 
             return result;
@@ -46,7 +47,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);
-                return new WriteConcernResult(null);
+                return new WriteConcernResult(new BsonDocument());
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -57,9 +58,9 @@ namespace EtoolTech.MongoDB.Mapper
 
             WriteConcernResult result = CollectionsManager.GetCollection(Name).Save(Type, Document);
 
-            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            if (result != null && result.HasLastErrorMessage)
             {
-                throw new Exception(result.ErrorMessage);
+                throw new Exception(result.LastErrorMessage);
             }
 
             return result;
@@ -70,7 +71,7 @@ namespace EtoolTech.MongoDB.Mapper
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Delete, Type, Document);
-                return new WriteConcernResult(null);
+                return new WriteConcernResult(new BsonDocument());
             }
 
 
@@ -94,9 +95,9 @@ namespace EtoolTech.MongoDB.Mapper
                     query);
 
 
-            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            if (result != null && result.HasLastErrorMessage)
             {
-                throw new DeleteDocumentException(result.ErrorMessage);
+                throw new Exception(result.LastErrorMessage);
             }
 
 

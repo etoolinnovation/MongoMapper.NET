@@ -383,10 +383,11 @@ namespace EtoolTech.MongoDB.Mapper
             WriteConcernResult result = CollectionsManager.GetCollection(typeof (T).Name).Remove(query);
 
 
-            if (result != null && !String.IsNullOrEmpty(result.ErrorMessage))
+            if (result != null && result.HasLastErrorMessage)
             {
-                throw new DeleteDocumentException(result.ErrorMessage);
+                throw new Exception(result.LastErrorMessage);
             }
+
         }
 
         private bool OriginalIsEmpty(bool force = false)

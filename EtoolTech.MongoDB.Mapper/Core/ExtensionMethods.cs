@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -23,7 +25,17 @@ namespace EtoolTech.MongoDB.Mapper
             ReflectionUtility.CopyObject(result, Object);
         }
 
-        public static void MongoFind<T>(this List<T> List, IMongoQuery Query = null) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List) where T : MongoMapper
+        {
+            List.Clear();
+            var col = new MongoMapperCollection<T>();
+            var document = BsonSerializer.Deserialize<BsonDocument>("{}");
+            var query=  new QueryDocument(document);
+            col.Find(query);
+            List.AddRange(col.ToList());
+        }
+
+        public static void MongoFind<T>(this List<T> List, IMongoQuery Query) where T : MongoMapper
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
