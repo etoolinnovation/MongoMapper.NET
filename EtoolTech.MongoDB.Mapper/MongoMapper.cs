@@ -42,8 +42,9 @@ namespace EtoolTech.MongoDB.Mapper
         #region Constructors and Destructors
 
         protected MongoMapper()
-        {
+        {            
             _classType = GetType();
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(_classType.Name) * 1024 * 1024;
             MongoMapperHelper.RebuildClass(_classType, false);
         }
 
@@ -181,7 +182,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             if (!ConfigManager.EnableOriginalObject(_classType.Name))
             {
-                throw new NotImplementedException("This functionality is disabled, enable it in the App.config");
+                throw new NotImplementedException("OriginalObject: This functionality is disabled, enable EnableOriginalObject in the App.config");
             }
 
             if (m_id == default(long) || OriginalObject == null || OriginalObject.Length == 0)
@@ -271,9 +272,7 @@ namespace EtoolTech.MongoDB.Mapper
             int result = -1;
 
             PropertyValidator.Validate(this, _classType);
-
-            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(_classType.Name)*1024*1024;
-
+            
             ChildsManager.ManageChilds(this);
 
             if (m_id == default(long))

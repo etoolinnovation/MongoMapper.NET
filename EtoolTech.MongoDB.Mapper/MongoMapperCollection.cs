@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -14,7 +15,12 @@ namespace EtoolTech.MongoDB.Mapper
     {
         public MongoCursor<T> Cursor { get; private set; }
 
-        public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}} 
+        public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}}
+
+        public MongoMapperCollection()
+        {
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(typeof(T).Name) * 1024 * 1024;
+        }
 
         public MongoCursor<T> Find(IMongoQuery Query)
         {
