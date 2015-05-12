@@ -164,9 +164,9 @@ namespace EtoolTech.MongoDB.Mapper
             
             
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
-                && !Db(ClassType.Name).CollectionExists(ClassType.Name))
+                && !Db(ClassType.Name).CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
             {
-                Db(ClassType.Name).CreateCollection((ClassType.Name), null);
+                Db(ClassType.Name).CreateCollection((CollectionsManager.GetCollectioName(ClassType.Name)), null);
             }
 
             if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
