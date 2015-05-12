@@ -74,7 +74,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
             IMongoQuery query =
-                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(T.Name, keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(T.Name, KeyValue.Key, KeyValue.Value)).ToArray());
 
             MongoCursor result =
                 CollectionsManager.GetCollection(T.Name).FindAs(T, query).SetFields(Fields.Include("_id"));
@@ -106,7 +106,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
 
             IMongoQuery query =
-                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(typeof(T).Name,keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(typeof(T).Name,KeyValue.Key, KeyValue.Value)).ToArray());
 
             MongoCursor<T> result =
                 CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
@@ -131,16 +131,16 @@ namespace EtoolTech.MongoDB.Mapper
         public T FindObjectByKey<T>(Dictionary<string, object> KeyValues)
         {
             IMongoQuery query =
-                Query.And(KeyValues.Select(keyValue => MongoQuery.Eq(typeof(T).Name, keyValue.Key, keyValue.Value)).ToArray());
+                Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(typeof(T).Name, KeyValue.Key, KeyValue.Value)).ToArray());
 
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneAs<T>(query);          
+            var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
 
-            if (result == null)
+            if (result == null || result.Size() == 0)
             {
                 throw new FindByKeyNotFoundException();
             }
                       
-            return result;
+            return result.First();
         }
 
         #endregion
