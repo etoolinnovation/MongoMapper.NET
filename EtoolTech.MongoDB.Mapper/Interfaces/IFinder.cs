@@ -13,7 +13,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         T FindById<T>(long Id);
 
-        object FindById(Type Type, long Id);
+        //object FindById(Type Type, long Id);
 
         T FindByKey<T>(params object[] Values);
 

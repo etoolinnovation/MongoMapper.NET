@@ -34,22 +34,43 @@ namespace EtoolTech.MongoDB.Mapper
       
 
         public BsonDocument FindBsonDocumentById<T>(long Id)
-        {
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneByIdAs<T>(Id);
-            return result.ToBsonDocument();
+        {            
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id",Id));
+            if (result.Any())
+            {
+                return result.First().ToBsonDocument();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public T FindById<T>(long Id)
         {
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindOneByIdAs<T>(Id);
-            return result;
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id", Id));
+            if (result.Any())
+            {
+                return result.First();
+            }
+            else
+            {
+                return default(T);
+            }
         }
 
-        public object FindById(Type Type, long Id)
-        {
-            object result = CollectionsManager.GetCollection(Type.Name).FindOneByIdAs(Type, Id);
-            return result;
-        }
+        //public object FindById(Type Type, long Id)
+        //{
+        //    var result = CollectionsManager.GetCollection(Type.Name).FindAs(Type, Query.EQ("_id", Id));
+        //    if (result.Any())
+        //    {
+        //        return result.First();
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
 
         public T FindByKey<T>(params object[] Values)
         {
