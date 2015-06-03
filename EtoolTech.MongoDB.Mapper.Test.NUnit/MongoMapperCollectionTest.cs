@@ -22,7 +22,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             country = new Country { Code = "ES", Name = "España" };
             country.Save();
 
-            var col = new CountryCollection();
+            var col = new CountryCollection {FromPrimary = false};
             col.Find().SetLimit(1);
 
             Console.WriteLine(col.Cursor.Explain().ToJson());
@@ -30,7 +30,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(1, col.Count);
             Assert.AreEqual(3, col.Total);
 
-            col = new CountryCollection();
+            col = new CountryCollection {FromPrimary = true};
             col.Find().SetLimit(3).SetSortOrder(SortBy<Country>.Ascending(C=>C.Name));              
 
             Assert.AreEqual(3, col.Count);

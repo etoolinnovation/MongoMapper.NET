@@ -16,15 +16,32 @@ namespace EtoolTech.MongoDB.Mapper
         public MongoCursor<T> Cursor { get; private set; }
 
         public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}}
+        public static MongoMapperCollection<T> InstanceFromPrimary { get { return new MongoMapperCollection<T>(true); } }
 
+        public bool FromPrimary { get; set; }
+
+        private MongoCollection GetCollection()
+        {
+            return FromPrimary
+                ? CollectionsManager.GetPrimaryCollection(typeof (T).Name)
+                : CollectionsManager.GetCollection(typeof (T).Name);
+        }
+        
         public MongoMapperCollection()
         {
+            FromPrimary = false;
+            BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(typeof(T).Name) * 1024 * 1024;
+        }
+
+        public MongoMapperCollection(bool FromPrimary)
+        {
+            this.FromPrimary = FromPrimary;
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(typeof(T).Name) * 1024 * 1024;
         }
 
         public MongoCursor<T> Find(IMongoQuery Query)
         {
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query);
+            Cursor = GetCollection().FindAs<T>(Query);
             return Cursor;
         }
 
@@ -32,32 +49,32 @@ namespace EtoolTech.MongoDB.Mapper
         {
             var document = ObjectSerializer.JsonStringToBsonDocument(JsonQuery);
             var query = new QueryDocument(document);
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(query);
+            Cursor = GetCollection().FindAs<T>(query);
             return Cursor;
         }
 
         public MongoCursor<T> Find(Expression<Func<T, object>> Field, object Value)
         {
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery<T>.Eq(Field, Value));
+            Cursor = GetCollection().FindAs<T>(MongoQuery<T>.Eq(Field, Value));
             return Cursor;
         }
 
         public MongoCursor<T> Find(string FieldName, object Value)
         {
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
+            Cursor = GetCollection().FindAs<T>(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
             return Cursor;
         }
 
         public MongoCursor<T> Find()
         {
-            Cursor = CollectionsManager.GetCollection(typeof(T).Name).FindAllAs<T>();          
+            Cursor = GetCollection().FindAllAs<T>();          
             return Cursor;
         }
    
 
         public T Pop(IMongoQuery CustomQuery, IMongoSortBy SortBy)
         {
-            var col = CollectionsManager.GetCollection(typeof(T).Name);
+            var col = GetCollection();
 
             var args = new FindAndRemoveArgs {SortBy = SortBy, Query = CustomQuery};
 

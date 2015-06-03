@@ -35,7 +35,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public BsonDocument FindBsonDocumentById<T>(long Id)
         {            
-            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id",Id));
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id",Id)).SetLimit(1);
             if (result.Any())
             {
                 return result.First().ToBsonDocument();
@@ -48,7 +48,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public T FindById<T>(long Id)
         {
-            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id", Id));
+            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id", Id)).SetLimit(1);
             if (result.Any())
             {
                 return result.First();
@@ -98,7 +98,7 @@ namespace EtoolTech.MongoDB.Mapper
                 Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(T.Name, KeyValue.Key, KeyValue.Value)).ToArray());
 
             MongoCursor result =
-                CollectionsManager.GetCollection(T.Name).FindAs(T, query).SetFields(Fields.Include("_id"));
+                CollectionsManager.GetCollection(T.Name).FindAs(T, query).SetFields(Fields.Include("_id")).SetLimit(1);
 
             if (ConfigManager.Out != null)
             {
@@ -140,7 +140,7 @@ namespace EtoolTech.MongoDB.Mapper
                 ConfigManager.Out.WriteLine();
             }
 
-            if (result.Size() == 0)
+            if (!result.Any())
             {
                 return default(long);
             }
