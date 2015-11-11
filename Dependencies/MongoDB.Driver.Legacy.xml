@@ -5028,6 +5028,12 @@
             Gets or sets the list of server addresses (see also Server if using only one address).
             </summary>
     </member>
+    <member name="P:MongoDB.Driver.MongoServerSettings.ServerSelectionTimeout">
+      <summary>
+            Gets or sets the server selection timeout.
+            </summary>
+      <exception cref="T:System.InvalidOperationException">MongoServerSettings is frozen.</exception>
+    </member>
     <member name="P:MongoDB.Driver.MongoServerSettings.SocketTimeout">
       <summary>
             Gets or sets the socket timeout.
