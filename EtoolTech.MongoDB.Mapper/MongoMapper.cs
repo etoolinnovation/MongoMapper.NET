@@ -365,7 +365,13 @@ namespace EtoolTech.MongoDB.Mapper
             return CollectionsManager.GetCollection(typeof (T).Name);
         }
 
-		public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] Operations)
+        public static IEnumerable<BsonDocument> Aggregate<T>(AggregateArgs Args)
+        {
+            Args.OutputMode = AggregateOutputMode.Cursor;
+            return CollectionsManager.GetCollection((typeof(T).Name)).Aggregate(Args);
+        }
+
+        public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] Operations)
         {
 			var ars = new AggregateArgs {Pipeline = Operations, OutputMode = AggregateOutputMode.Cursor};
 		    return CollectionsManager.GetCollection((typeof (T).Name)).Aggregate(ars);
