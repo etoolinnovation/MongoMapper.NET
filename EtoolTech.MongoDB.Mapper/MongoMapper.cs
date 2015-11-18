@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
@@ -360,23 +361,19 @@ namespace EtoolTech.MongoDB.Mapper
             return CollectionsManager.GetCollection<T>(typeof (T).Name);
         }
 
-   //     public static IEnumerable<BsonDocument> Aggregate<T>(AggregateArgs Args)a
-   //     {
-   //         Args.OutputMode = AggregateOutputMode.Cursor;
-   //         return CollectionsManager.GetCollection<T>((typeof(T).Name)).AggregateAsync(new PipelineStagePipelineDefinition())
-   //     }
+        public static IEnumerable<BsonDocument> Aggregate(params BsonDocument[] Operations)
+        {
+            var agg = CollectionsManager.GetCollection<BsonDocument>((typeof(T).Name)).Aggregate();
+            agg = Operations.Aggregate(agg, (Current, Pipe) => Current.AppendStage<BsonDocument>(Pipe));
 
-   //     public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] Operations)
-   //     {
-			//var ars = new AggregateArgs {Pipeline = Operations, OutputMode = AggregateOutputMode.Cursor};
-		 //   return CollectionsManager.GetCollection<T>((typeof (T).Name)).Aggregate(ars);
-   //     }
-
-   //     public static IEnumerable<BsonDocument> Aggregate(params string[] JsonStringOperations)
-   //     {            
-   //         var operations = JsonStringOperations.Select(ObjectSerializer.JsonStringToBsonDocument).ToList();
-   //         return Aggregate<T>(operations.ToArray());         
-   //     }
+            return agg.ToListAsync().Result;
+        }
+   
+       public static IEnumerable<BsonDocument> Aggregate(params string[] JsonStringOperations)
+       {            
+            var operations = JsonStringOperations.Select(ObjectSerializer.JsonStringToBsonDocument).ToList();
+            return Aggregate(operations.ToArray());         
+        }
 
         public static void ServerDelete(FilterDefinition<T> Query)
         {
