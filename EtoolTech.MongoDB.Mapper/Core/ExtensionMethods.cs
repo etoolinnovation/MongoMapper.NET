@@ -29,9 +29,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
-            var document = BsonSerializer.Deserialize<BsonDocument>("{}");
-            var query=  new QueryDocument(document);
-            col.Find(query);
+            col.Find(new BsonDocument());
             List.AddRange(col.ToList());
         }
 

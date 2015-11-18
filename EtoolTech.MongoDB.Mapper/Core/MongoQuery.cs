@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
-using MongoDB.Driver.Wrappers;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -20,16 +18,15 @@ namespace EtoolTech.MongoDB.Mapper
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
-            IMongoQuery query = null;
+            FilterDefinition<T> query = null;
             Type type = Value.GetType();
 
             if (type.BaseType != null && type.BaseType.Name == "Enum")
             {
                 type = typeof(int);
                 if ((int)Value < 0)
-                {
-                    var document = BsonSerializer.Deserialize<BsonDocument>("{}");
-                    return new QueryDocument(document);
+                {                    
+                    return new BsonDocument();
                 }
             }
 
@@ -40,8 +37,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                 if (txtValue.Trim() == "%")
                 {
-                    var document = BsonSerializer.Deserialize<BsonDocument>("{}");
-                    return new QueryDocument(document);
+                    return new BsonDocument();
                 }
 
                 if (txtValue.StartsWith("%") && txtValue.EndsWith("%"))
@@ -61,57 +57,57 @@ namespace EtoolTech.MongoDB.Mapper
                 }
 
                 if (isLike)
-                {
-                    query = Query.Matches(FieldName, new BsonRegularExpression(string.Format("{0}i", Value.ToString().Replace("%", ""))));
-                    return new QueryDocument(query.ToBsonDocument());
+                {                                        
+                    query =  Builders<T>.Filter.Regex(FieldName, new BsonRegularExpression(string.Format("{0}i", Value.ToString().Replace("%", ""))));
+                    return query;
                 }
             }
 
             if (type == typeof(DateTime))
             {
-                query = Query.EQ(FieldName, (DateTime)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue == (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(int))
             {
-                query = Query.EQ(FieldName, (int)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue == (int)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(string))
             {
-                query = Query.EQ(FieldName, (string)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (string)Value);
                 if (defaultValue != null && (string)defaultValue == (string)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(long))
             {
-                query = Query.EQ(FieldName, (long)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue == (long)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(bool))
             {
-                query = Query.EQ(FieldName, (bool)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (bool)Value);
                 if (defaultValue != null && (bool)defaultValue == (bool)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(double))
             {
-                query = Query.EQ(FieldName, (double)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue == (double)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(Guid))
             {
-                query = Query.EQ(FieldName, (Guid)Value);
+                query = Builders<T>.Filter.Eq(FieldName, (Guid)Value);
                 if (defaultValue != null && (Guid)defaultValue == (Guid)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
 
-            return new QueryDocument(query.ToBsonDocument());
+            return query;
         }
 
         public static FilterDefinition<T> Eq(Expression<Func<T, object>> Field, object Value)
@@ -132,45 +128,45 @@ namespace EtoolTech.MongoDB.Mapper
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
-            IMongoQuery query = null;
+             FilterDefinition<T> query = null;
             Type type = Value.GetType();
 
             if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
-                query = Query.GT(FieldName, (DateTime)Value);
+                query = Builders<T>.Filter.Gt(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue > (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(int))
             {
-                query = Query.GT(FieldName, (int)Value);
+                query = Builders<T>.Filter.Gt(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue > (int)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(string))
             {
-                query = Query.GT(FieldName, (string)Value);
+                query = Builders<T>.Filter.Gt(FieldName, (string)Value);
             }
             else if (type == typeof(long))
             {
-                query = Query.GT(FieldName, (long)Value);
+                query = Builders<T>.Filter.Gt(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue > (long)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(bool))
             {
-                query = Query.GT(FieldName, (bool)Value);
+                query = Builders<T>.Filter.Gt(FieldName, (bool)Value);
             }
             else if (type == typeof(double))
             {
-                query = Query.GT(FieldName, (double)Value);
+                query = Builders<T>.Filter.Gt(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue > (double)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
 
-            return new QueryDocument(query.ToBsonDocument());
+            return query;
         }
 
         public static FilterDefinition<T> Gte(Expression<Func<T, object>> field, object Value)
@@ -185,47 +181,47 @@ namespace EtoolTech.MongoDB.Mapper
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
-            IMongoQuery query = null;
+             FilterDefinition<T> query = null;
             Type type = Value.GetType();
 
             if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
-                query = Query.GTE(FieldName, (DateTime)Value);
+                query = Builders<T>.Filter.Gte(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue >= (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(int))
             {
-                query = Query.GTE(FieldName, (int)Value);
+                query = Builders<T>.Filter.Gte(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue >= (int)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(string))
             {
-                query = Query.GTE(FieldName, (string)Value);
+                query = Builders<T>.Filter.Gte(FieldName, (string)Value);
             }
             else if (type == typeof(long))
             {
-                query = Query.GTE(FieldName, (long)Value);
+                query = Builders<T>.Filter.Gte(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue >= (long)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(bool))
             {
-                query = Query.GTE(FieldName, (bool)Value);
+                query = Builders<T>.Filter.Gte(FieldName, (bool)Value);
             }
             else if (type == typeof(double))
             {
-                query = Query.GTE(FieldName, (double)Value);
+                query = Builders<T>.Filter.Gte(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue >= (double)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
 
-            return new QueryDocument(query.ToBsonDocument());
+            return query;
         }
 
         public static FilterDefinition<T> Lt(Expression<Func<T, object>> field, object Value)
@@ -238,46 +234,46 @@ namespace EtoolTech.MongoDB.Mapper
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
-            IMongoQuery query = null;
+             FilterDefinition<T> query = null;
             Type type = Value.GetType();
 
             if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
-                query = Query.LT(FieldName, (DateTime)Value);
+                query = Builders<T>.Filter.Lt(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue < (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(int))
             {
-                query = Query.LT(FieldName, (int)Value);
+                query = Builders<T>.Filter.Lt(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue < (int)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(string))
             {
-                query = Query.LT(FieldName, (string)Value);
+                query = Builders<T>.Filter.Lt(FieldName, (string)Value);
             }
             else if (type == typeof(long))
             {
-                query = Query.LT(FieldName, (long)Value);
+                query = Builders<T>.Filter.Lt(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue < (long)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(bool))
             {
-                query = Query.LT(FieldName, (bool)Value);
+                query = Builders<T>.Filter.Lt(FieldName, (bool)Value);
             }
             else if (type == typeof(double))
             {
-                query = Query.LT(FieldName, (double)Value);
+                query = Builders<T>.Filter.Lt(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue < (double)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
 
-            return new QueryDocument(query.ToBsonDocument());
+            return query;
         }
 
         public static FilterDefinition<T> Lte(Expression<Func<T, object>> field, object Value)
@@ -290,48 +286,48 @@ namespace EtoolTech.MongoDB.Mapper
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
-            IMongoQuery query = null;
+            FilterDefinition<T> query = null;
             Type type = Value.GetType();
 
             if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
-                query = Query.LTE(FieldName, (DateTime)Value);
+                query = Builders<T>.Filter.Lte(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue <= (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(int))
             {
-                query = Query.LTE(FieldName, (int)Value);
+                query = Builders<T>.Filter.Lte(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue <= (int)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(string))
             {
-                query = Query.LTE(FieldName, (string)Value);
+                query = Builders<T>.Filter.Lte(FieldName, (string)Value);
             }
             else if (type == typeof(long))
             {
-                query = Query.LTE(FieldName, (long)Value);
+                query = Builders<T>.Filter.Lte(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue <= (long)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(bool))
             {
-                query = Query.LTE(FieldName, (bool)Value);
+                query = Builders<T>.Filter.Lte(FieldName, (bool)Value);
             }
             else if (type == typeof(double))
             {
-                query = Query.LTE(FieldName, (double)Value);
+                query = Builders<T>.Filter.Lte(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue <= (double)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
 
-            return new QueryDocument(query.ToBsonDocument());
+            return query;
         }
 
 
@@ -347,53 +343,53 @@ namespace EtoolTech.MongoDB.Mapper
             object defaultValue = MongoMapperHelper.GetFieldDefaultValue(ObjName, FieldName);
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
 
-            IMongoQuery query = null;
+             FilterDefinition<T> query = null;
             Type type = Value.GetType();
             if (type.BaseType != null && type.BaseType.Name == "Enum") type = typeof(int);
 
             if (type == typeof(DateTime))
             {
-                query = Query.NE(FieldName, (DateTime)Value);
+                query = Builders<T>.Filter.Ne(FieldName, (DateTime)Value);
                 if (defaultValue != null && (DateTime)defaultValue != (DateTime)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
             }
             else if (type == typeof(int))
             {
-                query = Query.NE(FieldName, (int)Value);
+                query = Builders<T>.Filter.Ne(FieldName, (int)Value);
                 if (defaultValue != null && (int)defaultValue != (int)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(string))
             {
-                query = Query.NE(FieldName, (string)Value);
+                query = Builders<T>.Filter.Ne(FieldName, (string)Value);
                 if (defaultValue != null && (string)defaultValue != (string)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(long))
             {
-                query = Query.NE(FieldName, (long)Value);
+                query = Builders<T>.Filter.Ne(FieldName, (long)Value);
                 if (defaultValue != null && (long)defaultValue != (long)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(bool))
             {
-                query = Query.NE(FieldName, (bool)Value);
+                query = Builders<T>.Filter.Ne(FieldName, (bool)Value);
                 if (defaultValue != null && (bool)defaultValue != (bool)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
             else if (type == typeof(double))
             {
-                query = Query.NE(FieldName, (double)Value);
+                query = Builders<T>.Filter.Ne(FieldName, (double)Value);
                 if (defaultValue != null && (double)defaultValue != (double)Value)
-                    query = Query.Or(query, Query.NotExists(FieldName));
+                    query = Builders<T>.Filter.Or(query, Builders<T>.Filter.Exists(FieldName, false));
 
             }
 
-            return new QueryDocument(query.ToBsonDocument());
+            return query;
         }
 
         public static FilterDefinition<T> RegEx(Expression<Func<T, object>> field, object Value)
@@ -405,7 +401,7 @@ namespace EtoolTech.MongoDB.Mapper
         public static FilterDefinition<T> RegEx(string ObjName, string FieldName, string expresion)
         {
             FieldName = MongoMapperHelper.ConvertFieldName(ObjName, FieldName);
-            return new QueryDocument(Query.Matches(FieldName, expresion).ToBsonDocument());
+            return Builders<T>.Filter.Regex(FieldName, expresion);
         }
 
 

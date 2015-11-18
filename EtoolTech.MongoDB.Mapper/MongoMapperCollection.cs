@@ -7,7 +7,6 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -51,7 +50,7 @@ namespace EtoolTech.MongoDB.Mapper
         public IFindFluent<T, T> Find(string JsonQuery)
         {
             var document = ObjectSerializer.JsonStringToBsonDocument(JsonQuery);
-            var query = new QueryDocument(document);
+            var query = new BsonDocument(document);
             LastQuery = query;
 
             Cursor = GetCollection().Find(LastQuery);            
