@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    public interface IRelations
+    public interface IRelations<T>
     {
         #region Public Methods
 

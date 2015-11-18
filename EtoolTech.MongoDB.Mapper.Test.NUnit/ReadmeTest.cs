@@ -64,12 +64,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             countries.Find();
             Assert.AreEqual(countries.Count, 3);
 
-            countries.Find().SetLimit(2).SetSortOrder(SortBy<Country>.Ascending(C => C.Name));
+            countries.Find().Limit(2).Sort(Builders<Country>.Sort.Ascending(C=>C.Name));
             Assert.AreEqual(countries.Count, 2);
             Assert.AreEqual(countries.Total, 3);
 
             countries.Find(
-                Query.Or(Query<Country>.EQ(co => co.Code, "ES"), Query<Country>.EQ(co => co.Code, "UK")));
+                Builders<Country>.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
 
             var p = new Person
@@ -97,7 +97,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             }
 
             p.ServerUpdate(
-                Update.PushWrapped(
+                Builders<Person>.Update.Push(
                     MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child {ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"}));
 

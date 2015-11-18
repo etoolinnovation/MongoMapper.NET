@@ -5,6 +5,7 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -30,12 +31,11 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
         #region Public Methods
-
       
 
         public BsonDocument FindBsonDocumentById<T>(long Id)
         {            
-            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id",Id)).SetLimit(1);
+            var result = CollectionsManager.GetCollection<T>(typeof(T).Name).Find(Builders<T>.Filter.Eq("_id",Id)).Limit(1).ToListAsync().Result;
             if (result.Any())
             {
                 return result.First().ToBsonDocument();
@@ -48,9 +48,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         public T FindById<T>(long Id)
         {
-            var result = CollectionsManager.GetCollection(typeof(T).Name).FindAs<T>(Query.EQ("_id", Id)).SetLimit(1);
+            var result = CollectionsManager.GetCollection<T>(typeof(T).Name).Find(Builders<T>.Filter.Eq("_id", Id)).Limit(1).ToListAsync().Result;
             if (result.Any())
-            {
+            {                
                 return result.First();
             }
             else
@@ -59,19 +59,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        //public object FindById(Type Type, long Id)
-        //{
-        //    var result = CollectionsManager.GetCollection(Type.Name).FindAs(Type, Query.EQ("_id", Id));
-        //    if (result.Any())
-        //    {
-        //        return result.First();
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
-
+   
         public T FindByKey<T>(params object[] Values)
         {
             List<string> fields = MongoMapperHelper.GetPrimaryKey(typeof (T)).ToList();
@@ -85,78 +73,50 @@ namespace EtoolTech.MongoDB.Mapper
             return FindObjectByKey<T>(keyValues);
         }
 
-        public long FindIdByKey(Type T, Dictionary<string, object> KeyValues)
+        public long FindIdByKey<T>(Type Type, Dictionary<string, object> KeyValues)
         {
             //Si la key es la interna y vieb
-            if (KeyValues.Count == 1 && KeyValues.First().Key == "m_id" && KeyValues.First().Value is long
-                && (long) KeyValues.First().Value == default(long))
+            if (KeyValues.Count == 1 && KeyValues.First().Key == "m_id" && 
+                KeyValues.First().Value is long && 
+                (long) KeyValues.First().Value == default(long))
             {
                 return default(long);
             }
 
-            IMongoQuery query =
-                Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(T.Name, KeyValue.Key, KeyValue.Value)).ToArray());
+            var query = Builders<T>.Filter.And(KeyValues.Select(KeyValue => Builders<T>.Filter.Eq(KeyValue.Key, KeyValue.Value)).ToArray());
 
-            MongoCursor result =
-                CollectionsManager.GetCollection(T.Name).FindAs(T, query).SetFields(Fields.Include("_id")).SetLimit(1);
+            var result = CollectionsManager.GetCollection<T>(Type.Name).Find(Builders<T>.Filter.And(query)).Project(Builders<T>.Projection.Include("_id")).Limit(1).ToListAsync().Result;
 
-            if (ConfigManager.Out != null)
-            {
-                ConfigManager.Out.Write(String.Format("{0}: ", T.Name));
-                ConfigManager.Out.WriteLine(result.Query.ToString());
-                ConfigManager.Out.WriteLine(result.Explain().ToJson());
-                ConfigManager.Out.WriteLine();
-            }
+            //if (ConfigManager.Out != null)
+            //{
+            //    ConfigManager.Out.Write(String.Format("{0}: ", T.Name));
+            //    ConfigManager.Out.WriteLine(result.Query.ToString());
+            //    ConfigManager.Out.WriteLine(result.Explain().ToJson());
+            //    ConfigManager.Out.WriteLine();
+            //}
 
-            if (result.Size() == 0)
+            if (! result.Any())
             {
                 return default(long);
             }
 
 
-            return ((IMongoMapperIdeable) result.Cast<object>().First()).m_id;
+            return result.First()["_id"].AsInt64;
         }
 
         public long FindIdByKey<T>(Dictionary<string, object> KeyValues)
-        {
-            //Si la key es la interna y vieb
-            if (KeyValues.Count == 1 && KeyValues.First().Key == "m_id" && KeyValues.First().Value is long
-                && (long) KeyValues.First().Value == default(long))
-            {
-                return default(long);
-            }
-
-            IMongoQuery query =
-                Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(typeof(T).Name,KeyValue.Key, KeyValue.Value)).ToArray());
-
-            MongoCursor<T> result =
-                CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query).SetFields(Fields.Include("_id"));
-
-            if (ConfigManager.Out != null)
-            {
-                ConfigManager.Out.Write(String.Format("{0}: ", typeof (T).Name));
-                ConfigManager.Out.WriteLine(result.Query.ToString());
-                ConfigManager.Out.WriteLine(result.Explain().ToJson());
-                ConfigManager.Out.WriteLine();
-            }
-
-            if (!result.Any())
-            {
-                return default(long);
-            }
-
-            return ((IMongoMapperIdeable) result.First()).m_id;
+        {            
+            return FindIdByKey<T>(typeof(T), KeyValues);                
         }
 
 
         public T FindObjectByKey<T>(Dictionary<string, object> KeyValues)
         {
-            IMongoQuery query =
-                Query.And(KeyValues.Select(KeyValue => MongoQuery.Eq(typeof(T).Name, KeyValue.Key, KeyValue.Value)).ToArray());
+            var query = Builders<T>.Filter.And(KeyValues.Select(KeyValue => Builders<T>.Filter.Eq(KeyValue.Key, KeyValue.Value)).ToArray());
 
-            var result = CollectionsManager.GetCollection(typeof (T).Name).FindAs<T>(query);
+            var result = CollectionsManager.GetCollection<T>(typeof (T).Name).Find(query).Limit(1).ToListAsync().Result;
 
-            if (result == null || result.Size() == 0)
+            if (result == null || !result.Any())
             {
                 throw new FindByKeyNotFoundException();
             }

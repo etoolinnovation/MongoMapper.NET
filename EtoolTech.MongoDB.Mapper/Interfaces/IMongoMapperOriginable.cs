@@ -1,12 +1,12 @@
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    public interface IMongoMapperOriginable
+    public interface IMongoMapperOriginable<T>
     {
         #region Public Methods
 
-        T GetOriginalObject<T>();
+        T GetOriginalObject();
 
-        T GetOriginalT<T>();
+        T GetOriginalT();
 
         void SaveOriginal(bool Force);
 

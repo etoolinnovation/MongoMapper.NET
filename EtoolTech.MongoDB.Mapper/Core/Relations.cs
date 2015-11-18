@@ -6,12 +6,13 @@ using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-    public class Relations : IRelations
+    public class Relations<T> : IRelations<T>
     {
         #region Constants and Fields
 
@@ -21,7 +22,7 @@ namespace EtoolTech.MongoDB.Mapper
         private static readonly Dictionary<string, List<string>> BufferUpRelations =
             new Dictionary<string, List<string>>();
 
-        private static IRelations _relations;
+        private static IRelations<T> _relations;
 
         private readonly Object _lockObjectDown = new Object();
 
@@ -39,9 +40,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Properties
 
-        public static IRelations Instance
+        public static IRelations<T> Instance
         {
-            get { return _relations ?? (_relations = new Relations()); }
+            get { return _relations ?? (_relations = new Relations<T>()); }
         }
 
         #endregion
@@ -58,11 +59,10 @@ namespace EtoolTech.MongoDB.Mapper
                 string fkFieldName = values[2];
 
                 object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-                IMongoQuery query = MongoQuery.Eq(fkClassName, fkFieldName, value);
+                var query = MongoQuery<BsonDocument>.Eq(fkClassName, fkFieldName, value);
 
-                MongoCollection fkCol =
-                    CollectionsManager.GetCollection(fkClassName);
-                if (fkCol.Count(query) != 0)
+                var fkCol = CollectionsManager.GetCollection<BsonDocument>(fkClassName);
+                if (fkCol.CountAsync(query).Result != 0)
                 {
                     throw new ValidateDownRelationException(String.Format("{0}, Value:{1}", relation, value));
                 }
@@ -82,24 +82,24 @@ namespace EtoolTech.MongoDB.Mapper
                 string fkParentfieldName = values[3];
                 string fkParentPropertyName = values[4];
 
-                IMongoQuery parentQuery = null;
+                FilterDefinition<BsonDocument> parentQuery = null;
                 if (!String.IsNullOrEmpty(fkParentfieldName) && !String.IsNullOrEmpty(fkParentPropertyName))
                 {
                     object parentvalue = ReflectionUtility.GetPropertyValue(Sender, fkParentPropertyName);
-                    parentQuery = MongoQuery.Eq(fkClassName, fkParentfieldName, parentvalue);
+                    parentQuery = MongoQuery<BsonDocument>.Eq(fkClassName, fkParentfieldName, parentvalue);
                 }
 
                 object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-                IMongoQuery query = MongoQuery.Eq(fkClassName, fkFieldName, value);
+                var query = MongoQuery<BsonDocument>.Eq(fkClassName, fkFieldName, value);
 
                 if (parentQuery != null)
                 {
-                    query = Query.And(parentQuery, query);
+                    query = Builders<BsonDocument>.Filter.And(parentQuery, query);
                 }
 
-                MongoCollection fkCol =
-                    CollectionsManager.GetCollection(fkClassName);
-                if (fkCol.Count(query) == 0)
+                var fkCol = CollectionsManager.GetCollection<BsonDocument>(fkClassName);
+
+                if (fkCol.CountAsync(query).Result == 0)
                 {
                     throw new ValidateUpRelationException(String.Format("{0}, Value:{1}", upRelation, value));
                 }
@@ -136,7 +136,7 @@ namespace EtoolTech.MongoDB.Mapper
                                         "{0}|{1}|{2}", fieldInfo.Name, relation.ObjectName, relation.FieldName));
                                 if (!ConfigManager.Config.Context.Generated)
                                 {
-									CollectionsManager.GetCollection(relation.ObjectName).CreateIndex(
+									CollectionsManager.GetCollection<BsonDocument>(relation.ObjectName).Indexes.CreateOneAsync(
                                         MongoMapperHelper.ConvertFieldName(relation.ObjectName,relation.FieldName));
                                 }
                             }
@@ -174,10 +174,11 @@ namespace EtoolTech.MongoDB.Mapper
             string fieldName = values[0];
             string fkClassName = values[1];
             string fkFieldName = values[2];
+
             object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-            IMongoQuery query = MongoQuery.Eq(typeof(T).Name, fkFieldName, value);
-            return
-                CollectionsManager.GetCollection(fkClassName).FindAs<T>(query).ToList();
+            var query = MongoQuery<T>.Eq(typeof(T).Name, fkFieldName, value);
+
+            return CollectionsManager.GetCollection<T>(fkClassName).Find(query).ToListAsync().Result;
         }
 
         public List<string> GetUpRelations(Type T)
@@ -216,7 +217,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                             if (!ConfigManager.Config.Context.Generated)
                             {
-								CollectionsManager.GetCollection(T.Name).CreateIndex(MongoMapperHelper.ConvertFieldName(T.Name,fieldInfo.Name));
+								CollectionsManager.GetCollection<BsonDocument>(T.Name).Indexes.CreateOneAsync(MongoMapperHelper.ConvertFieldName(T.Name,fieldInfo.Name));
                             }
                         }
                     }

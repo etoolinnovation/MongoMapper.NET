@@ -44,11 +44,10 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 Method.Invoke(Sender, new[] {ReflectionUtility.GetPropertyValue(Sender, PropertyName)});
             }
-            catch (Exception ex)
+            catch (TargetInvocationException ex)
             {
-                throw new ValidatePropertyException(
-                    PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-            }
+                throw new ValidatePropertyException(PropertyName, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }          
         }
 
         private static void GetPropertyValidators(Type T)

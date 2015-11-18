@@ -11,21 +11,21 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        public static void FillByKey<T>(this T Object, params object[] Values) where T : MongoMapper
+        public static void FillByKey<T>(this T Object, params object[] Values) where T : MongoMapper<T>
         {
             object result = Finder.Instance.FindByKey<T>(Values);
 
             ReflectionUtility.CopyObject(result, Object);
         }
 
-        public static void FindByMongoId<T>(this T Object, long Id) where T : MongoMapper
+        public static void FindByMongoId<T>(this T Object, long Id) where T : MongoMapper<T>
         {
             object result = Finder.Instance.FindById<T>(Id);
 
             ReflectionUtility.CopyObject(result, Object);
         }
 
-        public static void MongoFind<T>(this List<T> List) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List) where T : MongoMapper<T>
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
@@ -35,7 +35,7 @@ namespace EtoolTech.MongoDB.Mapper
             List.AddRange(col.ToList());
         }
 
-        public static void MongoFind<T>(this List<T> List, IMongoQuery Query) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List, FilterDefinition<T> Query) where T : MongoMapper<T>
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
@@ -43,7 +43,7 @@ namespace EtoolTech.MongoDB.Mapper
             List.AddRange(col.ToList());
         }
 
-        public static void MongoFind<T>(this List<T> List, Expression<Func<T, object>> Field, object Value) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List, Expression<Func<T, object>> Field, object Value) where T : MongoMapper<T>
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
@@ -51,11 +51,11 @@ namespace EtoolTech.MongoDB.Mapper
             List.AddRange(col.ToList());
         }
 
-        public static void MongoFind<T>(this List<T> List, string FieldName, object Value) where T : MongoMapper
+        public static void MongoFind<T>(this List<T> List, string FieldName, object Value) where T : MongoMapper<T>
         {
             List.Clear();
             var col = new MongoMapperCollection<T>();
-            col.Find(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
+            col.Find(MongoQuery<T>.Eq(typeof(T).Name, FieldName, Value));
             List.AddRange(col.ToList());
         }
 

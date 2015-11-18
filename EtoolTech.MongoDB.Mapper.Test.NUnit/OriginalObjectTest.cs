@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MongoDB.Driver;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
@@ -12,11 +13,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObject()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapperCollection<Person>.Instance.Find().First();
+            Person p = MongoMapperCollection<Person>.Instance.Find().FirstAsync().Result;
             p.Save();
             p.Name = "hola 25";
 
-            var p2 = p.GetOriginalObject<Person>();
+            var p2 = p.GetOriginalObject();
             Assert.AreEqual("Pepito Perez", p2.Name);
         }
 
@@ -24,10 +25,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObjectCustom()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapperCollection<Person>.Instance.Find().First();
+            Person p = MongoMapperCollection<Person>.Instance.Find().FirstAsync().Result;
             p.Name = "hola 25";
 
-            var p2 = p.GetOriginalObject<Person>();
+            var p2 = p.GetOriginalObject();
             Assert.AreEqual("Pepito Perez", p2.Name);
             p.Save();
 
@@ -35,7 +36,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.SaveOriginal(true);
             p.Name = "Pepe";
 
-            p2 = p.GetOriginalObject<Person>();
+            p2 = p.GetOriginalObject();
             Assert.AreEqual("Andres", p2.Name);
         }
 
@@ -43,10 +44,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void TestOriginalObjectWithOutSave()
         {
             (new InsertModifyDeleteTest()).TestInsert();
-            Person p = MongoMapperCollection<Person>.Instance.Find().First();
+            Person p = MongoMapperCollection<Person>.Instance.Find().FirstAsync().Result;
             p.Name = "hola 25";
 
-            var p2 = p.GetOriginalObject<Person>();
+            var p2 = p.GetOriginalObject();
             Assert.AreEqual("Pepito Perez", p2.Name);
         }
 
@@ -77,7 +78,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             p.Name = "Juan Sin Miedo";
 
-            object originalName = p.GetOriginalObject<Person>().Name;
+            object originalName = p.GetOriginalObject().Name;
 
             Assert.AreEqual(originalName.ToString(), "Pepito Perez");
         }

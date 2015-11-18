@@ -10,7 +10,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [MongoIndex(IndexFields = "ID,Country")]
     [MongoIndex(IndexFields = "Name")]
     [MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = true)]
-    public class Person : MongoMapper
+    public class Person : MongoMapper<Person>
     {
         #region Constructors and Destructors
 

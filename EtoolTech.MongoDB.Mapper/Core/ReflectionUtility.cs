@@ -19,7 +19,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static void BuildSchema(Assembly Assembly, string ClassName)
         {
-            List<Type> types = String.IsNullOrEmpty(ClassName) ? Assembly.GetTypes().Where(T => T.BaseType == typeof (MongoMapper)).ToList() : Assembly.GetTypes().Where(T => T.BaseType == typeof(MongoMapper) && T.Name == ClassName).ToList();
+            List<Type> types = String.IsNullOrEmpty(ClassName) ? Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper").ToList() : 
+                Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper" && T.Name == ClassName).ToList();
 
             foreach (Type type in types)
             {
@@ -27,7 +28,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public static void CopyObject<T>(T Source, T Destination)
+        public static void CopyObject<T>(T Source, object Destination)
         {
             Type t = Source.GetType();
 

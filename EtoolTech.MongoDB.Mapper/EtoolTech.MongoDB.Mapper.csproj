@@ -46,7 +46,8 @@
     <Reference Include="MongoDB.Driver.Core">
       <HintPath>..\Dependencies\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver.Legacy">
+    <Reference Include="MongoDB.Driver.Legacy, Version=2.1.0.145, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\MongoDB.Driver.Legacy.dll</HintPath>
     </Reference>
     <Reference Include="System" />

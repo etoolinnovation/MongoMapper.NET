@@ -7,6 +7,7 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -14,9 +15,9 @@ using MongoDB.Driver.Builders;
 namespace EtoolTech.MongoDB.Mapper
 {
     [Serializable]
-    public abstract class MongoMapper : IMongoMapperOriginable,
-                                        IMongoMapperRelationable,
-                                        IMongoMapperWriteable,
+    public abstract class MongoMapper<T> : IMongoMapperOriginable<T>,
+                                        IMongoMapperRelationable<T>,
+                                        IMongoMapperWriteable<T>,
                                         IMongoMapperIdeable,
                                         IMongoMapperVersionable,
                                         ISupportInitialize
@@ -25,9 +26,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static readonly IChildsManager ChildsManager = Mapper.ChildsManager.Instance;
 
-        private static readonly IEvents Events = Mapper.Events.Instance;
+        private static readonly IEvents<T> Events = Mapper.Events<T>.Instance;
 
-        private static readonly IRelations Relations = Mapper.Relations.Instance;
+        private static readonly IRelations<T> Relations = Mapper.Relations<T>.Instance;
 
         private readonly Type _classType;
 
@@ -121,15 +122,14 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (m_id == default(long))
             {
-                m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
+                m_id = Finder.Instance.FindIdByKey<T>(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", m_id);
 
-            MongoCursor result =
-                CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query).SetFields(
-                    Fields.Include("m_dv"));
+            var query = Builders<BsonDocument>.Filter.Eq("_id", m_id);
 
-            return ((IMongoMapperVersionable) result.Cast<object>().First()).m_dv == m_dv;
+            var result = CollectionsManager.GetCollection<BsonDocument>(_classType.Name).Find(Builders<BsonDocument>.Filter.And(query)).Project(Builders<BsonDocument>.Projection.Include("m_dv")).Limit(1).ToListAsync().Result;
+        
+            return result.First()["m_dv"].AsInt64 == m_dv;
         }
 
         public void FillFromLastVersion()
@@ -143,13 +143,14 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (m_id == default(long))
             {
-                m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
+                m_id = Finder.Instance.FindIdByKey<T>(_classType, GetPrimaryKeyValues());
             }
-            IMongoQuery query = Query.EQ("_id", m_id);
 
-            MongoCursor result = CollectionsManager.GetPrimaryCollection(_classType.Name).FindAs(_classType, query);
+            var query = Builders<BsonDocument>.Filter.Eq("_id", m_id);
 
-            ReflectionUtility.CopyObject(result.Cast<object>().First(), this);
+            var result = CollectionsManager.GetCollection<BsonDocument>(_classType.Name).Find(Builders<BsonDocument>.Filter.And(query)).Limit(1).ToListAsync().Result;
+
+            ReflectionUtility.CopyObject(BsonSerializer.Deserialize<T>(result.First()), this);
         }
 
         #endregion
@@ -178,7 +179,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region IMongoMapperOriginable Members
 
-        public T GetOriginalObject<T>()
+        public T GetOriginalObject()
         {
             if (!ConfigManager.EnableOriginalObject(_classType.Name))
             {
@@ -189,10 +190,10 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 return (Activator.CreateInstance<T>());
             }
-            return GetOriginalT<T>();
+            return GetOriginalT();
         }
 
-        public T GetOriginalT<T>()
+        public T GetOriginalT()
         {
             if (_tOriginalObjet != null)
             {
@@ -262,7 +263,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             EnsureUpRelations();
 
-            Writer.Instance.Insert(_classType.Name, _classType, this);
+            Writer.Instance.Insert<T>(_classType.Name, _classType, (T)(object)this);
 
             Events.AfterInsertDocument(this, OnAfterInsert, OnAfterComplete, _classType);
         }
@@ -277,7 +278,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             if (m_id == default(long))
             {
-                long id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
+                long id = Finder.Instance.FindIdByKey<T>(_classType, GetPrimaryKeyValues());
                 if (id == default(long))
                 {
                     InsertDocument();
@@ -307,34 +308,29 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
-        public void ServerUpdate(UpdateBuilder Update, bool Refill = true)
+        public void ServerUpdate(UpdateDefinition<T> Update, bool Refill = true)
         {                                    
             if (m_id == default(long))
             {
-                m_id = Finder.Instance.FindIdByKey(_classType, GetPrimaryKeyValues());
-            }
-            IMongoQuery query = Query.EQ("_id", m_id);
-
-            var args = new FindAndModifyArgs()
-            {
-                Query = query,
-                SortBy = null,
-                Update = Update,
-                VersionReturned = Refill ? FindAndModifyDocumentVersion.Modified : FindAndModifyDocumentVersion.Original
-            };
-
-            FindAndModifyResult result = CollectionsManager.GetCollection(_classType.Name).FindAndModify(args);
-
-
-            if (!String.IsNullOrEmpty(result.ErrorMessage))
-            {
-                throw new ServerUpdateException(result.ErrorMessage);
+                m_id = Finder.Instance.FindIdByKey<T>(_classType, GetPrimaryKeyValues());
             }
 
+            var query = Builders<T>.Filter.Eq("_id", m_id);
+      
+            var result = CollectionsManager.GetCollection<T>(_classType.Name).FindOneAndUpdateAsync(
+                query,
+                Update,
+                new FindOneAndUpdateOptions<T>()
+                {
+                    IsUpsert = true,
+                    ReturnDocument = Refill ? ReturnDocument.After : ReturnDocument.Before
+                }
+                ).Result;
 
+          
             if (Refill)
             {
-                ReflectionUtility.CopyObject(result.GetModifiedDocumentAs(_classType), this);
+                ReflectionUtility.CopyObject<T>(result, this);
             }
         }
 
@@ -355,44 +351,37 @@ namespace EtoolTech.MongoDB.Mapper
 
    
 
-        public static T FindByKey<T>(params object[] values)
+        public static T FindByKey(params object[] values)
         {
             return Finder.Instance.FindByKey<T>(values);
         }
 
-        public static MongoCollection GetCollection<T>()
+        public static IMongoCollection<T> GetCollection()
         {
-            return CollectionsManager.GetCollection(typeof (T).Name);
+            return CollectionsManager.GetCollection<T>(typeof (T).Name);
         }
 
-        public static IEnumerable<BsonDocument> Aggregate<T>(AggregateArgs Args)
+   //     public static IEnumerable<BsonDocument> Aggregate<T>(AggregateArgs Args)a
+   //     {
+   //         Args.OutputMode = AggregateOutputMode.Cursor;
+   //         return CollectionsManager.GetCollection<T>((typeof(T).Name)).AggregateAsync(new PipelineStagePipelineDefinition())
+   //     }
+
+   //     public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] Operations)
+   //     {
+			//var ars = new AggregateArgs {Pipeline = Operations, OutputMode = AggregateOutputMode.Cursor};
+		 //   return CollectionsManager.GetCollection<T>((typeof (T).Name)).Aggregate(ars);
+   //     }
+
+   //     public static IEnumerable<BsonDocument> Aggregate(params string[] JsonStringOperations)
+   //     {            
+   //         var operations = JsonStringOperations.Select(ObjectSerializer.JsonStringToBsonDocument).ToList();
+   //         return Aggregate<T>(operations.ToArray());         
+   //     }
+
+        public static void ServerDelete(FilterDefinition<T> Query)
         {
-            Args.OutputMode = AggregateOutputMode.Cursor;
-            return CollectionsManager.GetCollection((typeof(T).Name)).Aggregate(Args);
-        }
-
-        public static IEnumerable<BsonDocument> Aggregate<T>(params BsonDocument[] Operations)
-        {
-			var ars = new AggregateArgs {Pipeline = Operations, OutputMode = AggregateOutputMode.Cursor};
-		    return CollectionsManager.GetCollection((typeof (T).Name)).Aggregate(ars);
-        }
-
-        public static IEnumerable<BsonDocument> Aggregate<T>(params string[] JsonStringOperations)
-        {            
-            var operations = JsonStringOperations.Select(ObjectSerializer.JsonStringToBsonDocument).ToList();
-            return Aggregate<T>(operations.ToArray());         
-        }
-
-        public static void ServerDelete<T>(IMongoQuery query)
-        {
-            WriteConcernResult result = CollectionsManager.GetCollection(typeof (T).Name).Remove(query);
-
-
-            if (result != null && result.HasLastErrorMessage)
-            {
-                throw new Exception(result.LastErrorMessage);
-            }
-
+            var result = CollectionsManager.GetCollection<T>(typeof (T).Name).FindOneAndDeleteAsync(Query).GetAwaiter().GetResult();            
         }
 
         private bool OriginalIsEmpty(bool force = false)
@@ -422,7 +411,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void EndInit()
         {
-            var mongoMapperOriginable = this as IMongoMapperOriginable;
+            var mongoMapperOriginable = this as IMongoMapperOriginable<T>;
             (mongoMapperOriginable).SaveOriginal(false);
 
             Events.ObjectComplete(this, OnObjectComplete, _classType);

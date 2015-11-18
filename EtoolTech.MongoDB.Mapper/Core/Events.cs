@@ -3,11 +3,11 @@ using EtoolTech.MongoDB.Mapper.Interfaces;
 
 namespace EtoolTech.MongoDB.Mapper
 {
-    public class Events : IEvents
+    public class Events<T> : IEvents<T>
     {
         #region Constants and Fields
 
-        private static IEvents _events;
+        private static IEvents<T> _events;
 
         #endregion
 
@@ -21,9 +21,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Properties
 
-        public static IEvents Instance
+        public static IEvents<T> Instance
         {
-            get { return _events ?? (_events = new Events()); }
+            get { return _events ?? (_events = new Events<T>()); }
         }
 
         #endregion
@@ -32,8 +32,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void AfterDeleteDocument(
             object Sender,
-            MongoMapper.OnAfterDeleteEventHandler OnAfterDelete,
-            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            MongoMapper<T>.OnAfterDeleteEventHandler OnAfterDelete,
+            MongoMapper<T>.OnAfterCompleteEventHandler OnAfterComplete,
             Type ClassType)
         {
             if (OnAfterDelete != null)
@@ -64,8 +64,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void AfterInsertDocument(
             object Sender,
-            MongoMapper.OnAfterInsertEventHandler OnAfterInsert,
-            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            MongoMapper<T>.OnAfterInsertEventHandler OnAfterInsert,
+            MongoMapper<T>.OnAfterCompleteEventHandler OnAfterComplete,
             Type ClassType)
         {
             if (OnAfterInsert != null)
@@ -96,8 +96,8 @@ namespace EtoolTech.MongoDB.Mapper
 
         public void AfterUpdateDocument(
             object Sender,
-            MongoMapper.OnAfterModifyEventHandler OnAfterModify,
-            MongoMapper.OnAfterCompleteEventHandler OnAfterComplete,
+            MongoMapper<T>.OnAfterModifyEventHandler OnAfterModify,
+            MongoMapper<T>.OnAfterCompleteEventHandler OnAfterComplete,
             Type ClassType)
         {
             if (OnAfterModify != null)
@@ -127,7 +127,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public void BeforeDeleteDocument(
-            object Sender, MongoMapper.OnBeforeDeleteEventHandler OnBeforeDelete, Type ClassType)
+            object Sender, MongoMapper<T>.OnBeforeDeleteEventHandler OnBeforeDelete, Type ClassType)
         {
             if (OnBeforeDelete != null)
             {
@@ -141,7 +141,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public void BeforeInsertDocument(
-            object Sender, MongoMapper.OnBeforeInsertEventHandler OnBeforeInsert, Type ClassType)
+            object Sender, MongoMapper<T>.OnBeforeInsertEventHandler OnBeforeInsert, Type ClassType)
         {
             if (OnBeforeInsert != null)
             {
@@ -155,7 +155,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public void BeforeUpdateDocument(
-            object Sender, MongoMapper.OnBeforeModifyEventHandler OnBeforeModify, Type ClassType)
+            object Sender, MongoMapper<T>.OnBeforeModifyEventHandler OnBeforeModify, Type ClassType)
         {
             if (OnBeforeModify != null)
             {
@@ -168,7 +168,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public void ObjectInit(object Sender, MongoMapper.OnObjectInitEventHandler OnObjectInit, Type ClassType)
+        public void ObjectInit(object Sender, MongoMapper<T>.OnObjectInitEventHandler OnObjectInit, Type ClassType)
         {
             if (OnObjectInit != null)
             {
@@ -176,7 +176,7 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
-        public void ObjectComplete(object Sender, MongoMapper.OnObjectCompleteEventHandler OnObjectComplete, Type ClassType)
+        public void ObjectComplete(object Sender, MongoMapper<T>.OnObjectCompleteEventHandler OnObjectComplete, Type ClassType)
         {
             if (OnObjectComplete != null)
             {

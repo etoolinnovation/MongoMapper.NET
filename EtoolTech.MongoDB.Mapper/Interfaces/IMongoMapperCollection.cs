@@ -7,12 +7,12 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public interface IMongoMapperCollection<T> : IEnumerable<T>
     {
-        MongoCursor<T> Cursor { get; }
+        IFindFluent<T, T> Cursor { get; }
         long Total { get; }
         long Count { get; }
-        MongoCursor<T> Find(IMongoQuery Query);
-        MongoCursor<T> Find(Expression<Func<T, object>> Field, object Value);
-        MongoCursor<T> Find();
+        IFindFluent<T, T> Find(FilterDefinition<T> Query);
+        IFindFluent<T, T> Find(Expression<Func<T, object>> Field, object Value);
+        IFindFluent<T, T> Find();
         List<T> ToList();
         T First();
         T Last();        

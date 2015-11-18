@@ -13,18 +13,19 @@ namespace EtoolTech.MongoDB.Mapper
 {
     public class MongoMapperCollection<T> : IMongoMapperCollection<T>
     {
-        public MongoCursor<T> Cursor { get; private set; }
+        public IFindFluent<T, T> Cursor { get; private set; }
+        public FilterDefinition<T> LastQuery { get; private set; }
 
         public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}}
         public static MongoMapperCollection<T> InstanceFromPrimary { get { return new MongoMapperCollection<T>(true); } }
 
         public bool FromPrimary { get; set; }
 
-        private MongoCollection GetCollection()
+        private IMongoCollection<T> GetCollection()
         {
             return FromPrimary
-                ? CollectionsManager.GetPrimaryCollection(typeof (T).Name)
-                : CollectionsManager.GetCollection(typeof (T).Name);
+                ? CollectionsManager.GetPrimaryCollection<T>(typeof (T).Name)
+                : CollectionsManager.GetCollection<T>(typeof (T).Name);
         }
         
         public MongoMapperCollection()
@@ -39,89 +40,102 @@ namespace EtoolTech.MongoDB.Mapper
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(typeof(T).Name) * 1024 * 1024;
         }
 
-        public MongoCursor<T> Find(IMongoQuery Query)
+        public IFindFluent<T, T> Find(FilterDefinition<T> Query)
         {
-            Cursor = GetCollection().FindAs<T>(Query);
+            LastQuery = Query;
+
+            Cursor = GetCollection().Find(LastQuery);            
             return Cursor;
         }
 
-        public MongoCursor<T> Find(string JsonQuery)
+        public IFindFluent<T, T> Find(string JsonQuery)
         {
             var document = ObjectSerializer.JsonStringToBsonDocument(JsonQuery);
             var query = new QueryDocument(document);
-            Cursor = GetCollection().FindAs<T>(query);
+            LastQuery = query;
+
+            Cursor = GetCollection().Find(LastQuery);            
             return Cursor;
         }
 
-        public MongoCursor<T> Find(Expression<Func<T, object>> Field, object Value)
+        public IFindFluent<T, T> Find(Expression<Func<T, object>> Field, object Value)
         {
-            Cursor = GetCollection().FindAs<T>(MongoQuery<T>.Eq(Field, Value));
+            LastQuery = MongoQuery<T>.Eq(Field, Value);
+            Cursor = GetCollection().Find<T>(LastQuery);
             return Cursor;
         }
 
-        public MongoCursor<T> Find(string FieldName, object Value)
+        public IFindFluent<T, T> Find(string FieldName, object Value)
         {
-            Cursor = GetCollection().FindAs<T>(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
+            LastQuery = MongoQuery<T>.Eq(typeof (T).Name, FieldName, Value);
+            Cursor = GetCollection().Find<T>(LastQuery);
             return Cursor;
         }
 
-        public MongoCursor<T> Find()
+        public IFindFluent<T,T> Find()
         {
-            Cursor = GetCollection().FindAllAs<T>();          
+            LastQuery = new BsonDocument();
+            Cursor = GetCollection().Find<T>(new BsonDocument());            
             return Cursor;
         }
    
 
-        public T Pop(IMongoQuery CustomQuery, IMongoSortBy SortBy)
+        public T Pop(FilterDefinition<T> Query, SortDefinition<T> SortBy)
         {
             var col = GetCollection();
+            
+            FindOneAndDeleteOptions<T> args = new FindOneAndDeleteOptions<T>();
+            args.Sort = SortBy;            
 
-            var args = new FindAndRemoveArgs {SortBy = SortBy, Query = CustomQuery};
+            var result = col.FindOneAndDeleteAsync( Query, args ).Result;
 
-            var result = col.FindAndRemove(args);
-
-            if (result.Ok)
-            {
-                return result.GetModifiedDocumentAs<T>();
-            }
-
-            return default(T);
+            return result;      
 
         }
 
         public T Pop()
         {
-            return Pop(Query.Null, SortBy.Ascending("$natural"));
+            return Pop(new BsonDocument(), Builders<T>.Sort.Ascending("$natural"));
         }
 
         public long Total
         {
-            get { return Cursor.Count(); }
+            get
+            {
+                var t = GetCollection().Find(new BsonDocument()).CountAsync();
+                t.Wait();
+                return t.Result;
+            }
         }
 
         public long Count 
         {
-            get { return Cursor.Size(); }
+            get
+            {
+                var t = Cursor.CountAsync();
+                t.Wait();
+                return t.Result; ;
+            }
         }
 
         public List<T> ToList()
         {
-            return Cursor.ToList();
+            return Cursor.ToListAsync().Result;
         }
 
         public T First()
         {
-            return Cursor.First();
+            return Cursor.FirstAsync().Result;            
         }
 
         public T Last()
         {
-            return Cursor.Last();
+            throw new NotImplementedException();
         }
 
         public IEnumerator<T> GetEnumerator()
         {                        
-            return Cursor.GetEnumerator();
+            return new MongoMapperEnumerator<T>(Cursor.ToCursorAsync().Result);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -130,5 +144,33 @@ namespace EtoolTech.MongoDB.Mapper
         }
     }
 
-   
+    public class MongoMapperEnumerator<T> : IEnumerator<T>
+    {
+        private readonly IAsyncCursor<T> _enumerator;
+        private T _current;
+
+        public MongoMapperEnumerator(IAsyncCursor<T> Cursor)
+        {
+            _enumerator = Cursor;
+        }
+
+        public void Dispose() { }
+
+        public bool MoveNext()
+        {
+            while (true)
+            {
+                bool hasNext = _enumerator.MoveNextAsync().Result;
+                if (!hasNext) return false;
+                _current = _enumerator.Current.First();
+                return true;
+            }            
+        }
+
+        public void Reset() { throw new NotImplementedException(); }
+
+        public T Current { get { return _current; } }
+
+        object IEnumerator.Current { get { return Current; } }
+    }
 }

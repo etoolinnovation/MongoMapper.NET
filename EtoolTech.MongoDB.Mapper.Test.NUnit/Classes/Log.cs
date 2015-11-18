@@ -12,7 +12,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [MongoKey(KeyFields = "")]
     [MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = false)]
     [MongoTTLIndex(IndexField = "Date",Seconds = 600)]
-    public class Log: MongoMapper
+    public class Log: MongoMapper<Log>
     {
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Date { get; set; }

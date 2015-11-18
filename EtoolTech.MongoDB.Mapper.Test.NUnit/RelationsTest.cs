@@ -46,7 +46,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 p.Save();
             }
 
-            c = MongoMapper.FindByKey<Country>("ES");
+            c = MongoMapper<Country>.FindByKey("ES");
             try
             {
                 c.Delete();
@@ -63,7 +63,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 c.Delete();
             }
 
-            c = MongoMapper.FindByKey<Country>("UK");
+            c = MongoMapper<Country>.FindByKey("UK");
 
             List<Person> PersonasEnUK = c.GetRelation<Person>("Person,Country");
             foreach (Person PersonInUK in PersonasEnUK)

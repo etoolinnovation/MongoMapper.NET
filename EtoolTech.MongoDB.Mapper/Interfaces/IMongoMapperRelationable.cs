@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    public interface IMongoMapperRelationable
+    public interface IMongoMapperRelationable<T>
     {
         #region Public Methods
 
