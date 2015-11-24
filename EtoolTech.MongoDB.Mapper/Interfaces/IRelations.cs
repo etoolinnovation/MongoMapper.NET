@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EtoolTech.MongoDB.Mapper.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
@@ -11,11 +12,11 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         void EnsureUpRelations(object Sender, Type ClassType, IFinder Finder);
 
-        List<string> GetDownRelations(Type T);
+        List<MongoRelation> GetDownRelations(Type T);
 
         List<T> GetRelation<T>(object Sender, string Relation, Type ClassType, IFinder Finder);
 
-        List<string> GetUpRelations(Type T);
+        List<MongoRelation> GetUpRelations(Type T);
 
         #endregion
     }

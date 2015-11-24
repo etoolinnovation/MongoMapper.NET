@@ -10,6 +10,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [MongoIndex(IndexFields = "ID,Country")]
     [MongoIndex(IndexFields = "Name")]
     [MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = true)]
+    [MongoRelation("Country", "Country", "Code", true)]
     public class Person : MongoMapper<Person>
     {
         #region Constructors and Destructors
@@ -37,8 +38,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         [MongoChildCollection]
         public List<Child> Childs { get; set; }
-
-        [MongoUpRelation(ObjectName = "Country", FieldName = "Code")]
+        
         [BsonElement("c")]
         public string Country { get; set; }
 
