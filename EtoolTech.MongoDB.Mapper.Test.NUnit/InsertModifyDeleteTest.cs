@@ -232,7 +232,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Insert de Paises
             var c = new Country {Code = "ES", Name = "España"};
             c.Save();
-            c.ServerUpdate(Builders<Country>.Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
+            c.ServerUpdate(c.Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
 
             Assert.AreEqual(c.Name, "España 22");
 
@@ -252,7 +252,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.Save();
 
             p.ServerUpdate(
-                Builders<Person>.Update.Push(
+                p.Update.Push(
                     MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child
                         {ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez"}));

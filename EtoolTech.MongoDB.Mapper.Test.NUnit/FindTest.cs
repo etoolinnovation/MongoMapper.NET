@@ -25,16 +25,16 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var Persons = MongoMapperCollection<Person>.Instance;
 
             Countries.Find(
-                    Builders<Country>.Filter.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), MongoQuery<Country>.Eq(c=>c.Code, "UK")));
+                    Countries.Filter.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), MongoQuery<Country>.Eq(c=>c.Code, "UK")));
             Assert.AreEqual(Countries.Count, 2);
 
             Persons.Find(
-                    Builders<Person>.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
+                    Persons.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
             Assert.AreEqual(Persons.Count, 2);
 
             Persons = new MongoMapperCollection<Person>();
             Persons.Find(
-                    Builders<Person>.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 35), MongoQuery<Person>.Eq(p => p.Country, "%")));
+                    Persons.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 35), MongoQuery<Person>.Eq(p => p.Country, "%")));
             Assert.AreEqual(1, Persons.Count);
 
             Persons = new MongoMapperCollection<Person>();
@@ -53,7 +53,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Persons.Find(MongoQuery<Person>.Eq(p => p.Married, false));
             Assert.AreEqual(3, Persons.Count);
 
-            Persons.Find(Builders<Person>.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
+            Persons.Find(Persons.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "ES")));
             Assert.AreEqual(2, Persons.Count);
 
 
@@ -63,7 +63,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 Assert.AreEqual(p.Country, "ES");
             }
 
-            Persons.Find(Builders<Person>.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "US")));
+            Persons.Find(Persons.Filter.And(MongoQuery<Person>.Eq(p => p.Age, 25), MongoQuery<Person>.Eq(p => p.Country, "US")));
             Assert.AreEqual(0, Persons.Count);
 
             Persons.Find(MongoQuery<Person>.Gt(p => p.Age, 25));
@@ -207,7 +207,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Countries.Find().Limit(1);
             Assert.AreEqual(Countries.Count, 1);
 
-            Countries.Find(MongoQuery<Country>.Eq(c=>c.Code, "ES")).Project(Builders<Country>.Projection.Include(C=>C.Code));
+            Countries.Find(MongoQuery<Country>.Eq(c=>c.Code, "ES")).Project(Countries.Project.Include(C=>C.Code));
             Assert.AreEqual(Countries.Count, 1);
             //var c2 = Countries.First();
             //TODO Projection no esta funcionando, devuelve Name tambien Assert.AreEqual(c2.Name, null);

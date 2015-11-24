@@ -32,7 +32,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             Type t = Source.GetType();
 
-            foreach (PropertyInfo property in t.GetProperties())
+            foreach (PropertyInfo property in t.GetProperties().Where(P=>P.GetSetMethod() != null))
             {
                 property.SetValue(Destination, property.GetValue(Source, null), null);
             }

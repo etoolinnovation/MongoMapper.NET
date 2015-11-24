@@ -82,31 +82,31 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(4, countries.Count);
 
-            c = countries.Pop(new BsonDocument(), Builders<Country>.Sort.Ascending(C=>C.Code));
+            c = countries.Pop(new BsonDocument(),countries.Sort.Ascending(C=>C.Code));
 
             Assert.AreEqual(c.Code, "A");
 
             Assert.AreEqual(3, countries.Count);
 
-            c = countries.Pop(new BsonDocument(), Builders<Country>.Sort.Ascending(C => C.Code));
+            c = countries.Pop(new BsonDocument(),countries.Sort.Ascending(C => C.Code));
 
             Assert.AreEqual(c.Code, "B");
 
             Assert.AreEqual(2, countries.Count);
 
-            c = countries.Pop(new BsonDocument(), Builders<Country>.Sort.Ascending(C => C.Code));
+            c = countries.Pop(new BsonDocument(),countries.Sort.Ascending(C => C.Code));
 
             Assert.AreEqual(c.Code, "C");
 
             Assert.AreEqual(1, countries.Count);
 
-            c = countries.Pop(new BsonDocument(), Builders<Country>.Sort.Ascending(C => C.Code));
+            c = countries.Pop(new BsonDocument(),countries.Sort.Ascending(C => C.Code));
 
             Assert.AreEqual(c.Code, "D");
 
             Assert.AreEqual(0, countries.Count);
 
-            c = countries.Pop(new BsonDocument(), Builders<Country>.Sort.Ascending(C => C.Code));
+            c = countries.Pop(new BsonDocument(),countries.Sort.Ascending(C => C.Code));
 
             Assert.IsNull(c);
 
@@ -134,25 +134,25 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Assert.AreEqual(4, countries.Count);
 
-            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"), Builders<Country>.Sort.Descending(C=>C.Code));
+            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"),countries.Sort.Descending(C=>C.Code));
 
             Assert.AreEqual(c.Code, "D");
 
             Assert.AreEqual(3, countries.Count);
 
-            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"), Builders<Country>.Sort.Descending(C => C.Code));
+            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"),countries.Sort.Descending(C => C.Code));
 
             Assert.AreEqual(c.Code, "B");
 
             Assert.AreEqual(2, countries.Count);
 
-            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"), Builders<Country>.Sort.Descending(C => C.Code));
+            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"),countries.Sort.Descending(C => C.Code));
 
             Assert.AreEqual(c.Code, "A");
 
             Assert.AreEqual(1, countries.Count);
 
-            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"), Builders<Country>.Sort.Descending(C => C.Code));
+            c = countries.Pop(MongoQuery<Country>.Eq(C => C.Name, "1"),countries.Sort.Descending(C => C.Code));
 
             Assert.IsNull(c);
 

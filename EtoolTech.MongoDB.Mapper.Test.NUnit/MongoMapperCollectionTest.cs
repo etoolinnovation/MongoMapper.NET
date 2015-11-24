@@ -32,7 +32,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(3, col.Total);
 
             col = new CountryCollection {FromPrimary = true};
-            col.Find().Limit(3).Sort(Builders<Country>.Sort.Ascending(C=>C.Name));              
+            col.Find().Limit(3).Sort(col.Sort.Ascending(C=>C.Name));              
 
             Assert.AreEqual(3, col.Count);
             Assert.AreEqual("ES", col.First().Code);

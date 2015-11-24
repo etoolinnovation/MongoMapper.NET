@@ -97,6 +97,14 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Public Properties
 
+        #region Builders
+        public FilterDefinitionBuilder<T> Filter {  get { return Builders<T>.Filter; } }
+        public SortDefinitionBuilder<T> Sort { get { return Builders<T>.Sort; } }
+        public UpdateDefinitionBuilder<T> Update { get { return Builders<T>.Update; } }
+        public IndexKeysDefinitionBuilder<T> Index { get { return Builders<T>.IndexKeys; } }
+        public ProjectionDefinitionBuilder<T> Project { get { return Builders<T>.Projection; } }
+        #endregion
+
         #region IMongoMapperIdeable Members
 
         [BsonId(IdGenerator = typeof (MongoMapperIdGenerator))]

@@ -15,6 +15,15 @@ namespace EtoolTech.MongoDB.Mapper
         public IFindFluent<T, T> Cursor { get; private set; }
         public FilterDefinition<T> LastQuery { get; private set; }
 
+        #region Builders
+        public FilterDefinitionBuilder<T> Filter { get { return Builders<T>.Filter; } }
+        public SortDefinitionBuilder<T> Sort { get { return Builders<T>.Sort; } }
+        public UpdateDefinitionBuilder<T> Update { get { return Builders<T>.Update; } }
+        public IndexKeysDefinitionBuilder<T> Index { get { return Builders<T>.IndexKeys; } }
+        public ProjectionDefinitionBuilder<T> Project { get { return Builders<T>.Projection; } }
+        #endregion
+
+
         public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}}
         public static MongoMapperCollection<T> InstanceFromPrimary { get { return new MongoMapperCollection<T>(true); } }
 
