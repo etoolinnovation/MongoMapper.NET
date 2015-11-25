@@ -38,8 +38,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 p.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidateUpRelationException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateUpRelationException));
                 p.Country = "ES";
@@ -50,8 +51,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Delete();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidateDownRelationException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateDownRelationException));
                 List<Person> persons = new List<Person>();

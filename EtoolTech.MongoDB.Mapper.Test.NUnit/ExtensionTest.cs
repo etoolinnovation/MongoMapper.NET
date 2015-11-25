@@ -175,8 +175,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidatePropertyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
@@ -190,8 +191,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (DuplicateKeyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }

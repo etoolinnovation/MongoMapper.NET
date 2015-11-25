@@ -20,11 +20,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var c = new Country {Code = "NL", Name = "Holanda"};
             c.Save();
 
-            var Countries = new CountryCollection();
-            Countries.Find(x=>x.Code, "NL");
-            Assert.AreEqual(1,Countries.Count);
+            var countries = new CountryCollection();
+            countries.Find(X=>X.Code, "NL");
+            Assert.AreEqual(1,countries.Count);
 
-            foreach (Country country in Countries)
+            foreach (Country country in countries)
             {
                 country.Delete();
             }
@@ -32,8 +32,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //TODO: Pruebas Replica Set
             //System.Threading.Thread.Sleep(5000);
 
-            Countries.Find(x=>x.Code, "NL");
-            Assert.AreEqual(0, Countries.Count);
+            countries.Find(X=>X.Code, "NL");
+            Assert.AreEqual(0, countries.Count);
         }
 
         [Test]
@@ -54,12 +54,13 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             geoArea.coordinates = new [] {coordinates.ToArray()};
 
             //Insert de Paises
-            var c = new Country {Code = "ES", Name = "España", Area = geoArea};
+            var c = new Country {Code = "es", Name = "España", Area = geoArea};
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidatePropertyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
@@ -73,8 +74,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (DuplicateKeyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
@@ -82,19 +84,19 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c = new Country { Code = "US", Name = "Estados Unidos", Area = geoArea };
             c.Save();
 
-            var Countries = new CountryCollection();
+            var countries = new CountryCollection();
 
-            Countries.Find(x=>x.Code, "ES");
-            Assert.AreEqual(Countries.Count, 1);
+            countries.Find(x=>x.Code, "ES");
+            Assert.AreEqual(countries.Count, 1);
 
-            Countries.Find(x=>x.Code, "UK");
-            Assert.AreEqual(Countries.Count, 1);
+            countries.Find(x=>x.Code, "UK");
+            Assert.AreEqual(countries.Count, 1);
 
-            Countries.Find(x=>x.Code, "US");
-            Assert.AreEqual(Countries.Count, 1);
+            countries.Find(x=>x.Code, "US");
+            Assert.AreEqual(countries.Count, 1);
 
-            Countries.Find();
-            Assert.AreEqual(Countries.Count, 3);
+            countries.Find();
+            Assert.AreEqual(countries.Count, 3);
 
             //Insert de personas
             var p = new Person

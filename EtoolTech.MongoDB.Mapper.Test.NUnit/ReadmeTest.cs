@@ -23,8 +23,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidatePropertyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
@@ -38,8 +39,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (DuplicateKeyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
@@ -88,8 +90,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 p.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidateUpRelationException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateUpRelationException));
                 p.Country = "ES";
