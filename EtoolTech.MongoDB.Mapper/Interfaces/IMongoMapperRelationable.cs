@@ -10,8 +10,6 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         void EnsureUpRelations();
 
-        List<T> GetRelation<T>(string Relation);
-
         #endregion
     }
 }

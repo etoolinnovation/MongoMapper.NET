@@ -10,7 +10,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [MongoCollectionName(Name="Paises")]
     [MongoGeo2DIndex(IndexField="Pos")]
     [MongoGeo2DSphereIndex(IndexField="Area")]
-    [MongoRelation("Code","Person","Country")]
+    [MongoRelation("PresonRelation","Code","Person","Country")]
     public class Country : MongoMapper<Country>
     {
         public Country()

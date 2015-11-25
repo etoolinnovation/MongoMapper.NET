@@ -50,31 +50,35 @@ namespace EtoolTech.MongoDB.Mapper
         {
             foreach (MongoRelation relation in GetDownRelations(ClassType))
             {
-                var filters = relation.CurrentFieldNames.Select(
-                    T => ReflectionUtility.GetPropertyValue(Sender, T)).Select((Value, I) => 
-                    MongoQuery<BsonDocument>.Eq(relation.RelationObjectName, relation.RelationFieldNames[I], Value)).ToList();
-
-                var relationCollection = CollectionsManager.GetCollection<BsonDocument>(relation.RelationObjectName);
-                if (relationCollection.CountAsync(Builders<BsonDocument>.Filter.And(filters)).Result != 0)
-                {
-                    throw new ValidateDownRelationException(filters.ToJson());
-                }
+                CheckRelation(Sender, relation, false);
             }
         }
 
         public void EnsureUpRelations(object Sender, Type ClassType, IFinder Finder)
         {
-            foreach (MongoRelation relation in GetDownRelations(ClassType))
+            foreach (MongoRelation relation in GetUpRelations(ClassType))
             {
-                var filters = relation.CurrentFieldNames.Select(
-                    T => ReflectionUtility.GetPropertyValue(Sender, T)).Select((Value, I) =>
-                    MongoQuery<BsonDocument>.Eq(relation.RelationObjectName, relation.RelationFieldNames[I], Value)).ToList();
+                CheckRelation(Sender, relation, true);
+            }
+        }
 
-                var relationCollection = CollectionsManager.GetCollection<BsonDocument>(relation.RelationObjectName);
-                if (relationCollection.CountAsync(Builders<BsonDocument>.Filter.And(filters)).Result != 0)
-                {
-                    throw new ValidateDownRelationException(filters.ToJson());
-                }
+        private static void CheckRelation(object Sender, MongoRelation Relation, bool FromUp)
+        {
+            var filters = Relation.CurrentFieldNames.Select(
+                T => ReflectionUtility.GetPropertyValue(Sender, T)).Select((Value, I) =>
+                    MongoQuery<BsonDocument>.Eq(Relation.RelationObjectName, Relation.RelationFieldNames[I], Value)).ToList();
+
+            var relationCollection = CollectionsManager.GetCollection<BsonDocument>(Relation.RelationObjectName);
+            var documentCount = relationCollection.CountAsync(Builders<BsonDocument>.Filter.And(filters)).Result;
+
+            bool okRelation = FromUp ? documentCount != 0 : documentCount == 0;
+
+            if (!okRelation)
+            {
+                if (FromUp)
+                    throw new ValidateUpRelationException(string.Join(",",filters.FilterToJson()));
+
+                throw new ValidateDownRelationException(string.Join(",", filters.FilterToJson()));
             }
         }
 
@@ -91,68 +95,35 @@ namespace EtoolTech.MongoDB.Mapper
                 {
                     object[] relationAttList = T.GetCustomAttributes(typeof(MongoRelation), false);
 
-                    var downRelations = relationAttList.Where(relationAtt => relationAtt != null && !((MongoRelation) relationAtt).UpRelation).Cast<MongoRelation>().ToList();
+                    var downRelations = relationAttList.Where(RelationAtt => RelationAtt != null && !((MongoRelation) RelationAtt).UpRelation).Cast<MongoRelation>().ToList();
 
                     BufferDownRelations.Add(T.Name, downRelations);
                 }
 
                 return BufferDownRelations[T.Name];
             }
-        }
-
-        public List<T> GetRelation<T>(object Sender, string Relation, Type ClassType, IFinder Finder)
-        {
-            //TODO
-            ////c.GetRelation<Person>("Person,Country");
-            //string[] values = Relation.Split(',');
-
-            //string findString = String.Format("{0}|{1}", values[0], values[1]);
-
-            //string relationString =
-            //    GetUpRelations(ClassType).FirstOrDefault(UpRelation => UpRelation.Contains(findString));
-            //if (String.IsNullOrEmpty(relationString))
-            //{
-            //    relationString =
-            //        GetDownRelations(ClassType).FirstOrDefault(DownRelation => DownRelation.EndsWith(findString));
-            //}
-
-            //if (String.IsNullOrEmpty(relationString))
-            //{
-            //    return new List<T>();
-            //}
-
-            //values = relationString.Split('|');
-            //string fieldName = values[0];
-            //string fkClassName = values[1];
-            //string fkFieldName = values[2];
-
-            //object value = ReflectionUtility.GetPropertyValue(Sender, fieldName);
-            //var query = MongoQuery<T>.Eq(typeof(T).Name, fkFieldName, value);
-
-            //return CollectionsManager.GetCollection<T>(fkClassName).Find(query).ToListAsync().Result;
-            return default(List<T>);
         }
 
         public List<MongoRelation> GetUpRelations(Type T)
         {
 
-            if (BufferDownRelations.ContainsKey(T.Name))
+            if (BufferUpRelations.ContainsKey(T.Name))
             {
-                return BufferDownRelations[T.Name];
+                return BufferUpRelations[T.Name];
             }
 
             lock (_lockObjectDown)
             {
-                if (!BufferDownRelations.ContainsKey(T.Name))
+                if (!BufferUpRelations.ContainsKey(T.Name))
                 {
                     object[] relationAttList = T.GetCustomAttributes(typeof(MongoRelation), false);
 
-                    var downRelations = relationAttList.Where(relationAtt => relationAtt != null && ((MongoRelation)relationAtt).UpRelation).Cast<MongoRelation>().ToList();
+                    var upRelations = relationAttList.Where(RelationAtt => RelationAtt != null && ((MongoRelation)RelationAtt).UpRelation).Cast<MongoRelation>().ToList();
 
-                    BufferDownRelations.Add(T.Name, downRelations);
+                    BufferUpRelations.Add(T.Name, upRelations);
                 }
 
-                return BufferDownRelations[T.Name];
+                return BufferUpRelations[T.Name];
             }
         }
 

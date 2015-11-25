@@ -235,16 +235,6 @@ namespace EtoolTech.MongoDB.Mapper
             Relations.EnsureUpRelations(this, _classType, Finder.Instance);
         }
 
-        public List<T> GetRelation<T>(string Relation)
-        {
-            if (!_relationBuffer.ContainsKey(Relation))
-            {
-                _relationBuffer.Add(
-                    Relation, Relations.GetRelation<T>(this, Relation, _classType, Finder.Instance));
-            }
-            return (List<T>) _relationBuffer[Relation];
-        }
-
         #endregion
 
         #region IMongoMapperWriteable Members

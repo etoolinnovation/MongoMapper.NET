@@ -14,8 +14,6 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         List<MongoRelation> GetDownRelations(Type T);
 
-        List<T> GetRelation<T>(object Sender, string Relation, Type ClassType, IFinder Finder);
-
         List<MongoRelation> GetUpRelations(Type T);
 
         #endregion

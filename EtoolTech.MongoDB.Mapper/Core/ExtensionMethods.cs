@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -10,6 +11,18 @@ namespace EtoolTech.MongoDB.Mapper
     public static class ExtensionMethods
     {
         #region Public Methods
+        public static string FilterToJson<T>(this FilterDefinition<T> Filter)
+        {
+            var serializerRegistry = BsonSerializer.SerializerRegistry;
+            var documentSerializer = serializerRegistry.GetSerializer<T>();
+            return Filter.Render(documentSerializer, serializerRegistry).ToJson();
+        }
+
+
+        public static List<string> FilterToJson<T>(this List<FilterDefinition<T>> Filter)
+        {
+            return Filter.Select(FilterDefinition => FilterDefinition.FilterToJson()).ToList();
+        }
 
         public static void FillByKey<T>(this T Object, params object[] Values) where T : MongoMapper<T>
         {

@@ -7,8 +7,9 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
     public class MongoRelation : Attribute
     {
 
-        public MongoRelation(string CurrentFieldNames, string RelationObjectName, string RelationFieldNames, bool UpRelation = false)
+        public MongoRelation(string Name, string CurrentFieldNames, string RelationObjectName, string RelationFieldNames, bool UpRelation = false)
         {
+            this.Name = Name;
             this.CurrentFieldNames = CurrentFieldNames.Split(',');
             this.RelationObjectName = RelationObjectName;
             this.RelationFieldNames = RelationFieldNames.Split(',');
@@ -16,6 +17,8 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
         }
         
         #region Constants and Fields
+
+        internal string Name;
 
         internal string[] CurrentFieldNames;
 

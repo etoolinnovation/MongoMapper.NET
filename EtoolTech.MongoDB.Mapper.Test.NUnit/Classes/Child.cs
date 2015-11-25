@@ -4,7 +4,7 @@ using EtoolTech.MongoDB.Mapper.Attributes;
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     [Serializable]
-    [MongoRelation("Country","Country","Code", UpRelation:true)]
+    [MongoRelation("CountryRelation", "Country","Country","Code", UpRelation:true)]
     public class Child : MongoMapperChild
     {
         #region Public Properties
