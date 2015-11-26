@@ -142,7 +142,7 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public IEnumerator<T> GetEnumerator()
-        {                        
+        {            
             return new MongoMapperEnumerator<T>(Cursor.ToCursorAsync().Result);
         }
 
@@ -156,6 +156,8 @@ namespace EtoolTech.MongoDB.Mapper
     {
         private readonly IAsyncCursor<T> _enumerator;
         private T _current;
+        private List<T> buffer = new List<T>(); 
+        
 
         public MongoMapperEnumerator(IAsyncCursor<T> Cursor)
         {
@@ -166,14 +168,27 @@ namespace EtoolTech.MongoDB.Mapper
 
         public bool MoveNext()
         {
-            while (true)
+            return GetFromBuffer();
+        }
+
+
+        private bool GetFromBuffer()
+        {
+            if (!buffer.Any())
             {
                 bool hasNext = _enumerator.MoveNextAsync().Result;
                 if (!hasNext) return false;
-                _current = _enumerator.Current.First();
+                buffer.AddRange(_enumerator.Current);
+                return GetFromBuffer();
+            }
+            else
+            {
+                _current = buffer.First();
+                buffer.RemoveAt(0);
                 return true;
-            }            
+            }
         }
+      
 
         public void Reset() { throw new NotImplementedException(); }
 
