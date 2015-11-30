@@ -21,6 +21,12 @@ namespace EtoolTech.MongoDB.Mapper
             FilterDefinition<T> query = null;
             Type type = Value.GetType();
 
+            if (type == typeof(BsonNull))
+            {
+                query = Builders<T>.Filter.Eq(FieldName, BsonNull.Value);
+                return query;
+            }
+
             if (type.BaseType != null && type.BaseType.Name == "Enum")
             {
                 type = typeof(int);

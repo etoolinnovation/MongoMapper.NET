@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using NUnit.Framework;
@@ -16,13 +17,18 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         [Test]
         public void TestFindAnddOr()
         {
+            var Countries = CountryCollection.Instance;
+            var Persons = MongoMapperCollection<Person>.Instance;
+
+            Countries.Find(MongoQuery<Country>.Eq(c => c.Code, BsonNull.Value));
+
             //Llenamos datos
             (new InsertModifyDeleteTest()).TestInsert();
 
             ConfigManager.Out = Console.Out;
 
-            var Countries = CountryCollection.Instance;
-            var Persons = MongoMapperCollection<Person>.Instance;
+
+            
 
             Countries.Find(
                     Countries.Filter.Or(MongoQuery<Country>.Eq(c=>c.Code, "ES"), MongoQuery<Country>.Eq(c=>c.Code, "UK")));

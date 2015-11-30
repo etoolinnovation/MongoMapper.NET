@@ -66,6 +66,15 @@ namespace EtoolTech.MongoDB.Mapper
             return Cursor;
         }
 
+
+        public IFindFluent<T, T> Find(BsonDocument DocumentQuery)
+        {           
+            LastQuery = DocumentQuery;
+
+            Cursor = GetCollection().Find(LastQuery);
+            return Cursor;
+        }
+
         public IFindFluent<T, T> Find(Expression<Func<T, object>> Field, object Value)
         {
             LastQuery = MongoQuery<T>.Eq(Field, Value);
