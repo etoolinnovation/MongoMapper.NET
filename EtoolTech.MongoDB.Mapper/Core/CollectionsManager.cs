@@ -50,7 +50,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             Name = GetCollectioName(Name);
 
-            string key = Name + "|" + typeof (T).Name;
+            string key = Name + "|" + typeof (T).FullName;
 
             if (Collections.ContainsKey(key))
             {
@@ -72,7 +72,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             Name = GetCollectioName(Name);
 
-            string key = Name + "|" + typeof(T).Name;
+            string key = Name + "|" + typeof(T).FullName;
 
             if (PrimaryCollections.ContainsKey(key))
             {

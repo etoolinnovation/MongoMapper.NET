@@ -27,7 +27,6 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             ConfigManager.Out = Console.Out;
 
-
             
 
             Countries.Find(
