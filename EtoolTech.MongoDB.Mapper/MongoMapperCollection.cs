@@ -10,6 +10,7 @@ using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper
 {
+
     public class MongoMapperCollection<T> : IMongoMapperCollection<T>
     {
         public IFindFluent<T, T> Cursor { get; private set; }
@@ -28,6 +29,8 @@ namespace EtoolTech.MongoDB.Mapper
         public static MongoMapperCollection<T> InstanceFromPrimary { get { return new MongoMapperCollection<T>(true); } }
 
         public bool FromPrimary { get; set; }
+
+       
 
         private IMongoCollection<T> GetCollection()
         {
@@ -95,7 +98,30 @@ namespace EtoolTech.MongoDB.Mapper
             Cursor = GetCollection().Find<T>(new BsonDocument());            
             return Cursor;
         }
-   
+
+        //public IFindFluent<T, T> IncludeFields(params string[] Fields)
+        //{
+        //    if (Fields == null || Fields.Length == 0) return Cursor;
+
+        //    var fieldList = MongoMapperHelper.ConvertFieldName(typeof(T).Name, Fields.ToList()).ToList();
+        //    ProjectionDefinition<T> fields = this.Project.Include(fieldList.First());
+        //    foreach (var field in Fields.Skip(1)) { fields = this.Project.Include(field); }
+
+        //    Cursor = Cursor.Project<T>(fields);
+        //    return Cursor;
+        //}
+
+        //public IFindFluent<T, T> ExcludeFields(params string[] Fields)
+        //{
+        //    if (Fields == null || Fields.Length == 0) return Cursor;
+
+        //    var fieldList = MongoMapperHelper.ConvertFieldName(typeof(T).Name, Fields.ToList()).ToList();
+        //    ProjectionDefinition<T> fields = this.Project.Include(fieldList.First());
+        //    foreach (var field in Fields.Skip(1)) { fields = this.Project.Exclude(field); }
+
+        //    Cursor = Cursor.Project<T>(fields);
+        //    return Cursor;
+        //}
 
         public T Pop(FilterDefinition<T> Query, SortDefinition<T> SortBy)
         {
