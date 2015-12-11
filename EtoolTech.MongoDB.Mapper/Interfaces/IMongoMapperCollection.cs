@@ -16,8 +16,8 @@ namespace EtoolTech.MongoDB.Mapper
         IFindFluent<T, T> Find(BsonDocument DocumentQuery);
         IFindFluent<T, T> Find(Expression<Func<T, object>> Field, object Value);
         IFindFluent<T, T> Find();
-        //IFindFluent<T, T> IncludeFields(params string[] Fields);
-        //IFindFluent<T, T> ExcludeFields(params string[] Fields);
+        List<string> AddIncludeFields(params string[] Fields);
+        List<string> AddExcludeFields(params string[] Fields);
         List<T> ToList();
         T First();
         T Last();        

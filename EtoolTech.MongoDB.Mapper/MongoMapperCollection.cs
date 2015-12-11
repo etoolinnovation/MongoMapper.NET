@@ -30,7 +30,9 @@ namespace EtoolTech.MongoDB.Mapper
 
         public bool FromPrimary { get; set; }
 
-       
+        private List<string> _includedFields = new List<string>();
+        private List<string> _excludedFields = new List<string>();
+
 
         private IMongoCollection<T> GetCollection()
         {
@@ -99,29 +101,57 @@ namespace EtoolTech.MongoDB.Mapper
             return Cursor;
         }
 
-        //public IFindFluent<T, T> IncludeFields(params string[] Fields)
-        //{
-        //    if (Fields == null || Fields.Length == 0) return Cursor;
+        public List<string> AddIncludeFields(params string[] Fields)
+        {
+            if (Fields != null)
+            {
+                _includedFields.AddRange(Fields);
+            }
+            return _includedFields;
+        }
 
-        //    var fieldList = MongoMapperHelper.ConvertFieldName(typeof(T).Name, Fields.ToList()).ToList();
-        //    ProjectionDefinition<T> fields = this.Project.Include(fieldList.First());
-        //    foreach (var field in Fields.Skip(1)) { fields = this.Project.Include(field); }
 
-        //    Cursor = Cursor.Project<T>(fields);
-        //    return Cursor;
-        //}
 
-        //public IFindFluent<T, T> ExcludeFields(params string[] Fields)
-        //{
-        //    if (Fields == null || Fields.Length == 0) return Cursor;
+        public List<string> AddExcludeFields(params string[] Fields)
+        {
+            if (Fields != null)
+            {
+                _excludedFields.AddRange(Fields);
+            }
+            return _excludedFields;
+        }
 
-        //    var fieldList = MongoMapperHelper.ConvertFieldName(typeof(T).Name, Fields.ToList()).ToList();
-        //    ProjectionDefinition<T> fields = this.Project.Include(fieldList.First());
-        //    foreach (var field in Fields.Skip(1)) { fields = this.Project.Exclude(field); }
+        private void AddProjetion()
+        {
+            ProjectionDefinition<T> fields = null;
 
-        //    Cursor = Cursor.Project<T>(fields);
-        //    return Cursor;
-        //}
+            if (_includedFields.Any())
+            {
+                var includeFieldList = MongoMapperHelper.ConvertFieldName(typeof (T).Name, _includedFields).ToList();
+                fields = this.Project.Include(includeFieldList.First());
+                foreach (var field in includeFieldList.Skip(1))
+                {
+                    fields = this.Project.Include(field);
+                }
+            }
+
+
+            if (_excludedFields.Any())
+            {
+                var excludeFieldList = MongoMapperHelper.ConvertFieldName(typeof(T).Name, _excludedFields).ToList();
+                fields = this.Project.Exclude(excludeFieldList.First());
+                foreach (var field in excludeFieldList.Skip(1))
+                {
+                    fields = this.Project.Exclude(field);
+                }
+            }
+
+            if (fields != null)
+            {
+                Cursor.Project<T>(fields);
+            }
+        }
+
 
         public T Pop(FilterDefinition<T> Query, SortDefinition<T> SortBy)
         {
@@ -163,11 +193,13 @@ namespace EtoolTech.MongoDB.Mapper
 
         public List<T> ToList()
         {
+            AddProjetion();
             return Cursor.ToListAsync().Result;
         }
 
         public T First()
         {
+            AddProjetion();
             return Cursor.FirstAsync().Result;            
         }
 
@@ -177,7 +209,8 @@ namespace EtoolTech.MongoDB.Mapper
         }
 
         public IEnumerator<T> GetEnumerator()
-        {            
+        {
+            AddProjetion();
             return new MongoMapperEnumerator<T>(Cursor.ToCursorAsync().Result);
         }
 

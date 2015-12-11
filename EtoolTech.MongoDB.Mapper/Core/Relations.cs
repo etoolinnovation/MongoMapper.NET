@@ -64,11 +64,25 @@ namespace EtoolTech.MongoDB.Mapper
 
         private static void CheckRelation(object Sender, MongoRelation Relation, bool FromUp)
         {
-            var filters = Relation.CurrentFieldNames.Select(
-                T => ReflectionUtility.GetPropertyValue(Sender, T)).Select((Value, I) =>
-                    MongoQuery<BsonDocument>.Eq(Relation.RelationObjectName, Relation.RelationFieldNames[I], Value)).ToList();
+                     
+            Dictionary<string, object> fieldValues = new Dictionary<string, object>();
+
+            for (int index = 0; index < Relation.CurrentFieldNames.Length; index++)
+            {
+                string currentFieldName = Relation.CurrentFieldNames[index];
+                string relationFieldName = Relation.RelationFieldNames[index];                
+                object v = ReflectionUtility.GetPropertyValue(Sender, currentFieldName);
+                fieldValues.Add(relationFieldName, v);
+            }
+
+            if (fieldValues.All(V => V.Value == null))
+                return;
+
+
+            var filters = fieldValues.Select(CurrentFieldvalue => MongoQuery<BsonDocument>.Eq(Relation.RelationObjectName, CurrentFieldvalue.Key, CurrentFieldvalue.Value)).ToList();
 
             var relationCollection = CollectionsManager.GetCollection<BsonDocument>(Relation.RelationObjectName);
+
             var documentCount = relationCollection.CountAsync(Builders<BsonDocument>.Filter.And(filters)).Result;
 
             bool okRelation = FromUp ? documentCount != 0 : documentCount == 0;

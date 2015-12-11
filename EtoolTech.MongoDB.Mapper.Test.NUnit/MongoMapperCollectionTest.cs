@@ -34,6 +34,16 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 Console.WriteLine(c.Code);
             }
+
+            col.AddIncludeFields("Code");
+            col.AddExcludeFields("Name");
+            col.Find(C=>C.Name, "Name%");
+
+            foreach (var c in col)
+            {
+                Console.WriteLine(c.Code + " | " + c.Name);
+            }
+
         }
 
 
