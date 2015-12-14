@@ -65,6 +65,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         }
 
         [Test]
+        public void TestCheckRelations()
+        {
+            ReflectionUtility.CheckRelations(GetType().Assembly,"");
+        }
+
+        [Test]
         public void TestGetPropertyName()
         {
             string name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.String);

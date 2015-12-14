@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -19,14 +20,79 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static void BuildSchema(Assembly Assembly, string ClassName)
         {
-            List<Type> types = String.IsNullOrEmpty(ClassName) ? Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper").ToList() : 
-                Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper" && T.Name == ClassName).ToList();
+            List<Type> types = String.IsNullOrEmpty(ClassName) ? Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper`1").ToList() : 
+                Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper`1" && T.Name == ClassName).ToList();
 
             foreach (Type type in types)
             {
                 MongoMapperHelper.RebuildClass(type, true);
             }
         }
+
+
+        public static void CheckRelations(Assembly Assembly, string ClassName)
+        {
+            List<Type> types = String.IsNullOrEmpty(ClassName) ? Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper`1").ToList() :
+                Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper`1" && T.Name == ClassName).ToList();
+
+            foreach (Type type in types)
+            {
+
+                Console.WriteLine("CHECKING OBJECT {0}", type.Name);
+
+                object[] relationAttList = type.GetCustomAttributes(typeof(MongoRelation), false);
+
+                var relations = relationAttList.Where(RelationAtt => RelationAtt != null).Cast<MongoRelation>().ToList();
+
+                foreach (var relation in relations)
+                {
+
+                    Console.WriteLine("CHECKING RELATION {0}", relation.Name);
+
+                    //Check Local Fields Exists
+                    var localPropertiesNames = type.GetProperties().Select(P => P.Name).ToList();
+                    foreach (var relationFieldName in relation.CurrentFieldNames)
+                    {
+                        if (!localPropertiesNames.Contains(relationFieldName))
+                        {
+                            Console.WriteLine("WARNING: field {0} does not exists in {1}", relationFieldName, type.Name);
+                        }
+                    }
+
+
+
+                    //Check if destination Object exist
+                    var destinationObj =
+                        Assembly.GetTypes().Where(T =>
+                                    T.BaseType != null && T.BaseType.Name == "MongoMapper`1" &&
+                                    T.Name == relation.RelationObjectName).ToList();
+
+                    //Check if destinatin Fields Exists
+                    if (destinationObj.Any())
+                    {
+                        var destinationType = destinationObj.First();
+
+                        var destinationPropertiesNames = destinationType.GetProperties().Select(P => P.Name).ToList();
+                        foreach (var relationFieldName in relation.RelationFieldNames)
+                        {
+                            if (!destinationPropertiesNames.Contains(relationFieldName))
+                            {
+                                Console.WriteLine("WARNING: field {0} does not exists in {1}", relationFieldName, destinationType.Name);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("WARNING: {0} does not exists in {1}", relation.RelationObjectName, Assembly.FullName);
+                    }
+                }
+            }
+        }
+
+
+
+        // object[] relationAttList = T.GetCustomAttributes(typeof(MongoRelation), false);
+
 
         public static void CopyObject<T>(T Source, object Destination)
         {
