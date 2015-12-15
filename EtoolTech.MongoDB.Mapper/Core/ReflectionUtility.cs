@@ -55,7 +55,9 @@ namespace EtoolTech.MongoDB.Mapper
                     {
                         if (!localPropertiesNames.Contains(relationFieldName))
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("WARNING: field {0} does not exists in {1}", relationFieldName, type.Name);
+                            Console.ResetColor();
                         }
                     }
 
@@ -77,7 +79,9 @@ namespace EtoolTech.MongoDB.Mapper
                         {
                             if (!destinationPropertiesNames.Contains(relationFieldName))
                             {
+                                Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine("WARNING: field {0} does not exists in {1}", relationFieldName, destinationType.Name);
+                                Console.ResetColor();
                             }
                         }
                     }
