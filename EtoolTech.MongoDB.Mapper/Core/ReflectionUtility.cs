@@ -47,7 +47,7 @@ namespace EtoolTech.MongoDB.Mapper
                 foreach (var relation in relations)
                 {
 
-                    Console.WriteLine("CHECKING RELATION {0}", relation.Name);
+                    Console.WriteLine("     CHECKING RELATION {0}", relation.Name);
 
                     //Check Local Fields Exists
                     var localPropertiesNames = type.GetProperties().Select(P => P.Name).ToList();
@@ -56,7 +56,7 @@ namespace EtoolTech.MongoDB.Mapper
                         if (!localPropertiesNames.Contains(relationFieldName))
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("WARNING: field {0} does not exists in {1}", relationFieldName, type.Name);
+                            Console.WriteLine("     WARNING: field {0} does not exists in {1}", relationFieldName, type.Name);
                             Console.ResetColor();
                         }
                     }
@@ -80,14 +80,16 @@ namespace EtoolTech.MongoDB.Mapper
                             if (!destinationPropertiesNames.Contains(relationFieldName))
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("WARNING: field {0} does not exists in {1}", relationFieldName, destinationType.Name);
+                                Console.WriteLine("     WARNING: field {0} does not exists in {1}", relationFieldName, destinationType.Name);
                                 Console.ResetColor();
                             }
                         }
                     }
                     else
                     {
-                        Console.WriteLine("WARNING: {0} does not exists in {1}", relation.RelationObjectName, Assembly.FullName);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("     WARNING: {0} does not exists in {1}", relation.RelationObjectName, Assembly.FullName);
+                        Console.ResetColor();
                     }
                 }
             }
