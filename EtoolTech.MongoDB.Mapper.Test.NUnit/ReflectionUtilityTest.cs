@@ -55,7 +55,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         public void BuildSchema()
         {
             ReflectionUtility.BuildSchema(GetType().Assembly);
-            ReflectionUtility.BuildSchema(GetType().Assembly,"Log");
+            ReflectionUtility.BuildSchema(GetType().Assembly, "Country");
         }
 
         [Test]

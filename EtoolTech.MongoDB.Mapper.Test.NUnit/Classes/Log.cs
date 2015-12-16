@@ -11,7 +11,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
     [Serializable]
     [MongoKey(KeyFields = "")]
     [MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = false)]
-    [MongoTTLIndex(IndexField = "Date",Seconds = 600)]
+    [MongoTTLIndex(IndexField = "Date", Seconds = 600)]
     public class Log: MongoMapper<Log>
     {
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]

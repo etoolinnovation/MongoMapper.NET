@@ -253,22 +253,43 @@ namespace EtoolTech.MongoDB.Mapper
                     }
                     else
                     {
-                        var indexFields = MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(IndexField => IndexField.Trim()).ToArray();
-                        
-                        var mongoIndex = Builders<BsonDocument>.IndexKeys.Combine(indexFields.Select(IndexField => (IndexKeysDefinition<BsonDocument>)IndexField).ToList());
+                        var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(IndexField => IndexField.Trim());
 
-                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(mongoIndex);
+                        var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
+                        if (fieldnames.Any())
+                        {
+                            var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
+                            foreach (var fieldName in fieldnames.Skip(1))
+                            {
+                                indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldName);
+                            }
+
+                            CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields);
+
+                        }
+                        
+                        
                     }
                 }
 
                 string[] pk = GetPrimaryKey(ClassType).ToArray();
                 if (pk.Count(K => K == "m_id") == 0)
                 {
-                    var indexFields = MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(pkField => pkField.Trim()).ToArray();
+                    var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(PkField => PkField.Trim());
 
-                    var mongoIndex = Builders<BsonDocument>.IndexKeys.Combine(indexFields.Select(IndexField => (IndexKeysDefinition<BsonDocument>)IndexField).ToList());
+                    var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
+                    if (fieldnames.Any())
+                    {
+                        var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
+                        foreach (var fieldName in fieldnames.Skip(1))
+                        {
+                            indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldName);
+                        }
 
-                    CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(mongoIndex, new CreateIndexOptions() {Unique = true});
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields, new CreateIndexOptions() { Unique = true});
+
+                    }
+                  
                 }
 
                 string ttlIndex = GetTTLIndex(ClassType);

@@ -7,6 +7,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
     [Serializable]
     [MongoKey(KeyFields = "Code")]    
+    [MongoIndex(IndexFields = "Name")]
     [MongoCollectionName(Name="Paises")]
     [MongoGeo2DIndex(IndexField="Pos")]
     [MongoGeo2DSphereIndex(IndexField="Area")]
