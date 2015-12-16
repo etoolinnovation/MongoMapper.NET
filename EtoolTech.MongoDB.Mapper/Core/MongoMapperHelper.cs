@@ -259,10 +259,7 @@ namespace EtoolTech.MongoDB.Mapper
                         if (fieldnames.Any())
                         {
                             var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
-                            foreach (var fieldName in fieldnames.Skip(1))
-                            {
-                                indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldName);
-                            }
+                            indexFields = fieldnames.Skip(1).Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
 
                             CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields);
 
@@ -281,10 +278,7 @@ namespace EtoolTech.MongoDB.Mapper
                     if (fieldnames.Any())
                     {
                         var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
-                        foreach (var fieldName in fieldnames.Skip(1))
-                        {
-                            indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldName);
-                        }
+                        indexFields = fieldnames.Skip(1).Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
 
                         CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields, new CreateIndexOptions() { Unique = true});
 
