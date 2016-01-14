@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using NUnit.Framework;
 
@@ -19,11 +20,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var c = new Country {Code = "NL", Name = "Holanda"};
             c.Save();
 
-            var Countries = new CountryCollection();
-            Countries.Find(x=>x.Code, "NL");
-            Assert.AreEqual(1,Countries.Count);
+            var countries = new CountryCollection();
+            countries.Find(X=>X.Code, "NL");
+            Assert.AreEqual(1,countries.Count);
 
-            foreach (Country country in Countries)
+            foreach (Country country in countries)
             {
                 country.Delete();
             }
@@ -31,8 +32,8 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //TODO: Pruebas Replica Set
             //System.Threading.Thread.Sleep(5000);
 
-            Countries.Find(x=>x.Code, "NL");
-            Assert.AreEqual(0, Countries.Count);
+            countries.Find(X=>X.Code, "NL");
+            Assert.AreEqual(0, countries.Count);
         }
 
         [Test]
@@ -42,58 +43,60 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
 
             //Paris
-            var ParisArea = new GeoArea();
-            ParisArea.type = "Polygon";            
+            var geoArea = new GeoArea();
+            geoArea.type = "Polygon";            
             var coordinates = new List<double[]>();
             coordinates.Add(new double[] { 48.979766324449706, 2.098388671875 });
             coordinates.Add(new double[] { 48.972555195463336, 2.5982666015625 });
             coordinates.Add(new double[] { 48.683254235765325, 2.603759765625 });
             coordinates.Add(new double[] { 48.66874533279169, 2.120361328125 });
             coordinates.Add(new double[] { 48.979766324449706, 2.098388671875 });
-            ParisArea.coordinates = new [] {coordinates.ToArray()};
+            geoArea.coordinates = new [] {coordinates.ToArray()};
 
             //Insert de Paises
-            var c = new Country {Code = "es", Name = "España", Area = ParisArea};
+            var c = new Country {Code = "es", Name = "España", Area = geoArea};
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidatePropertyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
                 c.Save();
             }
 
-            c = new Country { Code = "UK", Name = "Reino Unido", Area = ParisArea};
+            c = new Country { Code = "UK", Name = "Reino Unido", Area = geoArea};
             c.Save();
 
-            c = new Country { Code = "UK", Name = "Reino Unido", Area = ParisArea };
+            c = new Country { Code = "UK", Name = "Reino Unido", Area = geoArea };
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (DuplicateKeyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
 
-            c = new Country { Code = "US", Name = "Estados Unidos", Area = ParisArea };
+            c = new Country { Code = "US", Name = "Estados Unidos", Area = geoArea };
             c.Save();
 
-            var Countries = new CountryCollection();
+            var countries = new CountryCollection();
 
-            Countries.Find(x=>x.Code, "ES");
-            Assert.AreEqual(Countries.Count, 1);
+            countries.Find(x=>x.Code, "ES");
+            Assert.AreEqual(countries.Count, 1);
 
-            Countries.Find(x=>x.Code, "UK");
-            Assert.AreEqual(Countries.Count, 1);
+            countries.Find(x=>x.Code, "UK");
+            Assert.AreEqual(countries.Count, 1);
 
-            Countries.Find(x=>x.Code, "US");
-            Assert.AreEqual(Countries.Count, 1);
+            countries.Find(x=>x.Code, "US");
+            Assert.AreEqual(countries.Count, 1);
 
-            Countries.Find();
-            Assert.AreEqual(Countries.Count, 3);
+            countries.Find();
+            Assert.AreEqual(countries.Count, 3);
 
             //Insert de personas
             var p = new Person
@@ -182,10 +185,10 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                 c.Save();
 
-                Assert.AreEqual(i + 1,CountryCollection.Instance.Find().Size());
+                Assert.AreEqual(i + 1,CountryCollection.Instance.Find().CountAsync().Result);
             }
 
-            Assert.AreEqual(100, CountryCollection.Instance.Find().Size());
+            Assert.AreEqual(100, CountryCollection.Instance.Find().CountAsync().Result);
         }
 
         [Test]
@@ -195,14 +198,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             Parallel.For(
                 0,
-                1000,
+                100,
                 i =>
                     {
                         var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                         c.Save();
                     });
 
-            Assert.AreEqual(1000, CountryCollection.Instance.Find().Size());
+            Assert.AreEqual(100, CountryCollection.Instance.Find().CountAsync().Result);
         }
 
         [Test]
@@ -215,12 +218,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var c = new Country {Code = i.ToString(), Name = String.Format("Nombre {0}", i)};
                 c.Save();
 
-                Assert.AreEqual(i + 1, CountryCollection.Instance.Find().Size());
+                Assert.AreEqual(i + 1, CountryCollection.Instance.Find().CountAsync().Result);
             }
 
-            MongoMapper.ServerDelete<Country>(MongoQuery<Country>.Eq(c=>c.Code, "0"));
+            MongoMapper<Country>.ServerDelete(MongoQuery<Country>.Eq(c=>c.Code, "0"));
 
-            Assert.AreEqual(99, CountryCollection.Instance.Find().Size());
+            Assert.AreEqual(99, CountryCollection.Instance.Find().CountAsync().Result);
         }
 
         [Test]
@@ -231,7 +234,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Insert de Paises
             var c = new Country {Code = "ES", Name = "España"};
             c.Save();
-            c.ServerUpdate(Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
+            c.ServerUpdate(c.Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
 
             Assert.AreEqual(c.Name, "España 22");
 
@@ -251,7 +254,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.Save();
 
             p.ServerUpdate(
-                Update.PushWrapped(
+                p.Update.Push(
                     MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child
                         {ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez"}));
@@ -268,11 +271,11 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             var c = new Country {Code = "ES", Name = "España"};
             c.Save();
 
-            var c2 = MongoMapper.FindByKey<Country>("ES");
+            var c2 = MongoMapper<Country>.FindByKey("ES");
             c2.Name = "España Up";
             c2.Save();
 
-            var c3 = MongoMapper.FindByKey<Country>("ES");
+            var c3 = MongoMapper<Country>.FindByKey("ES");
 
             Assert.AreEqual(c3.Name, "España Up");
 

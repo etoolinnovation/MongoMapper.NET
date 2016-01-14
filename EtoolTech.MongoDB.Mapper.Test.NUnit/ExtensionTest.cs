@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using EtoolTech.MongoDB.Mapper.Exceptions;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using NUnit.Framework;
 
@@ -34,7 +35,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
             for (int i = 0; i < 1000000; i++)
             {
-                MongoMapper.FindByKey<Country>("ES");
+                MongoMapper<Country>.FindByKey("ES");
             }
 
             timer.Stop();
@@ -60,7 +61,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 var countries = new List<Country>();
                 countries.MongoFind(
-                    Query.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
+                    Builders<Country>.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
             }
             timer.Stop();
             Console.WriteLine(string.Format("Elapsed para ExtensionMethod: {0}", timer.Elapsed));
@@ -72,7 +73,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             {
                 CountryCollection mongoCol = new CountryCollection();
                 mongoCol.Find(
-                    Query.Or(MongoQuery<Country>.Eq(co=>co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
+                    mongoCol.Filter.Or(MongoQuery<Country>.Eq(co=>co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
                 mongoCol.ToList();
             }
 
@@ -103,7 +104,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             Assert.AreEqual(countries[0].Code, "ES");
 
             countries.MongoFind(
-                Query.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
+                Builders<Country>.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
         }
 
@@ -174,8 +175,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidatePropertyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
@@ -189,8 +191,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (DuplicateKeyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
@@ -312,7 +315,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             //Insert de Paises
             var c = new Country {Code = "ES", Name = "España"};
             c.Save();
-            c.ServerUpdate(Update.Set(MongoMapperHelper.ConvertFieldName("Country","Name"), "España 22"));
+            c.ServerUpdate(c.Update.Set(MongoMapperHelper.ConvertFieldName("Country", "Name"),
+                "España 22"));
+                                
 
             Assert.AreEqual(c.Name, "España 22");
 
@@ -332,7 +337,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             p.Save();
 
             p.ServerUpdate(
-                Update.PushWrapped(
+                p.Update.Push(
                     MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child
                         {ID = 2, Age = 3, BirthDate = DateTime.Now.AddDays(57).AddYears(-17), Name = "Laura Perez"}));

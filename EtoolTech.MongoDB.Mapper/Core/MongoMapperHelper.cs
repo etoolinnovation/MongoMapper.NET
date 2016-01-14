@@ -8,7 +8,6 @@ using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace EtoolTech.MongoDB.Mapper
@@ -54,12 +53,12 @@ namespace EtoolTech.MongoDB.Mapper
       
         #region Public Methods
 
-        public static MongoDatabase Db(string ObjName)
+        public static IMongoDatabase Db(string ObjName)
         {
             return Db(ObjName, false);
         }
 
-        public static MongoDatabase Db(string ObjName, bool Primary)
+        public static IMongoDatabase Db(string ObjName, bool Primary)
         {
             string databaseName = ConfigManager.DataBaseName(ObjName);
 
@@ -68,10 +67,8 @@ namespace EtoolTech.MongoDB.Mapper
             if (Primary) settings.ReadPreference = ReadPreference.Primary;
 
             var client = new MongoClient(settings);
-
-            MongoServer server = client.GetServer();
-
-            MongoDatabase dataBase = server.GetDatabase(databaseName);
+            
+            var dataBase = client.GetDatabase(databaseName);
             return dataBase;
         }
 
@@ -164,9 +161,9 @@ namespace EtoolTech.MongoDB.Mapper
             
             
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
-                && !Db(ClassType.Name).CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
+                && !CollectionsManager.CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
             {
-                Db(ClassType.Name).CreateCollection((CollectionsManager.GetCollectioName(ClassType.Name)), null);
+                Db(ClassType.Name).CreateCollectionAsync((CollectionsManager.GetCollectioName(ClassType.Name)), null);
             }
 
             if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
@@ -208,7 +205,7 @@ namespace EtoolTech.MongoDB.Mapper
                     if (!BufferDefaultValues.ContainsKey(ClassType.Name))
                     {
                         BufferDefaultValues.Add(ClassType.Name,new Dictionary<string, object>());
-                        var properties = ClassType.GetProperties().Where(p => p.GetCustomAttributes(typeof(BsonDefaultValueAttribute), true).Count() != 0);
+                        var properties = ClassType.GetProperties().Where(P => P.GetCustomAttributes(typeof(BsonDefaultValueAttribute), true).Count() != 0);
                         foreach (PropertyInfo propertyInfo in properties)
                         {
                             var att = (BsonDefaultValueAttribute)propertyInfo.GetCustomAttributes(typeof(BsonDefaultValueAttribute), true).FirstOrDefault();
@@ -245,38 +242,57 @@ namespace EtoolTech.MongoDB.Mapper
                 {
                     if (index.StartsWith("2D|"))
                     {
-						CollectionsManager.GetCollection (
-							ClassType.Name).CreateIndex(IndexKeys.GeoSpatial (MongoMapperHelper.ConvertFieldName (ClassType.Name, index.Split ('|') [1]).Trim ()));
+                        var mongoIndex = Builders<BsonDocument>.IndexKeys.Geo2D(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(mongoIndex);
                     }
                     else if (index.StartsWith("2DSphere|"))
                     {
-                        CollectionsManager.GetCollection(
-							ClassType.Name).CreateIndex(
-                                                     IndexKeys.GeoSpatialSpherical(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim()));    
+
+                        var mongoIndex = Builders<BsonDocument>.IndexKeys.Geo2DSphere(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(mongoIndex);    
                     }
                     else
                     {
-                        CollectionsManager.GetCollection(
-							ClassType.Name).CreateIndex(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(indexField => indexField.Trim()).ToArray());
+                        var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(IndexField => IndexField.Trim());
+
+                        var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
+                        if (fieldnames.Any())
+                        {
+                            var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
+                            indexFields = fieldnames.Skip(1).Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
+
+                            CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields);
+
+                        }
+                        
+                        
                     }
                 }
 
                 string[] pk = GetPrimaryKey(ClassType).ToArray();
-                if (pk.Count(k => k == "m_id") == 0)
+                if (pk.Count(K => K == "m_id") == 0)
                 {
-					CollectionsManager.GetCollection(ClassType.Name).CreateIndex(
-                        IndexKeys.Ascending(MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(pkField => pkField.Trim()).ToArray()), IndexOptions.SetUnique(true));
+                    var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(PkField => PkField.Trim());
+
+                    var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
+                    if (fieldnames.Any())
+                    {
+                        var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
+                        indexFields = fieldnames.Skip(1).Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
+
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields, new CreateIndexOptions() { Unique = true});
+
+                    }
+                  
                 }
 
                 string ttlIndex = GetTTLIndex(ClassType);
                 if (ttlIndex != string.Empty)
                 {
                     var tmpIndex = ttlIndex.Split(',');
-                    var keys = IndexKeys.Ascending(tmpIndex[0].Trim());
-                    var options = IndexOptions.SetTimeToLive(TimeSpan.FromSeconds(int.Parse(tmpIndex[1].Trim())));
-                    CollectionsManager.GetCollection(ClassType.Name)
-						.CreateIndex(keys, options);
-
+                    var keys = Builders<BsonDocument>.IndexKeys.Ascending(tmpIndex[0].Trim());                    
+                    CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(
+                        keys, new CreateIndexOptions() {ExpireAfter = TimeSpan.FromSeconds(int.Parse(tmpIndex[1].Trim()))});
                 }
             }
         }
@@ -359,7 +375,7 @@ namespace EtoolTech.MongoDB.Mapper
 
         public static List<string> ConvertFieldName(string ObjName, List<string> FieldNames)
         {
-            return FieldNames.Select(field => ConvertFieldName(ObjName, field)).ToList();
+            return FieldNames.Select(Field => ConvertFieldName(ObjName, Field)).ToList();
         }
     }
 }

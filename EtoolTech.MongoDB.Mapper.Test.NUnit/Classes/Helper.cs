@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 {
@@ -12,11 +16,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         {
             IMongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
 
-            foreach (string colName in Mapper.MongoMapperHelper.Db("XXX").GetCollectionNames())
+
+            var colNames = CollectionsManager.GetCollentionNames("XXX");
+
+            foreach (string colName in colNames)
             {
                 if (!colName.ToUpper().Contains("SYSTEM") && !colName.Contains("MongoMapperConfig"))
                 {
-                    Mapper.MongoMapperHelper.Db("XXX").GetCollection(colName).Drop();
+                    Mapper.MongoMapperHelper.Db("XXX").DropCollectionAsync(colName);
                 }
             }
 
@@ -25,16 +32,16 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
                 var collection = (MongoMapperConfigurationElement)collectionElement;
                 if (collection.Name != "TestConf1")
                 {
-                    foreach (string colName in Mapper.MongoMapperHelper.Db(collection.Name).GetCollectionNames())
+                    foreach (string colName in CollectionsManager.GetCollentionNames(collection.Name))
                     {
                         if (!colName.ToUpper().Contains("SYSTEM") && !colName.Contains("MongoMapperConfig"))
                         {
-                            Mapper.MongoMapperHelper.Db(collection.Name).GetCollection(colName).Drop();
+                            Mapper.MongoMapperHelper.Db(collection.Name).DropCollectionAsync(colName);
                         }
                     }
                 }
             }
-            
+
         }
 
         #endregion

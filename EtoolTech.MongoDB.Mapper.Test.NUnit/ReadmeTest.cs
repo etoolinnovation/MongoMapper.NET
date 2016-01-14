@@ -23,8 +23,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidatePropertyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
                 c.Code = "ES";
@@ -38,8 +39,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 c.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (DuplicateKeyException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
             }
@@ -64,12 +66,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             countries.Find();
             Assert.AreEqual(countries.Count, 3);
 
-            countries.Find().SetLimit(2).SetSortOrder(SortBy<Country>.Ascending(C => C.Name));
+            countries.Find().Limit(2).Sort(countries.Sort.Ascending(C=>C.Name));
             Assert.AreEqual(countries.Count, 2);
             Assert.AreEqual(countries.Total, 3);
 
             countries.Find(
-                Query.Or(Query<Country>.EQ(co => co.Code, "ES"), Query<Country>.EQ(co => co.Code, "UK")));
+                countries.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
             Assert.AreEqual(countries.Count, 2);
 
             var p = new Person
@@ -88,8 +90,9 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 p.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidateUpRelationException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateUpRelationException));
                 p.Country = "ES";
@@ -97,7 +100,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             }
 
             p.ServerUpdate(
-                Update.PushWrapped(
+                p.Update.Push(
                     MongoMapperHelper.ConvertFieldName("Person","Childs"),
                     new Child {ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"}));
 

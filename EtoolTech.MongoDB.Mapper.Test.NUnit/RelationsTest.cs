@@ -38,38 +38,39 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             try
             {
                 p.Save();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidateUpRelationException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateUpRelationException));
                 p.Country = "ES";
                 p.Save();
             }
 
-            c = MongoMapper.FindByKey<Country>("ES");
+            c = MongoMapper<Country>.FindByKey("ES");
             try
             {
                 c.Delete();
+                Assert.Fail();
             }
-            catch (Exception ex)
+            catch (ValidateDownRelationException ex)
             {
                 Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateDownRelationException));
-                List<Person> Persons = c.GetRelation<Person>("Person,Country");
-                foreach (Person p2 in Persons)
+                List<Person> persons = new List<Person>();
+                persons.MongoFind(C => C.Country, "ES");
+                foreach (Person p2 in persons)
                 {
                     p2.Country = "UK";
                     p2.Save();
                 }
                 c.Delete();
-            }
+            }            
 
-            c = MongoMapper.FindByKey<Country>("UK");
-
-            List<Person> PersonasEnUK = c.GetRelation<Person>("Person,Country");
-            foreach (Person PersonInUK in PersonasEnUK)
+            List<Person> personsInUk = new List<Person>();
+            personsInUk.MongoFind(C => C.Country, "UK");
+            foreach (Person personInUk in personsInUk)
             {
-                Assert.AreEqual(PersonInUK.Country, "UK");
-                Assert.AreEqual(PersonInUK.GetRelation<Country>("Country,Code").First().Code, "UK");
+                Assert.AreEqual(personInUk.Country, "UK");                
             }
         }
     }

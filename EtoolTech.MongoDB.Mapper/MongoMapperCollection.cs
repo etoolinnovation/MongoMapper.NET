@@ -7,24 +7,38 @@ using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
+
     public class MongoMapperCollection<T> : IMongoMapperCollection<T>
     {
-        public MongoCursor<T> Cursor { get; private set; }
+        public IFindFluent<T, T> Cursor { get; private set; }
+        public FilterDefinition<T> LastQuery { get; private set; }
+
+        #region Builders
+        public FilterDefinitionBuilder<T> Filter { get { return Builders<T>.Filter; } }
+        public SortDefinitionBuilder<T> Sort { get { return Builders<T>.Sort; } }
+        public UpdateDefinitionBuilder<T> Update { get { return Builders<T>.Update; } }
+        public IndexKeysDefinitionBuilder<T> Index { get { return Builders<T>.IndexKeys; } }
+        public ProjectionDefinitionBuilder<T> Project { get { return Builders<T>.Projection; } }
+        #endregion
+
 
         public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}}
         public static MongoMapperCollection<T> InstanceFromPrimary { get { return new MongoMapperCollection<T>(true); } }
 
         public bool FromPrimary { get; set; }
 
-        private MongoCollection GetCollection()
+        private List<string> _includedFields = new List<string>();
+        private List<string> _excludedFields = new List<string>();
+
+
+        private IMongoCollection<T> GetCollection()
         {
             return FromPrimary
-                ? CollectionsManager.GetPrimaryCollection(typeof (T).Name)
-                : CollectionsManager.GetCollection(typeof (T).Name);
+                ? CollectionsManager.GetPrimaryCollection<T>(typeof (T).Name)
+                : CollectionsManager.GetCollection<T>(typeof (T).Name);
         }
         
         public MongoMapperCollection()
@@ -39,89 +53,165 @@ namespace EtoolTech.MongoDB.Mapper
             BsonDefaults.MaxDocumentSize = ConfigManager.MaxDocumentSize(typeof(T).Name) * 1024 * 1024;
         }
 
-        public MongoCursor<T> Find(IMongoQuery Query)
+        public IFindFluent<T, T> Find(FilterDefinition<T> Query)
         {
-            Cursor = GetCollection().FindAs<T>(Query);
+            LastQuery = Query;
+
+            Cursor = GetCollection().Find(LastQuery);            
             return Cursor;
         }
 
-        public MongoCursor<T> Find(string JsonQuery)
+        public IFindFluent<T, T> Find(string JsonQuery)
         {
             var document = ObjectSerializer.JsonStringToBsonDocument(JsonQuery);
-            var query = new QueryDocument(document);
-            Cursor = GetCollection().FindAs<T>(query);
+            var query = new BsonDocument(document);
+            LastQuery = query;
+
+            Cursor = GetCollection().Find(LastQuery);            
             return Cursor;
         }
 
-        public MongoCursor<T> Find(Expression<Func<T, object>> Field, object Value)
-        {
-            Cursor = GetCollection().FindAs<T>(MongoQuery<T>.Eq(Field, Value));
+
+        public IFindFluent<T, T> Find(BsonDocument DocumentQuery)
+        {           
+            LastQuery = DocumentQuery;
+
+            Cursor = GetCollection().Find(LastQuery);
             return Cursor;
         }
 
-        public MongoCursor<T> Find(string FieldName, object Value)
+        public IFindFluent<T, T> Find(Expression<Func<T, object>> Field, object Value)
         {
-            Cursor = GetCollection().FindAs<T>(MongoQuery.Eq(typeof(T).Name, FieldName, Value));
+            LastQuery = MongoQuery<T>.Eq(Field, Value);
+            Cursor = GetCollection().Find<T>(LastQuery);
             return Cursor;
         }
 
-        public MongoCursor<T> Find()
+        public IFindFluent<T, T> Find(string FieldName, object Value)
         {
-            Cursor = GetCollection().FindAllAs<T>();          
+            LastQuery = MongoQuery<T>.Eq(typeof (T).Name, FieldName, Value);
+            Cursor = GetCollection().Find<T>(LastQuery);
             return Cursor;
         }
-   
 
-        public T Pop(IMongoQuery CustomQuery, IMongoSortBy SortBy)
+        public IFindFluent<T,T> Find()
         {
-            var col = GetCollection();
+            LastQuery = new BsonDocument();
+            Cursor = GetCollection().Find<T>(new BsonDocument());            
+            return Cursor;
+        }
 
-            var args = new FindAndRemoveArgs {SortBy = SortBy, Query = CustomQuery};
-
-            var result = col.FindAndRemove(args);
-
-            if (result.Ok)
+        public List<string> AddIncludeFields(params string[] Fields)
+        {
+            if (Fields != null)
             {
-                return result.GetModifiedDocumentAs<T>();
+                _includedFields.AddRange(Fields);
+            }
+            return _includedFields;
+        }
+
+
+
+        public List<string> AddExcludeFields(params string[] Fields)
+        {
+            if (Fields != null)
+            {
+                _excludedFields.AddRange(Fields);
+            }
+            return _excludedFields;
+        }
+
+        private void AddProjetion()
+        {
+            ProjectionDefinition<T> fields = null;
+
+            if (_includedFields.Any())
+            {
+                var includeFieldList = MongoMapperHelper.ConvertFieldName(typeof (T).Name, _includedFields).ToList();
+                fields = this.Project.Include(includeFieldList.First());
+                foreach (var field in includeFieldList.Skip(1))
+                {
+                    fields = this.Project.Include(field);
+                }
             }
 
-            return default(T);
+
+            if (_excludedFields.Any())
+            {
+                var excludeFieldList = MongoMapperHelper.ConvertFieldName(typeof(T).Name, _excludedFields).ToList();
+                fields = this.Project.Exclude(excludeFieldList.First());
+                foreach (var field in excludeFieldList.Skip(1))
+                {
+                    fields = this.Project.Exclude(field);
+                }
+            }
+
+            if (fields != null)
+            {
+                Cursor.Project<T>(fields);
+            }
+        }
+
+
+        public T Pop(FilterDefinition<T> Query, SortDefinition<T> SortBy)
+        {
+            var col = GetCollection();
+            
+            FindOneAndDeleteOptions<T> args = new FindOneAndDeleteOptions<T>();
+            args.Sort = SortBy;            
+
+            var result = col.FindOneAndDeleteAsync( Query, args ).Result;
+
+            return result;      
 
         }
 
         public T Pop()
         {
-            return Pop(Query.Null, SortBy.Ascending("$natural"));
+            return Pop(new BsonDocument(), Builders<T>.Sort.Ascending("$natural"));
         }
 
         public long Total
         {
-            get { return Cursor.Count(); }
+            get
+            {
+                var t = GetCollection().Find(new BsonDocument()).CountAsync();
+                t.Wait();
+                return t.Result;
+            }
         }
 
         public long Count 
         {
-            get { return Cursor.Size(); }
+            get
+            {
+                var t = Cursor.CountAsync();
+                t.Wait();
+                return t.Result; ;
+            }
         }
 
         public List<T> ToList()
         {
-            return Cursor.ToList();
+            AddProjetion();
+            return Cursor.ToListAsync().Result;
         }
 
         public T First()
         {
-            return Cursor.First();
+            AddProjetion();
+            return Cursor.FirstAsync().Result;            
         }
 
         public T Last()
         {
-            return Cursor.Last();
+            throw new NotImplementedException();
         }
 
         public IEnumerator<T> GetEnumerator()
-        {                        
-            return Cursor.GetEnumerator();
+        {
+            AddProjetion();
+            return new MongoMapperEnumerator<T>(Cursor.ToCursorAsync().Result);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -130,5 +220,48 @@ namespace EtoolTech.MongoDB.Mapper
         }
     }
 
-   
+    public class MongoMapperEnumerator<T> : IEnumerator<T>
+    {
+        private readonly IAsyncCursor<T> _enumerator;
+        private T _current;
+        private List<T> buffer = new List<T>(); 
+        
+
+        public MongoMapperEnumerator(IAsyncCursor<T> Cursor)
+        {
+            _enumerator = Cursor;
+        }
+
+        public void Dispose() { }
+
+        public bool MoveNext()
+        {
+            return GetFromBuffer();
+        }
+
+
+        private bool GetFromBuffer()
+        {
+            if (!buffer.Any())
+            {
+                bool hasNext = _enumerator.MoveNextAsync().Result;
+                if (!hasNext) return false;
+                buffer.AddRange(_enumerator.Current);
+                return GetFromBuffer();
+            }
+            else
+            {
+                _current = buffer.First();
+                buffer.RemoveAt(0);
+                return true;
+            }
+        }
+      
+
+        public void Reset() { throw new NotImplementedException(); }
+
+        public T Current { get { return _current; } }
+
+        object IEnumerator.Current { get { return Current; } }
+    }
 }

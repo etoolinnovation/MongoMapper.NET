@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
@@ -11,14 +12,14 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         public void Count()
         {
-            Assert.AreEqual(10,(new CountryCollection()).Find().Size());
-            Country c = (new CountryCollection()).Find().First();
+            Assert.AreEqual(10,(new CountryCollection()).Find().CountAsync().Result);
+            Country c = (new CountryCollection()).Find().FirstAsync().Result;
             c.Delete();
         }
 
         public void Count2()
         {
-            Assert.AreEqual(9, (new CountryCollection()).Find().Size());
+            Assert.AreEqual(9, (new CountryCollection()).Find().CountAsync().Result);
         }
 
         public void Insert()

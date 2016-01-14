@@ -36,19 +36,19 @@ namespace EtoolTech.MongoDB.Mapper
                 {
                     if (queue.OperationType == OperationType.Insert)
                     {
-                        WriteConcernResult result = Writer.Instance.Insert(queue.Type.Name, queue.Type, queue.Document);
+                        var result = Writer.Instance.Insert(queue.Type.Name, queue.Type, queue.Document);
                         queue.Procesed = true;
                     }
 
                     if (queue.OperationType == OperationType.Update)
                     {
-                        WriteConcernResult result = Writer.Instance.Update(queue.Type.Name, queue.Type, queue.Document);
+                        var result = Writer.Instance.Update(queue.Type.Name, queue.Type, queue.Document);
                         queue.Procesed = true;
                     }
 
                     if (queue.OperationType == OperationType.Delete)
                     {
-                        WriteConcernResult result = Writer.Instance.Delete(queue.Type.Name, queue.Type, queue.Document);
+                        var result = Writer.Instance.Delete(queue.Type.Name, queue.Type, queue.Document);
                         queue.Procesed = true;
                         queue.Result = 2;
                     }

@@ -46,9 +46,6 @@
     <Reference Include="MongoDB.Driver.Core">
       <HintPath>..\Dependencies\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver.Legacy">
-      <HintPath>..\Dependencies\MongoDB.Driver.Legacy.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -67,12 +64,11 @@
     <Compile Include="Attributes\MongoCollectionName.cs" />
     <Compile Include="Attributes\MongoCustomDiscriminatorType.cs" />
     <Compile Include="Attributes\MongoChildCollection.cs" />
-    <Compile Include="Attributes\MongoDownRelation.cs" />
     <Compile Include="Attributes\MongoTTLIndex.cs" />
     <Compile Include="Attributes\MongoIndex.cs" />
     <Compile Include="Attributes\MongoMapperIdIncrementable.cs" />
     <Compile Include="Attributes\MongoPropertyValidator.cs" />
-    <Compile Include="Attributes\MongoUpRelation.cs" />
+    <Compile Include="Attributes\MongoRelation.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Configuration\ICollectionElement.cs" />
     <Compile Include="Configuration\IContext.cs" />

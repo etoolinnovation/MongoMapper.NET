@@ -16,7 +16,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
             c.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Francia"; };
             c.Save();
 
-            var c3 = MongoMapper.FindByKey<Country>("FR");
+            var c3 = MongoMapper<Country>.FindByKey("FR");
 
             Assert.AreEqual(c3.Name, "Francia");
         }

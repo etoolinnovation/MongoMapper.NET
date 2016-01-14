@@ -2,8 +2,6 @@
 
 A .NET Document Mapper for MongoDB over MongoDB C# Driver
 
-
-
 ### Dependencies
 
 * [MongoDB distributions] (http://www.mongodb.org/downloads)
@@ -13,135 +11,99 @@ A .NET Document Mapper for MongoDB over MongoDB C# Driver
 ### Defining the Model
 
 		[Serializable]
-		[MongoKey(KeyFields = "Code")]
-		public class Country: MongoMapper
-		{        
-			[MongoDownRelation(ObjectName = "Person", FieldName = "Country")]
+		[MongoKey(KeyFields = "Code")]    
+		[MongoCollectionName(Name="Paises")]
+		[MongoGeo2DIndex(IndexField="Pos")]
+		[MongoGeo2DSphereIndex(IndexField="Area")]
+		[MongoRelation("PersonRelation","Code","Person","Country")]
+		public class Country : MongoMapper<Country>
+		{				  
+			#region Public Properties
+			
+			[BsonElement("c")]
 			public string Code { get; set; }
+
+			[BsonElement("n")]
 			public string Name { get; set; }
-	
-			[MongoPropertyValidator(PropertyName="Code")]
+
+			[BsonElement("p")]
+			public long[] Pos { get; set; }
+
+			public GeoArea Area { get; set; }
+
+			#endregion
+
+			#region Public Methods
+
+			[MongoPropertyValidator(PropertyName = "Code")]
 			public void CodeIsUp(string CountryCode)
 			{
 				if (CountryCode != CountryCode.ToUpper())
+				{
 					throw new Exception(String.Format("{0} must be {1}", CountryCode, CountryCode.ToUpper()));
+				}
 			}
+
+			#endregion
 		}
-	
-		[Serializable]
-		[MongoKey(KeyFields = "")]
-		[MongoIndex(IndexFields = "ID,Country")]
-		[MongoIndex(IndexFields =  "Name")]
-		[MongoMapperIdIncrementable(IncremenalId = true, ChildsIncremenalId = true)]
-		public class Person : MongoMapper
-		{        
-			public Person()
-			{
-				Childs = new List<Child>();
-			}
-					
-			public string Name { get; set; }
-			public int Age { get; set; }
-			public DateTime BirthDate { get; set; }
-			public bool Married { get; set; }
-			public decimal BankBalance { get; set; }
-			
-			[MongoUpRelation(ObjectName = "Country", FieldName = "Code")]
-			public string Country { get; set; }
-				 
-			[MongoChildCollection]
-			public List<Child> Childs { get; set;}
-		}
-		
+				
 		public class CountryCollection: MongoMapperCollection<Country> {}
 	
 ### Work with the Model
 
-          var c = new Country {Code = "es", Name = "España"};
-            try
-            {
-                c.Save();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
-                c.Code = "ES";
-                c.Save();
-            }
+		var c = new Country {Code = "es", Name = "España"};
+		try
+		{
+			c.Save();
+			Assert.Fail();
+		}
+		catch (ValidatePropertyException ex)
+		{
+			Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
+			c.Code = "ES";
+			c.Save();
+		}
 
-            c = new Country {Code = "UK", Name = "Reino Unido"};
-            c.Save();
+		c = new Country {Code = "UK", Name = "Reino Unido"};
+		c.Save();
 
-            c = new Country {Code = "UK", Name = "Reino Unido"};
-            try
-            {
-                c.Save();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
-            }
+		c = new Country {Code = "UK", Name = "Reino Unido"};
+		try
+		{
+			c.Save();
+			Assert.Fail();
+		}
+		catch (DuplicateKeyException ex)
+		{
+			Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
+		}
 
-            using (var t = new MongoMapperTransaction())
-            {
-                var c2 = new Country {Code = "US", Name = "Francia"};
-                c2.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Estados Unidos"; };
-                c2.Save();
+		using (var t = new MongoMapperTransaction())
+		{
+			var c2 = new Country {Code = "US", Name = "Francia"};
+			c2.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Estados Unidos"; };
+			c2.Save();
 
-                t.Commit();
-            }
+			t.Commit();
+		}
 
-            var c3 = new Country();
-            c3.FillByKey("US");
-            Assert.AreEqual(c3.Name, "Estados Unidos");
+		var c3 = new Country();
+		c3.FillByKey("US");
+		Assert.AreEqual(c3.Name, "Estados Unidos");
 
-            if (!c3.IsLastVersion())
-                c3.FillFromLastVersion();
+		if (!c3.IsLastVersion())
+			c3.FillFromLastVersion();
 
-            var countries = new CountryCollection();
-            countries.Find();
-            Assert.AreEqual(countries.Count, 3);
+		var countries = new CountryCollection();
+		countries.Find();
+		Assert.AreEqual(countries.Count, 3);
 
-            countries.Find().SetLimit(2).SetSortOrder("Code");
-            Assert.AreEqual(countries.Count, 2);
-            Assert.AreEqual(countries.Total, 3);
+		countries.Find().Limit(2).Sort(countries.Sort.Ascending(C=>C.Name));
+		Assert.AreEqual(countries.Count, 2);
+		Assert.AreEqual(countries.Total, 3);
 
-            countries.Find(
-                Query.Or(Query<Country>.EQ(co => co.Code, "ES"), Query<Country>.EQ(co => co.Code, "UK")));
-            Assert.AreEqual(countries.Count, 2);
-
-            var p = new Person
-                {
-                    Name = "Pepito Perez",
-                    Age = 35,
-                    BirthDate = DateTime.Now.AddDays(57).AddYears(-35),
-                    Married = true,
-                    Country = "XXXXX",
-                    BankBalance = decimal.Parse("3500,00")
-                };
-
-            p.Childs.Add(
-                new Child {ID = 1, Age = 10, BirthDate = DateTime.Now.AddDays(57).AddYears(-10), Name = "Juan Perez"});
-
-            try
-            {
-                p.Save();
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidateUpRelationException));
-                p.Country = "ES";
-                p.Save();
-            }
-
-            p.ServerUpdate(
-                Update.PushWrapped(
-                    "Childs",
-                    new Child {ID = 2, Age = 2, BirthDate = DateTime.Now.AddDays(57).AddYears(-7), Name = "Ana Perez"}));
-
-            var persons = new List<Person>();
-            persons.MongoFind("Childs.Age", 2);
-            Assert.AreEqual(persons.Count, 1);
+		countries.Find(countries.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
+		Assert.AreEqual(countries.Count, 2);
 
 
 ### You can find examples in the Test Project 
@@ -171,5 +133,6 @@ A .NET Document Mapper for MongoDB over MongoDB C# Driver
 * [10/02/2013] (http://j.mp/Xm0KLa)
 * [22/08/2013] (http://j.mp/13IyrQQ)
 * [22/12/2014] (http://www.emiliotorrens.com/2014/12/22/mongomapper-net-1-1/)
+* [09/12/2014] (http://www.emiliotorrens.com/2015/12/09/mongomapper-net-2-0-beta/)
 
 

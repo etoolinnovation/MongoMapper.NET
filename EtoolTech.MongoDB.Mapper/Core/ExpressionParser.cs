@@ -8,7 +8,7 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Public Methods
 
-        public IMongoQuery ParseExpression<T>(Expression<Func<T, object>> exp)
+        public FilterDefinition<T> ParseExpression<T>(Expression<Func<T, object>> exp)
         {
             throw new NotImplementedException();
             //Parse(exp);

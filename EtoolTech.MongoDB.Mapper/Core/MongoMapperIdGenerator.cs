@@ -1,8 +1,8 @@
 ﻿using System;
 using EtoolTech.MongoDB.Mapper.Configuration;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -65,8 +65,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             lock (_lockObject)
             {
-                FindAndModifyResult result = FindAndModifyResult(ObjName);
-                return result.ModifiedDocument["last"].AsInt64;
+                return FindAndModifyResult(ObjName);                
             }
         }
 
@@ -74,20 +73,17 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region Methods
 
-        private FindAndModifyResult FindAndModifyResult(string ObjName)
-        {
+        private long FindAndModifyResult(string ObjName)
+        {      
+            var result = MongoMapperHelper.Db("Counters", true)
+                .GetCollection<BsonDocument>("Counters")
+                .FindOneAndUpdateAsync(
+                    Builders<BsonDocument>.Filter.Eq("document", ObjName),
+                    Builders<BsonDocument>.Update.Inc("last", (long) 1), 
+                    new FindOneAndUpdateOptions<BsonDocument>() { IsUpsert = true, ReturnDocument = ReturnDocument.After }
+                ).Result;
 
-            var args = new FindAndModifyArgs()
-            {
-                Query = Query.EQ("document", ObjName),
-                SortBy = null,
-                Update = Update.Inc("last", (long)1),
-                VersionReturned = FindAndModifyDocumentVersion.Modified,
-                Upsert = true
-            };
-            
-            FindAndModifyResult result =MongoMapperHelper.Db("Counters", true).GetCollection("Counters").FindAndModify(args);
-            return result;
+            return result["last"].AsInt64;
         }
 
         #endregion

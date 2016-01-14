@@ -19,7 +19,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         long FindIdByKey<T>(Dictionary<string, object> KeyValues);
 
-        long FindIdByKey(Type T, Dictionary<string, object> KeyValues);
+        long FindIdByKey<T>(Type Type, Dictionary<string, object> KeyValues);
 
         T FindObjectByKey<T>(Dictionary<string, object> KeyValues);
 

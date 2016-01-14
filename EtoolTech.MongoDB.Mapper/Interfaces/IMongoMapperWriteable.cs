@@ -1,8 +1,8 @@
-using MongoDB.Driver.Builders;
+using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper.Interfaces
 {
-    public interface IMongoMapperWriteable
+    public interface IMongoMapperWriteable<T>
     {
         #region Public Methods
 
@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Interfaces
 
         int Save();
 
-        void ServerUpdate(UpdateBuilder Update, bool Refill = true);
+        void ServerUpdate(UpdateDefinition<T> Update, bool Refill = true);
 
         void UpdateDocument(long Id);
 

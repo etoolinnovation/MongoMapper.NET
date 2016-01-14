@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -17,12 +17,11 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region IWriter Members
 
-        public WriteConcernResult Insert(string Name, Type Type, object Document)
+        public bool Insert<T>(string Name, Type Type, T Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Insert, Type, Document);
-                return new WriteConcernResult(new BsonDocument());
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -31,77 +30,68 @@ namespace EtoolTech.MongoDB.Mapper
                 mongoMapperVersionable.m_dv++;
             }
 
-            WriteConcernResult result = CollectionsManager.GetCollection(Name).Insert(Type, Document);
+            CollectionsManager.GetCollection<T>(Name).InsertOneAsync(Document).GetAwaiter().GetResult();
 
+            return true;
 
-            if (result != null && result.HasLastErrorMessage)
-            {
-                throw new Exception(result.LastErrorMessage);
-            }
-
-            return result;
         }
 
-        public WriteConcernResult Update(string Name, Type Type, object Document)
+        public bool Update<T>(string Name, Type Type, T Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
-                MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);
-                return new WriteConcernResult(new BsonDocument());
+                MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);              
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
+            var mongoMapperIdeable = Document as IMongoMapperIdeable;
             if (mongoMapperVersionable != null)
             {
                 mongoMapperVersionable.m_dv++;
             }
 
-            WriteConcernResult result = CollectionsManager.GetCollection(Name).Save(Type, Document);
+            Debug.Assert(mongoMapperIdeable != null, "mongoMapperIdeable != null");
 
-            if (result != null && result.HasLastErrorMessage)
-            {
-                throw new Exception(result.LastErrorMessage);
-            }
+            var result = CollectionsManager.GetCollection<T>(Name).ReplaceOneAsync(
+                Builders<T>.Filter.Eq("_id", mongoMapperIdeable.m_id),
+                Document,
+                new UpdateOptions {IsUpsert = true}
+                ).GetAwaiter().GetResult();
 
-            return result;
+
+            return result.ModifiedCount > 0;
         }
 
-        public WriteConcernResult Delete(string Name, Type Type, object Document)
+        public bool Delete<T>(string Name, Type Type, T Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Delete, Type, Document);
-                return new WriteConcernResult(new BsonDocument());
+                return true;
             }
 
+            var mongoMapperIdeable = Document as IMongoMapperIdeable;
 
-            if (((MongoMapper) Document).m_id == default(long))
+            Debug.Assert(mongoMapperIdeable != null, "mongoMapperIdeable != null");
+
+            if (mongoMapperIdeable.m_id == default(long))
             {
-                ((MongoMapper) Document).m_id = Finder.Instance.FindIdByKey(Type,
+                mongoMapperIdeable.m_id = Finder.Instance.FindIdByKey<T>(Type,
                                                                             MongoMapperHelper.GetPrimaryKey(Type).
                                                                                 ToDictionary(
                                                                                     KeyField => KeyField,
                                                                                     KeyField =>
                                                                                     ReflectionUtility.
                                                                                         GetPropertyValue(
-                                                                                            this, KeyField))
-                    );
+                                                                                            this, KeyField)));
             }
 
-            IMongoQuery query = Query.EQ("_id", ((MongoMapper) Document).m_id);
+            var query = Builders<T>.Filter.Eq("_id", mongoMapperIdeable.m_id);
 
-            WriteConcernResult result =
-                CollectionsManager.GetCollection(Type.Name).Remove(
-                    query);
+            var result = CollectionsManager.GetCollection<T>(Type.Name).DeleteOneAsync(query).GetAwaiter().GetResult();
 
+            return result.DeletedCount > 0;
 
-            if (result != null && result.HasLastErrorMessage)
-            {
-                throw new Exception(result.LastErrorMessage);
-            }
-
-
-            return result;
         }
 
         #endregion

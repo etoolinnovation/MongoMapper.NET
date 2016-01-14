@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
+
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
 {
@@ -53,14 +55,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             if (!String.IsNullOrEmpty(dbConfigKey))
             {
                 string[] values = dbConfigKey.Split('|');
-                var client = new MongoClient(values[0]);
-                var server = client.GetServer();
-                var db = server.GetDatabase(values[1]);
-                db.GetCollection<MongoMapperConfiguracionBase>(values[2]).Insert((MongoMapperConfiguracionBase) Configuration);
+                var client = new MongoClient(values[0]);                
+                var db = client.GetDatabase(values[1]);
+                db.GetCollection<MongoMapperConfiguracionBase>(values[2]).InsertOneAsync((MongoMapperConfiguracionBase) Configuration);
             }
             
         }
-
         public static IMongoMapperConfiguration GetConfig()
         {
 
@@ -69,10 +69,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             if (!String.IsNullOrEmpty(dbConfigKey))
             {
                 string[] values = dbConfigKey.Split('|');
-                var client = new MongoClient(values[0]);
-                var server = client.GetServer();
-                var db = server.GetDatabase(values[1]);
-                var config = db.GetCollection<MongoMapperConfiguracionBase>(values[2]).FindOneAs<MongoMapperConfiguracionBase>(Query.EQ("Key", values[3]));
+                var client = new MongoClient(values[0]);                
+                var db = client.GetDatabase(values[1]);
+                var config =
+                     db.GetCollection<MongoMapperConfiguracionBase>(values[2])
+                        .Find(C => C.Key == values[3])
+                        .Limit(1)
+                        .ToListAsync().Result.FirstOrDefault();
+
 
                 return config;
             }
