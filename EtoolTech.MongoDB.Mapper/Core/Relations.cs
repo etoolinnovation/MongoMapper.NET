@@ -81,7 +81,7 @@ namespace EtoolTech.MongoDB.Mapper
 
             var filters = fieldValues.Select(CurrentFieldvalue => MongoQuery<BsonDocument>.Eq(Relation.RelationObjectName, CurrentFieldvalue.Key, CurrentFieldvalue.Value)).ToList();
 
-            var relationCollection = CollectionsManager.GetCollection<BsonDocument>(Relation.RelationObjectName);
+            var relationCollection = CollectionsManager.GetPrimaryCollection<BsonDocument>(Relation.RelationObjectName);
 
             var documentCount = relationCollection.CountAsync(Builders<BsonDocument>.Filter.And(filters)).Result;
 
