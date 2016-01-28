@@ -86,7 +86,7 @@ namespace EtoolTech.MongoDB.Mapper
                     var collection = MongoMapperHelper.Db(Name, true).GetCollection<T>(Name);
                     PrimaryCollections.Add(key, collection);
                 }
-                return (IMongoCollection<T>) Collections[key];
+                return (IMongoCollection<T>)PrimaryCollections[key];
             }
         }
 
