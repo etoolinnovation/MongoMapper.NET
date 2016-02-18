@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
@@ -250,6 +252,19 @@ namespace EtoolTech.MongoDB.Mapper
             Events.AfterDeleteDocument(this, OnAfterDelete, OnAfterComplete, _classType);
         }
 
+        public Task DeleteAsync()
+        {
+            Events.BeforeDeleteDocument(this, OnBeforeDelete, _classType);
+
+            EnsureDownRelations();
+
+            var task = Writer.Instance.DeleteAsync(_classType.Name, _classType, this);
+
+            Events.AfterDeleteDocument(this, OnAfterDelete, OnAfterComplete, _classType);
+
+            return task;
+        }
+
         public void DeleteDocument()
         {
             Writer.Instance.Delete(_classType.Name, _classType, this);
@@ -306,6 +321,11 @@ namespace EtoolTech.MongoDB.Mapper
             return result;
         }
 
+        public Task<int> SaveAsync()
+        {
+            return Task.Factory.StartNew(() => this.Save());
+        }
+
         public void ServerUpdate(UpdateDefinition<T> Update, bool Refill = true)
         {                                    
             if (m_id == default(long))
@@ -330,6 +350,22 @@ namespace EtoolTech.MongoDB.Mapper
             {
                 ReflectionUtility.CopyObject<T>(result, this);
             }
+        }
+
+
+        public Task ServerUpdateAsync(UpdateDefinition<T> Update, bool Refill = true)
+        {
+            return Task.Factory.StartNew(() => this.ServerUpdateAsync(Update, Refill));
+        }
+
+        public void ServerSetValue(string FieldName, object Value, bool Refill = true)
+        {
+            this.ServerUpdate(this.Update.Set(FieldName, Value), Refill);
+        }
+
+        public Task ServerSetValueAsync(string FieldName, object Value, bool Refill = true)
+        {
+            return this.ServerUpdateAsync(this.Update.Set(FieldName, Value), Refill);
         }
 
         public void UpdateDocument(long Id)
