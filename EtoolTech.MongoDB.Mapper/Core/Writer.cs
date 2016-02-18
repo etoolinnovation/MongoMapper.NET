@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using EtoolTech.MongoDB.Mapper.Interfaces;
 using MongoDB.Bson;
@@ -17,11 +18,12 @@ namespace EtoolTech.MongoDB.Mapper
 
         #region IWriter Members
 
-        public bool Insert<T>(string Name, Type Type, T Document)
+        public Task InsertAsync<T>(string Name, Type Type, T Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Insert, Type, Document);
+                Task.FromResult(true);
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -30,17 +32,22 @@ namespace EtoolTech.MongoDB.Mapper
                 mongoMapperVersionable.m_dv++;
             }
 
-            CollectionsManager.GetCollection<T>(Name).InsertOneAsync(Document).GetAwaiter().GetResult();
+            return CollectionsManager.GetCollection<T>(Name).InsertOneAsync(Document);
+        }
 
+        public bool Insert<T>(string Name, Type Type, T Document)
+        {
+            InsertAsync(Name, Type, Document).GetAwaiter().GetResult();
             return true;
 
         }
 
-        public bool Update<T>(string Name, Type Type, T Document)
+        public Task<ReplaceOneResult> UpdateAsync<T>(string Name, Type Type, T Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
-                MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);              
+                MongoMapperTransaction.AddToQueue(OperationType.Update, Type, Document);
+                Task.FromResult(true);
             }
 
             var mongoMapperVersionable = Document as IMongoMapperVersionable;
@@ -52,22 +59,26 @@ namespace EtoolTech.MongoDB.Mapper
 
             Debug.Assert(mongoMapperIdeable != null, "mongoMapperIdeable != null");
 
-            var result = CollectionsManager.GetCollection<T>(Name).ReplaceOneAsync(
+            return CollectionsManager.GetCollection<T>(Name).ReplaceOneAsync(
                 Builders<T>.Filter.Eq("_id", mongoMapperIdeable.m_id),
                 Document,
                 new UpdateOptions {IsUpsert = true}
-                ).GetAwaiter().GetResult();
+                );
+        }
 
+        public bool Update<T>(string Name, Type Type, T Document)
+        {
 
+            var result = UpdateAsync(Name, Type, Document).GetAwaiter().GetResult();            
             return result.ModifiedCount > 0;
         }
 
-        public bool Delete<T>(string Name, Type Type, T Document)
+        public Task<DeleteResult> DeleteAsync<T>(string Name, Type Type, T Document)
         {
             if (MongoMapperTransaction.InTransaction && !MongoMapperTransaction.Commiting)
             {
                 MongoMapperTransaction.AddToQueue(OperationType.Delete, Type, Document);
-                return true;
+                Task.FromResult(true);
             }
 
             var mongoMapperIdeable = Document as IMongoMapperIdeable;
@@ -88,7 +99,13 @@ namespace EtoolTech.MongoDB.Mapper
 
             var query = Builders<T>.Filter.Eq("_id", mongoMapperIdeable.m_id);
 
-            var result = CollectionsManager.GetCollection<T>(Type.Name).DeleteOneAsync(query).GetAwaiter().GetResult();
+            return CollectionsManager.GetCollection<T>(Type.Name).DeleteOneAsync(query);
+        }
+
+        public bool Delete<T>(string Name, Type Type, T Document)
+        {
+
+            var result = DeleteAsync(Name, Type, Document).GetAwaiter().GetResult();
 
             return result.DeletedCount > 0;
 
