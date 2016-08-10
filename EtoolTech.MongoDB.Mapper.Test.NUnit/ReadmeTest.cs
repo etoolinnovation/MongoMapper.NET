@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using EtoolTech.MongoDB.Mapper.Configuration;
 using EtoolTech.MongoDB.Mapper.Exceptions;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 using NUnit.Framework;
 
 namespace EtoolTech.MongoDB.Mapper.Test.NUnit
