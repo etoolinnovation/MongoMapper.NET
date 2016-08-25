@@ -71,6 +71,12 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
         }
 
         [Test]
+        public void TestCheckRebuildIndexes()
+        {
+            ReflectionUtility.DeteleExistingIndexesAndBuildNewOnes(GetType().Assembly, "");
+        }
+
+        [Test]
         public void TestGetPropertyName()
         {
             string name = ReflectionUtility.GetPropertyName((TestReflectionUtility t) => t.String);
