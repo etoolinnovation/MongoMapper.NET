@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using EtoolTech.MongoDB.Mapper.Attributes;
 using EtoolTech.MongoDB.Mapper.Interfaces;
+using MongoDB.Bson;
 
 namespace EtoolTech.MongoDB.Mapper
 {
@@ -29,6 +30,20 @@ namespace EtoolTech.MongoDB.Mapper
             }
         }
 
+
+        public static void DeteleExistingIndexesAndBuildNewOnes(Assembly Assembly, string ClassName)
+        {
+            List<Type> types = String.IsNullOrEmpty(ClassName) ? Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper`1").ToList() :
+              Assembly.GetTypes().Where(T => T.BaseType != null && T.BaseType.Name == "MongoMapper`1" && T.Name == ClassName).ToList();
+
+            foreach (Type type in types)
+            {
+                var indexes = MongoMapperHelper.GetExistinIndexNames(type);
+
+                CollectionsManager.GetCollection<BsonDocument>(type.Name).Indexes.DropAllAsync().GetAwaiter().GetResult();
+                MongoMapperHelper.CreateIndexes(type);
+            }
+        }
 
         public static void CheckRelations(Assembly Assembly, string ClassName)
         {

@@ -163,36 +163,42 @@ namespace EtoolTech.MongoDB.Mapper
             if ((RepairCollection || !ConfigManager.Config.Context.Generated)
                 && !CollectionsManager.CollectionExists(CollectionsManager.GetCollectioName(ClassType.Name)))
             {
-                Db(ClassType.Name).CreateCollectionAsync((CollectionsManager.GetCollectioName(ClassType.Name)), null);
+                Db(ClassType.Name).CreateCollectionAsync((CollectionsManager.GetCollectioName(ClassType.Name))).GetAwaiter().GetResult();
             }
 
-            if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
+            lock (LockObjectCustomDiscritminatorTypes)
             {
-                lock (LockObjectCustomDiscritminatorTypes)
+                if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
                 {
-                    if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
+                    lock (LockObjectCustomDiscritminatorTypes)
                     {
-                        RegisterCustomDiscriminatorTypes(ClassType);
-                        CustomDiscriminatorTypes.Add(ClassType.Name);
+                        if (!CustomDiscriminatorTypes.Contains(ClassType.Name))
+                        {
+                            RegisterCustomDiscriminatorTypes(ClassType);
+                            CustomDiscriminatorTypes.Add(ClassType.Name);
+                        }
                     }
                 }
             }
 
-            if (!BufferIdIncrementables.ContainsKey(ClassType.Name))
+            lock (LockObjectIdIncrementables)
             {
-                lock (LockObjectIdIncrementables)
+                if (!BufferIdIncrementables.ContainsKey(ClassType.Name))
                 {
-                    if (!BufferIdIncrementables.ContainsKey(ClassType.Name))
+                    lock (LockObjectIdIncrementables)
                     {
-                        object m =
-                            ClassType.GetCustomAttributes(typeof (MongoMapperIdIncrementable), false).FirstOrDefault();
-                        if (m == null)
+                        if (!BufferIdIncrementables.ContainsKey(ClassType.Name))
                         {
-                            BufferIdIncrementables.Add(ClassType.Name, null);
-                        }
-                        else
-                        {
-                            BufferIdIncrementables.Add(ClassType.Name, (MongoMapperIdIncrementable) m);
+                            object m =
+                                ClassType.GetCustomAttributes(typeof (MongoMapperIdIncrementable), false).FirstOrDefault();
+                            if (m == null)
+                            {
+                                BufferIdIncrementables.Add(ClassType.Name, null);
+                            }
+                            else
+                            {
+                                BufferIdIncrementables.Add(ClassType.Name, (MongoMapperIdIncrementable) m);
+                            }
                         }
                     }
                 }
@@ -238,63 +244,130 @@ namespace EtoolTech.MongoDB.Mapper
      
             if (!ConfigManager.Config.Context.Generated || RepairCollection)
             {
-                foreach (string index in GetIndexes(ClassType))
+
+                CreateIndexes(ClassType);
+            }
+        }
+
+        internal static void CreateIndexes(Type ClassType)
+        {
+            var existingIndexNames = GetExistinIndexNames(ClassType);
+
+            foreach (string index in GetIndexes(ClassType))
+            {
+                if (index.StartsWith("2D|"))
                 {
-                    if (index.StartsWith("2D|"))
+                    var mongoIndex = Builders<BsonDocument>.IndexKeys.Geo2D(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
+                    var indexName = "2D" + "_" + index.Split('|')[1];
+
+                    if (!existingIndexNames.Contains(indexName))
                     {
-                        var mongoIndex = Builders<BsonDocument>.IndexKeys.Geo2D(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
-                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(mongoIndex);
-                    }
-                    else if (index.StartsWith("2DSphere|"))
-                    {
-
-                        var mongoIndex = Builders<BsonDocument>.IndexKeys.Geo2DSphere(MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
-                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(mongoIndex);    
-                    }
-                    else
-                    {
-                        var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(IndexField => IndexField.Trim());
-
-                        var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
-                        if (fieldnames.Any())
-                        {
-                            var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
-                            indexFields = fieldnames.Skip(1).Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
-
-                            CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields);
-
-                        }
-                        
-                        
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
+                            .Indexes.CreateOneAsync(mongoIndex, new CreateIndexOptions() {Name = indexName})
+                            .GetAwaiter()
+                            .GetResult();
                     }
                 }
-
-                string[] pk = GetPrimaryKey(ClassType).ToArray();
-                if (pk.Count(K => K == "m_id") == 0)
+                else if (index.StartsWith("2DSphere|"))
                 {
-                    var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(PkField => PkField.Trim());
+                    var indexName = "2DSphere" + "_" + index.Split('|')[1];
+
+                    if (!existingIndexNames.Contains(indexName))
+                    {
+
+                        var mongoIndex =
+                            Builders<BsonDocument>.IndexKeys.Geo2DSphere(
+                                MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
+
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
+                            .Indexes.CreateOneAsync(mongoIndex, new CreateIndexOptions() {Name = indexName})
+                            .GetAwaiter()
+                            .GetResult();
+                    }
+                }
+                else
+                {
+                    var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split(',').ToList()).Select(IndexField => IndexField.Trim());
 
                     var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
+
                     if (fieldnames.Any())
                     {
-                        var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
-                        indexFields = fieldnames.Skip(1).Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
+                        var indexName = "IX" + "_" + string.Join("_", fieldnames);
 
-                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(indexFields, new CreateIndexOptions() { Unique = true});
 
+                        if (!existingIndexNames.Contains(indexName))
+                        {
+                            var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
+                            indexFields = fieldnames.Skip(1)
+                                .Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
+
+                            CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
+                                .Indexes.CreateOneAsync(indexFields, new CreateIndexOptions() {Name = indexName})
+                                .GetAwaiter()
+                                .GetResult();
+                        }
                     }
-                  
-                }
-
-                string ttlIndex = GetTTLIndex(ClassType);
-                if (ttlIndex != string.Empty)
-                {
-                    var tmpIndex = ttlIndex.Split(',');
-                    var keys = Builders<BsonDocument>.IndexKeys.Ascending(tmpIndex[0].Trim());                    
-                    CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(
-                        keys, new CreateIndexOptions() {ExpireAfter = TimeSpan.FromSeconds(int.Parse(tmpIndex[1].Trim()))});
                 }
             }
+
+            string[] pk = GetPrimaryKey(ClassType).ToArray();
+            if (pk.Count(K => K == "m_id") == 0)
+            {
+                var indexFieldnames = MongoMapperHelper.ConvertFieldName(ClassType.Name, pk.ToList()).Select(PkField => PkField.Trim());
+
+                var fieldnames = indexFieldnames as IList<string> ?? indexFieldnames.ToList();
+                if (fieldnames.Any())
+                {
+                    var indexName = "PK_" + string.Join("_", fieldnames);
+
+                    if (!existingIndexNames.Contains(indexName))
+                    {
+                        var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
+
+                        indexFields = fieldnames.Skip(1)
+                            .Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
+
+                        CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
+                            .Indexes.CreateOneAsync(indexFields,
+                                new CreateIndexOptions() {Unique = true, Name = indexName})
+                            .GetAwaiter()
+                            .GetResult();
+                    }
+                }
+            }
+
+            string ttlIndex = GetTTLIndex(ClassType);
+            if (ttlIndex != string.Empty)
+            {
+                var tmpIndex = ttlIndex.Split(',');
+                var indexName = "TTL_" + tmpIndex[0].Trim();
+
+                if (!existingIndexNames.Contains(indexName))
+                {
+                    var keys = Builders<BsonDocument>.IndexKeys.Ascending(tmpIndex[0].Trim());
+                    CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(
+                        keys,
+                        new CreateIndexOptions()
+                        {
+                            Name = indexName,
+                            ExpireAfter = TimeSpan.FromSeconds(int.Parse(tmpIndex[1].Trim()))
+                        })
+                        .GetAwaiter()
+                        .GetResult();
+                }
+            }
+        }
+
+        internal static List<string> GetExistinIndexNames(Type ClassType)
+        {
+            var existingIndexNames =
+                CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
+                    .Indexes.ListAsync()
+                    .Result.ToList()
+                    .Select(Index => Index["name"].ToString())
+                    .ToList();
+            return existingIndexNames;
         }
 
         private static IEnumerable<string> GetIndexes(Type T)
