@@ -10,9 +10,9 @@ namespace EtoolTech.MongoDB.Mapper.Attributes
         public MongoRelation(string Name, string CurrentFieldNames, string RelationObjectName, string RelationFieldNames, bool UpRelation = false)
         {
             this.Name = Name;
-            this.CurrentFieldNames = CurrentFieldNames.Split(',');
+            this.CurrentFieldNames = CurrentFieldNames.Split(',').Select(key => key.Trim()).ToArray();
             this.RelationObjectName = RelationObjectName;
-            this.RelationFieldNames = RelationFieldNames.Split(',');
+            this.RelationFieldNames = RelationFieldNames.Split(',').Select(key => key.Trim()).ToArray();
             this.UpRelation = UpRelation;
         }
         

@@ -90,7 +90,8 @@ namespace EtoolTech.MongoDB.Mapper
                         {
                             keyAtt.KeyFields = "m_id";
                         }
-                        BufferPrimaryKey.Add(T.Name, keyAtt.KeyFields.Split(',').ToList());
+
+                        BufferPrimaryKey.Add(T.Name, keyAtt.KeyFields.Split(',').Select(key => key.Trim()).ToList());
                     }
                     else
                     {
