@@ -90,7 +90,8 @@ namespace EtoolTech.MongoDB.Mapper
                         {
                             keyAtt.KeyFields = "m_id";
                         }
-                        BufferPrimaryKey.Add(T.Name, keyAtt.KeyFields.Split(',').ToList());
+
+                        BufferPrimaryKey.Add(T.Name, keyAtt.KeyFields.Split(',').Select(key => key.Trim()).ToList());
                     }
                     else
                     {
@@ -262,6 +263,7 @@ namespace EtoolTech.MongoDB.Mapper
 
                     if (!existingIndexNames.Contains(indexName))
                     {
+                        Console.WriteLine("CREATING INDEX IN" + ClassType.Name + " => " + indexName);
                         CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
                             .Indexes.CreateOneAsync(mongoIndex, new CreateIndexOptions() {Name = indexName})
                             .GetAwaiter()
@@ -275,6 +277,7 @@ namespace EtoolTech.MongoDB.Mapper
                     if (!existingIndexNames.Contains(indexName))
                     {
 
+                        Console.WriteLine("CREATING INDEX IN" + ClassType.Name + " => " + indexName);
                         var mongoIndex =
                             Builders<BsonDocument>.IndexKeys.Geo2DSphere(
                                 MongoMapperHelper.ConvertFieldName(ClassType.Name, index.Split('|')[1]).Trim());
@@ -293,11 +296,13 @@ namespace EtoolTech.MongoDB.Mapper
 
                     if (fieldnames.Any())
                     {
+                        
                         var indexName = "IX" + "_" + string.Join("_", fieldnames);
-
 
                         if (!existingIndexNames.Contains(indexName))
                         {
+                            Console.WriteLine("CREATING INDEX IN" + ClassType.Name + " => " + indexName);
+
                             var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
                             indexFields = fieldnames.Skip(1)
                                 .Aggregate(indexFields, (Current, FieldName) => Current.Ascending(FieldName));
@@ -323,6 +328,8 @@ namespace EtoolTech.MongoDB.Mapper
 
                     if (!existingIndexNames.Contains(indexName))
                     {
+                        Console.WriteLine("CREATING INDEX IN" + ClassType.Name + " => " + indexName);
+
                         var indexFields = Builders<BsonDocument>.IndexKeys.Ascending(fieldnames.First());
 
                         indexFields = fieldnames.Skip(1)
@@ -345,6 +352,8 @@ namespace EtoolTech.MongoDB.Mapper
 
                 if (!existingIndexNames.Contains(indexName))
                 {
+                    Console.WriteLine("CREATING INDEX IN" + ClassType.Name + " => " + indexName);
+
                     var keys = Builders<BsonDocument>.IndexKeys.Ascending(tmpIndex[0].Trim());
                     CollectionsManager.GetCollection<BsonDocument>(ClassType.Name).Indexes.CreateOneAsync(
                         keys,
@@ -363,8 +372,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             var existingIndexNames =
                 CollectionsManager.GetCollection<BsonDocument>(ClassType.Name)
-                    .Indexes.ListAsync()
-                    .Result.ToList()
+                    .Indexes.ListAsync().GetAwaiter().GetResult().ToList()
                     .Select(Index => Index["name"].ToString())
                     .ToList();
             return existingIndexNames;

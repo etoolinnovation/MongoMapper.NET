@@ -38,10 +38,18 @@ namespace EtoolTech.MongoDB.Mapper
 
             foreach (Type type in types)
             {
+                Console.WriteLine("BEGIN " + type.Name);
                 var indexes = MongoMapperHelper.GetExistinIndexNames(type);
 
-                CollectionsManager.GetCollection<BsonDocument>(type.Name).Indexes.DropAllAsync().GetAwaiter().GetResult();
+                foreach (var index in indexes.Where(I=>I != "_id_"))
+                {
+                    Console.WriteLine("DELETING INDEX IN" + type.Name + " => " + index);
+                    CollectionsManager.GetCollection<BsonDocument>(type.Name).Indexes.DropOne(index);
+                }
+                
                 MongoMapperHelper.CreateIndexes(type);
+
+                Console.WriteLine("END " + type.Name);
             }
         }
 
