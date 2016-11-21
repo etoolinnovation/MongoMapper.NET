@@ -14,7 +14,7 @@ namespace EtoolTech.MongoDB.Mapper.Test.NUnit
 
         public static void DropAllCollections()
         {
-            IMongoMapperConfiguration config = MongoMapperConfiguration.GetConfig();
+            IMongoMapperConfiguration config = MongoMapperConfiguration.GetConfig("");
 
 
             var colNames = CollectionsManager.GetCollentionNames("XXX");

@@ -61,18 +61,85 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             }
             
         }
-        public static IMongoMapperConfiguration GetConfig()
+
+
+        private static Dictionary<string, IMongoMapperConfiguration> _cache = new Dictionary<string, IMongoMapperConfiguration>();
+        private static readonly Object LockCacheObject = new object();
+
+        public static IMongoMapperConfiguration GetConfig(string ConfigurationKey)
         {
+
+            if (ConfigurationKey == null) ConfigurationKey = String.Empty;            
 
             string dbConfigKey = System.Configuration.ConfigurationManager.AppSettings["MongoMapperDbConfig"];
 
-            if (!String.IsNullOrEmpty(dbConfigKey))
+            if (string.IsNullOrEmpty(dbConfigKey))
+            {
+                lock (LockCacheObject)
+                {
+                    if (_cache.ContainsKey(ConfigurationKey)) return _cache[ConfigurationKey];
+
+                    var configurationKeyConfigSectionName = ConfigSectionName;
+                    if (!string.IsNullOrEmpty(ConfigurationKey))
+                    {
+                        configurationKeyConfigSectionName = string.Format("{0}.{1}", ConfigurationKey, configurationKeyConfigSectionName);
+                    }
+
+                    var fileConfig = (MongoMapperConfiguration) ConfigurationManager.GetSection(configurationKeyConfigSectionName) ??
+                                     (MongoMapperConfiguration)ConfigurationManager.GetSection(ConfigSectionName);
+
+                    var config = new MongoMapperConfiguracionBase
+                    {
+                        Context =
+                            new MongoMapperConfigurationContext
+                            {
+                                EnableOriginalObject = fileConfig.Context.EnableOriginalObject,
+                                ExceptionOnDuplicateKey = fileConfig.Context.ExceptionOnDuplicateKey,
+                                Generated = fileConfig.Context.Generated,
+                                MaxDocumentSize = fileConfig.Context.MaxDocumentSize,
+                                UseChidlsIncrementalId = fileConfig.Context.UseChidlsIncrementalId,
+                                UseIncrementalId = fileConfig.Context.UseIncrementalId
+                            },
+                        Database = new MongoMapperConfigurationDababase {Name = fileConfig.Database.Name},
+                        Server = new MongoMapperConfigurationServer {Url = fileConfig.Server.Url},
+                        CustomCollectionConfig = new List<MongoMapperConfigurationElement>()
+                    };
+
+                    foreach (CollectionElement element in fileConfig.CollectionConfig)
+                    {
+                        var configElement = new MongoMapperConfigurationElement
+                        {
+                            Name = element.Name,
+                            Context =
+                                new MongoMapperConfigurationContext
+                                {
+                                    EnableOriginalObject = element.Context.EnableOriginalObject,
+                                    ExceptionOnDuplicateKey = element.Context.ExceptionOnDuplicateKey,
+                                    Generated = element.Context.Generated,
+                                    MaxDocumentSize = element.Context.MaxDocumentSize,
+                                    UseChidlsIncrementalId = element.Context.UseChidlsIncrementalId,
+                                    UseIncrementalId = element.Context.UseIncrementalId
+                                },
+                            Database = new MongoMapperConfigurationDababase {Name = element.Database.Name},
+                            Server = new MongoMapperConfigurationServer {Url = element.Server.Url}
+                        };
+
+
+                        config.CustomCollectionConfig.Add(configElement);
+                    }
+
+                    _cache.Add(ConfigurationKey, config);
+
+                    return _cache[ConfigurationKey];
+                }
+            }
+            else
             {
                 string[] values = dbConfigKey.Split('|');
-                var client = new MongoClient(values[0]);                
+                var client = new MongoClient(values[0]);
                 var db = client.GetDatabase(values[1]);
                 var config =
-                     db.GetCollection<MongoMapperConfiguracionBase>(values[2])
+                    db.GetCollection<MongoMapperConfiguracionBase>(values[2])
                         .Find(C => C.Key == values[3])
                         .Limit(1)
                         .ToListAsync().Result.FirstOrDefault();
@@ -80,55 +147,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
                 return config;
             }
-            else
-            {
-
-                var fileConfig = (MongoMapperConfiguration) ConfigurationManager.GetSection(ConfigSectionName);
-
-                var config = new MongoMapperConfiguracionBase
-                {
-                    Context =
-                        new MongoMapperConfigurationContext
-                        {
-                            EnableOriginalObject = fileConfig.Context.EnableOriginalObject,
-                            ExceptionOnDuplicateKey = fileConfig.Context.ExceptionOnDuplicateKey,
-                            Generated = fileConfig.Context.Generated,
-                            MaxDocumentSize = fileConfig.Context.MaxDocumentSize,
-                            UseChidlsIncrementalId = fileConfig.Context.UseChidlsIncrementalId,
-                            UseIncrementalId = fileConfig.Context.UseIncrementalId
-                        },
-                    Database = new MongoMapperConfigurationDababase {Name = fileConfig.Database.Name},
-                    Server = new MongoMapperConfigurationServer {Url = fileConfig.Server.Url},
-                    CustomCollectionConfig = new List<MongoMapperConfigurationElement>()
-                };
-
-                foreach (CollectionElement element in fileConfig.CollectionConfig)
-                {
-                    var configElement = new MongoMapperConfigurationElement
-                    {
-                        Name = element.Name,
-                        Context =
-                            new MongoMapperConfigurationContext
-                            {
-                                EnableOriginalObject = element.Context.EnableOriginalObject,
-                                ExceptionOnDuplicateKey = element.Context.ExceptionOnDuplicateKey,
-                                Generated = element.Context.Generated,
-                                MaxDocumentSize = element.Context.MaxDocumentSize,
-                                UseChidlsIncrementalId = element.Context.UseChidlsIncrementalId,
-                                UseIncrementalId = element.Context.UseIncrementalId
-                            },
-                        Database = new MongoMapperConfigurationDababase {Name = element.Database.Name},
-                        Server = new MongoMapperConfigurationServer {Url = element.Server.Url}
-                    };
-
-
-                    config.CustomCollectionConfig.Add(configElement);
-
-                }
-                
-                return config;
-            }
-
         }
 
         #endregion

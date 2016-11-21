@@ -1,6 +1,7 @@
 #Dependencies
 
 # Visual Studio artifacts
+packages
 bin
 obj
 TestResults
