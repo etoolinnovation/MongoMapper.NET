@@ -56,7 +56,8 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             Path
         }
 
-        public static string GlobalConfigurationKey = String.Empty;
+        private static string GlobalConfigurationKey { get; set; }
+
         private static readonly ConfigurationKeyModeEnum ConfigurationKeyMode = GetConfigurationKeyModeEnum();
         private static readonly int ConfigurationKeyPathIndex = GetConfigurationKeyPathIndex();
 
@@ -82,6 +83,11 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
             {
                 return 0;
             }
+        }
+
+        public static void SetGlobalCompanyKey(string CompanyKey)
+        {
+            GlobalConfigurationKey = CompanyKey;
         }
 
 
