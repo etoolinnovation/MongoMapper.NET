@@ -97,14 +97,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test1\Test.aspx.cs">
       <DependentUpon>Test.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="test1\Test.aspx.designer.cs">
       <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
     <Compile Include="test2\Test2.aspx.cs">
       <DependentUpon>Test2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="test2\Test2.aspx.designer.cs">
       <DependentUpon>Test2.aspx</DependentUpon>
