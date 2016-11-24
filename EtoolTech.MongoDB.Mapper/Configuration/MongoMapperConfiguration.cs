@@ -85,8 +85,8 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                         configurationKeyConfigSectionName = string.Format("{0}.{1}", ConfigurationKey, configurationKeyConfigSectionName);
                     }
 
-                    var fileConfig = (MongoMapperConfiguration) ConfigurationManager.GetSection(configurationKeyConfigSectionName) ??
-                                     (MongoMapperConfiguration)ConfigurationManager.GetSection(ConfigSectionName);
+                    var fileConfig = (MongoMapperConfiguration) ConfigurationManager.GetSection(configurationKeyConfigSectionName) ?? 
+                        (MongoMapperConfiguration)ConfigurationManager.GetSection(ConfigSectionName);
 
                     var config = new MongoMapperConfiguracionBase
                     {
