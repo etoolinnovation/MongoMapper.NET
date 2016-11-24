@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Web;
 using MongoDB.Driver;
 
 namespace EtoolTech.MongoDB.Mapper.Configuration
@@ -11,27 +13,24 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         #region Constants and Fields
 
-        public static readonly IMongoMapperConfiguration Config = MongoMapperConfiguration.GetConfig();
+       
 
         public static string DatabasePrefix { get; set; }
 
-        private static readonly Dictionary<string, MongoMapperConfigurationElement> ConfigByObject =
-            new Dictionary<string, MongoMapperConfigurationElement>();
+        private static readonly Dictionary<string, MongoMapperConfigurationElement> ConfigByObject = new Dictionary<string, MongoMapperConfigurationElement>();
 
-        private static readonly Dictionary<string, MongoClientSettings> SettingsByObject =
-            new Dictionary<string, MongoClientSettings>();
+        private static readonly Dictionary<string, MongoClientSettings> SettingsByObject = new Dictionary<string, MongoClientSettings>();
 
-        private static readonly Dictionary<string, string> UrlByObject =
-            new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> UrlByObject = new Dictionary<string, string>();
 
 
         private static readonly Object LockObject = new Object();
 
         private static readonly Object LockSettingsObject = new Object();
 
-        private static bool _setupLoaded;
-
         #endregion
+
+
 
         #region Public Properties
 
@@ -44,6 +43,93 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
         internal static int? ActiveServers { get; set; }
 
         internal static bool IsReplicaSet { get; set; }
+
+        #endregion
+
+        #region MultiConfiguration
+
+        public enum ConfigurationKeyModeEnum
+        {
+            None,
+            Fixed,
+            Host,
+            Path
+        }
+
+        private static string GlobalConfigurationKey { get; set; }
+
+        private static readonly ConfigurationKeyModeEnum ConfigurationKeyMode = GetConfigurationKeyModeEnum();
+        private static readonly int ConfigurationKeyPathIndex = GetConfigurationKeyPathIndex();
+
+        private static ConfigurationKeyModeEnum GetConfigurationKeyModeEnum()
+        {
+            try
+            {
+                return (ConfigurationKeyModeEnum)Enum.Parse(typeof(ConfigurationKeyModeEnum), ConfigurationManager.AppSettings["MongoMapperConfigurationKeyMode"]);
+            }
+            catch (Exception)
+            {
+                return ConfigurationKeyModeEnum.None;
+            }
+        }
+
+        private static int GetConfigurationKeyPathIndex()
+        {
+            try
+            {
+                return int.Parse(ConfigurationManager.AppSettings["MongoMapperConfigurationKeyPathIndex"]);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public static void SetGlobalCompanyKey(string CompanyKey)
+        {
+            GlobalConfigurationKey = CompanyKey;
+        }
+
+
+        public static string GetConfigurationKey()
+        {
+            if (!String.IsNullOrEmpty(GlobalConfigurationKey)) return GlobalConfigurationKey;
+
+            if (HttpContext.Current == null)
+            {
+                return GetConfigurationKey(null);
+            }
+            Uri urlRequest = HttpContext.Current.Request.Url;
+            return GetConfigurationKey(urlRequest);
+        }
+
+        private static string GetConfigurationKey(Uri UrlRequest)
+        {
+            if (ConfigurationKeyMode == ConfigurationKeyModeEnum.None)
+            {
+                return String.Empty;
+            }
+            if (ConfigurationKeyMode == ConfigurationKeyModeEnum.Fixed)
+            {
+                return ConfigurationManager.AppSettings["MongoMapperConfigurationKey"].ToUpper();
+            }
+            if (UrlRequest != null && ConfigurationKeyMode == ConfigurationKeyModeEnum.Host)
+            {
+                return UrlRequest.Host.Split('.')[ConfigurationKeyPathIndex].ToUpper();
+            }
+            if (UrlRequest != null && ConfigurationKeyMode == ConfigurationKeyModeEnum.Path)
+            {
+                return UrlRequest.PathAndQuery.Split('/')[ConfigurationKeyPathIndex + 1].ToUpper();
+            }
+
+            throw new Exception("Inconsistent ConfigurationKey Setup");
+        }
+
+
+        public static IMongoMapperConfiguration Config
+        {
+            get { return MongoMapperConfiguration.GetConfig(GetConfigurationKey()); }
+        }
 
         #endregion
 
@@ -238,25 +324,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         private static MongoMapperConfigurationElement FindByObjName(string ObjName)
         {
-            if (!_setupLoaded)
-            {
-                lock (LockObject)
-                {
-                    if (!_setupLoaded)
-                    {
-                        foreach (var collectionElement in Config.CustomCollectionConfig)
-                        {
-                            var collection = collectionElement;
-                            ConfigByObject.Add(collection.Name, collection);
-                        }
-                        _setupLoaded = true;
-                    }
-                }
-            }
-
-            ObjName = CleanObjName(ObjName);
-
-            return ConfigByObject.ContainsKey(ObjName) ? ConfigByObject[ObjName] : null;
+            return Config.CustomCollectionConfig.FirstOrDefault(C => C.Name == ObjName);            
         }
 
         #endregion

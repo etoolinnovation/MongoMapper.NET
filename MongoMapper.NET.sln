@@ -1,9 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtoolTech.MongoDB.Mapper", "EtoolTech.MongoDB.Mapper\EtoolTech.MongoDB.Mapper.csproj", "{9189E04F-8BC5-4219-B706-F986444474A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtoolTech.MongoDB.Mapper.Test.NUnit", "EtoolTech.MongoDB.Mapper.Test.NUnit\EtoolTech.MongoDB.Mapper.Test.NUnit.csproj", "{52C9E717-6218-47A2-AEB5-0C179DB90AA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTest", "WebTest\WebTest.csproj", "{DC574933-29B4-4D0A-AAD0-D57F350A71E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +23,10 @@ Global
 		{52C9E717-6218-47A2-AEB5-0C179DB90AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52C9E717-6218-47A2-AEB5-0C179DB90AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52C9E717-6218-47A2-AEB5-0C179DB90AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC574933-29B4-4D0A-AAD0-D57F350A71E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC574933-29B4-4D0A-AAD0-D57F350A71E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC574933-29B4-4D0A-AAD0-D57F350A71E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC574933-29B4-4D0A-AAD0-D57F350A71E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
