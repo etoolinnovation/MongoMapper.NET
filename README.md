@@ -10,101 +10,104 @@ A .NET Document Mapper for MongoDB over MongoDB C# Driver
 
 ### Defining the Model
 
-		[Serializable]
-		[MongoKey(KeyFields = "Code")]    
-		[MongoCollectionName(Name="Paises")]
-		[MongoGeo2DIndex(IndexField="Pos")]
-		[MongoGeo2DSphereIndex(IndexField="Area")]
-		[MongoRelation("PersonRelation","Code","Person","Country")]
-		public class Country : MongoMapper<Country>
-		{				  
-			#region Public Properties
+```csharp
+    [Serializable]
+    [MongoKey(KeyFields = "Code")]    
+    [MongoCollectionName(Name="Paises")]
+    [MongoGeo2DIndex(IndexField="Pos")]
+    [MongoGeo2DSphereIndex(IndexField="Area")]
+    [MongoRelation("PersonRelation","Code","Person","Country")]
+    public class Country : MongoMapper<Country>
+    {				  
+        #region Public Properties
 			
-			[BsonElement("c")]
-			public string Code { get; set; }
+        [BsonElement("c")]
+        public string Code { get; set; }
 
-			[BsonElement("n")]
-			public string Name { get; set; }
+        [BsonElement("n")]
+        public string Name { get; set; }
 
-			[BsonElement("p")]
-			public long[] Pos { get; set; }
+        [BsonElement("p")]
+        public long[] Pos { get; set; }
 
-			public GeoArea Area { get; set; }
+        public GeoArea Area { get; set; }
 
-			#endregion
+        #endregion
 
-			#region Public Methods
+        #region Public Methods
 
-			[MongoPropertyValidator(PropertyName = "Code")]
-			public void CodeIsUp(string CountryCode)
-			{
-				if (CountryCode != CountryCode.ToUpper())
-				{
-					throw new Exception(String.Format("{0} must be {1}", CountryCode, CountryCode.ToUpper()));
-				}
-			}
+        [MongoPropertyValidator(PropertyName = "Code")]
+        public void CodeIsUp(string CountryCode)
+        {
+            if (CountryCode != CountryCode.ToUpper())
+            {
+                throw new Exception(String.Format("{0} must be {1}", CountryCode, CountryCode.ToUpper()));
+            }
+        }
 
-			#endregion
-		}
+        #endregion
+    }
 				
-		public class CountryCollection: MongoMapperCollection<Country> {}
-	
+    public class CountryCollection: MongoMapperCollection<Country> {}
+```
+
 ### Work with the Model
 
-		var c = new Country {Code = "es", Name = "España"};
-		try
-		{
-			c.Save();
-			Assert.Fail();
-		}
-		catch (ValidatePropertyException ex)
-		{
-			Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
-			c.Code = "ES";
-			c.Save();
-		}
-
-		c = new Country {Code = "UK", Name = "Reino Unido"};
+```csharp
+	var c = new Country {Code = "es", Name = "España"};
+	try
+	{
 		c.Save();
+		Assert.Fail();
+	}
+	catch (ValidatePropertyException ex)
+	{
+		Assert.AreEqual(ex.GetBaseException().GetType(), typeof (ValidatePropertyException));
+		c.Code = "ES";
+		c.Save();
+	}
 
-		c = new Country {Code = "UK", Name = "Reino Unido"};
-		try
-		{
-			c.Save();
-			Assert.Fail();
-		}
-		catch (DuplicateKeyException ex)
-		{
-			Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
-		}
+	c = new Country {Code = "UK", Name = "Reino Unido"};
+	c.Save();
 
-		using (var t = new MongoMapperTransaction())
-		{
-			var c2 = new Country {Code = "US", Name = "Francia"};
-			c2.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Estados Unidos"; };
-			c2.Save();
+	c = new Country {Code = "UK", Name = "Reino Unido"};
+	try
+	{
+		c.Save();
+		Assert.Fail();
+	}
+	catch (DuplicateKeyException ex)
+	{
+		Assert.AreEqual(ex.GetBaseException().GetType(), typeof (DuplicateKeyException));
+	}
 
-			t.Commit();
-		}
+	using (var t = new MongoMapperTransaction())
+	{
+		var c2 = new Country {Code = "US", Name = "Francia"};
+		c2.OnBeforeInsert += (s, e) => { ((Country) s).Name = "Estados Unidos"; };
+		c2.Save();
 
-		var c3 = new Country();
-		c3.FillByKey("US");
-		Assert.AreEqual(c3.Name, "Estados Unidos");
+		t.Commit();
+	}
 
-		if (!c3.IsLastVersion())
-			c3.FillFromLastVersion();
+	var c3 = new Country();
+	c3.FillByKey("US");
+	Assert.AreEqual(c3.Name, "Estados Unidos");
 
-		var countries = new CountryCollection();
-		countries.Find();
-		Assert.AreEqual(countries.Count, 3);
+	if (!c3.IsLastVersion())
+		c3.FillFromLastVersion();
 
-		countries.Find().Limit(2).Sort(countries.Sort.Ascending(C=>C.Name));
-		Assert.AreEqual(countries.Count, 2);
-		Assert.AreEqual(countries.Total, 3);
+	var countries = new CountryCollection();
+	countries.Find();
+	Assert.AreEqual(countries.Count, 3);
 
-		countries.Find(countries.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
-		Assert.AreEqual(countries.Count, 2);
+	countries.Find().Limit(2).Sort(countries.Sort.Ascending(C=>C.Name));
+	Assert.AreEqual(countries.Count, 2);
+	Assert.AreEqual(countries.Total, 3);
 
+	countries.Find(countries.Filter.Or(MongoQuery<Country>.Eq(co => co.Code, "ES"), MongoQuery<Country>.Eq(co => co.Code, "UK")));
+	Assert.AreEqual(countries.Count, 2);
+```
 
 ### You can find examples in the Test Project 
 
