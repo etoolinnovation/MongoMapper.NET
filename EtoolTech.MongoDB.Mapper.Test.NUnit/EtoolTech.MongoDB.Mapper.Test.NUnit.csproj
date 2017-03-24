@@ -56,6 +56,8 @@
     <Compile Include="AgregationTest.cs" />
     <Compile Include="Classes\CountryCollection.cs" />
     <Compile Include="Classes\Log.cs" />
+    <Compile Include="FG-148\CurrentyType.cs" />
+    <Compile Include="FG-148\Test.cs" />
     <Compile Include="InsertModifyDeleteTest.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="FindTest.cs" />
