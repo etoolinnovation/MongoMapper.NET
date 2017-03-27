@@ -25,13 +25,13 @@ namespace EtoolTech.MongoDB.Mapper
         #endregion
 
 
-        public static MongoMapperCollection<T> Instance {get{return new MongoMapperCollection<T>();}}
+        public static MongoMapperCollection<T> Instance { get { return new MongoMapperCollection<T>(); } }
         public static MongoMapperCollection<T> InstanceFromPrimary { get { return new MongoMapperCollection<T>(true); } }
 
         public bool FromPrimary { get; set; }
 
-        private List<string> _includedFields = new List<string>();
-        private List<string> _excludedFields = new List<string>();
+        private readonly List<string> _includedFields = new List<string>();
+        private readonly List<string> _excludedFields = new List<string>();
 
 
         private IMongoCollection<T> GetCollection()

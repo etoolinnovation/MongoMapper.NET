@@ -13,23 +13,14 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
     {
         #region Constants and Fields
 
-       
-
-        public static string DatabasePrefix { get; set; }
-
-        private static readonly Dictionary<string, MongoMapperConfigurationElement> ConfigByObject = new Dictionary<string, MongoMapperConfigurationElement>();
+        public static string DatabasePrefix { get; set; }        
 
         private static readonly Dictionary<string, MongoClientSettings> SettingsByObject = new Dictionary<string, MongoClientSettings>();
-
         private static readonly Dictionary<string, string> UrlByObject = new Dictionary<string, string>();
-
-
-        private static readonly Object LockObject = new Object();
 
         private static readonly Object LockSettingsObject = new Object();
 
         #endregion
-
 
 
         #region Public Properties
@@ -38,13 +29,6 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         #endregion
 
-        #region Properties
-
-        internal static int? ActiveServers { get; set; }
-
-        internal static bool IsReplicaSet { get; set; }
-
-        #endregion
 
         #region MultiConfiguration
 
@@ -197,7 +181,10 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         public static MongoClientSettings GetClientSettings(string ObjName)
         {
-            if (SettingsByObject.ContainsKey(ObjName)) return SettingsByObject[ObjName];
+
+            string key = ObjName + GetConfigurationKey();
+
+            if (SettingsByObject.ContainsKey(key)) return SettingsByObject[key];
 
             string urlString = Url(ObjName);
             if (!string.IsNullOrEmpty(_urlString))
@@ -207,13 +194,13 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
             lock (LockSettingsObject)
             {
-                if (!SettingsByObject.ContainsKey(ObjName))
+                if (!SettingsByObject.ContainsKey(key))
                 {
                     MongoClientSettings clientSettings = null;
 
                     if (UrlByObject.ContainsValue(urlString))
                     {
-                        clientSettings = SettingsByObject[UrlByObject.First(o => o.Value == urlString).Key];
+                        clientSettings = SettingsByObject[UrlByObject.First(O => O.Value == urlString).Key];
                     }
                     else
                     {
@@ -221,12 +208,12 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
                         clientSettings = MongoClientSettings.FromUrl(url);
                     }
 
-                    UrlByObject.Add(ObjName,urlString);
-                    SettingsByObject.Add(ObjName, clientSettings);
+                    UrlByObject.Add(key, urlString);
+                    SettingsByObject.Add(key, clientSettings);
                 }
             }
 
-            return SettingsByObject[ObjName];
+            return SettingsByObject[key];
         }
 
 
@@ -324,7 +311,7 @@ namespace EtoolTech.MongoDB.Mapper.Configuration
 
         private static MongoMapperConfigurationElement FindByObjName(string ObjName)
         {
-            return Config.CustomCollectionConfig.FirstOrDefault(C => C.Name == ObjName);            
+            return Config.CustomCollectionConfig.FirstOrDefault(C => C.Name == CleanObjName(ObjName));            
         }
 
         #endregion

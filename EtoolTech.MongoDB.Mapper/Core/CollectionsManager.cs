@@ -11,8 +11,7 @@ namespace EtoolTech.MongoDB.Mapper
     {
         #region Constants and Fields
 
-        internal static readonly Dictionary<string, MongoCollectionName> CustomCollectionsName =
-            new Dictionary<string, MongoCollectionName>();
+        internal static readonly Dictionary<string, MongoCollectionName> CustomCollectionsName = new Dictionary<string, MongoCollectionName>();
 
         private static readonly Dictionary<string, object> Collections = new Dictionary<string, object>();
 
@@ -50,7 +49,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             Name = GetCollectioName(Name);
 
-            string key = Name + "|" + typeof (T).FullName;
+            string key = string.Format("{0}|{1}|{2}", Name, typeof (T).FullName, Configuration.ConfigManager.GetConfigurationKey());
 
             if (Collections.ContainsKey(key))
             {
@@ -72,7 +71,7 @@ namespace EtoolTech.MongoDB.Mapper
         {
             Name = GetCollectioName(Name);
 
-            string key = Name + "|" + typeof(T).FullName;
+            string key = string.Format("{0}|{1}|{2}", Name, typeof(T).FullName, Configuration.ConfigManager.GetConfigurationKey());
 
             if (PrimaryCollections.ContainsKey(key))
             {
